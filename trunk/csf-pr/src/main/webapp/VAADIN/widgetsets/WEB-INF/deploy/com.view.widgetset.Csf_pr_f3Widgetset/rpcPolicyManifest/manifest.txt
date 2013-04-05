@@ -1,0 +1,2 @@
+# Module com.view.widgetset.Csf_pr_f3Widgetset
+# RPC service class, partial path of RPC policy file
