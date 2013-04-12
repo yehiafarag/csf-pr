@@ -7,9 +7,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import com.helperunits.MyEmbedded;
-import com.helperunits.MyLabel;
-import com.helperunits.PI;
+import com.helperunits.CustomEmbedded;
+import com.helperunits.CustomLabel;
+import com.helperunits.CustomPI;
 import com.model.beans.PeptideBean;
 import com.vaadin.data.Item;
 import com.vaadin.terminal.ExternalResource;
@@ -46,10 +46,10 @@ public class PeptideTable extends  Table  implements Serializable{
  		this.addContainerProperty("Peptide Protein(s)", String.class,  null);
  		this.setColumnCollapsed("Peptide Protein(s)", true);
  		String Protein_Inference = "Protein Inference";
- 		this.addContainerProperty(Protein_Inference,PI.class, null,"PI",null,com.vaadin.ui.Table.ALIGN_CENTER); 		
+ 		this.addContainerProperty(Protein_Inference,CustomPI.class, null,"PI",null,com.vaadin.ui.Table.ALIGN_CENTER); 		
  		
  		final String sequence = "Sequence";
- 		this.addContainerProperty(sequence,MyLabel.class,  null);
+ 		this.addContainerProperty(sequence,CustomLabel.class,  null);
  		this.addContainerProperty("AA Before",String.class,  null);	
  		this.addContainerProperty("AA After",String.class,  null);
  		this.setColumnCollapsed("AA Before", true);
@@ -79,30 +79,30 @@ public class PeptideTable extends  Table  implements Serializable{
  		this.addContainerProperty("Precursor Charge(s)",String.class,  null,"Precursor Charge(s)",null,com.vaadin.ui.Table.ALIGN_RIGHT);	 		
  		 
  		this.addContainerProperty("Sequence Tagged",String.class,  null,"Sequence Annotated",null,com.vaadin.ui.Table.ALIGN_LEFT);	 		
- 		this.addContainerProperty("Enzymatic",MyEmbedded.class,  null,"Enzymatic",null,com.vaadin.ui.Table.ALIGN_CENTER);	
- 		this.addContainerProperty("Validated",PI.class,  null,"Validated",null,com.vaadin.ui.Table.ALIGN_CENTER);	 		
- 	//	this.addContainerProperty("Starred",MyEmbedded.class,  null,"Starred",null,com.vaadin.ui.Table.ALIGN_CENTER);	 		
+ 		this.addContainerProperty("Enzymatic",CustomEmbedded.class,  null,"Enzymatic",null,com.vaadin.ui.Table.ALIGN_CENTER);	
+ 		this.addContainerProperty("Validated",CustomPI.class,  null,"Validated",null,com.vaadin.ui.Table.ALIGN_CENTER);	 		
+ 	//	this.addContainerProperty("Starred",CustomEmbedded.class,  null,"Starred",null,com.vaadin.ui.Table.ALIGN_CENTER);	 		
  		
  		
  	
- 		this.addContainerProperty("Deamidation & Glycopattern",MyEmbedded.class,  null,"Deamidation & Glycopattern",null,com.vaadin.ui.Table.ALIGN_CENTER);
+ 		this.addContainerProperty("Deamidation & Glycopattern",CustomEmbedded.class,  null,"Deamidation & Glycopattern",null,com.vaadin.ui.Table.ALIGN_CENTER);
  		
  		this.addContainerProperty("Glycopattern Positions",String.class, null,"Glycopattern Positions",null,com.vaadin.ui.Table.ALIGN_RIGHT);
  		
  		
  		
- 		 MyEmbedded enz = null;
- 	//	 MyEmbedded starred = null;
+ 		 CustomEmbedded enz = null;
+ 	//	 CustomEmbedded starred = null;
 		 Resource res = null;
-		 PI pi = null;
+		 CustomPI pi = null;
 		 Resource res2 = null;
 		 Resource res3 = null;
 		 
-		 MyLabel seq = null;
+		 CustomLabel seq = null;
 		 
-		 MyEmbedded deamidationAndGlycopattern = null;
+		 CustomEmbedded deamidationAndGlycopattern = null;
 		 
-		 PI validated = null;
+		 CustomPI validated = null;
  		int index = 1;
 		 for(PeptideBean pb: peptideList.values()){
 			 if(pb.isEnzymatic())
@@ -110,7 +110,7 @@ public class PeptideTable extends  Table  implements Serializable{
 			 else
 				 res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
 			 
-			 enz  = new MyEmbedded(pb.isEnzymatic(), res);
+			 enz  = new CustomEmbedded(pb.isEnzymatic(), res);
 			 enz.setWidth("16px");
 			 enz.setHeight("16px");
 			 enz.setDescription(""+pb.isEnzymatic());
@@ -120,7 +120,7 @@ public class PeptideTable extends  Table  implements Serializable{
 			else
 				 res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
 			  
-			 starred  = new MyEmbedded(pb.isStarred(), res);
+			 starred  = new CustomEmbedded(pb.isStarred(), res);
 			 starred.setWidth("16px");
 			 starred.setHeight("16px");
 			 starred.setDescription(""+pb.isStarred());
@@ -129,7 +129,7 @@ public class PeptideTable extends  Table  implements Serializable{
 			 if(pb.isDeamidationAndGlycopattern() == null)
 			 {
 				 res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
-				 deamidationAndGlycopattern  = new MyEmbedded(false, res3);
+				 deamidationAndGlycopattern  = new CustomEmbedded(false, res3);
 				 deamidationAndGlycopattern.setWidth("16px");
 				 deamidationAndGlycopattern.setHeight("16px");
 				 deamidationAndGlycopattern.setDescription("FALSE");			 
@@ -137,14 +137,14 @@ public class PeptideTable extends  Table  implements Serializable{
 			 }
 			 else if(pb.isDeamidationAndGlycopattern()){
 				 res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
-				 deamidationAndGlycopattern  = new MyEmbedded(pb.isDeamidationAndGlycopattern(), res3);
+				 deamidationAndGlycopattern  = new CustomEmbedded(pb.isDeamidationAndGlycopattern(), res3);
 				 deamidationAndGlycopattern.setWidth("16px");
 				 deamidationAndGlycopattern.setHeight("16px");
 				 deamidationAndGlycopattern.setDescription(""+pb.isDeamidationAndGlycopattern());
 			 }else {
 				 res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
 
-				 deamidationAndGlycopattern  = new MyEmbedded(pb.isDeamidationAndGlycopattern(), res3);
+				 deamidationAndGlycopattern  = new CustomEmbedded(pb.isDeamidationAndGlycopattern(), res3);
 				 deamidationAndGlycopattern.setWidth("16px");
 				 deamidationAndGlycopattern.setHeight("16px");
 				 deamidationAndGlycopattern.setDescription(""+pb.isDeamidationAndGlycopattern());
@@ -155,26 +155,26 @@ public class PeptideTable extends  Table  implements Serializable{
 			 if(pb.getProteinInference() == null) { }
 			 else if(pb.getProteinInference().equalsIgnoreCase("SINGLE PROTEIN")){
 				 res2 = new ExternalResource("http://sphotos-d.ak.fbcdn.net/hphotos-ak-snc6/263426_116594491857485_1503571748_n.jpg");
-				pi = new PI(pb.getProteinInference(), res2);
+				pi = new CustomPI(pb.getProteinInference(), res2);
 				 pi.setDescription(pb.getProteinInference());
 				     
 			 }else  if(pb.getProteinInference().equalsIgnoreCase("UNRELATED PROTEINS")){
 			 
 				 res2 = new ExternalResource("http://sphotos-h.ak.fbcdn.net/hphotos-ak-prn1/549354_116594531857481_1813966302_n.jpg");
-				 pi = new PI(pb.getProteinInference(), res2);
+				 pi = new CustomPI(pb.getProteinInference(), res2);
 				 pi.setDescription(pb.getProteinInference());
 				     
 			 } else if(pb.getProteinInference().equalsIgnoreCase("ISOFORMS"))
 			 {
 				 res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
-				 pi = new PI(pb.getProteinInference(), res2);
+				 pi = new CustomPI(pb.getProteinInference(), res2);
 				 pi.setDescription(pb.getProteinInference());
 				     
 			 } 
 			 else if (pb.getProteinInference().equalsIgnoreCase("UNRELATED ISOFORMS")||pb.getProteinInference().equalsIgnoreCase("ISOFORMS AND UNRELATED PROTEIN(S)"))
 			 {
 				 res2 = new ExternalResource("http://sphotos-a.ak.fbcdn.net/hphotos-ak-prn1/544345_116594495190818_129866024_n.jpg");
-				 pi = new PI(pb.getProteinInference(), res2);
+				 pi = new CustomPI(pb.getProteinInference(), res2);
 				 pi.setDescription(pb.getProteinInference());
 			 }
 		     
@@ -183,7 +183,7 @@ public class PeptideTable extends  Table  implements Serializable{
 			 else
 				 res2 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
 			 
-		     validated = new PI(String.valueOf(pb.getValidated()), res2);
+		     validated = new CustomPI(String.valueOf(pb.getValidated()), res2);
 		     validated.setDescription(String.valueOf(pb.getValidated()));
 		     
 		     if(pepSet != null){
@@ -192,16 +192,16 @@ public class PeptideTable extends  Table  implements Serializable{
 		    	 {
 		    		 if(pb.getSequence().contains(str))
 		    		 {
-		    			 seq = new MyLabel(pb.getSequence(), "red");
+		    			 seq = new CustomLabel(pb.getSequence(), "red");
 		    			 break;
 		    		 }
-		    		 seq = new MyLabel(pb.getSequence(), "black");
+		    		 seq = new CustomLabel(pb.getSequence(), "black");
 		    		 
 		    	 }
 		    	 
 		     }	
 		     else
-		    	 seq = new MyLabel(pb.getSequence(), "black");
+		    	 seq = new CustomLabel(pb.getSequence(), "black");
 				seq.setDescription("The Peptide Sequence: "+pb.getSequence());
 		     
 		     

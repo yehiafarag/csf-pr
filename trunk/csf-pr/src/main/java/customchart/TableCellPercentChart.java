@@ -1,4 +1,4 @@
-package MyUpdate;
+package customchart;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -40,7 +40,7 @@ public class TableCellPercentChart extends VerticalLayout implements Serializabl
 		}
 		else*/{
 				HorizontalLayout hlo = new HorizontalLayout();
-				MyBarChartComponent bar = new MyBarChartComponent();
+				CustomBarChartComponent bar = new CustomBarChartComponent();
 				if(value == null || value == 0){
 					bar.addSerie("Serie_0", new double[] {0d, 0d, 0d, 0d,0d, 0d, 0d, 0d,0d, 0d});
 					this.value = 0d;

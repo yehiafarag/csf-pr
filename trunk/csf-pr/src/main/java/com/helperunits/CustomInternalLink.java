@@ -2,11 +2,11 @@ package com.helperunits;
 
 import java.io.Serializable;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.themes.Reindeer;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
-@SuppressWarnings("unchecked")
-public class MyButton extends Button implements Serializable,Comparable<MyButton> {
+
+public class CustomInternalLink extends VerticalLayout implements Serializable,Comparable<CustomInternalLink> {
 
 	/**
 	 * 
@@ -14,19 +14,14 @@ public class MyButton extends Button implements Serializable,Comparable<MyButton
 	private static final long serialVersionUID = 1L;
 	private String expName;
 	private Integer key;
-	@SuppressWarnings("deprecation")
-	public MyButton(String expName,int key,ClickListener listener)
+	public CustomInternalLink(String expName,int key)
 	{
-		super(expName);
-		super.addListener(listener);
+		Label l = new Label(expName);
+		this.addComponent(l);
 		this.expName = expName;
-		this.setStyle(Reindeer.BUTTON_LINK);
 		this.key = key;
 	}
-	public void addListener(ClickListener listener)
-	{
-		super.addListener(listener);
-	}
+	
 	public String toString()
 	{
 		return expName;
@@ -39,7 +34,8 @@ public class MyButton extends Button implements Serializable,Comparable<MyButton
 	{
 		return this.expName;
 	}
-	public int compareTo(MyButton o) {
+        @Override
+	public int compareTo(CustomInternalLink o) {
 		String expNameToCompare = o.expName;
 		return this.expName.compareTo(expNameToCompare);
 	}

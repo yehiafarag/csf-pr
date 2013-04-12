@@ -8,22 +8,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.helperunits.MyButton;
-import com.helperunits.MyLink;
-import com.helperunits.PI;
+import com.helperunits.CustomInternalLink;
+import com.helperunits.CustomExternalLink;
+import com.helperunits.CustomPI;
 import com.model.beans.ExperimentBean;
 import com.model.beans.ProteinBean;
 import com.vaadin.data.Item;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import com.view.ProteinView;
 
-public class SearchTable  extends  Table  implements Serializable,Button.ClickListener{
+public class SearchTable  extends  Table  implements Serializable,com.vaadin.event.LayoutEvents.LayoutClickListener{
 
 	/**
 	 * 
@@ -50,8 +49,8 @@ public class SearchTable  extends  Table  implements Serializable,Button.ClickLi
  		this.setHeight("150px");
 
  		this.addContainerProperty("Index",Integer.class,  null,"",null,com.vaadin.ui.Table.ALIGN_RIGHT);	
- 		this.addContainerProperty("Experiment", MyButton.class,  null);
- 		this.addContainerProperty("Accession", MyLink.class,  null);
+ 		this.addContainerProperty("Experiment", CustomInternalLink.class,  null);
+ 		this.addContainerProperty("Accession", CustomExternalLink.class,  null);
  		
  		this.addContainerProperty("Species",String.class, null);
  		this.addContainerProperty("Sample Type",String.class, null); 
@@ -64,7 +63,7 @@ public class SearchTable  extends  Table  implements Serializable,Button.ClickLi
  		
  		
  		String Protein_Inference = "Protein Inference";
- 		this.addContainerProperty(Protein_Inference,PI.class, null,"PI",null,com.vaadin.ui.Table.ALIGN_CENTER); 		
+ 		this.addContainerProperty(Protein_Inference,CustomPI.class, null,"PI",null,com.vaadin.ui.Table.ALIGN_CENTER); 		
  		
  		this.addContainerProperty("Other Protein(s)", String.class,  null);
  		this.addContainerProperty("Description",String.class,  null);	 		
@@ -78,9 +77,9 @@ public class SearchTable  extends  Table  implements Serializable,Button.ClickLi
  		
 
 		//TableCellPercentChart conf = null;
- 		MyLink link = null;
- 		MyButton experimentLink = null;
- 		PI pi = null;
+ 		CustomExternalLink link = null;
+ 		CustomInternalLink experimentLink = null;
+ 		CustomPI pi = null;
 		 Resource res2 = null;
  		if(listOfProtExpFullList == null){
 			 int index = 1;
@@ -91,19 +90,15 @@ public class SearchTable  extends  Table  implements Serializable,Button.ClickLi
 				 for(int key: expProList.keySet()){
 					ExperimentBean exp = expList.get(key);
 				 	List<ProteinBean> pbList = expProList.get(key);		
-					 for(ProteinBean pb: pbList){
-						 
-						 
-						 
-					     
-					     
-						 
+					 for(ProteinBean pb: pbList)
+					 {				 
 						 String filter = ""+exp.getExpId()+","+pb.getAccession();
+						 System.out.println(filter);		
 						 if(filterList.containsKey(filter))
 						 {
 						 }
-						 else{
-							 
+						 else
+						 {							 
 							 if(pb.getProteinInferenceClass().equalsIgnoreCase("SINGLE PROTEIN"))
 								 res2 = new ExternalResource("http://sphotos-d.ak.fbcdn.net/hphotos-ak-snc6/263426_116594491857485_1503571748_n.jpg");
 							 else  if(pb.getProteinInferenceClass().equalsIgnoreCase("UNRELATED PROTEINS"))
@@ -112,17 +107,13 @@ public class SearchTable  extends  Table  implements Serializable,Button.ClickLi
 								 res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
 							 else if (pb.getProteinInferenceClass().equalsIgnoreCase("UNRELATED ISOFORMS")||pb.getProteinInferenceClass().equalsIgnoreCase("ISOFORMS AND UNRELATED PROTEIN(S)"))
 								 res2 = new ExternalResource("http://sphotos-a.ak.fbcdn.net/hphotos-ak-prn1/544345_116594495190818_129866024_n.jpg");
-							
-					     pi = new PI(pb.getProteinInferenceClass(), res2);
-					     pi.setDescription(pb.getProteinInferenceClass());
-							 link =new MyLink(pb.getAccession(), new ExternalResource("http://www.uniprot.org/uniprot/"+pb.getAccession()));
-							 link.setTargetName("_blank");
+							 pi = new CustomPI(pb.getProteinInferenceClass(), res2);
+						     pi.setDescription(pb.getProteinInferenceClass());
+							 link =new CustomExternalLink(pb.getAccession(), "http://www.uniprot.org/uniprot/"+pb.getAccession());
+							// link.setTargetName("_blank");
 							 link.setDescription("UniProt link for "+pb.getAccession());
 							 
-							// conf = new TableCellPercentChart(pb.getConfidence());	
-							// conf.setDescription(Confidence+" : "+df.format(pb.getConfidence())+" %");
-									 
-							 experimentLink = new MyButton(exp.getName(),key,this);
+							 experimentLink = new CustomInternalLink(exp.getName(),key);
 							 experimentLink.setDescription("GET "+exp.getName()+" DETAILS");
 							 this.addItem(new Object[] {index,experimentLink,link,exp.getSpecies(), exp.getSampleType(),exp.getSampleProcessing(),exp.getInstrumentType(),exp.getFragMode(),pi,pb.getOtherProteins(),pb.getDescription(),Double.valueOf(df.format(pb.getSequenceCoverage())),pb.getNumberValidatedPeptides(),pb.getNumberValidatedSpectra(),Double.valueOf(df.format(pb.getNsaf())),Double.valueOf(df.format(pb.getMw_kDa())),Double.valueOf(df.format(pb.getConfidence()))}, new Integer(index));	 
 							 index++;
@@ -146,6 +137,7 @@ public class SearchTable  extends  Table  implements Serializable,Button.ClickLi
 						 ExperimentBean exp = expList.get(key);
 						 ProteinBean pb = temProtExpList.get(key);
 						 String filter = ""+exp.getExpId()+","+pb.getAccession();
+						 System.out.println(filter);		
 						 if(filterList.containsKey(filter))
 						 {
 						 }
@@ -162,19 +154,20 @@ public class SearchTable  extends  Table  implements Serializable,Button.ClickLi
 								 res2 = new ExternalResource("http://sphotos-a.ak.fbcdn.net/hphotos-ak-prn1/544345_116594495190818_129866024_n.jpg");
 							if(pb.getProteinInferenceClass() != null){
 								
-							     pi = new PI(pb.getProteinInferenceClass(), res2);
+							     pi = new CustomPI(pb.getProteinInferenceClass(), res2);
 							     pi.setDescription(pb.getProteinInferenceClass());
 							}
 						     
 						     
 							 
-							 link =new MyLink(pb.getAccession(), new ExternalResource("http://www.uniprot.org/uniprot/"+pb.getAccession()));
-							 link.setTargetName("_blank");
+							 link =new CustomExternalLink(pb.getAccession(), "http://www.uniprot.org/uniprot/"+pb.getAccession());
+						
 							 link.setDescription("UniProt link for "+pb.getAccession());
 							// conf = new TableCellPercentChart(pb.getConfidence());	
 							//	conf.setDescription(Confidence+" : "+df.format(pb.getConfidence())+" %");
 									 
-							 experimentLink = new MyButton(exp.getName(),key,this);
+							 experimentLink = new CustomInternalLink(exp.getName(),key);
+							 experimentLink.addListener(this);
 							 experimentLink.setDescription("GET "+exp.getName()+" DETAILS");
 							 this.addItem(new Object[] {index, experimentLink,link,exp.getSpecies(), exp.getSampleType(),exp.getSampleProcessing(),exp.getInstrumentType(),exp.getFragMode(),pi,pb.getOtherProteins(),pb.getDescription(),Double.valueOf(df.format(pb.getSequenceCoverage())),pb.getNumberValidatedPeptides(),pb.getNumberValidatedSpectra(),Double.valueOf(df.format(pb.getNsaf())),Double.valueOf(df.format(pb.getMw_kDa())),Double.valueOf(df.format(pb.getConfidence()))}, new Integer(index));	 
 							index++;
@@ -277,8 +270,8 @@ public class SearchTable  extends  Table  implements Serializable,Button.ClickLi
 		
 		
 	}
-	public void buttonClick(ClickEvent event) {
-		MyButton ml = (MyButton) event.getSource();
+	public void layoutClick(LayoutClickEvent event)  {
+		CustomInternalLink ml = (CustomInternalLink) event.getSource();
 		int key = ml.getKey();
 		
 		// Create a window that contains what you want to print

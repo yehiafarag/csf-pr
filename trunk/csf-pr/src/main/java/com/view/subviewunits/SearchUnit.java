@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.handlers.ExperimentHandler;
-import com.helperunits.MyButton;
+import com.helperunits.CustomInternalLink;
+import com.helperunits.CustomExternalLink;
 //import com.helperunits.Help;
 import com.model.FractionRangeUtilitie;
 import com.model.beans.ExperimentBean;
@@ -78,6 +79,8 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 	private VerticalLayout searchTableLayout ;
 	private ProteinView pv;
 	private String protSize = "160px",pepSize = "167px" ;
+	
+	private CustomExternalLink myLink;
 	
 	public SearchUnit(Map<Integer, ExperimentBean> expList,String url,String dbName, String driver,String userName,String  password,Button adminIco) {
 		eh = new ExperimentHandler(url,dbName,driver,userName,  password);	
@@ -154,12 +157,8 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
         searchButton.setStyle(Reindeer.BUTTON_SMALL);
 	    newSearchForm.addField(4,searchButton);
 	    root.addComponent(newSearchForm);	    
-	    //select.select(itemId1);		    
-	    
-	    
-	    
-	    searchButton.addListener(this);
-	   		
+	    //select.select(itemId1);		      
+	    searchButton.addListener(this);	   		
 	}
 	@SuppressWarnings("deprecation")
 	public synchronized void buttonClick(ClickEvent event) {
@@ -168,11 +167,9 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		if(searchTableLayout != null)
 			root.removeComponent(searchTableLayout);
 		searchTableLayout = new VerticalLayout();
-		root.addComponent(searchTableLayout);
-		
+		root.addComponent(searchTableLayout);		
 		Object seatchTypeObject = select.getValue();
-		Object protSearchObject = searchField.getValue();
-		
+		Object protSearchObject = searchField.getValue();		
 		if(protSearchObject == null || protSearchObject.toString().equals("")||protSearchObject.toString().equals("For Multiple Search...Please Use One key word Per Line !"))
 		{
 			if(selectLabel !=null)
@@ -193,7 +190,6 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		}
 		else
 		{
-			
 			if(selectLabel !=null)
 				searchTableLayout.removeComponent(selectLabel);			
 			String searchType = seatchTypeObject.toString();			
@@ -256,6 +252,7 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 							notFound+=searchStr+"\t";
 						else
 							ListOfProtExpFullList.add(protExpFullList);
+							
 						
 					}
 					
@@ -314,7 +311,7 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		    			searchTableLayout.addComponent(protExpTab);
 		    			
 		    			TableResizeSet trs = new TableResizeSet(protExpTab,protSize);//resize tables
-		    			trs.setWidth("400px");
+		    			trs.setWidth("350px");
 		    			expBtnProtTable.setHeight("19px");
 			        	trs.addComponent(expBtnProtTable);
 			        	trs.setComponentAlignment(expBtnProtTable, Alignment.BOTTOM_RIGHT);
@@ -341,11 +338,11 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 			            }
 
 			        });	
-		    			 Button expBtnProtAllPepTable = new Button("Export Peptides From All Data Sets");
-		    	    	 expBtnProtAllPepTable.setDescription("From All The Data Sets, Export All The Peptides Representing The Highlighted Protein ");
-		    	       	 expBtnProtAllPepTable.setStyle(Reindeer.BUTTON_SMALL);
-		    	       	 expBtnProtAllPepTable.setHeight("19px");
-		    	       	 expBtnProtAllPepTable.addListener(new ClickListener() {
+		    			Button expBtnProtAllPepTable = new Button("Export Protein's Peptides ");
+		    	    	expBtnProtAllPepTable.setDescription("Export all Protien's Peptides from all Data Sets");
+		    	       	expBtnProtAllPepTable.setStyle(Reindeer.BUTTON_SMALL);
+		    	       	expBtnProtAllPepTable.setHeight("19px");
+		    	       	expBtnProtAllPepTable.addListener(new ClickListener() {
 		    	    	            private static final long serialVersionUID = -73954695086117200L;
 		    	    	            private CsvExport excelExport;
 
@@ -353,8 +350,7 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		    	    	            	if(protExpTab.getValue() != null){
 		    								key2 = (Integer) protExpTab.getValue();
 		    							Item item = protExpTab.getItem(key2);
-		    							final String accession = item.getItemProperty("Accession").toString();
-		    	    	            	
+		    							final String accession = item.getItemProperty("Accession").toString();		    	    	            	
 		    	    	            	Map<String,PeptideTable> pl = getPepList(accession);
 		    	    	            	int index = 0;
 		    	    	            	for(String key: pl.keySet())
@@ -363,17 +359,16 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		    	    	            		root.addComponent(pt);
 		    	    	            		if(index == 0){
 		    	    	            			excelExport = new CsvExport(pt);
-		    	    	            			excelExport.setReportTitle(accession+" Peptides Identified In Data Set “ "+key+" ”");
-                                                                excelExport.setExportFileName(accession+" Peptides.csv");    
-                                                                excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
+		    	    	            			excelExport.setReportTitle("Protein's Peptides for  ( "+accession+" ) from ( "+key+" ) Data Set");
+		    	    	            			excelExport.setExportFileName("Protein's Peptides for ( "+accession+" ).csv");    
+		    	    	            			excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
 		    	    	            			excelExport.setDisplayTotals(false);
 		    	    	            			excelExport.convertTable();
 		    	    	            			index++;
 		    	    	            		}
 		    	    	            		else{
-		    	    	            			excelExport.setReportTitle(accession+" Peptides Identified In Data Set “ "+key+" ”");
-                                                                
-                                                                excelExport.setDisplayTotals(false);
+		    	    	            			excelExport.setReportTitle("Protein's Peptides for  ( "+accession+" ) from ( "+key+" ) Data Set");  	
+		    	    	            			excelExport.setDisplayTotals(false);
 		    	    	            			excelExport.setRowHeaders(false);
 		    	    	            			excelExport.setNextTable(pt,key);
 		    	    	            			excelExport.setDisplayTotals(false);
@@ -385,7 +380,7 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		    	    	                excelExport.export();
 		    	    	            	}else
 		    	    	            	{
-		    	    	            		//System.out.println("you need to select protien first");
+		    	    	            	//	System.out.println("you need to select protien first");
 		    	    	            	}
 
 		    	    	            }
@@ -394,6 +389,7 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		    	    	        	{
 		    	    	        		Map<String,PeptideTable> tl = new HashMap<String,PeptideTable>();
 		    	    	        		for(ExperimentBean temExp : expList.values()){
+		    	    	        			
 		    	    	        			List<Integer> expProPepIds = eh.getExpPepProIds(temExp.getExpId(),accession); 
 		    	    	        			Map<Integer, PeptideBean> pepProtList = eh.getPeptidesProtList(temExp.getPeptideList(), accession, expProPepIds);
 		    	    	        			if(pepProtList.size() > 0){
@@ -425,8 +421,9 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 			
 						
 						public synchronized void valueChange(ValueChangeEvent event) {
-							
-							
+						
+						if(myLink != null)
+							myLink.rePaintLable("black");
 						if(peptideLayout != null){
 							peptideLayout.removeAllComponents();
 							searchTableLayout.removeComponent(peptideLayout);
@@ -435,11 +432,14 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 								key2 = (Integer) protExpTab.getValue();
 							Item item = protExpTab.getItem(key2);
 							final String accession = item.getItemProperty("Accession").toString();
+							myLink = (CustomExternalLink)item.getItemProperty("Accession").getValue();
+							myLink.rePaintLable("white");
+							
 							String desc = item.getItemProperty("Description").toString();
 							double mw = Double.valueOf(item.getItemProperty("MW").toString()); 
 							
 							final Property myExpPro =  item.getItemProperty("Experiment");
-							MyButton myExp = (MyButton) myExpPro.getValue();
+							CustomInternalLink myExp = (CustomInternalLink) myExpPro.getValue();
 							int expId = Integer.valueOf(myExp.getKey());
 							
 							
@@ -454,12 +454,12 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 							Map<Integer, PeptideBean> pepProExpList = eh.getPeptidesProtList(exp.getPeptideList(), accession, expProPepIds);
 							if(buttomSpacer != null)
 								searchTableLayout.removeComponent(buttomSpacer );
-					    	    buttomSpacer = new VerticalLayout();
-					    	    buttomSpacer.setVisible(false);
-						        buttomSpacer.setHeight("2px");
-						        buttomSpacer.setStyle(Reindeer.LAYOUT_BLACK);
-						        buttomSpacer.setMargin(true,true,false,false);
-						        buttomSpacer.setSpacing(true);
+					    	 buttomSpacer = new VerticalLayout();
+					    	 buttomSpacer.setVisible(false);
+						     buttomSpacer.setHeight("2px");
+						     buttomSpacer.setStyle(Reindeer.LAYOUT_BLACK);
+						     buttomSpacer.setMargin(true,true,false,false);
+						     buttomSpacer.setSpacing(true);
 							
 							if(exp.getPeptideList() == null)
 								exp.setPeptideList(pepProExpList);
@@ -701,10 +701,10 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		table.setColumnReorderingAllowed(true);
 	    table.setColumnCollapsingAllowed(true);
 	    table.setImmediate(true); // react at once when something is selected
-		 table.addContainerProperty("Fraction Range",String.class, null,"Fraction Range",null,com.vaadin.ui.Table.ALIGN_CENTER);
-		 table.addContainerProperty("# Peptides ",Integer.class, null,"# Peptides",null,com.vaadin.ui.Table.ALIGN_CENTER);
-		 table.addContainerProperty("# Spectra ",Integer.class, null,"# Spectra",null,com.vaadin.ui.Table.ALIGN_CENTER);
-		 table.addContainerProperty("Average Precursor Intensity",Double.class, null,"Average Precursor Intensity",null,com.vaadin.ui.Table.ALIGN_CENTER); 
+		table.addContainerProperty("Fraction Range",String.class, null,"Fraction Range",null,com.vaadin.ui.Table.ALIGN_CENTER);
+		table.addContainerProperty("# Peptides ",Integer.class, null,"# Peptides",null,com.vaadin.ui.Table.ALIGN_CENTER);
+		table.addContainerProperty("# Spectra ",Integer.class, null,"# Spectra",null,com.vaadin.ui.Table.ALIGN_CENTER);
+		table.addContainerProperty("Average Precursor Intensity",Double.class, null,"Average Precursor Intensity",null,com.vaadin.ui.Table.ALIGN_CENTER); 
 		 /* Add a few items in the table. */	
 		 int x = 0;
 		 for(ProteinBean pb: proteinFractionAvgList.values()){
@@ -721,8 +721,7 @@ public class SearchUnit extends CustomComponent implements ClickListener,Seriali
 		
 		String[] strArr = notFound.split("\t");
 		for(String str:strArr)
-			searchSet.remove(str);
-		
+			searchSet.remove(str);		
 		return searchSet.toString();
 	}
 

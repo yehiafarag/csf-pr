@@ -1,8 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package MyUpdate;
+
+package customchart;
 import com.bibounde.vprotovis.BarChartComponent;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,14 +25,14 @@ import com.vaadin.terminal.PaintTarget;
  *
  * @author Yehia Mokhtar
  */
-public class MyBarChartComponent extends BarChartComponent{
+public class CustomBarChartComponent extends BarChartComponent{
     private AxisLabelFormatter yAxisLabelFormatter = new DefaultAxisLabelFormatter();
     private BarTooltipFormatter tooltipFormatter = new DefaultBarTooltipFormatter();
 
     /**
      * Initializes a newly created BarChartComponent
      */
-    public MyBarChartComponent() {
+    public CustomBarChartComponent() {
         this.setId("v-protovis-barchart-" + this.hashCode());
     }
     

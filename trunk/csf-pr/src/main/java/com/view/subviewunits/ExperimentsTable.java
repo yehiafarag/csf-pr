@@ -5,13 +5,12 @@ import java.util.Map;
 
 import com.handlers.ExperimentHandler;
 import com.helperunits.Help;
-import com.helperunits.MyLink;
+import com.helperunits.CustomExternalLink;
 import com.model.beans.ExperimentBean;
 import com.model.beans.ProteinBean;
 import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -130,23 +129,23 @@ public class ExperimentsTable extends CustomComponent implements Property.ValueC
 				table.addContainerProperty(email,String.class, null); 
 				
 				
-				table.addContainerProperty("Publication link",MyLink.class, null); 
+				table.addContainerProperty("Publication link",CustomExternalLink.class, null); 
 				
 				/* Add a few items in the table. */
 			
 				 for(ExperimentBean exp: expList.values()){
-					 MyLink link = null;
+					 CustomExternalLink link = null;
 					 if(exp.getPublicationLink()!=null){
 						 if(exp.getPublicationLink().toLowerCase().contains("http"))
-							 link = new MyLink(exp.getPublicationLink(),    new ExternalResource(exp.getPublicationLink().toLowerCase()));
+							 link = new CustomExternalLink(exp.getPublicationLink(),    exp.getPublicationLink().toLowerCase());
 						 else 
-							 link = new MyLink(exp.getPublicationLink(),    new ExternalResource("http://"+exp.getPublicationLink().toLowerCase()));
+							 link = new CustomExternalLink(exp.getPublicationLink(),"http://"+exp.getPublicationLink().toLowerCase());
 					 	link.setDescription("Go To "+exp.getPublicationLink());
-					 	link.setTargetName("_blank");
+					 	//link.setTargetName("_blank");
 					 }
 					 else
 					 {
-						 link = new MyLink("No Publication Link Available",    new ExternalResource(""));
+						 link = new CustomExternalLink("No Publication Link Available","");
 						 link.setDescription(" No Publication Link Available");
 					 }
 					

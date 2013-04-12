@@ -6,9 +6,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Map;
 
-import com.helperunits.MyEmbedded;
-import com.helperunits.MyLink;
-import com.helperunits.PI;
+import com.helperunits.CustomEmbedded;
+import com.helperunits.CustomExternalLink;
+import com.helperunits.CustomPI;
 import com.model.beans.ProteinBean;
 import com.vaadin.data.Item;
 import com.vaadin.terminal.ExternalResource;
@@ -34,13 +34,13 @@ public class ProteinsTable extends  Table implements Serializable{
  		this.setWidth("100%");
  		this.setHeight("160px"); 		
  		this.addContainerProperty("Index",Integer.class,  null,"",null,com.vaadin.ui.Table.ALIGN_RIGHT);	
- 		this.addContainerProperty("Accession", MyLink.class,  null);
+ 		this.addContainerProperty("Accession", CustomExternalLink.class,  null);
  		String Protein_Inference = "Protein Inference";
- 		this.addContainerProperty(Protein_Inference,PI.class, null,"PI",null,com.vaadin.ui.Table.ALIGN_CENTER); 		
+ 		this.addContainerProperty(Protein_Inference,CustomPI.class, null,"PI",null,com.vaadin.ui.Table.ALIGN_CENTER); 		
  		this.addContainerProperty("Other Protein(s)", String.class,  null);
  		this.addContainerProperty("Description",String.class,  null);	 		
  		this.addContainerProperty("Sequence Coverage(%)", Double.class, null,"Coverage(%)",null,com.vaadin.ui.Table.ALIGN_CENTER);
- 		this.addContainerProperty("Non Enzymatic Peptides", MyEmbedded.class, null,"Non Enzymatic Peptides",null,com.vaadin.ui.Table.ALIGN_CENTER);
+ 		this.addContainerProperty("Non Enzymatic Peptides", CustomEmbedded.class, null,"Non Enzymatic Peptides",null,com.vaadin.ui.Table.ALIGN_CENTER);
  		this.addContainerProperty("# Validated Peptides", Integer.class,  null,"#Peptides",null,com.vaadin.ui.Table.ALIGN_RIGHT);
  		this.addContainerProperty("# Validated Spectra",Integer.class,  null,"#Spectra",null,com.vaadin.ui.Table.ALIGN_RIGHT);	 		
  		this.addContainerProperty("NSAF",Double.class, null,"NSAF",null,com.vaadin.ui.Table.ALIGN_RIGHT);
@@ -66,19 +66,18 @@ public class ProteinsTable extends  Table implements Serializable{
 		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
 		otherSymbols.setGroupingSeparator('.'); 
 		df=  new DecimalFormat("#.##",otherSymbols);
-		 MyLink link = null;
-		 MyEmbedded nonEnz = null;
+		 CustomExternalLink link = null;
+		 CustomEmbedded nonEnz = null;
 		 Resource res = null;;
 		 Double d1 = null;
 		 Double d2 = null;
 		 Double d3 = null;
 		 Double d4 = null;
-		 PI pi = null;
+		 CustomPI pi = null;
 		 Resource res2 = null;
 		 for(ProteinBean pb: proteinsList.values()){
 			
-			 link =new MyLink(pb.getAccession(), new ExternalResource("http://www.uniprot.org/uniprot/"+pb.getAccession()));
-			 link.setTargetName("_blank");
+			 link =new CustomExternalLink(pb.getAccession(), "http://www.uniprot.org/uniprot/"+pb.getAccession());
 			 link.setDescription("UniProt link for "+pb.getAccession());
 			 
 		 if(pb.isNonEnzymaticPeptides())
@@ -86,7 +85,7 @@ public class ProteinsTable extends  Table implements Serializable{
 		 else
 			 res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
 		 
-		 nonEnz  = new MyEmbedded(pb.isNonEnzymaticPeptides(), res);
+		 nonEnz  = new CustomEmbedded(pb.isNonEnzymaticPeptides(), res);
 		 nonEnz.setWidth("16px");
 		 nonEnz.setHeight("16px");
 		 nonEnz.setDescription(""+pb.isNonEnzymaticPeptides());
@@ -100,7 +99,7 @@ public class ProteinsTable extends  Table implements Serializable{
 		 else if (pb.getProteinInferenceClass().equalsIgnoreCase("UNRELATED ISOFORMS")||pb.getProteinInferenceClass().equalsIgnoreCase("ISOFORMS AND UNRELATED PROTEIN(S)"))
 			 res2 = new ExternalResource("http://sphotos-a.ak.fbcdn.net/hphotos-ak-prn1/544345_116594495190818_129866024_n.jpg");
 		
-	     pi = new PI(pb.getProteinInferenceClass(), res2);
+	     pi = new CustomPI(pb.getProteinInferenceClass(), res2);
 	     pi.setDescription(pb.getProteinInferenceClass());
 			try{
 				 d1 = Double.valueOf(pb.getSpectrumFractionSpread_lower_range_kDa());

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import MyUpdate.MyBarChartComponent;
+import customchart.CustomBarChartComponent;
 
 import com.bibounde.vprotovis.AreaChartComponent;
 import com.bibounde.vprotovis.LineChartComponent;
@@ -76,7 +76,7 @@ public class FractionsPlots extends VerticalLayout implements  Serializable{
          vlo.setSizeUndefined();     
          
          
-         MyBarChartComponent bar1 = new MyBarChartComponent(); 
+         CustomBarChartComponent bar1 = new CustomBarChartComponent(); 
          Label pepLable = new Label("<h5 style='font-family:verdana;color:#497482;'>"+"# Peptides"+"</h5>");
          pepLable.setContentMode(Label.CONTENT_XHTML);
          pepLable.setHeight("12px");  
@@ -167,7 +167,7 @@ public class FractionsPlots extends VerticalLayout implements  Serializable{
 			}
 		};
           bar1.setTooltipFormatter(tooltipFormatter);
-          MyBarChartComponent bar2 = new MyBarChartComponent();
+          CustomBarChartComponent bar2 = new CustomBarChartComponent();
           
           Label specLable = new Label("<h5 style='font-family:verdana;color:#497482;'>"+"# Spectra"+"</h5>");
           specLable.setContentMode(Label.CONTENT_XHTML);
@@ -212,7 +212,7 @@ public class FractionsPlots extends VerticalLayout implements  Serializable{
 	        bar2.setChartHeight(120.0d);
 	        
 	        bar2.setTooltipFormatter(tooltipFormatter);
-	          MyBarChartComponent bar3 = new MyBarChartComponent();
+	          CustomBarChartComponent bar3 = new CustomBarChartComponent();
 	          
 	          Label intensityLable = new Label("<h5 style='font-family:verdana;color:#497482;'>"+"Avg Precursor Intensity"+"</h5>");
 	          intensityLable.setContentMode(Label.CONTENT_XHTML);
