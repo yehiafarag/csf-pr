@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.handlers.ExperimentHandler;
+import com.helperunits.CustomExternalLink;
 import com.model.FractionRangeUtilitie;
 import com.model.beans.ExperimentBean;
 import com.model.beans.FractionBean;
@@ -54,7 +55,7 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
 	private Map<Integer, FractionBean> fractionsList = null;
 	private String url,dbName,driver,userName,  password;
 	private ExperimentDetails expDetails;
-	
+	private CustomExternalLink l;
 
 	private String protSize = "160px",PepSize = "167px";
 	
@@ -97,7 +98,8 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
 	
 	
 	
-	public void buildMainLayout() {		
+	public void buildMainLayout() {
+		
 		 // Tab 1 content
         l1 = new VerticalLayout();
         l1.setWidth("100%");
@@ -182,7 +184,9 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
 	        }
 			else
 			{
-				starter = 1;			
+				starter = 1;
+				//mw.setHeight("100%");
+				//mw.setWidth("100%");				
 				if(expDetails != null && layout2 != null){
 					visability = expDetails.isVisability();
 					layout2.removeComponent(expDetails);
@@ -195,7 +199,8 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
 				layout2.setWidth("100%");				
 				expDetails = this.buildExpView(exp,visability);//get experiment details view	
 				
-				layout2.addComponent(expDetails);				
+				layout2.addComponent(expDetails);
+				
 				layout2.setComponentAlignment(expDetails, Alignment.MIDDLE_CENTER);
 				VerticalLayout protTableLayout = this.addProteinsTable();
 				layout2.addComponent(protTableLayout);
@@ -226,17 +231,17 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
     	protTableLayout.addComponent(protTable);
     	protTableLayout.setComponentAlignment(protTable, Alignment.TOP_CENTER);
     	protTableLayout.setMargin(true,false,false,false);
-    	Button expBtnProtTable = new Button("Export Data Set");
-    	expBtnProtTable.setStyle(Reindeer.BUTTON_SMALL);
-    	expBtnProtTable.setHeight("19px");
-    	expBtnProtTable.addListener(new ClickListener() {
+    	 Button expBtnProtTable = new Button("Export Proteins");
+    	 expBtnProtTable.setStyle(Reindeer.BUTTON_SMALL);
+    	 expBtnProtTable.setHeight("19px");
+    	 expBtnProtTable.addListener(new ClickListener() {
 	            private static final long serialVersionUID = -73954695086117200L;
 	            private CsvExport excelExport;
 
 	            public void buttonClick(ClickEvent event) {
 	                excelExport = new CsvExport(protTable);
-	                excelExport.setReportTitle(exp.getName()+" Proteins");
-	                excelExport.setExportFileName(exp.getName()+" Proteins"+".csv");    
+	                excelExport.setReportTitle("Proteins for Data Set ( "+exp.getName()+" )");
+	                excelExport.setExportFileName("Proteins for ( "+exp.getName()+" ).csv");    
 	                excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
 	                excelExport.setDisplayTotals(false);
 	                excelExport.export();
@@ -245,9 +250,9 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
 	        });
     	 
     	 
-    	 Button expBtnProtAllPepTable = new Button("Export Peptides From All Data Sets");
-        expBtnProtAllPepTable.setDescription("From All The Data Sets, Export All The Peptides Representing The Highlighted Protein ");
-	expBtnProtAllPepTable.setStyle(Reindeer.BUTTON_SMALL);
+    	 Button expBtnProtAllPepTable = new Button("Export Protein's Peptides ");
+    	 expBtnProtAllPepTable.setDescription("Export all Protien's Peptides from all Data Sets");
+       	 expBtnProtAllPepTable.setStyle(Reindeer.BUTTON_SMALL);
        	 expBtnProtAllPepTable.setHeight("19px");
        	 expBtnProtAllPepTable.addListener(new ClickListener() {
     	            private static final long serialVersionUID = -73954695086117200L;
@@ -263,15 +268,15 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
     	        			layout1.addComponent(pt);
     	            		if(index == 0){
     	            			excelExport = new CsvExport(pt);
-    	            			excelExport.setReportTitle(accession+" Peptides Identified In Data Set “ "+key+" ”");
-    	            			excelExport.setExportFileName(accession+" Peptides.csv");    
+    	            			excelExport.setReportTitle("Protein's Peptides for  ( "+accession+" ) from ( "+key+" ) Data Set");
+    	            			excelExport.setExportFileName("Protein's Peptides for ( "+accession+" ).csv");    
     	            			excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
     	            			excelExport.setDisplayTotals(false);
     	            			excelExport.convertTable();
     	            			index++;
     	            		}
     	            		else{
-    	            			excelExport.setReportTitle(accession+" Peptides Identified In Data Set “ "+key+" ”");
+    	            			excelExport.setReportTitle("Protein's Peptides for  ( "+accession+" ) from ( "+key+" ) Data Set");  	
     	            			excelExport.setDisplayTotals(false);
     	            			excelExport.setRowHeaders(false);
     	            			excelExport.setNextTable(pt,key);
@@ -306,7 +311,7 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
     	 
     	 TableResizeSet trs1 = new TableResizeSet(protTable,protSize);//resize tables
     	 trs1.addComponent(expBtnProtTable);
-    	 trs1.setWidth("370px");
+    	 trs1.setWidth("320px");
     	 trs1.addComponent(expBtnProtAllPepTable);
     	 trs1.setComponentAlignment(expBtnProtAllPepTable, Alignment.BOTTOM_RIGHT);
     	 
@@ -341,6 +346,8 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
 
 				public synchronized void valueChange(ValueChangeEvent event) {
 				//	mw.setWidth("100%");
+					if(l !=null)
+						l.rePaintLable("black");
 					if(starter != 1)
 						expDetails.hideDetails();
 					starter++;
@@ -353,6 +360,8 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
 					if( item != null){
 						accession = item.getItemProperty("Accession").toString();
 						desc = item.getItemProperty("Description").toString();
+						l =(CustomExternalLink) item.getItemProperty("Accession").getValue();
+						l.rePaintLable("white");
 					}
 					if(key < 0 || item == null)
 						;
@@ -658,7 +667,7 @@ public class ProteinView extends VerticalLayout implements  Serializable,Propert
 	            
 	        layout2.setWidth("100%");
 	        expList = expTable.getExpList();
-	       if(expList == null ||expList.size() == 0 )
+	       if(expList == null ||expList.isEmpty() )
 	       {
 	    	   layout1.removeAllComponents();
 				Label noExpLable = new Label("<h4>Sorry No Dataset Availabe Now !</h4>");

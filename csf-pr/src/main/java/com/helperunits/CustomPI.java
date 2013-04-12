@@ -5,14 +5,14 @@ import java.io.Serializable;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Embedded;
 
-public class PI extends Embedded implements Serializable,Comparable<PI> {
+public class CustomPI extends Embedded implements Serializable,Comparable<CustomPI> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private String value;
-	public PI(String value,Resource res){
+	public CustomPI(String value,Resource res){
 		super(value,res);
 		this.value = value;
 		
@@ -21,7 +21,7 @@ public class PI extends Embedded implements Serializable,Comparable<PI> {
 	{
 		return value;
 	}
-	public int compareTo(PI pi) {
+	public int compareTo(CustomPI pi) {
 		String valueToCompare = pi.toString();
 		return this.value.compareTo(valueToCompare);
 	}

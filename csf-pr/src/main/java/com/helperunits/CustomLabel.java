@@ -7,14 +7,14 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 
-public class MyLabel extends VerticalLayout implements Serializable, Comparable<Object> {/**
+public class CustomLabel extends VerticalLayout implements Serializable, Comparable<Object> {/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 
 	private String str ;
-	public MyLabel(String str ,String color)
+	public CustomLabel(String str ,String color)
 	{
 		Label l = new Label("<label style='font-family:verdana; color:"+color+";'>"+str+"</label>");		
 		l.setContentMode(Label.CONTENT_XHTML);
