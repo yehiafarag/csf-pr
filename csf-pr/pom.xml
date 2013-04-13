@@ -5,7 +5,7 @@
     <groupId>probe</groupId>
     <artifactId>csf-pr</artifactId>
     <packaging>war</packaging>
-    <version>test</version>
+    <version>0.1</version>
     <name>csf-pr</name>
 
     <properties>
@@ -273,11 +273,6 @@
             <version>1.2.9</version>
         </dependency>
         <dependency>
-            <groupId>myvaadin</groupId>
-            <artifactId>myvaadin</artifactId>
-            <version>0.1</version>
-        </dependency>
-        <dependency>
             <groupId>com.bibounde.vprotovis</groupId>
             <artifactId>vprotovis</artifactId>
             <version>0.6</version>
@@ -302,5 +297,11 @@
             <artifactId>servletapi</artifactId>
             <version>2.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin</artifactId>
+            <version>6.8.3</version>
+        </dependency>
     </dependencies>
+    
 </project>
