@@ -19,6 +19,7 @@ import com.model.beans.ExperimentBean;
 import com.model.beans.FractionBean;
 import com.model.beans.PeptideBean;
 import com.model.beans.ProteinBean;
+import com.model.beans.StandardProteinBean;
 import com.model.beans.User;
 
 public class DataBase implements Serializable {
@@ -100,9 +101,10 @@ public class DataBase implements Serializable {
                         + "  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL, `non_enzymatic_peptides` varchar(5) NOT NULL,  KEY `exp_id` (`exp_id`),  KEY `prot_accession` (`prot_accession`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(experiment_protein_table);
 
+
                 //CREATE TABLE experiment_fractions_table
                 String experiment_fractions_table = "CREATE TABLE IF NOT EXISTS `experiment_fractions_table` (  `exp_id` int(11) NOT NULL,`fraction_id` int(11) NOT NULL auto_increment,  `min_range` double NOT NULL default '0',"
-                        + "  `max_range` double NOT NULL default '0',  PRIMARY KEY  (`fraction_id`),  KEY `exp_id` (`exp_id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ";
+                        + "  `max_range` double NOT NULL default '0', `index` int(11) NOT NULL default '0',  PRIMARY KEY  (`fraction_id`),  KEY `exp_id` (`exp_id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ";
                 st.executeUpdate(experiment_fractions_table);
 
                 //  CREATE TABLE  `experiment_peptides_table`
@@ -124,6 +126,14 @@ public class DataBase implements Serializable {
                 //CREATE TABLE experiment_peptides_proteins_table
                 String experiment_peptides_proteins_table = "CREATE TABLE IF NOT EXISTS `experiment_peptides_proteins_table` (  `exp_id` varchar(50) NOT NULL,  `peptide_id` int(50) NOT NULL,  `protein` varchar(70) NOT NULL,  UNIQUE KEY `exp_id` (`exp_id`,`peptide_id`,`protein`),  KEY `peptide_id` (`peptide_id`),  KEY `protein` (`protein`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(experiment_peptides_proteins_table);
+
+
+
+
+                //CREATE TABLEstandard_plot_proteins
+                String standard_plot_proteins = " CREATE TABLE IF NOT EXISTS `standard_plot_proteins` (`exp_id` int(11) NOT NULL,	  `mw_(kDa)` double NOT NULL,	  `name` varchar(30) NOT NULL,	  `lower` int(11) NOT NULL,  `upper` int(11) NOT NULL,  `color` varchar(30) NOT NULL  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+                st.executeUpdate(standard_plot_proteins);
+
 
 
 
@@ -204,7 +214,7 @@ public class DataBase implements Serializable {
             int fractId = 0;
             int test = 0;
             String insertExp = "INSERT INTO  `" + dbName + "`.`experiments_table` (`name`,`ready`,`uploaded_by`,`species`,`sample_type`,`sample_processing`,`instrument_type`,`frag_mode`,`fractions_number` ,	`email` ,`pblication_link`,`description`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ;";
-            String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`) VALUES (?,?,?) ;";
+            String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`,`index`) VALUES (?,?,?,?) ;";
             try {
                 if (conn == null || conn.isClosed()) {
                     Class.forName(driver).newInstance();
@@ -238,6 +248,7 @@ public class DataBase implements Serializable {
                     insertFractExpStat.setInt(1, expId);
                     insertFractExpStat.setDouble(2, fb.getMinRange());
                     insertFractExpStat.setDouble(3, fb.getMaxRange());
+                    insertFractExpStat.setInt(4, fb.getFractionIndex());
                     insertFractExpStat.executeUpdate();
                     rs = insertFractExpStat.getGeneratedKeys();
                     while (rs.next()) {
@@ -347,7 +358,7 @@ public class DataBase implements Serializable {
     }
 
     public synchronized int insertFraction(Connection conn2, FractionBean fraction, int expId) {
-        String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`) VALUES (?,?,?) ;";
+        String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`,`index`) VALUES (?,?,?,?) ;";
         int fractId = -1;
         try {
             if (conn2 == null || conn2.isClosed()) {
@@ -360,6 +371,7 @@ public class DataBase implements Serializable {
             insertFractExpStat.setInt(1, expId);
             insertFractExpStat.setDouble(2, fraction.getMinRange());
             insertFractExpStat.setDouble(3, fraction.getMaxRange());
+            insertFractExpStat.setInt(4, fraction.getFractionIndex());
             insertFractExpStat.executeUpdate();
             ResultSet rs = insertFractExpStat.getGeneratedKeys();
             while (rs.next()) {
@@ -1144,7 +1156,7 @@ public class DataBase implements Serializable {
             PreparedStatement selectFractsListStat = null;
             double minRange = 0.0;
             double maxRange = 0.0;
-            String selectFractList = "SELECT `fraction_id`,`min_range` ,`max_range` FROM `experiment_fractions_table` where `exp_id` = ? ORDER BY `fraction_id`";
+            String selectFractList = "SELECT `fraction_id`,`min_range` ,`max_range`,`index` FROM `experiment_fractions_table` where `exp_id` = ? ORDER BY `fraction_id`";
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
@@ -1162,6 +1174,8 @@ public class DataBase implements Serializable {
                 fb.setMinRange(minRange);
                 maxRange = rs.getDouble("max_range");
                 fb.setMaxRange(maxRange);
+                int index = rs.getInt("index");
+                fb.setFractionIndex(index);
                 fractionIdList.add(fb);
 
             }
@@ -1385,6 +1399,9 @@ public class DataBase implements Serializable {
         PreparedStatement remPepExpStat = null;//done
         PreparedStatement remPeptStat = null;//done
         PreparedStatement remProtStat = null;//done
+
+
+
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -1656,7 +1673,8 @@ public class DataBase implements Serializable {
             PreparedStatement selectFractsListStat = null;
             double minRange = 0.0;
             double maxRange = 0.0;
-            String selectFractList = "SELECT `fraction_id`,`min_range` ,`max_range` FROM `experiment_fractions_table` where `exp_id` = ?";
+            int index = 0;
+            String selectFractList = "SELECT `fraction_id`,`min_range` ,`max_range`,`index` FROM `experiment_fractions_table` where `exp_id` = ?";
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
@@ -1669,6 +1687,7 @@ public class DataBase implements Serializable {
                 int fraction_id = rs.getInt("fraction_id");
                 minRange = rs.getDouble("min_range");
                 maxRange = rs.getDouble("max_range");
+                index = rs.getInt("index");
                 fractionIdList.add(fraction_id);
 
             }
@@ -1683,6 +1702,7 @@ public class DataBase implements Serializable {
                 fb.setMinRange(minRange);
                 fb.setMaxRange(maxRange);
                 fb.setFractionId(fractId);
+                fb.setFractionIndex(index);
                 if (conn == null || conn.isClosed()) {
                     Class.forName(driver).newInstance();
                     conn = DriverManager.getConnection(url + dbName, userName, password);
@@ -2029,7 +2049,7 @@ public class DataBase implements Serializable {
         java.util.Collections.sort(fractionIDs);
         Map<Integer, FractionBean> fractionRangeList = exp.getFractionsList();
         int x = 1;
-        String updateFraction = "UPDATE  `" + dbName + "`.`experiment_fractions_table` SET `min_range`=? ,`max_range`=? WHERE `fraction_id`=?;";
+        String updateFraction = "UPDATE  `" + dbName + "`.`experiment_fractions_table` SET `min_range`=? ,`max_range`=?,`index`=? WHERE `fraction_id`=?;";
         PreparedStatement updateFractionStat = null;
         FractionBean fb = null;
 
@@ -2044,7 +2064,8 @@ public class DataBase implements Serializable {
                 updateFractionStat = conn.prepareStatement(updateFraction);
                 updateFractionStat.setDouble(1, fb.getMinRange());
                 updateFractionStat.setDouble(2, fb.getMaxRange());
-                updateFractionStat.setInt(3, fractId);
+                updateFractionStat.setInt(3, fb.getFractionIndex());
+                updateFractionStat.setInt(4, fractId);
                 updateFractionStat.executeUpdate();
 
                 updateFractionStat.clearParameters();
@@ -2124,7 +2145,7 @@ public class DataBase implements Serializable {
                 conn2 = DriverManager.getConnection(url + dbName, userName, password);
             }
 
-            String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`) VALUES (?,?,?) ;";
+            String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`,`index`) VALUES (?,?,?,?) ;";
             PreparedStatement insertFractExpStat = conn.prepareStatement(insertFractExp, Statement.RETURN_GENERATED_KEYS);
             int fractId = 0;
 
@@ -2133,6 +2154,7 @@ public class DataBase implements Serializable {
                 insertFractExpStat.setInt(1, exp.getExpId());
                 insertFractExpStat.setDouble(2, fb.getMinRange());
                 insertFractExpStat.setDouble(3, fb.getMaxRange());
+                insertFractExpStat.setInt(4, fb.getFractionIndex());
                 insertFractExpStat.executeUpdate();
                 ResultSet rs = insertFractExpStat.getGeneratedKeys();
                 while (rs.next()) {
@@ -2453,5 +2475,106 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
         return expProPepIds;
+    }
+
+    public boolean setStandardPlotProt(ExperimentBean exp) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean updateStandardPlotProt(ExperimentBean exp) {
+        removeStandarPlot(exp.getExpId());
+        for (StandardProteinBean spb : exp.getStanderdPlotProt()) {
+            insertStandardPlotProtein(exp.getExpId(), spb);
+        }
+        return true;
+    }
+
+    public boolean insertStandardPlotProtein(int expId, StandardProteinBean spb) {
+        int check = -1;
+        try {
+
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            String insertStandPlotQ = "INSERT INTO  `" + dbName + "`.`standard_plot_proteins`(`exp_id` ,`mw_(kDa)`,`name`,`lower`,`upper`,`color`)VALUES (?,?,?,?,?,?);";
+            PreparedStatement insertStandPlotStat = conn.prepareStatement(insertStandPlotQ);
+            insertStandPlotStat.setInt(1, expId);
+            insertStandPlotStat.setDouble(2, spb.getMW_kDa());
+            insertStandPlotStat.setString(3, spb.getName().toUpperCase());
+            insertStandPlotStat.setInt(4, spb.getLowerFraction());
+            insertStandPlotStat.setInt(5, spb.getUpperFraction());
+            insertStandPlotStat.setString(6, spb.getColor().toUpperCase());
+            check = insertStandPlotStat.executeUpdate();
+            insertStandPlotStat.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (check > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private boolean removeStandarPlot(int expId) {
+        int x = 0;
+        try {
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            String StandarPlot = "DELETE FROM `standard_plot_proteins`  WHERE  `exp_id`=? ";
+
+
+            PreparedStatement remExpStat = conn.prepareStatement(StandarPlot);
+            remExpStat.setInt(1, expId);
+            x = remExpStat.executeUpdate();
+        } catch (Exception e) {
+            return false;
+        }
+        if (x > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public List<StandardProteinBean> getStandardProtPlotList(int expId) {
+        List<StandardProteinBean> standardPlotList = new ArrayList<StandardProteinBean>();
+        try {
+
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+
+            String selectPeptide = "SELECT * FROM `standard_plot_proteins` where `exp_id` = ?;";
+            PreparedStatement selectPeptideStat = conn.prepareStatement(selectPeptide);
+            selectPeptideStat.setInt(1, expId);
+            ResultSet rs = selectPeptideStat.executeQuery();
+            while (rs.next()) {
+                StandardProteinBean spb = new StandardProteinBean();
+                spb.setMW_kDa(Double.valueOf(rs.getDouble("mw_(kDa)")));
+                spb.setLowerFraction(rs.getInt("lower"));
+                spb.setUpperFraction(rs.getInt("upper"));
+                spb.setName(rs.getString("name"));
+                spb.setColor(rs.getString("color"));
+                standardPlotList.add(spb);
+
+            }
+            rs.close();
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            return null;
+        }
+
+
+
+        return standardPlotList;
     }
 }

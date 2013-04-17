@@ -14,6 +14,7 @@ public class FractionBean implements Serializable{
 	private List<String>proteins;
 	private double minRange;
 	private double maxRange;
+	private int fractionIndex;
 	
 	public void setFractionId(int fractionId) {
 		this.fractionId = fractionId;
@@ -44,6 +45,12 @@ public class FractionBean implements Serializable{
 	}
 	public void setMaxRange(double maxRange) {
 		this.maxRange = maxRange;
+	}
+	public int getFractionIndex() {
+		return fractionIndex;
+	}
+	public void setFractionIndex(int fractionIndex) {
+		this.fractionIndex = fractionIndex;
 	}
 
 }
