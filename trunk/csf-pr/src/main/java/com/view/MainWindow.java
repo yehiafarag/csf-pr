@@ -45,7 +45,7 @@ public class MainWindow extends VerticalLayout implements   TabSheet.SelectedTab
 	private ProteinView pv;
 	private Map<Integer, FractionBean> fractionsList;//fraction list
 	private User user;
-	private String url,dbName,driver,userName,  password;//database data
+	private String url,dbName,driver,userName,  password,dataFolderPath;//database data
 	
 	private Link image1;//logo_1
 	private Link image2;//logo_2
@@ -55,7 +55,7 @@ public class MainWindow extends VerticalLayout implements   TabSheet.SelectedTab
 	
 	private boolean isLoginView = false;
 	
-	public MainWindow(String url,String dbName,String driver,String userName, String password, Link image12, Link image22, Link image32) {
+	public MainWindow(String url,String dbName,String driver,String userName, String password, Link image12, Link image22, Link image32,String dataFolderPath) {
 		
 		this.url= url;
 		this.image1 = image12;
@@ -64,11 +64,12 @@ public class MainWindow extends VerticalLayout implements   TabSheet.SelectedTab
 		this.dbName = dbName;
 		this.driver = driver;
 		this.userName = userName;
-		this.password  = password;	
+		this.password  = password;
+                this.dataFolderPath = dataFolderPath;
 		t = new TabSheet();
 		adminIcon = this.getAdminIco();
 		pv = new ProteinView(url,dbName,driver,userName,  password,adminIcon);
-		layout4 = new LoginView(url,dbName,driver,userName,  password,t);
+		layout4 = new LoginView(url,dbName,driver,userName,  password,t,this.dataFolderPath);
 		buildMainLayout();
 		
 	}
