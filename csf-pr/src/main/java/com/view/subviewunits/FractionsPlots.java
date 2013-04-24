@@ -28,11 +28,12 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
-   // private Map<Integer, ProteinBean> protienFractionList;
+    private Map<Integer, ProteinBean> protienFractionList;
     private double mw;
     private ArrayList<String> ranges;
     private Button close;
     int index = 0;
+    private Map<String, List<StandardProteinBean>> standProtGroups;
     int marker = 0;
     String sr = "";
     private FractionRangeUtilitie fru = new FractionRangeUtilitie();
@@ -43,7 +44,7 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
         this.ranges = ranges;
         setSpacing(true);
         this.setWidth("80%");
-   //     this.protienFractionList = protienFractionList;
+        this.protienFractionList = protienFractionList;
         VerticalLayout vlo = plotFull(protienFractionList, ranges, mw, standProtList);
         vlo.setStyle(Runo.PANEL_LIGHT);
         vlo.setWidth("100%");
@@ -63,7 +64,7 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
         // int defaultPosition = this.getdefaultPos(ranges,mw); 
         VerticalLayout vlo = new VerticalLayout();
         vlo.setSizeUndefined();
-        Map<String, List<StandardProteinBean>> standProtGroups = initGroups(standProtList);
+        standProtGroups = initGroups(standProtList, mw);
 
         CustomBarChartComponent bar1 = new CustomBarChartComponent();
         Label pepLable = new Label("<h5 style='font-family:verdana;color:#497482;'>" + "# Peptides" + "</h5>");
@@ -83,7 +84,7 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
         bar1.setGroupInset(1d);
         int highScore1 = 0;
         //add all colours plus the normal values colour
-        String[] colors = initColorSet(standProtGroups, "#497482");
+        String[] colors = new String[]{"#79AFFF", "#CDE1FF", "#50B747"};
         bar1.setColors(colors);
 
         double[] fractionRanges1 = new double[protienFractionList.size() * 2];
@@ -92,13 +93,13 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
 
 
         int x = 0;
-      //  boolean tag = false;
-        for (int index1 : protienFractionList.keySet()) {
+        boolean tag = false;
+        for (int index : protienFractionList.keySet()) {
             rangeValues1[x] = "";
             fractionRanges1[x] = 0;
-            ProteinBean pb = protienFractionList.get(index1);
+            ProteinBean pb = protienFractionList.get(index);
             fractionRanges1[x + 1] = pb.getNumberOfPeptidePerFraction();
-            rangeValues1[x + 1] = "" + (index1);
+            rangeValues1[x + 1] = "" + (index);
 
 
             if (highScore1 < pb.getNumberOfPeptidePerFraction()) {
@@ -112,9 +113,9 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
 
         Map<String, double[]> standredPlotGroup = initStandaredPlotValues(rangeValues1, standProtGroups, highScore1);
 
-        final Map<String, StandardProteinBean[]> standredPlotGroupBeans = initStandaredPlotBeans(rangeValues1, standProtGroups);
+        final Map<String, StandardProteinBean[]> standredPlotGroupBeans = initStandaredPlotBeans(rangeValues1, standProtGroups, mw);
 
-        standredPlotGroup.put("#497482", fractionRanges1);
+        standredPlotGroup.put("#50B747", fractionRanges1);
         double step = plotYStepOpt(highScore1);
         bar1.setYAxisLabelStep(step);
 
@@ -130,10 +131,6 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
         bar1.setChartHeight(120.0d);
 
 
-
-
-
-
         //bar1.set
 
 
@@ -143,7 +140,6 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
              */
             private static final long serialVersionUID = 1L;
 
-            @Override
             public String getTooltipHTML(String serieName, double value, String groupName) {
                 String tooltipName1 = "";
                 if (!sr.equals(serieName)) {
@@ -174,11 +170,9 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
 
 
         CustomBarChartComponent bar2 = new CustomBarChartComponent();
-
         Label specLable = new Label("<h5 style='font-family:verdana;color:#497482;'>" + "# Spectra" + "</h5>");
         specLable.setContentMode(Label.CONTENT_XHTML);
         specLable.setHeight("12px");
-
         bar2.setMarginLeft(50.0d);
         bar2.setMarginRight(30.0d);
         bar2.setMarginBottom(15d);
@@ -193,19 +187,18 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
         bar2.setGroupInset(1d);
         int highScore2 = 0;
         bar2.setColors(colors);
-
         double[] fractionRanges2 = new double[protienFractionList.size() * 2];
         //  double[]defaultRanges1 = new double[protienFractionList.size()];
         String[] rangeValues2 = new String[((protienFractionList.size() * 2))];
 
 
         int x2 = 0;
-        for (int index1 : protienFractionList.keySet()) {
+        for (int index : protienFractionList.keySet()) {
             rangeValues2[x2] = "";
             fractionRanges2[x2] = 0;
-            ProteinBean pb = protienFractionList.get(index1);
+            ProteinBean pb = protienFractionList.get(index);
             fractionRanges2[x2 + 1] = pb.getNumberOfSpectraPerFraction();
-            rangeValues2[x2 + 1] = "" + (index1);
+            rangeValues2[x2 + 1] = "" + (index);
 
 
             if (highScore2 < pb.getNumberOfSpectraPerFraction()) {
@@ -218,7 +211,7 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
 
 
         Map<String, double[]> standredPlotGroup2 = updateStandaredPlotValues(standredPlotGroup, highScore2);
-        standredPlotGroup2.put("#497482", fractionRanges2);
+        standredPlotGroup2.put("#50B747", fractionRanges2);
         double step2 = plotYStepOpt(highScore2);
         bar2.setYAxisLabelStep(step2);
 
@@ -264,12 +257,12 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
 
 
         int x3 = 0;
-        for (int index1 : protienFractionList.keySet()) {
+        for (int index : protienFractionList.keySet()) {
             rangeValues3[x3] = "";
             fractionRanges3[x3] = 0;
-            ProteinBean pb = protienFractionList.get(index1);
+            ProteinBean pb = protienFractionList.get(index);
             fractionRanges3[x3 + 1] = pb.getAveragePrecursorIntensityPerFraction();
-            rangeValues3[x3 + 1] = "" + (index1);
+            rangeValues3[x3 + 1] = "" + (index);
 
 
             if (highScore3 < pb.getAveragePrecursorIntensityPerFraction()) {
@@ -282,7 +275,7 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
 
 
         Map<String, double[]> standredPlotGroup3 = updateStandaredPlotValues(standredPlotGroup, highScore3);
-        standredPlotGroup3.put("#497482", fractionRanges3);
+        standredPlotGroup3.put("#50B747", fractionRanges3);
         double step3 = plotYStepOpt(highScore3);
         bar3.setYAxisLabelStep(step3);
 
@@ -311,8 +304,10 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
         return vlo;
     }
 
-    private Map<String, StandardProteinBean[]> initStandaredPlotBeans(String[] rangeValues1, Map<String, List<StandardProteinBean>> standProtGroups) {
+    private Map<String, StandardProteinBean[]> initStandaredPlotBeans(String[] rangeValues1, Map<String, List<StandardProteinBean>> standProtGroups, double mw2) {
         Map<String, StandardProteinBean[]> grupsMap = new Hashtable<String, StandardProteinBean[]>();
+
+
         for (String key : standProtGroups.keySet()) {
             List<StandardProteinBean> spl = standProtGroups.get(key);
             StandardProteinBean[] group = new StandardProteinBean[rangeValues1.length];
@@ -357,7 +352,7 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
             int x = 0;
             int lowFract = 0;
             for (String str : rangeValues1) {
-                if (!str.equals("")) {
+                if (!str.equals("") && !str.equals("*")) {
                     lowFract = Integer.valueOf(str);
                     group[x] = 0d;
 
@@ -427,26 +422,50 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
         return colors;
     }
 
-    private Map<String, List<StandardProteinBean>> initGroups(List<StandardProteinBean> standProtList) {
+    private Map<String, List<StandardProteinBean>> initGroups(List<StandardProteinBean> standProtList, double mw) {
         Map<String, List<StandardProteinBean>> colorMap = new HashMap<String, List<StandardProteinBean>>();
+        List<StandardProteinBean> blueList = new ArrayList<StandardProteinBean>();
+        List<StandardProteinBean> redList = new ArrayList<StandardProteinBean>();
+        List<StandardProteinBean> lowerList = new ArrayList<StandardProteinBean>();
+        List<StandardProteinBean> upperList = new ArrayList<StandardProteinBean>();
         for (StandardProteinBean spb : standProtList) {
-            if (colorMap.containsKey(spb.getColor().toLowerCase())) {
-
-                List<StandardProteinBean> spl = colorMap.get(spb.getColor().toLowerCase());
-                if (spl == null) {
-                    spl = new ArrayList<StandardProteinBean>();
-                }
-                spl.add(spb);
-                colorMap.put(spb.getColor().toLowerCase(), spl);
-
+            if (spb.getMW_kDa() > mw) {
+                upperList.add(spb);
             } else {
-                List<StandardProteinBean> spl = new ArrayList<StandardProteinBean>();
-                spl.add(spb);
-                colorMap.put(spb.getColor().toLowerCase(), spl);
+                lowerList.add(spb);
+            }
+        }
 
+        StandardProteinBean closeLowe = new StandardProteinBean();
+        closeLowe.setMW_kDa(-10000);
+        StandardProteinBean closeUpper = new StandardProteinBean();
+        closeUpper.setMW_kDa((10000 * 1000));;
+        for (StandardProteinBean spb : lowerList) {
+            if (closeLowe.getMW_kDa() <= spb.getMW_kDa()) {
+                closeLowe = spb;
             }
 
         }
+        for (StandardProteinBean spb : upperList) {
+            if (closeUpper.getMW_kDa() >= spb.getMW_kDa()) {
+                closeUpper = spb;
+            }
+
+        }
+
+
+        for (StandardProteinBean spb : standProtList) {
+
+            if ((spb.getMW_kDa() == closeLowe.getMW_kDa() && spb.getName() == closeLowe.getName()) || (spb.getMW_kDa() == closeUpper.getMW_kDa() && spb.getName() == closeUpper.getName())) {
+                redList.add(spb);
+            } else {
+                blueList.add(spb);
+            }
+        }
+
+        colorMap.put("#CDE1FF", blueList);
+        colorMap.put("#79AFFF", redList);
+
         return colorMap;
 
     }
@@ -467,9 +486,8 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
         return arr;
     }
 
-    /*
     private int getdefaultPos(ArrayList<String> ranges2, double mw2) {
-       // List<Integer> defaultPosFractions = new ArrayList<Integer>();
+        List<Integer> defaultPosFractions = new ArrayList<Integer>();
         double minRange = 0d;
         double maxRange = 0d;
         int index = 0;
@@ -550,5 +568,9 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
             return 700.0d;
         }
 
+    }
+
+    public Map<String, List<StandardProteinBean>> getStandProtGroups() {
+        return this.standProtGroups;
     }
 }

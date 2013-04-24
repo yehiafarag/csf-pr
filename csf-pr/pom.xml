@@ -302,6 +302,49 @@
             <artifactId>vaadin</artifactId>
             <version>6.8.3</version>
         </dependency>
+         <dependency>
+            <groupId>eu.isas.peptideshaker</groupId>
+            <artifactId>PeptideShaker</artifactId>
+            <version>0.19.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.proteinms.omxparser</groupId>
+                    <artifactId>omssa-parser</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.proteinms.xtandemparser</groupId>
+                    <artifactId>xtandem-parser</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.compomics</groupId>
+                    <artifactId>mascotdatfile</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.ac.ebi.das</groupId>
+                    <artifactId>jdas</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>no.uib</groupId>
+                    <artifactId>ols-dialog</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>niklaas</groupId>
+                    <artifactId>jmol</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>twitter4j-core</artifactId>
+                    <groupId>org.twitter4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>pride-jaxb</artifactId>
+                    <groupId>uk.ac.ebi.pride.jaxb</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>charts4j</artifactId>
+                    <groupId>com.googlecode.charts4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
     
 </project>

@@ -28,7 +28,8 @@ public class WelcomePage extends Application implements Serializable {
 		setDbName(scx.getInitParameter("dbName"));
 		setDriver(scx.getInitParameter("driver"));
 		setUserName(scx.getInitParameter("userName")); 
-		setPassword(scx.getInitParameter("password"));
+		setPassword(scx.getInitParameter("password"));                
+		setDataFolderPath(scx.getRealPath("")+"/DataFolder");
 		//this.setTheme(Runo.THEME_NAME);
 		initLayout();
 	}
@@ -50,7 +51,7 @@ public class WelcomePage extends Application implements Serializable {
 		image3.setIcon( new ExternalResource("http://sphotos-h.ak.fbcdn.net/hphotos-ak-snc6/188329_108340226016245_257713989_n.jpg"));
 		image3.setTargetName("_blank");
 		
-		MainWindow mw = new MainWindow(url,dbName,driver,userName,  password,image1,image2,image3);  		
+		MainWindow mw = new MainWindow(url,dbName,driver,userName,  password,image1,image2,image3,dataFolderPath);  		
 		//mw.setWidth("100%");
 		//mw.setHeight("100%");
 		mw.setStyle(Reindeer.WINDOW_LIGHT);		
@@ -94,7 +95,15 @@ public class WelcomePage extends Application implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	private  String url,dbName ,driver ,userName , password ;
+	private  String url,dbName ,driver ,userName , password,dataFolderPath ;
+
+    public String getDataFolderPath() {
+        return dataFolderPath;
+    }
+
+    public void setDataFolderPath(String dataFolderPath) {
+        this.dataFolderPath = dataFolderPath;
+    }
 
 
 	

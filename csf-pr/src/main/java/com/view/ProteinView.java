@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import com.handlers.ExperimentHandler;
 import com.helperunits.CustomExternalLink;
+import com.helperunits.CustomPI;
 import com.model.FractionRangeUtilitie;
 import com.model.beans.ExperimentBean;
 import com.model.beans.FractionBean;
@@ -19,6 +20,7 @@ import com.vaadin.addon.tableexport.CsvExport;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -451,7 +453,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                                 mw = Double.valueOf(str);
                             }
 
-                            Label fractionLabel = new Label("<h4 style='font-family:verdana;color:black;'>Fractions</h4>");
+                            Label fractionLabel = new Label("<h4 style='font-family:verdana;color:black;'>Fractions (Protein: " + accession + "MW: " + mw + " kDa)</h4>");
                             fractionLabel.setContentMode(Label.CONTENT_XHTML);
                             fractionLabel.setHeight("15px");
                             fractionLayout.addComponent(fractionLabel);
@@ -473,9 +475,9 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                             // Table rangeTable = fractionUti.getRangeTable(ranges,mw);
                             //  fractionLayout.addComponent(rangeTable);
 
-                            Label fractionProtLable = new Label("<h4 style='font-family:verdana;color:black;'>Protein: " + accession + "<br/>MW: " + mw + " kDa</h4>");
-                            fractionProtLable.setContentMode(Label.CONTENT_XHTML);
-                            fractionProtLable.setHeight("20px");
+                            //   Label fractionProtLable = new Label("<h4 style='font-family:verdana;color:black;'>Protein: "+accession+"<br/>MW: "+mw+" kDa</h4>");
+                            //    fractionProtLable.setContentMode(Label.CONTENT_XHTML);
+                            //    fractionProtLable.setHeight("40px");
                             //  fractionLayout.addComponent(fractionProtLable);
 
                             fractTable = getFractionTable(proteinFractionAvgList, ranges);
@@ -507,10 +509,18 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                             fractionsDataLayout.setWidth("100%");
                             fractionsDataLayout.addComponent(fractionPlotView);
                             fractionsDataLayout.setComponentAlignment(fractionPlotView, Alignment.TOP_LEFT);
-                            fractionsDataLayout.addComponent(fractionProtLable);
-                            fractionsDataLayout.setExpandRatio(fractionPlotView, 5f);
-                            fractionsDataLayout.setExpandRatio(fractionProtLable, 1f);
-                            fractionsDataLayout.setComponentAlignment(fractionProtLable, Alignment.MIDDLE_RIGHT);
+                            VerticalLayout fractLablesVLO = new VerticalLayout();
+                            fractionsDataLayout.addComponent(fractLablesVLO);
+                            fractionsDataLayout.setExpandRatio(fractionPlotView, 3f);
+                            fractionsDataLayout.setExpandRatio(fractLablesVLO, 1f);
+                            // fractLablesVLO.addComponent(fractionProtLable);
+                            Table t = getStandardPlotTable(fractionPlotView.getStandProtGroups());
+
+                            fractLablesVLO.addComponent(t);
+                            // fractLablesVLO.setSpacing(true);
+                            // fractLablesVLO.setComponentAlignment(fractionProtLable, Alignment.BOTTOM_CENTER);
+
+                            fractionsDataLayout.setComponentAlignment(fractLablesVLO, Alignment.TOP_RIGHT);
                             fractionLayout.addComponent(fractionsDataLayout);
                             fractionLayout.setComponentAlignment(fractionsDataLayout, Alignment.TOP_CENTER);
 
@@ -523,7 +533,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                             //   fractionsLastLayout.addComponent(commLable);
                             //   fractionsLastLayout.setComponentAlignment(commLable, Alignment.TOP_LEFT);
                             fractionsLastLayout.addComponent(expBtnFractionTable);
-                            fractionsLastLayout.setComponentAlignment(expBtnFractionTable, Alignment.TOP_RIGHT);
+                            fractionsLastLayout.setComponentAlignment(expBtnFractionTable, Alignment.MIDDLE_RIGHT);
                             fractionLayout.addComponent(fractionsLastLayout);
 
                         } else {
@@ -624,6 +634,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
         for (Object propertyId : table.getSortableContainerPropertyIds()) {
             table.setColumnExpandRatio(propertyId.toString(), 1.0f);
         }
+
         return table;
     }
 
@@ -685,5 +696,52 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
         }
 
         return this;
+    }
+
+    @SuppressWarnings("deprecation")
+    private Table getStandardPlotTable(Map<String, List<StandardProteinBean>> standProtGroups) {
+        Table table = new Table();
+        table.setStyle(Reindeer.TABLE_BORDERLESS);
+        table.setHeight("80%");
+        table.setWidth("100%");
+        table.setSelectable(false);
+        table.setColumnReorderingAllowed(true);
+        table.setColumnCollapsingAllowed(true);
+        table.setImmediate(true); // react at once when something is selected
+        table.addContainerProperty("Col", CustomPI.class, null, "", null, com.vaadin.ui.Table.ALIGN_CENTER);
+
+        table.addContainerProperty("Protein", String.class, null, "Protein", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        table.addContainerProperty("MW", Double.class, null, "MW", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        /* Add a few items in the table. */
+        int x = 0;
+        for (String key : standProtGroups.keySet()) {
+            CustomPI ce = null;
+            if (key.equalsIgnoreCase("#79AFFF")) {
+                List<StandardProteinBean> lsp = standProtGroups.get(key);
+                for (StandardProteinBean spb : lsp) {
+                    ce = new CustomPI("Selected Standard Plot", new ExternalResource("https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-prn1/488024_137541363096131_1104414259_n.jpg"));
+                    table.addItem(new Object[]{ce, spb.getName(), spb.getMW_kDa()}, new Integer(x + 1));
+                    x++;
+                }
+            } else {
+                List<StandardProteinBean> lsp = standProtGroups.get(key);
+                for (StandardProteinBean spb : lsp) {
+                    ce = new CustomPI("Standard Plot", new ExternalResource("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-ash3/528295_137541356429465_212869913_n.jpg"));
+                    table.addItem(new Object[]{ce, spb.getName(), spb.getMW_kDa()}, new Integer(x + 1));
+                    x++;
+                }
+            }
+
+        }
+        for (Object propertyId : table.getSortableContainerPropertyIds()) {
+            if (propertyId.toString().equals("Protein")) {
+                table.setColumnExpandRatio(propertyId.toString(), 2.5f);
+            } else {
+                table.setColumnExpandRatio(propertyId.toString(), 1.0f);
+            }
+        }
+        table.setSortContainerPropertyId("MW");
+        table.setSortAscending(false);
+        return table;
     }
 }
