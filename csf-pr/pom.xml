@@ -27,7 +27,7 @@
                 </configuration>
             </plugin>
 
-            <!-- A simple Jetty test server at http://localhost:8080/hplims can be 
+            <!-- A simple Jetty test server at http://localhost:8080/csf-pr can be 
         				launched with the Maven goal jetty:run and stopped with jetty:stop -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -35,7 +35,7 @@
                 <version>6.1.24</version>
                 <configuration>
                     <webAppConfig>
-                        <contextPath>/csfprs</contextPath>
+                        <contextPath>/csfpr</contextPath>
                         <baseResource implementation="org.mortbay.resource.ResourceCollection">
                             <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
                             <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
@@ -118,7 +118,7 @@
                         <configuration>
                             <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
                             <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                            <runTarget>hplims</runTarget>
+                            <runTarget>csf-pr</runTarget>
                             <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
                             <noServer>true</noServer>
                             <port>8080</port>
@@ -277,20 +277,21 @@
             <artifactId>vprotovis</artifactId>
             <version>0.6</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-spring</artifactId>
-            <version>3.13</version>
-        </dependency>
-        <dependency>
-            <groupId>xmlbeans</groupId>
+         <dependency>
+            <groupId>my_xmlbeans</groupId>
             <artifactId>xbean_xpath</artifactId>
             <version>2.1.0</version>
         </dependency>        
         <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>2.5.0</version>
+            <groupId>my_org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans-qname</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+ <dependency>
+            <groupId>my_org.apache.xbean</groupId>
+            <artifactId>xbean</artifactId>
+            <version>2.5</version>
         </dependency>
         <dependency>
             <groupId>servletapi</groupId>
@@ -301,50 +302,7 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin</artifactId>
             <version>6.8.3</version>
-        </dependency>
-         <dependency>
-            <groupId>eu.isas.peptideshaker</groupId>
-            <artifactId>PeptideShaker</artifactId>
-            <version>0.19.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>de.proteinms.omxparser</groupId>
-                    <artifactId>omssa-parser</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.proteinms.xtandemparser</groupId>
-                    <artifactId>xtandem-parser</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.compomics</groupId>
-                    <artifactId>mascotdatfile</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>uk.ac.ebi.das</groupId>
-                    <artifactId>jdas</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>no.uib</groupId>
-                    <artifactId>ols-dialog</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>niklaas</groupId>
-                    <artifactId>jmol</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>twitter4j-core</artifactId>
-                    <groupId>org.twitter4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>pride-jaxb</artifactId>
-                    <groupId>uk.ac.ebi.pride.jaxb</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>charts4j</artifactId>
-                    <groupId>com.googlecode.charts4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        </dependency>           
     </dependencies>
     
 </project>

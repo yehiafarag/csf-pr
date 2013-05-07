@@ -98,7 +98,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
 
         layout2.setWidth("100%");
         expList = expTable.getExpList();
-        if (expList == null || expList.size() == 0) {
+        if (expList == null || expList.isEmpty()) {
             layout1.removeAllComponents();
 
 
@@ -414,7 +414,9 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                         // PepSize = trs2.getCurrentSize();
                     }
 
-                    if (exp == null || exp.getReady() != 2 || exp.getFractionRange() != 1) {
+                     List<StandardProteinBean> standardProtPlotList = eh.getStandardProtPlotList(exp.getExpId());
+
+                    if (exp == null || exp.getReady() != 2 || standardProtPlotList==null||standardProtPlotList.isEmpty()) {
 
                         buttomSpacer.setVisible(false);
                         if (protTable != null) {
@@ -453,7 +455,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                                 mw = Double.valueOf(str);
                             }
 
-                            Label fractionLabel = new Label("<h4 style='font-family:verdana;color:black;'>Fractions (Protein: " + accession + "MW: " + mw + " kDa)</h4>");
+                            Label fractionLabel = new Label("<h4 style='font-family:verdana;color:black;'>Fractions (Protein: " + accession + "  MW: " + mw + " kDa)</h4>");
                             fractionLabel.setContentMode(Label.CONTENT_XHTML);
                             fractionLabel.setHeight("15px");
                             fractionLayout.addComponent(fractionLabel);
@@ -501,7 +503,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                                     excelExport.export();
                                 }
                             });
-                            List<StandardProteinBean> standardProtPlotList = eh.getStandardProtPlotList(exp.getExpId());
+//                            List<StandardProteinBean> standardProtPlotList = eh.getStandardProtPlotList(exp.getExpId());
 
                             FractionsPlots fractionPlotView = new FractionsPlots(proteinFractionAvgList, mw, ranges, standardProtPlotList);
 
@@ -515,7 +517,11 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                             fractionsDataLayout.setExpandRatio(fractLablesVLO, 1f);
                             // fractLablesVLO.addComponent(fractionProtLable);
                             Table t = getStandardPlotTable(fractionPlotView.getStandProtGroups());
-
+                            Label standPlotLab = new Label("<h4 style='font-family:verdana;color:black;'>Protein Standards</h4>");
+                            standPlotLab.setContentMode(Label.CONTENT_XHTML);
+                            standPlotLab.setHeight("20px");
+                            fractLablesVLO.setSpacing(true);
+                            fractLablesVLO.addComponent(standPlotLab);
                             fractLablesVLO.addComponent(t);
                             // fractLablesVLO.setSpacing(true);
                             // fractLablesVLO.setComponentAlignment(fractionProtLable, Alignment.BOTTOM_CENTER);
@@ -702,7 +708,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
     private Table getStandardPlotTable(Map<String, List<StandardProteinBean>> standProtGroups) {
         Table table = new Table();
         table.setStyle(Reindeer.TABLE_BORDERLESS);
-        table.setHeight("80%");
+        table.setHeight("240px");
         table.setWidth("100%");
         table.setSelectable(false);
         table.setColumnReorderingAllowed(true);

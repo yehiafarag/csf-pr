@@ -17,10 +17,12 @@ public class RangeReader implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public String[] readRangeFile(FileInputStream fileIS)
+public String[] readRangeFile(FileInputStream fileIS)
 	{
 		Vector<Vector<XSSFCell>> dataHolder  = ReadFile(fileIS);
 		String[] strArr = read(dataHolder);
+		for(String str:strArr)
+			System.out.println(str);
 		return strArr;
 	}
 	private  Vector<Vector<XSSFCell>> ReadFile(FileInputStream myInput){

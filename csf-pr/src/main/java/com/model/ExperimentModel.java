@@ -43,7 +43,7 @@ public class ExperimentModel implements Serializable {
             {
                 test = false;
             } else {
-                test = da.updateFractionRange(exp);
+                test = true;//da.updateFractionRange(exp);
             }
 
         } else if (exp.getExpFile() == 0)//Protein  file
@@ -157,4 +157,7 @@ public class ExperimentModel implements Serializable {
 
         return standardPlotList;
     }
+    
+    
+   
 }
