@@ -77,7 +77,7 @@ public class DataBase implements Serializable {
             }
             try {
                 Statement st = conn.createStatement();
-                //CREATE TABLE  `users_table`
+                         //CREATE TABLE  `users_table`
                 String users_table = "CREATE TABLE IF NOT EXISTS `users_table` (  `id` int(20) NOT NULL auto_increment,  `password` varchar(100) NOT NULL,  `admin` varchar(5) NOT NULL default 'FALSE',  `user_name` varchar(20) NOT NULL,  `email` varchar(100) NOT NULL,  PRIMARY KEY  (`email`),  KEY `id` (`id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
                 st.executeUpdate(users_table);
 
@@ -96,16 +96,16 @@ public class DataBase implements Serializable {
                 st.executeUpdate(proteins_table);
 
                 //CREATE TABLE experiment_protein_table
-                String experiment_protein_table = "CREATE TABLE IF NOT EXISTS `experiment_protein_table` (  `exp_id` int(11) NOT NULL,  `prot_accession` varchar(30) NOT NULL,  `other_protein(s)` varchar(1000) default NULL,  `protein_inference_class` varchar(100) default NULL,  `sequence_coverage(%)` double default NULL,  `observable_coverage(%)` double default NULL,  `confident_ptm_sites` varchar(500) default NULL,  `number_confident` varchar(50) default NULL,  `other_ptm_sites` varchar(500) default NULL,  `number_other` varchar(50) default NULL,  `number_validated_peptides` int(11) default NULL,"
+                String experiment_protein_table = "CREATE TABLE IF NOT EXISTS `experiment_protein_table` (  `exp_id` int(11) NOT NULL,  `prot_accession` varchar(30) NOT NULL,  `other_protein(s)` varchar(1000) default NULL,  `protein_inference_class` varchar(100) default NULL,  `sequence_coverage(%)` double default NULL,  `observable_coverage(%)` double default NULL,  `confident_ptm_sites` varchar(500) default NULL,  `number_confident` varchar(500) default NULL,  `other_ptm_sites` varchar(500) default NULL,  `number_other` varchar(500) default NULL,  `number_validated_peptides` int(11) default NULL,"
                         + "  `number_validated_spectra` int(11) default NULL,  `em_pai` double default NULL,  `nsaf` double default NULL,  `mw_(kDa)` double default NULL,  `score` double default NULL,  `confidence` double default NULL,  `starred` varchar(5) default NULL,   `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,"
                         + "  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL, `non_enzymatic_peptides` varchar(5) NOT NULL,  KEY `exp_id` (`exp_id`),  KEY `prot_accession` (`prot_accession`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(experiment_protein_table);
 
-
-                //CREATE TABLE experiment_fractions_table
+                 //CREATE TABLE experiment_fractions_table
                 String experiment_fractions_table = "CREATE TABLE IF NOT EXISTS `experiment_fractions_table` (  `exp_id` int(11) NOT NULL,`fraction_id` int(11) NOT NULL auto_increment,  `min_range` double NOT NULL default '0',"
                         + "  `max_range` double NOT NULL default '0', `index` int(11) NOT NULL default '0',  PRIMARY KEY  (`fraction_id`),  KEY `exp_id` (`exp_id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ";
                 st.executeUpdate(experiment_fractions_table);
+
 
                 //  CREATE TABLE  `experiment_peptides_table`
                 String experiment_peptide_table = "CREATE TABLE IF NOT EXISTS `experiment_peptides_table` (  `exp_id` INT NOT NULL DEFAULT  '0',  `pep_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,FOREIGN KEY (`exp_id`) REFERENCES experiments_table (`exp_id`) ON DELETE CASCADE  ) ENGINE = MYISAM ;";
@@ -126,13 +126,11 @@ public class DataBase implements Serializable {
                 //CREATE TABLE experiment_peptides_proteins_table
                 String experiment_peptides_proteins_table = "CREATE TABLE IF NOT EXISTS `experiment_peptides_proteins_table` (  `exp_id` varchar(50) NOT NULL,  `peptide_id` int(50) NOT NULL,  `protein` varchar(70) NOT NULL,  UNIQUE KEY `exp_id` (`exp_id`,`peptide_id`,`protein`),  KEY `peptide_id` (`peptide_id`),  KEY `protein` (`protein`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(experiment_peptides_proteins_table);
-
-
-
-
-                //CREATE TABLEstandard_plot_proteins
+                
+                 //CREATE TABLEstandard_plot_proteins
                 String standard_plot_proteins = " CREATE TABLE IF NOT EXISTS `standard_plot_proteins` (`exp_id` int(11) NOT NULL,	  `mw_(kDa)` double NOT NULL,	  `name` varchar(30) NOT NULL,	  `lower` int(11) NOT NULL,  `upper` int(11) NOT NULL,  `color` varchar(30) NOT NULL  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(standard_plot_proteins);
+
 
 
 
@@ -369,8 +367,8 @@ public class DataBase implements Serializable {
 
             PreparedStatement insertFractExpStat = conn2.prepareStatement(insertFractExp, Statement.RETURN_GENERATED_KEYS);
             insertFractExpStat.setInt(1, expId);
-            insertFractExpStat.setDouble(2, fraction.getMinRange());
-            insertFractExpStat.setDouble(3, fraction.getMaxRange());
+            insertFractExpStat.setDouble(2, 0);
+            insertFractExpStat.setDouble(3, 0);
             insertFractExpStat.setInt(4, fraction.getFractionIndex());
             insertFractExpStat.executeUpdate();
             ResultSet rs = insertFractExpStat.getGeneratedKeys();
@@ -672,7 +670,7 @@ public class DataBase implements Serializable {
             updateExperStat.setString(6, exp.getPublicationLink());
             updateExperStat.setInt(7, exp.getPeptidesNumber());
             updateExperStat.setInt(8, exp.getProteinsNumber());
-            updateExperStat.setInt(9, exp.getFractionRange());
+            updateExperStat.setInt(9, 1);
             updateExperStat.setInt(10, exp.getExpId());
             int test = updateExperStat.executeUpdate();
             updateExperStat.close();
@@ -1407,6 +1405,7 @@ public class DataBase implements Serializable {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
+            this.removeStandarPlot(expId);
             String remExp = "DELETE FROM `experiments_table`  WHERE  `exp_id`=? ";
 
             String remFract = "DELETE FROM `" + dbName + "`.`fractions_table`   WHERE  `fraction_id` =? ";
@@ -1415,6 +1414,7 @@ public class DataBase implements Serializable {
             remExpStat.setInt(1, expId);
             remExpStat.executeUpdate();
 
+            
             String selectPeptideList = "SELECT `pep_id` FROM `experiment_peptides_table` WHERE `exp_id` = ?;";
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -2167,6 +2167,7 @@ public class DataBase implements Serializable {
                 }
                 rs.close();
             }
+            
         } catch (Exception exc) {
             exc.printStackTrace();
             return false;
@@ -2206,7 +2207,7 @@ public class DataBase implements Serializable {
             }
             if (tempExp.getReady() == 1 && tempExp.getFractionsNumber() == 0)//we need to update ready number to 2 -- previous file was protein fraction file
             {
-                tempExp.setFractionsNumber(exp.getFractionsNumber());
+                tempExp.setFractionsNumber(1);
                 tempExp.setReady(2);
                 test = updateExperiment(conn, tempExp);	//update exp table
                 for (FractionBean fb : exp.getFractionsList().values()) {
@@ -2521,7 +2522,7 @@ public class DataBase implements Serializable {
 
     }
 
-    private boolean removeStandarPlot(int expId) {
+    public boolean removeStandarPlot(int expId) {
         int x = 0;
         try {
             if (conn == null || conn.isClosed()) {

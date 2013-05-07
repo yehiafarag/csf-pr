@@ -11,6 +11,7 @@ import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import java.io.File;
 
 public class WelcomePage extends Application implements Serializable {
 	/**
@@ -24,12 +25,14 @@ public class WelcomePage extends Application implements Serializable {
 		ApplicationContext ctx = getContext();
 		WebApplicationContext webCtx = (WebApplicationContext) ctx;
 		ServletContext scx = webCtx.getHttpSession().getServletContext();
+                
 		setUrl(scx.getInitParameter("url"));
 		setDbName(scx.getInitParameter("dbName"));
 		setDriver(scx.getInitParameter("driver"));
 		setUserName(scx.getInitParameter("userName")); 
-		setPassword(scx.getInitParameter("password"));                
-		setDataFolderPath(scx.getRealPath("")+"/DataFolder");
+		setPassword(scx.getInitParameter("password"));   
+		
+               
 		//this.setTheme(Runo.THEME_NAME);
 		initLayout();
 	}
@@ -51,7 +54,7 @@ public class WelcomePage extends Application implements Serializable {
 		image3.setIcon( new ExternalResource("http://sphotos-h.ak.fbcdn.net/hphotos-ak-snc6/188329_108340226016245_257713989_n.jpg"));
 		image3.setTargetName("_blank");
 		
-		MainWindow mw = new MainWindow(url,dbName,driver,userName,  password,image1,image2,image3,dataFolderPath);  		
+		MainWindow mw = new MainWindow(url,dbName,driver,userName,  password,image1,image2,image3);  		
 		//mw.setWidth("100%");
 		//mw.setHeight("100%");
 		mw.setStyle(Reindeer.WINDOW_LIGHT);		
@@ -95,15 +98,9 @@ public class WelcomePage extends Application implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	private  String url,dbName ,driver ,userName , password,dataFolderPath ;
+	private String url, dbName, driver, userName, password;
 
-    public String getDataFolderPath() {
-        return dataFolderPath;
-    }
-
-    public void setDataFolderPath(String dataFolderPath) {
-        this.dataFolderPath = dataFolderPath;
-    }
+   
 
 
 	

@@ -1,8 +1,5 @@
 package com.handlers;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +16,9 @@ import com.model.beans.FractionBean;
 import com.model.beans.PeptideBean;
 import com.model.beans.ProteinBean;
 import com.model.beans.StandardProteinBean;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 
 public class ExperimentHandler implements Serializable {
 
@@ -34,7 +34,7 @@ public class ExperimentHandler implements Serializable {
     }
 
     public boolean handelExperimentFile(File file, String MIMEType, ExperimentBean exp) throws IOException, SQLException {
-        boolean test = false;
+        boolean test ;
         test = em.handelExperiment(file, MIMEType, exp);
         return test;
 
@@ -71,7 +71,7 @@ public class ExperimentHandler implements Serializable {
 
     public Map<String, ProteinBean> getProteinsList(int expId, Map<Integer, ExperimentBean> expList) {
         Map<String, ProteinBean> protList = expList.get(expId).getProteinList();
-        if (protList == null || protList.size() == 0) {
+        if (protList == null || protList.isEmpty()) {
             protList = em.getProteinsList(expId);
         }
         return protList;
@@ -84,7 +84,7 @@ public class ExperimentHandler implements Serializable {
 
     public Map<Integer, PeptideBean> getPeptidesList(int expId, Map<Integer, ExperimentBean> expList) {
         Map<Integer, PeptideBean> peptidesList = expList.get(expId).getPeptideList();
-        if (peptidesList == null || peptidesList.size() == 0) {
+        if (peptidesList == null || peptidesList.isEmpty()) {
             peptidesList = em.getPeptidesList(expId);
         }
         return peptidesList;
@@ -100,14 +100,14 @@ public class ExperimentHandler implements Serializable {
 
             }
         }
-        if (peptidesProtList.size() == 0) {
+        if (peptidesProtList.isEmpty()) {
             peptidesProtList = em.getPeptidesProtList(peptideIds, accession);
         }
         return peptidesProtList;
     }
 
     public Map<Integer, FractionBean> getFractionsList(int expId, Map<Integer, ExperimentBean> expList) {
-        Map<Integer, FractionBean> fractionsList = null;
+        Map<Integer, FractionBean> fractionsList ;
         if (expList.containsKey(expId) && expList.get(expId).getFractionsList() != null) {
             //check if exp updated if not
             fractionsList = expList.get(expId).getFractionsList();
@@ -279,9 +279,6 @@ public class ExperimentHandler implements Serializable {
     public List<StandardProteinBean> getStandardProtPlotList(int expId) {
         List<StandardProteinBean> standardPlotList = em.getStandardProtPlotList(expId);
         return standardPlotList;
-    }
-    public boolean handelCpsExp(ExperimentBean exp, File cpsFile, String resource) {
-        return false;
     }
 
 }

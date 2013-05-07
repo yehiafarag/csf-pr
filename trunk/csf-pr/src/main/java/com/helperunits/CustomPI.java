@@ -15,6 +15,7 @@ public class CustomPI extends Embedded implements Serializable,Comparable<Custom
 	public CustomPI(String value,Resource res){
 		super(value,res);
 		this.value = value;
+                this.setHeight("15px");
 		
 	}
 	public String toString()

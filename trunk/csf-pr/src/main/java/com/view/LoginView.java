@@ -77,13 +77,12 @@ public class LoginView extends VerticalLayout implements  TabSheet.SelectedTabCh
     private Form removeExperimentForm;
     private Form newLoginForm;
 	private Map<Integer,String> usersList;
-	private String url, dbName, driver, userName,  password,dataFolderPath;
+	private String url, dbName, driver, userName,  password;
     
-    public LoginView(String url,String dbName,String driver,String userName, String password,TabSheet mainTab,String dataFolderPath) {
+    public LoginView(String url,String dbName,String driver,String userName, String password,TabSheet mainTab) {
 		eh = new ExperimentHandler( url,dbName,driver,userName, password);
 		auth= new  Authenticator(url,dbName,driver,userName, password);
 		this.url = url;
-                this.dataFolderPath = dataFolderPath;
 		this.mainTab = mainTab;
 		this.dbName = dbName;
 		this.driver = driver;
@@ -586,7 +585,7 @@ public class LoginView extends VerticalLayout implements  TabSheet.SelectedTabCh
 	private void initLayout1() {
 		if(layout1 != null)
 			layout1.removeAllComponents();
-    	UploadUnit uploader = new UploadUnit(url,dbName,driver,userName, password,user,mainTab,t,dataFolderPath);
+    	UploadUnit uploader = new UploadUnit(url,dbName,driver,userName, password,user,mainTab,t);
 		layout1.addComponent(uploader);
 		
 		

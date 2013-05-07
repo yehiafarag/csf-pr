@@ -1,10 +1,7 @@
 package com.view.subviewunits;
-/*
- * this class is up-loader class
- * allow administrator to upload files to use as data fed for the database
- * */
 
-import java.io.File;
+
+
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -26,6 +23,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.themes.Reindeer;
+import java.io.File;
 
 public class UploadUnit extends CustomComponent implements Upload.Receiver, Upload.SucceededListener, Upload.FailedListener, Serializable {
 
@@ -55,14 +53,12 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
     private Form removeExperimentForm;
     private HorizontalLayout hslo;
     private Authenticator auth;
-    private String dataFolderPath;
-    private File cpsFile;
 
-    public UploadUnit(String url, String dbName, String driver, String userName, String password, User user, TabSheet mainTabs, TabSheet subTabs, String dataFolderPath) {
+    public UploadUnit(String url, String dbName, String driver, String userName, String password, User user, TabSheet mainTabs, TabSheet subTabs) {
         this.user = user;
         this.mainTabs = mainTabs;
         this.subTabs = subTabs;
-        this.dataFolderPath = dataFolderPath;
+      
         eh = new ExperimentHandler(url, dbName, driver, userName, password);
         this.updateComponents(this.user);
         auth = new Authenticator(url, dbName, driver, userName, password);
@@ -80,9 +76,9 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
         file = new File(filename);
 
         try {
-            if (MIMEType.equalsIgnoreCase("text/plain") || MIMEType.equalsIgnoreCase("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-                fos = new FileOutputStream(file);
-
+            System.out.println(MIMEType);
+            if (MIMEType.equalsIgnoreCase("text/plain") || MIMEType.equalsIgnoreCase("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")||MIMEType.equalsIgnoreCase("application/octet-stream")) {
+              fos = new FileOutputStream(file);
             } else {
             }
 
@@ -90,19 +86,21 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
 
 
         } catch (final java.io.FileNotFoundException e) {
-            // Error while opening the file. Not reported here.
-            // e.printStackTrace();
+              Label l = new Label("<h4 style='color:red'>"+e.getMessage()+"</h4>");
+                l.setContentMode(Label.CONTENT_XHTML);
+                expDetails.addComponent(l);
+             e.printStackTrace();
             return null;
         } catch (final Exception e) {
             // Error while opening the file. Not reported here.
-            // e.printStackTrace();
+             e.printStackTrace();
             return null;
         }
 
         return fos; // Return the output stream to write to
     }
 
-    // This is called if the upload is finished.
+    // This is called if the upload is finishe
     public void uploadSucceeded(Upload.SucceededEvent event) {
 
         boolean validData = false;
@@ -112,8 +110,11 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
                 validData = true;
             }
             if (validData) {
-                // send the file to the reader to extract the information
+                // send the file to the reader to extract the information 
+                
                 boolean test = eh.handelExperimentFile(file, event.getMIMEType(), newExp);//Getting data from the uploaded file..here we assume that the experiment id is 1
+              
+                
                 if (!test) {
                     getWindow().showNotification("Failed !  Please Check Your Uploaded File !");  //file didn't store in db  
                 } else {
@@ -129,6 +130,7 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
     }
 
     // This is called if the upload fails.
+ 
     public void uploadFailed(Upload.FailedEvent event) {
 
         // Log the failure on screen.
@@ -272,6 +274,7 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
         select = new Select("Experiment ID", strExpList);
         select.setImmediate(true);
         select.addListener(new Property.ValueChangeListener() {
+            @Override
             public void valueChange(ValueChangeEvent event) {
                 Object o = select.getValue();
                 if (o != null) {
@@ -302,21 +305,21 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
                             l.setContentMode(Label.CONTENT_XHTML);
                             expDetails.addComponent(l);
                         }
-                        if (expDet.getFractionRange() == 0) {
-                            Label l = new Label("<h4 style='color:red'>3) Fraction Range File is Missing</h4>");
-                            l.setContentMode(Label.CONTENT_XHTML);
-                            expDetails.addComponent(l);
-                        } else {
-                            Label l = new Label("<h4 style='color:blue'>3) Fraction Range File Uploaded</h4>");
-                            l.setContentMode(Label.CONTENT_XHTML);
-                            expDetails.addComponent(l);
-                        }
+//                        if (expDet.getFractionRange() == 0) {
+//                            Label l = new Label("<h4 style='color:red'>3) Fraction Range File is Missing</h4>");
+//                            l.setContentMode(Label.CONTENT_XHTML);
+//                            expDetails.addComponent(l);
+//                        } else {
+//                            Label l = new Label("<h4 style='color:blue'>3) Fraction Range File Uploaded</h4>");
+//                            l.setContentMode(Label.CONTENT_XHTML);
+//                            expDetails.addComponent(l);
+//                        }
                         if (expDet.getPeptidesNumber() == 0) {
-                            Label l = new Label("<h4 style='color:red'>4) Peptides File is Missing</h4>");
+                            Label l = new Label("<h4 style='color:red'>3) Peptides File is Missing</h4>");
                             l.setContentMode(Label.CONTENT_XHTML);
                             expDetails.addComponent(l);
                         } else {
-                            Label l = new Label("<h4 style='color:blue'>4) Peptides File Uploaded</h4>");
+                            Label l = new Label("<h4 style='color:blue'>3) Peptides File Uploaded</h4>");
                             l.setContentMode(Label.CONTENT_XHTML);
                             expDetails.addComponent(l);
 
@@ -374,11 +377,13 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
         //*****************************************************
         upload.addListener(new Upload.StartedListener() {
             @SuppressWarnings("static-access")
+            @Override
             public void uploadStarted(StartedEvent event) {
                 try {
 
                     Thread.currentThread().sleep(1000);
                     Thread t = new Thread(new Runnable() {
+                        @Override
                         public void run() {
                             pi.setVisible(true);
 
@@ -396,6 +401,7 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
         });
 
         upload.addListener(new Upload.FinishedListener() {
+            @Override
             public void uploadFinished(FinishedEvent event) {
                 pi.setVisible(false);
                 mainTabs.setReadOnly(false);
@@ -422,119 +428,7 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
         vlo.addComponent(pi);
         vlo.addComponent(helpNote);
         vlo.setComponentAlignment(helpNote, Alignment.MIDDLE_RIGHT);
-
-        //add cps component here
-
-
-
-        Panel cpsPanel = new Panel();
-        cpsPanel.setStyle(Reindeer.PANEL_LIGHT);
-        Label SelectExperimentLabel = new Label("<h4 style='color:blue'>Use CPS Files:<p style='color:black'>Please Place the Files in  <a href='file://///'" + dataFolderPath + ">" + dataFolderPath + "</a></p></h4>");
-        SelectExperimentLabel.setContentMode(Label.CONTENT_XHTML);
-        SelectExperimentLabel.setWidth("100%");
-        cpsPanel.addComponent(SelectExperimentLabel);
-        HorizontalLayout butnLayout = new HorizontalLayout();
-        butnLayout.setSpacing(true);
-        final Button checkButton = new Button("Check Files");
-        checkButton.setStyle(Reindeer.BUTTON_SMALL);
-        final Button processButton = new Button("Process Data");
-        processButton.setStyle(Reindeer.BUTTON_SMALL);
-        processButton.setVisible(false);
-        butnLayout.addComponent(checkButton);
-        butnLayout.addComponent(processButton);
-        cpsPanel.addComponent(butnLayout);
-
-
-        //String resource;
-        checkButton.addListener(new ClickListener() {
-            public void buttonClick(ClickEvent event) {
-
-                File f = new File(dataFolderPath);
-
-                for (File f1 : f.listFiles()) {
-                    System.out.println("f1 " + f1.getName());
-                    if (f1.getName().contains("cps")) {
-                        cpsFile = f1;
-                        break;
-                    } else if (f1.isDirectory()) {
-                        for (File f2 : f1.listFiles()) {
-                            if (f2.getName().contains("cps")) {
-                                cpsFile = f2;
-                                processButton.setVisible(true);
-                                break;
-                            }
-                        }
-                    }
-
-                }
-                if (expDetails != null && cpsFile != null) {
-                    expDetails.removeAllComponents();
-                    Label l = new Label("<h4 style='color:blue'>1) " + cpsFile.getName() + "</h4>");
-                    l.setContentMode(Label.CONTENT_XHTML);
-                    expDetails.addComponent(l);
-                } else {
-                    expDetails.removeAllComponents();
-                    Label l = new Label("<h4 style='color:Red'>1) No csp file Available</h4>");
-                    l.setContentMode(Label.CONTENT_XHTML);
-                    expDetails.addComponent(l);
-                    processButton.setVisible(false);
-                }
-
-            }
-        });
-
-        vlo.addComponent(cpsPanel);
-        processButton.addListener(new ClickListener() {
-            @SuppressWarnings("static-access")
-            public void buttonClick(ClickEvent event) {
-                if (cpsFile != null) {
-                    checkButton.setVisible(false);
-                    boolean validData = false;
-                    ExperimentBean newExp = validateForm();
-                    if (newExp != null) {
-                        validData = true;
-                    } else {
-                        checkButton.setVisible(true);
-                    }
-                    if (validData) {
-                        upload.setVisible(false);
-                        try {
-
-                            Thread.currentThread().sleep(1000);
-                            Thread t = new Thread(new Runnable() {
-                                public void run() {
-                                    pi.setVisible(true);
-
-                                }
-                            });
-                            t.start();
-                            t.join();
-                        } catch (InterruptedException e) {
-                        }
-                        boolean test = eh.handelCpsExp(newExp, cpsFile, dataFolderPath);
-                        if (!test) {
-                            getWindow().showNotification("Failed !  Please Check Your Uploaded File !");  //file didn't store in db  
-                        } else {
-                            // Display the uploaded file in the file panel.
-
-                            getWindow().showNotification("Successful !");
-                            updateComponents(user);
-                        }
-                        pi.setVisible(false);
-                        checkButton.setVisible(true);
-                        processButton.setVisible(false);
-                        upload.setVisible(true);
-                    }
-
-
-                }
-
-            }
-        });
-
-
-
-
+  
         expDetails = new Panel("Experiment Details");
         Label labelDetails = new Label("<h4 style='color:red;'>Please Select Experiment To Show the Details.</h4>");
         labelDetails.setContentMode(Label.CONTENT_XHTML);
@@ -576,7 +470,7 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
              *
              */
             private static final long serialVersionUID = 1L;
-
+            @Override
             public void buttonClick(ClickEvent event) {
                 String str = selectExp.getValue().toString();
                 String[] strArr = str.split("\t");
@@ -599,7 +493,7 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
     }
 
     private ExperimentBean validateForm() {
-        ExperimentBean newExp = null;
+        ExperimentBean newExp ;
         if (select.getValue() == null)//new experiment
         {
 
@@ -652,9 +546,13 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
                 }
 
             }
-        } else//update old experiment
+        } 
+        else//update old experiment
         {
 
+               
+                
+                
             String str = select.getValue().toString();
             String[] strArr = str.split("\t");
             int id = (Integer.valueOf(strArr[0]));
