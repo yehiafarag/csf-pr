@@ -50,17 +50,21 @@ public class CustomExternalLink extends VerticalLayout implements Serializable, 
     }
 
     public synchronized void rePaintLable(final String color) {
-        synchronized (label) {
-            Thread t = new Thread(new Runnable() {
-                public void run() {
-                    removeComponent(label);
-                    label = new Label("<a href='" + url + "' target='_blank' style='color:" + color + "'>" + link + "</a>");
-                    label.setContentMode(Label.CONTENT_XHTML);
-                    addComponent(label);
-                }
-            });
-            t.setPriority(Thread.MAX_PRIORITY);
-            t.start();
+        synchronized (this) {
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        
+                        removeAllComponents();                        
+                        Label label1 = new Label("<a href='" + url + "' target='_blank' style='color:" + color + "'>" + link + "</a>");
+                        label1.setContentMode(Label.CONTENT_XHTML);
+                        addComponent(label1);
+                    }
+                });
+
+                //t.setPriority(Thread.MAX_PRIORITY);
+                t.start();
+            
         }
 
 
