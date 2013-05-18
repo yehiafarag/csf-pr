@@ -49,7 +49,7 @@ public class CustomExternalLink extends VerticalLayout implements Serializable, 
         return this.link;
     }
 
-    public void rePaintLable(final String color) {
+    public synchronized void rePaintLable(final String color) {
         synchronized (label) {
             Thread t = new Thread(new Runnable() {
                 public void run() {

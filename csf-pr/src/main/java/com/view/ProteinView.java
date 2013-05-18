@@ -223,11 +223,12 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
             private CsvExport excelExport;
 
             public void buttonClick(ClickEvent event) {
-                excelExport = new CsvExport(protTable);
+                excelExport = new CsvExport(protTable,"Proteins");
                 excelExport.setReportTitle("Proteins for Data Set ( " + exp.getName() + " )");
                 excelExport.setExportFileName("Proteins for ( " + exp.getName() + " ).csv");
                 excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
                 excelExport.setDisplayTotals(false);
+                
                 excelExport.export();
             }
         });
@@ -249,7 +250,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                     PeptideTable pt = pl.get(key);
                     layout1.addComponent(pt);
                     if (index == 0) {
-                        excelExport = new CsvExport(pt);
+                        excelExport = new CsvExport(pt,"Peptides");
                         excelExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
                         excelExport.setExportFileName("Protein's Peptides for ( " + accession + " ).csv");
                         excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
@@ -393,7 +394,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                             private CsvExport excelExport;
 
                             public synchronized void buttonClick(ClickEvent event) {
-                                excelExport = new CsvExport(pepTable);
+                                excelExport = new CsvExport(pepTable,"Peptides");
                                 excelExport.setReportTitle("Peptides for ( " + accession + " ) Data Set ( " + exp.getName() + " )");
                                 excelExport.setExportFileName("Peptides for ( " + accession + " ).csv");
                                 excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
@@ -472,7 +473,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                                 }
                             }
                             Map<Integer, ProteinBean> proteinFractionAvgList = eh.getProteinFractionAvgList(accession, fractionsList, exp.getExpId());
-                            ArrayList<String> ranges = fractionUti.getFractionRange(exp);
+                           // ArrayList<String> ranges = fractionUti.getFractionRange(exp);
 
                             // Table rangeTable = fractionUti.getRangeTable(ranges,mw);
                             //  fractionLayout.addComponent(rangeTable);
@@ -482,7 +483,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                             //    fractionProtLable.setHeight("40px");
                             //  fractionLayout.addComponent(fractionProtLable);
 
-                            fractTable = getFractionTable(proteinFractionAvgList, ranges);
+                            fractTable = getFractionTable(proteinFractionAvgList);
                             fractTable.setWidth("100%");
                             fractTable.setVisible(false);
                             fractionLayout.addComponent(fractTable);
@@ -495,7 +496,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                                 private CsvExport excelExport;
 
                                 public void buttonClick(ClickEvent event) {
-                                    excelExport = new CsvExport(fractTable);
+                                    excelExport = new CsvExport(fractTable,"Fractions");
                                     excelExport.setReportTitle("Fractions for ( " + accession + " ) Data Set ( " + exp.getName() + " )");
                                     excelExport.setExportFileName(accession + "Fractions.csv");
                                     excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
@@ -505,7 +506,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
                             });
 //                            List<StandardProteinBean> standardProtPlotList = eh.getStandardProtPlotList(exp.getExpId());
 
-                            FractionsPlots fractionPlotView = new FractionsPlots(proteinFractionAvgList, mw, ranges, standardProtPlotList);
+                            FractionsPlots fractionPlotView = new FractionsPlots(proteinFractionAvgList, mw,standardProtPlotList);
 
                             HorizontalLayout fractionsDataLayout = new HorizontalLayout();
                             fractionsDataLayout.setWidth("100%");
@@ -618,7 +619,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
     }
 
     @SuppressWarnings("deprecation")
-    private Table getFractionTable(Map<Integer, ProteinBean> proteinFractionAvgList, ArrayList<String> ranges) {
+    private Table getFractionTable(Map<Integer, ProteinBean> proteinFractionAvgList) {
         Table table = new Table();
         table.setStyle(Reindeer.TABLE_STRONG + " " + Reindeer.TABLE_BORDERLESS);
         table.setHeight("150px");
@@ -627,14 +628,15 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
         table.setColumnReorderingAllowed(true);
         table.setColumnCollapsingAllowed(true);
         table.setImmediate(true); // react at once when something is selected
-        table.addContainerProperty("Fraction Range", String.class, null, "Fraction Range", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        table.addContainerProperty("Fraction Index", Integer.class, null, "Fraction Index", null, com.vaadin.ui.Table.ALIGN_CENTER);
         table.addContainerProperty("# Peptides ", Integer.class, null, "# Peptides ", null, com.vaadin.ui.Table.ALIGN_CENTER);
         table.addContainerProperty("# Spectra ", Integer.class, null, "# Spectra", null, com.vaadin.ui.Table.ALIGN_CENTER);
         table.addContainerProperty("Average Precursor Intensity", Double.class, null, "Average Precursor Intensity", null, com.vaadin.ui.Table.ALIGN_CENTER);
         /* Add a few items in the table. */
         int x = 0;
-        for (ProteinBean pb : proteinFractionAvgList.values()) {
-            table.addItem(new Object[]{ranges.get(x).split("\t")[1] + " to " + ranges.get(x).split("\t")[2], pb.getNumberOfPeptidePerFraction(), pb.getNumberOfSpectraPerFraction(), pb.getAveragePrecursorIntensityPerFraction()}, new Integer(x + 1));
+        for (int index : proteinFractionAvgList.keySet()) {
+            ProteinBean pb =proteinFractionAvgList.get(index);
+            table.addItem(new Object[]{ new Integer(index), pb.getNumberOfPeptidePerFraction(), pb.getNumberOfSpectraPerFraction(), pb.getAveragePrecursorIntensityPerFraction()}, new Integer(x + 1));
             x++;
         }
         for (Object propertyId : table.getSortableContainerPropertyIds()) {

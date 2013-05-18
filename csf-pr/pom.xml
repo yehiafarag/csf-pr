@@ -195,6 +195,8 @@
             <name>Genesis maven2 repository</name>
             <url>http://genesis.UGent.be/maven2</url>
         </repository>
+        
+        
     </repositories>
 
     <pluginRepositories>
@@ -223,20 +225,22 @@
     
     <dependencies>
         <dependency>
-            <groupId>batik</groupId>
+            <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-awt-util</artifactId>
-            <version>1.6-1</version>
+            <version>1.7</version>
         </dependency>
+            
         <dependency>
-            <groupId>batik</groupId>
+            <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-svggen</artifactId>
-            <version>1.6-1</version>
-        </dependency>            
+            <version>1.7</version>
+        </dependency>         
         <dependency>
-            <groupId>batik</groupId>
+            <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-util</artifactId>
-            <version>1.6-1</version>
+            <version>1.7</version>
         </dependency>
+            
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
@@ -250,11 +254,12 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.24</version>
+            <version>5.1.25</version>
         </dependency>
+            
         <dependency>
             <groupId>org.apache.poi</groupId>
-            <artifactId>poi-excelant</artifactId>
+            <artifactId>poi</artifactId>
             <version>3.9</version>
         </dependency>
         <dependency>
@@ -264,9 +269,16 @@
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
+            <artifactId>poi-ooxml-schemas</artifactId>
             <version>3.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>3.9</version>
+        </dependency>
+            
+        
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>tableexport</artifactId>
@@ -301,8 +313,9 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin</artifactId>
-            <version>6.8.3</version>
-        </dependency>           
+            <version>6.8.4</version>
+        </dependency>
+                       
     </dependencies>
     
 </project>
