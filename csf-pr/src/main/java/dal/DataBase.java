@@ -2578,4 +2578,39 @@ public class DataBase implements Serializable {
 
         return standardPlotList;
     }
+    
+    public boolean updateExpData(ExperimentBean exp)
+    {
+        
+        String updateExp = "UPDATE  `" + dbName + "`.`experiments_table`  SET `name`=?,`ready`=? ,`uploaded_by`=?,`species`=?,`sample_type`=?,`sample_processing`=?,`instrument_type`=?,`frag_mode` =?,`proteins_number` = ? ,	`email` =?,`pblication_link`=?,`description`=?  WHERE `exp_id` = ? ;";
+            try {
+                if (conn == null || conn.isClosed()) {
+                    Class.forName(driver).newInstance();
+                    conn = DriverManager.getConnection(url + dbName, userName, password);
+                }
+                PreparedStatement updateExpStat = conn.prepareStatement(updateExp, Statement.RETURN_GENERATED_KEYS);
+                updateExpStat.setString(1, exp.getName().toUpperCase());
+                updateExpStat.setInt(2, exp.getReady());
+                updateExpStat.setString(3, exp.getUploadedByName().toUpperCase());
+                updateExpStat.setString(4, exp.getSpecies());
+                updateExpStat.setString(5, exp.getSampleType());
+                updateExpStat.setString(6, exp.getSampleProcessing());
+                updateExpStat.setString(7, exp.getInstrumentType());
+                updateExpStat.setString(8, exp.getFragMode());
+                updateExpStat.setInt(9, exp.getProteinsNumber());
+                updateExpStat.setString(10, exp.getEmail().toUpperCase());
+                if (exp.getPublicationLink() != null) {
+                    updateExpStat.setString(11, exp.getPublicationLink());
+                } else {
+                    updateExpStat.setString(11, "NOT AVAILABLE");
+                }
+                updateExpStat.setString(12, exp.getDescription());
+                updateExpStat.setInt(13, exp.getExpId());
+               int test = updateExpStat.executeUpdate();
+               if(test>0)
+                   return true;
+            }catch(Exception e){e.printStackTrace();return false;}
+    
+            return false;
+    }
 }

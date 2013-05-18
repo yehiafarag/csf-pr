@@ -280,5 +280,12 @@ public class ExperimentHandler implements Serializable {
         List<StandardProteinBean> standardPlotList = em.getStandardProtPlotList(expId);
         return standardPlotList;
     }
+    
+    public boolean updateExpData(ExperimentBean exp)
+     {
+           boolean test = em.updateExpData(exp);
+            return test;
+     
+     }
 
 }
