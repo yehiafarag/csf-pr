@@ -39,13 +39,13 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
     private FractionRangeUtilitie fru = new FractionRangeUtilitie();
 
     @SuppressWarnings("deprecation")
-    public FractionsPlots(Map<Integer, ProteinBean> protienFractionList, double mw, ArrayList<String> ranges, List<StandardProteinBean> standProtList) {
+    public FractionsPlots(Map<Integer, ProteinBean> protienFractionList, double mw,  List<StandardProteinBean> standProtList) {
         this.mw = mw;
         this.ranges = ranges;
         setSpacing(true);
         this.setWidth("80%");
         this.protienFractionList = protienFractionList;
-        VerticalLayout vlo = plotFull(protienFractionList, ranges, mw, standProtList);
+        VerticalLayout vlo = plotFull(protienFractionList, mw, standProtList);
         vlo.setStyle(Runo.PANEL_LIGHT);
         vlo.setWidth("100%");
         this.setWidth("100%");
@@ -58,8 +58,8 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
 
     }
 
-    private VerticalLayout plotFull(Map<Integer, ProteinBean> protienFractionList, ArrayList<String> ranges, double mw, List<StandardProteinBean> standProtList) {
-        final Map<String, String> rangesMap = fru.getRangeMap(ranges);
+    private VerticalLayout plotFull(Map<Integer, ProteinBean> protienFractionList, double mw, List<StandardProteinBean> standProtList) {
+       
 
         // int defaultPosition = this.getdefaultPos(ranges,mw); 
         VerticalLayout vlo = new VerticalLayout();

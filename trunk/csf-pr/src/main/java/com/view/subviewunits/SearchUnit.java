@@ -11,6 +11,7 @@ import java.util.Set;
 import com.handlers.ExperimentHandler;
 import com.helperunits.CustomInternalLink;
 import com.helperunits.CustomExternalLink;
+import com.helperunits.CustomPI;
 //import com.helperunits.Help;
 import com.model.FractionRangeUtilitie;
 import com.model.beans.ExperimentBean;
@@ -25,6 +26,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -69,7 +71,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
     private Map<Integer, Map<Integer, ProteinBean>> protExpFullList;
     private Map<Integer, ExperimentBean> expList;
     private FractionRangeUtilitie fractionUti = new FractionRangeUtilitie();
-    private ArrayList<String> ranges;
+    //private ArrayList<String> ranges;
     private VerticalLayout fractionLayout, peptideLayout;
     private String defaultText = "For Multiple Search...Please Use One key word Per Line !";
     private Button adminIco;
@@ -334,7 +336,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                         private CsvExport excelExport;
 
                         public void buttonClick(ClickEvent event) {
-                            excelExport = new CsvExport(protExpTab);
+                            excelExport = new CsvExport(protExpTab,"Search Results");
                             excelExport.setReportTitle("Search Results");
                             excelExport.setExportFileName("Search Results.csv");
                             excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
@@ -361,7 +363,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                                     PeptideTable pt = pl.get(key);
                                     root.addComponent(pt);
                                     if (index == 0) {
-                                        excelExport = new CsvExport(pt);
+                                        excelExport = new CsvExport(pt,"Protein");
                                         excelExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
                                         excelExport.setExportFileName("Protein's Peptides for ( " + accession + " ).csv");
                                         excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
@@ -538,7 +540,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                                 private CsvExport excelExport;
                                 @Override
                                 public synchronized void buttonClick(ClickEvent event) {
-                                    excelExport = new CsvExport(pepTable);
+                                    excelExport = new CsvExport(pepTable,"Peptides");
                                     excelExport.setReportTitle("Peptides for ( " + accession + " ) Data Set ( " + myExpPro.toString() + " )");
                                     excelExport.setExportFileName("Peptides for ( " + accession + " ) Data Set ( " + myExpPro.toString() + " )");
                                     excelExport.setExportFileName(accession + " Peptides.csv");
@@ -555,6 +557,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
 
                         /// fraction part
 
+                        List<StandardProteinBean> standardProtPlotList = eh.getStandardProtPlotList(exp.getExpId());
                         Map<Integer, FractionBean> fractionsList;
                         while (true) {
                             exp = expList.get(expId);
@@ -563,7 +566,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                                 break;
                             }
                         }
-                        if (exp.getFractionRange() == 0) {
+                        if (exp.getFractionRange() == 0 || standardProtPlotList==null ||standardProtPlotList.isEmpty()) {
                             if (fractionLayout != null) {
                                 searchTableLayout.removeComponent(fractionLayout);
                             }
@@ -594,7 +597,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                             if (fractionLabel != null) {
                                 fractionLayout.removeComponent(fractionLabel);
                             }
-                            fractionLabel = new Label("<h4 style='font-family:verdana;color:black;'>Fractions</h4>");
+                            fractionLabel = new Label("<h4 style='font-family:verdana;color:black;'>Fractions (Protein: " + accession + "  MW: " + mw + " kDa)</h4>");
                             fractionLabel.setContentMode(Label.CONTENT_XHTML);
                             fractionLabel.setHeight("15px");
 
@@ -615,7 +618,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                             Map<Integer, ProteinBean> proteinFractionAvgList = eh.getProteinFractionAvgList(accession, exp.getFractionsList(), exp.getExpId());
 
 
-                            ranges = fractionUti.getFractionRange(exp);
+                           // ranges = fractionUti.getFractionRange(exp);
 
                             //    Table fractionRangeTable = fractionUti.getRangeTable(ranges, mw);
                             Label fractionProtLable = new Label("<h4 style='font-family:verdana;color:black;'>Protein: " + accession + "<br/>MW: " + mw + " kDa</h4>");
@@ -623,7 +626,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                             fractionProtLable.setHeight("20px");
 
 
-                            fractTable = getFractionTable(proteinFractionAvgList, ranges);
+                            fractTable = getFractionTable(proteinFractionAvgList);
                             fractTable.setWidth("100%");
                             fractTable.setVisible(false);
                             expBtnFractionTable.addListener(new ClickListener() {
@@ -634,7 +637,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                                 private CsvExport excelExport;
                                 @Override
                                 public synchronized void buttonClick(ClickEvent event) {
-                                    excelExport = new CsvExport(fractTable);
+                                    excelExport = new CsvExport(fractTable,"Fractions");
                                     excelExport.setReportTitle("Fractions for ( " + accession + " ) Data Set ( " + myExpPro.toString() + " )");
                                     excelExport.setExportFileName(accession + " Fractions.csv");
                                     excelExport.setMimeType(CsvExport.CSV_MIME_TYPE);
@@ -642,29 +645,65 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
                                     excelExport.export();
                                 }
                             });
-                            List<StandardProteinBean> standardProtPlotList = eh.getStandardProtPlotList(exp.getExpId());
+                          //  List<StandardProteinBean> standardProtPlotList = eh.getStandardProtPlotList(exp.getExpId());
 
-                            fractionPlotView = new FractionsPlots(proteinFractionAvgList, mw, ranges, standardProtPlotList);
+                            fractionPlotView = new FractionsPlots(proteinFractionAvgList, mw, standardProtPlotList);
 
-                            HorizontalLayout fractionDataLayout = new HorizontalLayout();
-                            fractionDataLayout.setWidth("100%");
-                            fractionDataLayout.addComponent(fractionPlotView);
-                            fractionDataLayout.setComponentAlignment(fractionPlotView, Alignment.TOP_LEFT);
-                            //   fractionDataLayout.addComponent(fractionRangeTable);
-                            //   fractionDataLayout.setExpandRatio(fractionPlotView, 3.5f);
-                            //   fractionDataLayout.setExpandRatio(fractionRangeTable, 1.5f);
-                            //   fractionDataLayout.setComponentAlignment(fractionRangeTable, Alignment.TOP_RIGHT);
-                            fractionDataLayout.addComponent(fractionProtLable);
-                            fractionDataLayout.setExpandRatio(fractionPlotView, 5f);
-                            fractionDataLayout.setExpandRatio(fractionProtLable, 1f);
-                            fractionDataLayout.setComponentAlignment(fractionProtLable, Alignment.MIDDLE_RIGHT);
+                            
+                            
+                            HorizontalLayout fractionsDataLayout = new HorizontalLayout();
+                            fractionsDataLayout.setWidth("100%");
+                            fractionsDataLayout.addComponent(fractionPlotView);
+                            fractionsDataLayout.setComponentAlignment(fractionPlotView, Alignment.TOP_LEFT);
+                            VerticalLayout fractLablesVLO = new VerticalLayout();
+                            fractionsDataLayout.addComponent(fractLablesVLO);
+                            fractionsDataLayout.setExpandRatio(fractionPlotView, 3f);
+                            fractionsDataLayout.setExpandRatio(fractLablesVLO, 1f);
+                            // fractLablesVLO.addComponent(fractionProtLable);
+                            Table t = getStandardPlotTable(fractionPlotView.getStandProtGroups());
+                            Label standPlotLab = new Label("<h4 style='font-family:verdana;color:black;'>Protein Standards</h4>");
+                            standPlotLab.setContentMode(Label.CONTENT_XHTML);
+                            standPlotLab.setHeight("20px");
+                            fractLablesVLO.setSpacing(true);
+                            fractLablesVLO.addComponent(standPlotLab);
+                            fractLablesVLO.addComponent(t);
+                            // fractLablesVLO.setSpacing(true);
+                            // fractLablesVLO.setComponentAlignment(fractionProtLable, Alignment.BOTTOM_CENTER);
+
+                            fractionsDataLayout.setComponentAlignment(fractLablesVLO, Alignment.TOP_RIGHT);
+                            fractionLayout.addComponent(fractionsDataLayout);
+                            fractionLayout.setComponentAlignment(fractionsDataLayout, Alignment.TOP_CENTER);
+
+                            HorizontalLayout fractionsLastLayout = new HorizontalLayout();
+                            fractionsLastLayout.setWidth("100%");
+                            //  Label commLable = new Label("<h5 style='font-family:verdana;'>"+"[] Indicate Theoretical MW"+"</h5>");
+                            //   commLable.setContentMode(Label.CONTENT_XHTML);
 
 
-                            fractionLayout.addComponent(fractionDataLayout);
-                            fractionDataLayout.addComponent(fractTable);
-                            fractionLayout.addComponent(expBtnFractionTable);
-                            fractionLayout.setSpacing(true);
-                            fractionLayout.setComponentAlignment(expBtnFractionTable, Alignment.TOP_RIGHT);
+                            //   fractionsLastLayout.addComponent(commLable);
+                            //   fractionsLastLayout.setComponentAlignment(commLable, Alignment.TOP_LEFT);
+                            fractionsLastLayout.addComponent(expBtnFractionTable);
+                            fractionsLastLayout.setComponentAlignment(expBtnFractionTable, Alignment.MIDDLE_RIGHT);
+                            fractionLayout.addComponent(fractionsLastLayout);
+//                            HorizontalLayout fractionDataLayout = new HorizontalLayout();
+//                            fractionDataLayout.setWidth("100%");
+//                            fractionDataLayout.addComponent(fractionPlotView);
+//                            fractionDataLayout.setComponentAlignment(fractionPlotView, Alignment.TOP_LEFT);
+//                            //   fractionDataLayout.addComponent(fractionRangeTable);
+//                            //   fractionDataLayout.setExpandRatio(fractionPlotView, 3.5f);
+//                            //   fractionDataLayout.setExpandRatio(fractionRangeTable, 1.5f);
+//                            //   fractionDataLayout.setComponentAlignment(fractionRangeTable, Alignment.TOP_RIGHT);
+//                            fractionDataLayout.addComponent(fractionProtLable);
+//                            fractionDataLayout.setExpandRatio(fractionPlotView, 5f);
+//                            fractionDataLayout.setExpandRatio(fractionProtLable, 1f);
+//                            fractionDataLayout.setComponentAlignment(fractionProtLable, Alignment.MIDDLE_RIGHT);
+//
+//
+//                            fractionLayout.addComponent(fractionDataLayout);
+//                            fractionDataLayout.addComponent(fractTable);
+//                            fractionLayout.addComponent(expBtnFractionTable);
+//                            fractionLayout.setSpacing(true);
+//                            fractionLayout.setComponentAlignment(expBtnFractionTable, Alignment.TOP_RIGHT);
 
                         }
                     }
@@ -697,29 +736,31 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
 
     }
 
-    @SuppressWarnings("deprecation")
-    public Table getFractionTable(Map<Integer, ProteinBean> proteinFractionAvgList, ArrayList<String> ranges) {
+     @SuppressWarnings("deprecation")
+    private Table getFractionTable(Map<Integer, ProteinBean> proteinFractionAvgList) {
         Table table = new Table();
-        table.setStyle(Reindeer.TABLE_STRONG);
+        table.setStyle(Reindeer.TABLE_STRONG + " " + Reindeer.TABLE_BORDERLESS);
         table.setHeight("150px");
-        table.setWidth("90%");
+        table.setWidth("100%");
         table.setSelectable(true);
         table.setColumnReorderingAllowed(true);
         table.setColumnCollapsingAllowed(true);
         table.setImmediate(true); // react at once when something is selected
-        table.addContainerProperty("Fraction Range", String.class, null, "Fraction Range", null, com.vaadin.ui.Table.ALIGN_CENTER);
-        table.addContainerProperty("# Peptides ", Integer.class, null, "# Peptides", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        table.addContainerProperty("Fraction Index", Integer.class, null, "Fraction Index", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        table.addContainerProperty("# Peptides ", Integer.class, null, "# Peptides ", null, com.vaadin.ui.Table.ALIGN_CENTER);
         table.addContainerProperty("# Spectra ", Integer.class, null, "# Spectra", null, com.vaadin.ui.Table.ALIGN_CENTER);
         table.addContainerProperty("Average Precursor Intensity", Double.class, null, "Average Precursor Intensity", null, com.vaadin.ui.Table.ALIGN_CENTER);
         /* Add a few items in the table. */
         int x = 0;
-        for (ProteinBean pb : proteinFractionAvgList.values()) {
-            table.addItem(new Object[]{ranges.get(x).split("\t")[1] + " to " + ranges.get(x).split("\t")[2], pb.getNumberOfPeptidePerFraction(), pb.getNumberOfSpectraPerFraction(), pb.getAveragePrecursorIntensityPerFraction()}, new Integer(x + 1));
+        for (int index : proteinFractionAvgList.keySet()) {
+            ProteinBean pb =proteinFractionAvgList.get(index);
+            table.addItem(new Object[]{ new Integer(index), pb.getNumberOfPeptidePerFraction(), pb.getNumberOfSpectraPerFraction(), pb.getAveragePrecursorIntensityPerFraction()}, new Integer(x + 1));
             x++;
         }
         for (Object propertyId : table.getSortableContainerPropertyIds()) {
             table.setColumnExpandRatio(propertyId.toString(), 1.0f);
         }
+
         return table;
     }
 
@@ -739,5 +780,52 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
         errorLabel = new Label("<h4 Style='color:red;'>Sorry No Results Found for ( " + protSearch + " ) </h4>");
         errorLabel.setContentMode(Label.CONTENT_XHTML);
         searchTableLayout.addComponent(errorLabel);
+    }
+    
+    @SuppressWarnings("deprecation")
+    private Table getStandardPlotTable(Map<String, List<StandardProteinBean>> standProtGroups) {
+        Table table = new Table();
+        table.setStyle(Reindeer.TABLE_BORDERLESS);
+        table.setHeight("240px");
+        table.setWidth("100%");
+        table.setSelectable(false);
+        table.setColumnReorderingAllowed(true);
+        table.setColumnCollapsingAllowed(true);
+        table.setImmediate(true); // react at once when something is selected
+        table.addContainerProperty("Col", CustomPI.class, null, "", null, com.vaadin.ui.Table.ALIGN_CENTER);
+
+        table.addContainerProperty("Protein", String.class, null, "Protein", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        table.addContainerProperty("MW", Double.class, null, "MW", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        /* Add a few items in the table. */
+        int x = 0;
+        for (String key : standProtGroups.keySet()) {
+            CustomPI ce = null;
+            if (key.equalsIgnoreCase("#79AFFF")) {
+                List<StandardProteinBean> lsp = standProtGroups.get(key);
+                for (StandardProteinBean spb : lsp) {
+                    ce = new CustomPI("Selected Standard Plot", new ExternalResource("https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-prn1/488024_137541363096131_1104414259_n.jpg"));
+                    table.addItem(new Object[]{ce, spb.getName(), spb.getMW_kDa()}, new Integer(x + 1));
+                    x++;
+                }
+            } else {
+                List<StandardProteinBean> lsp = standProtGroups.get(key);
+                for (StandardProteinBean spb : lsp) {
+                    ce = new CustomPI("Standard Plot", new ExternalResource("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-ash3/528295_137541356429465_212869913_n.jpg"));
+                    table.addItem(new Object[]{ce, spb.getName(), spb.getMW_kDa()}, new Integer(x + 1));
+                    x++;
+                }
+            }
+
+        }
+        for (Object propertyId : table.getSortableContainerPropertyIds()) {
+            if (propertyId.toString().equals("Protein")) {
+                table.setColumnExpandRatio(propertyId.toString(), 2.5f);
+            } else {
+                table.setColumnExpandRatio(propertyId.toString(), 1.0f);
+            }
+        }
+        table.setSortContainerPropertyId("MW");
+        table.setSortAscending(false);
+        return table;
     }
 }
