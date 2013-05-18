@@ -284,4 +284,11 @@ public class DataAccess implements Serializable {
         List<StandardProteinBean> standardPlotList = db.getStandardProtPlotList(expId);
         return standardPlotList;
     }
+    
+     public boolean updateExpData(ExperimentBean exp)
+     {
+           boolean test = db.updateExpData(exp);
+            return test;
+     
+     }
 }

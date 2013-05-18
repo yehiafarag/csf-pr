@@ -158,6 +158,13 @@ public class ExperimentModel implements Serializable {
         return standardPlotList;
     }
     
+      public boolean updateExpData(ExperimentBean exp)
+     {
+           boolean test = da.updateExpData(exp);
+            return test;
+     
+     }
+    
     
    
 }
