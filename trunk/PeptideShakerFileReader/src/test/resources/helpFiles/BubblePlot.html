@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+    <HEAD>
+        <TITLE></TITLE>
+    </HEAD>
+    <BODY>
+        <a name="#top"/>
+        <H2>Bubble Plot</H2>
+
+         <ul>
+            <li><a href='#Introduction'>Introduction</a></li>
+            <li><a href='#Scaling'>Bubble Scaling</a></li>
+            <li><a href='#Annotation'>Annotation</a></li>
+            <li><a href='#AnnotationAccuracy'>AnnotationAccuracy</a></li>
+            <li><a href='#BarHighlighting'>Bar Highlighting</a></li>
+            <li><a href='#MultipleSpectra'>Multiple Spectra</a></li>
+            <li><a href='#Interaction'>Interaction</a></li>
+        </ul>
+
+        <a name="#Introduction"></a>
+        <h3>Introduction</h3>
+        <p align="justify">
+            The <i>Bubble Plot</i>, also referred to as the <i>Planetary System View</i>, represents 
+            a novel way of looking at one or multiple spectra at the same time. This view of 
+            a spectrum still has the m/z value on the x-axis, but on the y-axis it has 
+            the mass error (the distance between the theoretical and the experimental mass of the 
+            fragment ions), and finally the size of each bubble represents the (normalized) 
+            intensity of each fragment ion.
+            <br><br>
+            This way of looking at spectra takes a bit of getting used to, but once 
+            one is comfortable with the setup, it becomes very easy to pick up details that 
+            would have been very difficult to see by a manual inspection of individual spectra.
+        </p>
+        <br>
+        <a href="#top">Go to top of page</a>
+        <br><br><br>
+        
+        <a name="#Scaling"></a>
+        <h3>Bubble Scaling</h3>
+        <p align="justify">
+            The size of the bubbles represent the relative intensity of the given peak. The bubbles 
+            are automatically scaled to try to find the optimal bubble size, i.e., so that the bubbles 
+            are neither too small nor too big. When using mass accuray in Dalton the scale factor 
+            is 10 times the maxium mass tolerance (in Dalton), while when using relative accuracy, i.e., ppm, 
+            the scaling factor is 1000 times the maxium mass tolerance (still in Dalton). 
+            <br><br>
+            If the automatic scaling is not optimal, the scaling factor can be changed via the 
+            Settings > 'Bubble Plot Scale' below the plot. <i>Note that the value inserted here is 
+            relative to the automatic scales above, i.e., entering a value of 2 will double 
+            the size of the bubble (relative to the automatic scale), while a value of 0.5 
+            will reduce the size by half (again relative to the automatic scale).</i>
+        </p>
+        <br>
+        <a href="#top">Go to top of page</a>
+        <br><br><br>
+        
+        <a name="#Annotation"></a>
+        <h3>Annotation</h3>
+        <p align="justify">
+            <b>PeptideShaker</b> automatically annotates the a spectrum with the 
+            most likely ions given the spectrum and the peptide sequence identified. 
+            This includes the automatic selection of neutral losses. 
+            <br><br>
+            However, the user can override the default annotation by selecting 
+            different ion types in the menu below the plot. To change the neutral 
+            losses one first has to uncheck the <i>Adapt</i> option on the <i>Loss</i> menu. 
+            <br><br>
+            To make sure that the same ion types are used for all spectra, the user 
+            can also turn of the automatic annotation completly in the <i>Settings</i> 
+            menu.
+        </p>
+        <br>
+        <a href="#top">Go to top of page</a>
+        <br><br><br>
+        
+        <a name="#AnnotationAccuracy"></a>
+        <h3>Annotation Accuracy</h3>
+        <p align="justify">
+            In addition to deciding which ion types to use when annotating the spectrum, the 
+            user can also change the desired accuracy for the annotations. This is done by scrolling  
+            the mouse wheel while holding down the Ctrl key. Scrolling up or down (when over the Spectrum panel) will increase or 
+            decrease the accuracy required to say that a given peak should be annotated. The maximum value 
+            is set to the fragment ion accuracy set in the Search Parameters dialog (found on the <i>Edit</i> menu).
+            <br><br>
+            Scrolling without holding down any keys lets the user decide how many of the peaks 
+            <b>PeptideShaker</b> should try to annotate. The level is set relative 
+            to the most intense peak, e.g., 80% means that the tool only considers peaks 
+            that have an intensity that is at least 80% of the most intense peak. As 
+            the value is reduced more and more of the low intensity peaks will be 
+            annotated.
+        </p>
+        <br>
+        <a href="#top">Go to top of page</a>
+        <br><br><br>
+        
+        <a name="#BarHighlighting"></a>
+        <h3>Bar Highlighting</h3>
+        <p align="justify">
+            The bars highlighting and annotating the fragment ion types can be 
+            turned on or off by clicking the toggle names <i>Bars</i>.
+        </p>
+        <br>
+        <a href="#top">Go to top of page</a>
+        <br><br><br>
+        
+        <a name="#MultipleSpectra"></a>
+        <h3>Multiple Spectra</h3>
+        <p align="justify">
+            The bubble plot has the potential of displaying multiple spectra at 
+            once, and is automatically used if more than one row is selected in 
+            the Peptide-Spectrum Matches table.
+            <br><br>
+            One more than one spetrum is selected the individual spectra are 
+            annotated with the row index, and the fragment ions are color coded 
+            accordingly.
+        </p>
+        <br>
+        <a href="#top">Go to top of page</a>
+        <br><br><br>
+        
+        <a name="#Interaction"></a>
+        <h3>Interaction</h3>
+        <p align="justify">
+            Zooming is supported by the standard left click and drag approach, and 
+            additional plotting features can be accessed via the right click popup 
+            menu.
+        </p>
+        <br>
+        <a href="#top">Go to top of page</a>
+        <br><br><br>
+        
+    </BODY>
+</HTML>
