@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+    <HEAD>
+        <TITLE></TITLE>
+    </HEAD>
+    <BODY>
+        <a name="#top"/>
+        <H2>Gene Ontology Enrichment Analysis</H2>
+
+        <ul>
+            <li><a href='#Introduction'>Introduction</a></li>
+            <li><a href='#Species'>Species</a></li>
+            <li><a href='#Ensembl_Version'>Ensembl Version</a></li>
+            <li><a href='#GO_Plots'>GO Plots</a></li>
+            <li><a href='#GO_Plots'>Proteins</a></li>
+        </ul>
+
+        <a name="#Introduction"></a>
+        <h3>Introduction</h3>
+        <p align="justify">
+            Gene Ontology Enrichment Analysis (GOEA) analyzes the frequencies of <a href="http://www.geneontology.org">gene ontology</a> 
+            terms in your dataset and compares these to the frequencies of the same GO terms in 
+            the species specific version of <a href="http://www.ensembl.org">Ensembl</a>. In order
+            to not get too many terms the GOSlim <a href="http://www.ebi.ac.uk/GOA/">UniProtKB-GOA</a> is used.
+            <br><br>
+            GOEA shows if certain GO terms are found more or less often in your dataset compared 
+            to the distribution of the same terms in Ensembl. 
+            To calculate the significance <b>PeptideShaker</b> employs a 
+            <a href="http://en.wikipedia.org/wiki/Hypergeometric_test">Hypergeometric test</a>. 
+            This divides the GO terms into three groups: 
+        </p>
+        <ul>
+            <li>Significantly higher in dataset (colored green).</li>
+            <li>Significantly lower in dataset (colored red).</li>
+            <li>Not significantly different (colored grey).</li>
+        </ul>
+        <p align="justify">
+            <b><i>Note that the GO Enrichment Analysis only supports <a href="http://www.uniprot.org">UniProt</a> accession numbers!</i></b>
+            <b><i>Also note that only proteins in your dataset mapping to GO annotated proteins are counted in the analysis.</i></b>
+        </p>
+
+        <br>
+        <a href="#top">More on the Gene Ontology Enrichment Analysis</a>
+        <br><br><br>
+
+        <a name="#Species"></a>
+        <h3>Species</h3>
+        <p align="justify">
+            A long list of species is included. Select the wanted species in the drop down menu 
+            in the upper right corner.
+            <br><br>
+            If you experience any problems with any of the species, please 
+            contact us by sending an e-mail to the <a href="http://groups.google.com/group/peptide-shaker">PeptideShaker Google Group</a> or 
+            by reporting an issue at the <a href="http://code.google.com/p/peptide-shaker/issues/list">PeptideShaker homepage</a>.
+            <br><br>
+            As a default only human GO term to protein mappings are included. The other species can be downloaded if needed.
+            Simply select the species in the drop down menu and click the <i>Download</i> button to start downloading 
+            the GO term to protein mappings for that species. For species where the mappings already have been downloaded 
+            these can be updated to the current release of Ensembl by clicking the <i>Update</i> button.
+        </p>
+        <br>
+        <a href="#top">More on the Gene Ontology Enrichment Analysis</a>
+        <br><br><br>
+
+        <a name="#Ensembl_Version"></a>
+        <h3>Ensembl Version</h3>
+        <p align="justify">
+            <b>PeptideShaker</b> always uses the latest version of <a href="http://www.ensembl.org">Ensembl</a> 
+            when downloading the GO term to protein mappings. The version used for a given species is shown 
+            behind the species name in the species drop down menu. Ensembl is updated with the latest data on a 
+            monthly basis and each version is given a number, e.g., Ensembl 66.
+        </p>
+        <br>
+        <a href="#top">More on the Gene Ontology Enrichment Analysis</a>
+        <br><br><br>
+
+        <a name="#GO_Plots"></a>
+        <h3>GO Plots</h3>
+        <p align="justify">
+            Two GO plots are available: a <i>Significance Plot</i> and a <i>Distribution Plot</i>. The <i>Significance Plot</i> highlights 
+            the significant GO terms, while the <i>Distribution Plot</i> shows the frequencies in 
+            percent for your dataset compared to the whole of <a href="http://www.ensembl.org">Ensembl</a>.
+            <br><br>
+            The plots are closely connected to the table with the GO terms. Selecting a row in the table will 
+            highlight the same term in the plots and visa versa. GO terms can be excluded from the plot by 
+            deselecting them in the final column in the table. Right-clicking in the table will bring up 
+            a menu with shortcuts for selecting/deselecting all, and for selecting only the significant GO terms. 
+            <br><br>
+            The order of the terms in the plot is also the same as for the table. Click the table column headers 
+            to re-order the table and plots.
+        </p>
+        <br>
+        <a href="#top">More on the Gene Ontology Enrichment Analysis</a>
+        <br><br><br>
+        
+        <a name="#Proteins"></a>
+        <h3>Proteins</h3>
+        <p align="justify">
+            The proteins in your project annotated with the currently selected GO term is shown in this table. If the 
+            table is empty make sure that you have selected a row in the <i>Gene Ontology Mappings</i> table at the top. 
+            If the table is still empty the this means that there are no proteins in your project mapping to the given 
+            GO term.
+        </p>
+        <br>
+        <a href="#top">More on the Gene Ontology Enrichment Analysis</a>
+        <br><br><br>
+    </BODY>
+</HTML>
