@@ -717,7 +717,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
         jTextField5.setText("");
         jTextField6.setText("");   
         jTextField7.setForeground(Color.black);   
-        jTextField7.setText("");
+       // jTextField7.setText("");
         jTextField8.setForeground(Color.black);
         jTextField8.setText("");       
         jTextField11.setForeground(Color.black);
@@ -727,7 +727,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
         jTextField10.setForeground(Color.black);
         jTextField10.setText("");        
         jTextField12.setForeground(Color.black);
-        jTextField12.setText("");
+        //jTextField12.setText("");
     
     }
     

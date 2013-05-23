@@ -25,6 +25,7 @@ import java.util.Locale;
  */
 
 public class DB {
+    private Connection conn_ii = null;
     private Connection conn = null;
     private Connection conn_i = null;
     private String url;
@@ -66,12 +67,12 @@ public class DB {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (conn == null || conn.isClosed()) {
+            if (conn_ii == null || conn_ii.isClosed()) {
                 Class.forName(driver).newInstance();
-                conn = DriverManager.getConnection(url + dbName, userName, password);
+                conn_ii = DriverManager.getConnection(url + dbName, userName, password);
             }
             try {
-                Statement st = conn.createStatement();
+                Statement st = conn_ii.createStatement();
                 //CREATE TABLE  `users_table`
                 String users_table = "CREATE TABLE IF NOT EXISTS `users_table` (  `id` int(20) NOT NULL auto_increment,  `password` varchar(100) NOT NULL,  `admin` varchar(5) NOT NULL default 'FALSE',  `user_name` varchar(20) NOT NULL,  `email` varchar(100) NOT NULL,  PRIMARY KEY  (`email`),  KEY `id` (`id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
                 st.executeUpdate(users_table);
@@ -126,7 +127,7 @@ public class DB {
                 String standard_plot_proteins = " CREATE TABLE IF NOT EXISTS `standard_plot_proteins` (`exp_id` int(11) NOT NULL,	  `mw_(kDa)` double NOT NULL,	  `name` varchar(30) NOT NULL,	  `lower` int(11) NOT NULL,  `upper` int(11) NOT NULL,  `color` varchar(30) NOT NULL  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(standard_plot_proteins);
 
-
+                conn_ii.close();
 
 
 
@@ -153,10 +154,10 @@ public class DB {
 
             String insertExp = "INSERT INTO  `" + dbName + "`.`experiments_table` (`name`,`ready` ,`uploaded_by`,`species`,`sample_type`,`sample_processing`,`instrument_type`,`frag_mode`,`proteins_number` ,	`email` ,`pblication_link`,`description`,`fraction_range`,`peptide_file`,`fractions_number`,`peptides_number`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;";
             try {
-                if (conn == null || conn.isClosed()) {
+//                if (conn == null || conn.isClosed()) {
                     Class.forName(driver).newInstance();
                     conn = DriverManager.getConnection(url + dbName, userName, password);
-                }
+//                }
                 insertExpStat = conn.prepareStatement(insertExp, Statement.RETURN_GENERATED_KEYS);
                
                 insertExpStat.setString(1, exp.getName().toUpperCase());
