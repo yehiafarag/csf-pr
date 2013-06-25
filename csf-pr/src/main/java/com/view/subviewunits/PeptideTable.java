@@ -31,22 +31,21 @@ public class PeptideTable extends  Table  implements Serializable{
 	{
 		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
 		otherSymbols.setGroupingSeparator('.'); 
-		df=  new DecimalFormat("#.##",otherSymbols);		
-		//this.setStyle(Reindeer.TABLE_STRONG);
+		df=  new DecimalFormat("#.##",otherSymbols);
  		this.setSelectable(false);
  		this.setColumnReorderingAllowed(true);
  		this.setColumnCollapsingAllowed(true);
  		this.setImmediate(true); // react at once when something is selected
- 		
- 		
  		this.setWidth("100%");
  		this.setHeight("167px");
  		this.addContainerProperty("Index",Integer.class,  null,"",null,com.vaadin.ui.Table.ALIGN_RIGHT);	 		
  		
- 		this.addContainerProperty("Peptide Protein(s)", String.class,  null);
- 		this.setColumnCollapsed("Peptide Protein(s)", true);
- 		String Protein_Inference = "Protein Inference";
+                String Protein_Inference = "Protein Inference";
  		this.addContainerProperty(Protein_Inference,CustomPI.class, null,"PI",null,com.vaadin.ui.Table.ALIGN_CENTER); 		
+ 		
+                
+                this.addContainerProperty("Peptide Protein(s)", String.class,  null);
+ 		this.setColumnCollapsed("Peptide Protein(s)", true);
  		
  		final String sequence = "Sequence";
  		this.addContainerProperty(sequence,CustomLabel.class,  null);
@@ -60,7 +59,6 @@ public class PeptideTable extends  Table  implements Serializable{
  		this.setColumnCollapsed("Peptide End", true);
  		
  		this.addContainerProperty("# Validated Spectra",Integer.class,  null,"#Spectra",null,com.vaadin.ui.Table.ALIGN_RIGHT);	 		
- 		//this.addContainerProperty("Score",Double.class, null,"Score",null,com.vaadin.ui.Table.ALIGN_RIGHT);
  		String Confidence = "Confidence";
  		this.addContainerProperty(Confidence,Double.class,  null,Confidence,null,com.vaadin.ui.Table.ALIGN_RIGHT);
  		this.addContainerProperty("Other Protein(s)",String.class, null);
@@ -70,7 +68,6 @@ public class PeptideTable extends  Table  implements Serializable{
  		
  		this.addContainerProperty("Peptide Prot. Descrip.",String.class,  null);
  		this.setColumnCollapsed("Peptide Prot. Descrip.", true);
- 		//this.addContainerProperty("Fixed Modification",String.class,  null);	
  		this.addContainerProperty("Variable Modification",String.class,  null);	 		
  		this.addContainerProperty("Location Confidence",String.class,  null);
  		this.setColumnCollapsed("Variable Modification", true);
@@ -80,8 +77,7 @@ public class PeptideTable extends  Table  implements Serializable{
  		 
  		this.addContainerProperty("Sequence Tagged",String.class,  null,"Sequence Annotated",null,com.vaadin.ui.Table.ALIGN_LEFT);	 		
  		this.addContainerProperty("Enzymatic",CustomEmbedded.class,  null,"Enzymatic",null,com.vaadin.ui.Table.ALIGN_CENTER);	
- 		this.addContainerProperty("Validated",CustomPI.class,  null,"Validated",null,com.vaadin.ui.Table.ALIGN_CENTER);	 		
- 	//	this.addContainerProperty("Starred",CustomEmbedded.class,  null,"Starred",null,com.vaadin.ui.Table.ALIGN_CENTER);	 		
+ 		this.addContainerProperty("Validated",CustomEmbedded.class,  null,"Validated",null,com.vaadin.ui.Table.ALIGN_CENTER);	 		
  		
  		
  	
@@ -92,7 +88,6 @@ public class PeptideTable extends  Table  implements Serializable{
  		
  		
  		 CustomEmbedded enz = null;
- 	//	 CustomEmbedded starred = null;
 		 Resource res = null;
 		 CustomPI pi = null;
 		 Resource res2 = null;
@@ -102,7 +97,7 @@ public class PeptideTable extends  Table  implements Serializable{
 		 
 		 CustomEmbedded deamidationAndGlycopattern = null;
 		 
-		 CustomPI validated = null;
+		 CustomEmbedded validated = null;
  		int index = 1;
 		 for(PeptideBean pb: peptideList.values()){
 			 if(pb.isEnzymatic())
@@ -114,26 +109,14 @@ public class PeptideTable extends  Table  implements Serializable{
 			 enz.setWidth("16px");
 			 enz.setHeight("16px");
 			 enz.setDescription(""+pb.isEnzymatic());
-			 
-		/*	 if(pb.isStarred())
-				 res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
-			else
-				 res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
-			  
-			 starred  = new CustomEmbedded(pb.isStarred(), res);
-			 starred.setWidth("16px");
-			 starred.setHeight("16px");
-			 starred.setDescription(""+pb.isStarred());
-		 */
-			 
+					 
 			 if(pb.isDeamidationAndGlycopattern() == null)
 			 {
 				 res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
 				 deamidationAndGlycopattern  = new CustomEmbedded(false, res3);
 				 deamidationAndGlycopattern.setWidth("16px");
 				 deamidationAndGlycopattern.setHeight("16px");
-				 deamidationAndGlycopattern.setDescription("FALSE");			 
-				 
+				 deamidationAndGlycopattern.setDescription("FALSE");			 			 
 			 }
 			 else if(pb.isDeamidationAndGlycopattern()){
 				 res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
@@ -177,39 +160,34 @@ public class PeptideTable extends  Table  implements Serializable{
 				 pi = new CustomPI(pb.getProteinInference(), res2);
 				 pi.setDescription(pb.getProteinInference());
 			 }
+                         boolean valid = false;
 		     
-		     if(pb.getValidated() == 1.0)
+		     if(pb.getValidated() == 1.0){
+                                valid = true;
 				 res2 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
-			 else
+                     }else
 				 res2 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
 			 
-		     validated = new CustomPI(String.valueOf(pb.getValidated()), res2);
+		     validated = new CustomEmbedded(valid, res2);
 		     validated.setDescription(String.valueOf(pb.getValidated()));
 		     
-		     if(pepSet != null){
-		    	
+		     if(pepSet != null){		    	
 		    	 for(String str: pepSet)
 		    	 {
-		    		 if(pb.getSequence().contains(str))
-		    		 {
-		    			 seq = new CustomLabel(pb.getSequence(), "red");
-		    			 break;
-		    		 }
-		    		 seq = new CustomLabel(pb.getSequence(), "black");
-		    		 
-		    	 }
-		    	 
+                             if(pb.getSequence().contains(str))
+                             {
+                                 seq = new CustomLabel(pb.getSequence(), "red");
+		    		 break;
+                             }
+                             seq = new CustomLabel(pb.getSequence(), "black");		    		
+		    	 }		    	 
 		     }	
 		     else
 		    	 seq = new CustomLabel(pb.getSequence(), "black");
-				seq.setDescription("The Peptide Sequence: "+pb.getSequence());
-		     
-		     
-			 
-			 this.addItem(new Object[] {index, pb.getPeptideProteins(),pi,seq,pb.getAaBefore(),pb.getAaAfter(),pb.getPeptideStart(),pb.getPeptideEnd(),pb.getNumberOfValidatedSpectra(),
-					 //Double.valueOf(df.format(pb.getScore())),
-					 Double.valueOf(df.format(pb.getConfidence())),pb.getOtherProteins(),pb.getOtherProteinDescriptions(),pb.getPeptideProteinsDescriptions(),
-					 //pb.getFixedModification(),
+                    
+                     seq.setDescription("The Peptide Sequence: "+pb.getSequence());
+                     this.addItem(new Object[] {index,pi, pb.getPeptideProteins(),seq,pb.getAaBefore(),pb.getAaAfter(),pb.getPeptideStart(),pb.getPeptideEnd(),pb.getNumberOfValidatedSpectra(),	
+					 Double.valueOf(df.format(pb.getConfidence())),pb.getOtherProteins(),pb.getOtherProteinDescriptions(),pb.getPeptideProteinsDescriptions(),					 
 					 pb.getVariableModification(),pb.getLocationConfidence(),pb.getPrecursorCharges(),pb.getSequenceTagged(),enz,validated,deamidationAndGlycopattern,pb.getGlycopatternPositions()}, new Integer(index));	 
 			 index++;
 			
@@ -229,23 +207,20 @@ public class PeptideTable extends  Table  implements Serializable{
 		 }
 		 
 		 for(Object propertyId:this.getSortableContainerPropertyIds()){		
-				// if(propertyId.toString().equals("Sequence Coverage(%)")||propertyId.toString().equals(Confidence))
-					 // setColumnExpandRatio(propertyId.toString(), 1.8f);
 				
 				 if(propertyId.toString().equals(sequence))
 					 setColumnExpandRatio(propertyId, 2.0f);
 				 else
 					 setColumnExpandRatio(propertyId.toString(), 0.5f);
-				// else
-				//	 
+					 
 			 }
 				  setColumnWidth("Index", 35);
-			//	  setColumnWidth(Confidence, 35);
-		 // setColumnExpandRatio(sequence, 2.0f);
+				  setColumnWidth(Protein_Inference, 35);
 		 this.setItemDescriptionGenerator(new ItemDescriptionGenerator() {                             
 			
 			private static final long serialVersionUID = 6268199275509867378L;
 
+                        @Override
 				public String generateDescription(Component source, Object itemId, Object propertyId) {
 			        if(propertyId == null){
 			        	;

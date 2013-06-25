@@ -81,11 +81,10 @@ public class DataBase implements Serializable {
                 String users_table = "CREATE TABLE IF NOT EXISTS `users_table` (  `id` int(20) NOT NULL auto_increment,  `password` varchar(100) NOT NULL,  `admin` varchar(5) NOT NULL default 'FALSE',  `user_name` varchar(20) NOT NULL,  `email` varchar(100) NOT NULL,  PRIMARY KEY  (`email`),  KEY `id` (`id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
                 st.executeUpdate(users_table);
 
-                //CREATE TABLE `experiments_table`
-                String experiments_table = "CREATE TABLE IF NOT EXISTS `experiments_table` (  `exp_id` int(11) NOT NULL auto_increment, `fraction_range` int(2) NOT NULL default '0',  `name` varchar(100) NOT NULL,  `fractions_number` int(11) NOT NULL default '0',  `ready` int(11) NOT NULL default '0',  `uploaded_by` varchar(100) NOT NULL,  `peptide_file` int(2) NOT NULL default '0',"
-                        + "	 `species` varchar(100) NOT NULL,  `sample_type` varchar(100) NOT NULL,  `sample_processing` varchar(100) NOT NULL,  `instrument_type` varchar(100) NOT NULL,  `frag_mode` varchar(100) NOT NULL,  `proteins_number` int(11) NOT NULL default '0',  `peptides_number` int(11) NOT NULL default '0',  `email` varchar(100) NOT NULL,  `pblication_link` varchar(300) NOT NULL default 'NOT AVAILABLE',"
-                        + "  `description` varchar(1000) NOT NULL default 'NO DESCRIPTION AVAILABLE',  PRIMARY KEY  (`exp_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
-
+               //CREATE TABLE `experiments_table`
+                String experiments_table = "CREATE TABLE IF NOT EXISTS `experiments_table` (\n" + "  `exp_id` int(11) NOT NULL auto_increment,\n" + "  `fraction_range` int(2) NOT NULL default '0',\n" + "  `name` varchar(100) NOT NULL,\n" + "  `fractions_number` int(11) NOT NULL default '0',\n" + "  `ready` int(11) NOT NULL default '0',\n" + "  `uploaded_by` varchar(100) NOT NULL,\n" + "  `peptide_file` int(2) NOT NULL default '0',\n"
+                        + "  `species` varchar(100) NOT NULL,\n" + "  `sample_type` varchar(100) NOT NULL,\n" + "  `sample_processing` varchar(100) NOT NULL,\n" + "  `instrument_type` varchar(100) NOT NULL,\n" + "  `frag_mode` varchar(100) NOT NULL,\n" + "  `proteins_number` int(11) NOT NULL default '0',\n" + "  `peptides_number` int(11) NOT NULL default '0',\n" + "  `email` varchar(100) NOT NULL,\n" + "  `pblication_link` varchar(300) NOT NULL default 'NOT AVAILABLE',\n"
+                        + "  `description` varchar(1000) NOT NULL default 'NO DESCRIPTION AVAILABLE',\n" + "  `exp_type` int(10) NOT NULL default '0',\n" + "  PRIMARY KEY  (`exp_id`)\n" + ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;";
                 st.executeUpdate(experiments_table);
 
                 //CREATE TABLE proteins_table
@@ -96,9 +95,9 @@ public class DataBase implements Serializable {
                 st.executeUpdate(proteins_table);
 
                 //CREATE TABLE experiment_protein_table
-                String experiment_protein_table = "CREATE TABLE IF NOT EXISTS `experiment_protein_table` (  `exp_id` int(11) NOT NULL,  `prot_accession` varchar(30) NOT NULL,  `other_protein(s)` varchar(1000) default NULL,  `protein_inference_class` varchar(100) default NULL,  `sequence_coverage(%)` double default NULL,  `observable_coverage(%)` double default NULL,  `confident_ptm_sites` varchar(500) default NULL,  `number_confident` varchar(500) default NULL,  `other_ptm_sites` varchar(500) default NULL,  `number_other` varchar(500) default NULL,  `number_validated_peptides` int(11) default NULL,"
-                        + "  `number_validated_spectra` int(11) default NULL,  `em_pai` double default NULL,  `nsaf` double default NULL,  `mw_(kDa)` double default NULL,  `score` double default NULL,  `confidence` double default NULL,  `starred` varchar(5) default NULL,   `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,"
-                        + "  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL, `non_enzymatic_peptides` varchar(5) NOT NULL,  KEY `exp_id` (`exp_id`),  KEY `prot_accession` (`prot_accession`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+                String experiment_protein_table = "CREATE TABLE IF NOT EXISTS `experiment_protein_table` (\n" + "  `exp_id` int(11) NOT NULL,\n" + "  `prot_accession` varchar(30) NOT NULL,\n" + "  `other_protein(s)` varchar(1000) default NULL,\n" + "  `protein_inference_class` varchar(100) default NULL,\n" + "  `sequence_coverage(%)` double default NULL,\n" + "  `observable_coverage(%)` double default NULL,\n" + "  `confident_ptm_sites` varchar(500) default NULL,\n" + "  `number_confident` varchar(500) default NULL,\n"
+                        + "  `other_ptm_sites` varchar(500) default NULL,\n" + "  `number_other` varchar(500) default NULL,\n" + "  `number_validated_peptides` int(11) default NULL,\n" + "  `number_validated_spectra` int(11) default NULL,\n" + "  `em_pai` double default NULL,\n" + "  `nsaf` double default NULL,\n" + "  `mw_(kDa)` double default NULL,\n" + "  `score` double default NULL,\n" + "  `confidence` double default NULL,\n" + "  `starred` varchar(5) default NULL,\n" + "  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n"
+                        + "  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n" + "  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n" + "  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n" + "  `non_enzymatic_peptides` varchar(5) NOT NULL,\n" + "  `gene_name` varchar(50) NOT NULL default 'Not Available',\n" + "  `chromosome_number` varchar(20) NOT NULL default '',\n" + "  KEY `exp_id` (`exp_id`),\n" + "  KEY `prot_accession` (`prot_accession`)\n" + ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(experiment_protein_table);
 
                  //CREATE TABLE experiment_fractions_table
@@ -1135,7 +1134,9 @@ public class DataBase implements Serializable {
                 int peptidesNumber = rs.getInt("peptides_number");
                 String dec = rs.getString("description");
                 exp.setDescription(dec);
-                exp.setPeptidesNumber(peptidesNumber);
+                
+                 int expType = rs.getInt("exp_type");
+                 exp.setExpType(expType);
             }
             rs.close();
 
@@ -1349,6 +1350,8 @@ public class DataBase implements Serializable {
                 temPb.setPeptideFractionSpread_lower_range_kDa(rs.getString("peptide_fraction_spread_lower_range_kDa"));
                 temPb.setPeptideFractionSpread_upper_range_kDa(rs.getString("peptide_fraction_spread_upper_range_kDa"));
 
+                temPb.setGeneName(rs.getString("gene_name"));
+                temPb.setChromosomeNumber(rs.getString("chromosome_number"));
 
                 proteinExpList.put(temPb.getAccession(), temPb);
             }
@@ -1572,7 +1575,8 @@ public class DataBase implements Serializable {
                 temPb.setPeptideFractionSpread_lower_range_kDa(rs.getString("peptide_fraction_spread_lower_range_kDa"));
                 temPb.setPeptideFractionSpread_upper_range_kDa(rs.getString("peptide_fraction_spread_upper_range_kDa"));
 
-                //proteinList.remove(temPb.getAccession());
+                  temPb.setGeneName(rs.getString("gene_name"));
+                temPb.setChromosomeNumber(rs.getString("chromosome_number"));
             }
             rs.close();
             if (temPb == null) {
@@ -2207,7 +2211,7 @@ public class DataBase implements Serializable {
             }
             if (tempExp.getReady() == 1 && tempExp.getFractionsNumber() == 0)//we need to update ready number to 2 -- previous file was protein fraction file
             {
-                tempExp.setFractionsNumber(1);
+                tempExp.setFractionsNumber(exp.getFractionsNumber());
                 tempExp.setReady(2);
                 test = updateExperiment(conn, tempExp);	//update exp table
                 for (FractionBean fb : exp.getFractionsList().values()) {
