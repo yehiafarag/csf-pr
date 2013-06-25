@@ -23,7 +23,8 @@ public class ExperimentBean implements Serializable {
 	private Map<String,ProteinBean> proteinList; //the we use it only in case of protein file
 	private Map<Integer, PeptideBean>peptideList = new HashMap<Integer, PeptideBean>();
 	private String species, sampleType, sampleProcessing, instrumentType, fragMode,UploadedByName, email, publicationLink;
-	private int  proteinsNumber,peptidesNumber; 
+	private int  proteinsNumber,peptidesNumber,expType;
+        
 	
 	private List<Integer> fractionIds;
 	private List<Integer> peptidesIds;
@@ -166,6 +167,14 @@ public class ExperimentBean implements Serializable {
 	public void setPeptidesIds(List<Integer> peptidesIds) {
 		this.peptidesIds = peptidesIds;
 	}
+
+    public int getExpType() {
+        return expType;
+    }
+
+    public void setExpType(int expType) {
+        this.expType = expType;
+    }
 	
 	
 

@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.pepshack;
 
 import com.compomics.util.examples.BareBonesBrowserLaunch;
@@ -18,7 +15,7 @@ import javax.swing.SwingWorker;
 
 /**
  *
- * @author Yehia Mokhtar
+ * @author Yehia Farag
  */
 
 public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
@@ -28,12 +25,16 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
 
     /** Creates new form GUI */
     public GUI() {
-       initComponents();     
-       jLabel13.setText("");
-       jLabel13.setFont(new Font("Serif", Font.BOLD, 12));
-       jLabel13.setForeground(Color.RED);
+        initComponents();
+        jLabel13.setText("");
+        jLabel13.setFont(new Font("Serif", Font.BOLD, 12));
+        jLabel13.setForeground(Color.RED);
         jTextField1.setText("root");
         jPasswordField1.setText("root");
+        
+         jTextField13.setText("localhost");
+        jTextField13.setToolTipText("database url");
+        
         jTextField3.setText("");
         jTextField4.setText("");
         jTextField2.setText("");
@@ -42,60 +43,60 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
         jTextArea1.setToolTipText("Description");
         jTextField8.setText("");
         jTextField8.setToolTipText("Frag Mode");
-        
+
         jButton4.setText("");
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/1.jpg"))); // NOI18N
         jButton4.setToolTipText("Proteomics Unit at the University of Bergen");
         jButton4.setBorder(null);
         jButton4.setBorderPainted(false);
         jButton4.setContentAreaFilled(false);
-        
+
         jButton5.setText("");
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/2.jpg"))); // NOI18N
-        jButton5.setToolTipText("Proteomics Unit at the University of Bergen");
+        jButton5.setToolTipText("The University of Bergen");
         jButton5.setBorder(null);
         jButton5.setBorderPainted(false);
         jButton5.setContentAreaFilled(false);
-        
+
         jButton6.setText("");
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/3.jpg"))); // NOI18N
-        jButton6.setToolTipText("Proteomics Unit at the University of Bergen");
+        jButton6.setToolTipText("The Kristian Gerhard Jebsen Foundation");
         jButton6.setBorder(null);
         jButton6.setBorderPainted(false);
         jButton6.setContentAreaFilled(false);
-      
+
         jTextField5.setText("");
         jTextField5.setToolTipText("Species");
-        
+
         jTextField11.setText("");
         jTextField11.setToolTipText("Instrument Type");
-        
-        
+
+
         jTextField9.setText("");
         jTextField9.setToolTipText("Sample Type");
-        
-        
+
+
         jTextField10.setText("");
         jTextField10.setToolTipText("Sample Processing");
-        
+
         setResizable(false);
         jTextField12.setText("admin@csf.no");
         jTextField12.setToolTipText("Email");
         jTextField12.setEditable(false);
-        
-        
+
+
         jTextField6.setText("");
         jTextField6.setToolTipText("Publication Link");
-        
-        
+
+
         jTextField7.setText("Admin");
         jTextField7.setToolTipText("Uploaded By");
-        
-        
-       jButton1.setText("Selecet CPS File");
-       jButton2.setText("Process");
-       jButton3.setText("Selecet Glycopeptide File");
-       this.setTitle("CSF-PR File Reader");
+
+
+        jButton1.setText("Selecet CPS File");
+        jButton2.setText("Process");
+        jButton3.setText("Selecet Glycopeptide File");
+        this.setTitle("CSF-PR File Reader");
     }
 
     /** This method is called from within the constructor to
@@ -145,8 +146,12 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
         jButton4 = new javax.swing.JButton();
         jProgressBar1 = new javax.swing.JProgressBar();
         jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jTextField13 = new javax.swing.JTextField();
+        jSeparator2 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Database Username:");
 
@@ -285,6 +290,10 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
 
         jLabel13.setText("jLabel13");
 
+        jLabel14.setText("URL:");
+
+        jTextField13.setText("jTextField13");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -292,62 +301,70 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 4, Short.MAX_VALUE)
+                        .addComponent(jSeparator1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(66, 66, 66))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(216, 216, 216))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(37, 37, 37))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(jTextField11)
                     .addComponent(jTextField5)
                     .addComponent(jTextField8)
                     .addComponent(jTextField2)
-                    .addComponent(jTextField1))
-                .addGap(96, 96, 96)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTextField1)
+                        .addGap(37, 37, 37)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(jLabel2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jTextField12)
-                                .addComponent(jTextField9)
-                                .addComponent(jTextField10)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTextField7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(jTextField10, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
+            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -357,8 +374,12 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
                     .addComponent(jLabel1)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14)
+                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -428,15 +449,11 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-//    public ProgressDialog getProgressDialog() {
-////        return Dialog;
-//    }
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      
+
         JFileChooser chooser = new JFileChooser();
 
-         FileFilter filter = new FileFilter() {
+        FileFilter filter = new FileFilter() {
             @Override
             public boolean accept(File myFile) {
                 return myFile.getName().toLowerCase().endsWith("cps")
@@ -449,82 +466,78 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
             }
         };
 
-        chooser.addChoosableFileFilter(filter);       
+        chooser.addChoosableFileFilter(filter);
         int option = chooser.showOpenDialog(this); // parentComponent must a component like JFrame, JDialog...
         if (option == JFileChooser.APPROVE_OPTION) {
-        File selectedFile = chooser.getSelectedFile();
-        String path = selectedFile.getAbsolutePath();
-        jTextField3.setText(path);
+            File selectedFile = chooser.getSelectedFile();
+
+
+            String path = selectedFile.getAbsolutePath();
+            jTextField3.setText(path);
         }
-
-
-    
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private Handler exphandeler;
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        //final GUI gui = this;
         boolean test = this.valiField();
-
         if (test) {
-            
             try {
-                
-                
-       new Thread(){
-           public void run()
-           { 
-               jProgressBar1.setIndeterminate(true);
-               jProgressBar1.setVisible(true);
-               jLabel13.setText("Start Data Processing");
-           }
-       
-       }.start();               
-       new Thread("DisplayThread") {
-                @Override
-                public void run() {
-                exp = initExperiment();
-                jButton2.setEnabled(false);
-                jProgressBar1.setMaximum(100);
-                
-                final File cpsFile = new File(jTextField3.getText());
-                //File folder = new File(cpsFile.getParent()); 
-                String res = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();//getResource("GUI.class").getPath();
-                System.out.println(res);
-                final String resFold = res.substring(1, res.length() - 31);
-                System.out.println(resFold);
-                // File resourcefolder = new File("F:\\pchaker\\resources");
-                File resourcefolder = new File(resFold + "resources");
-                if(resourcefolder.exists()){
-                    for (File f : resourcefolder.listFiles()) {
-                        if (f.getName().equalsIgnoreCase("matches")) {
-                            for (File f2 : f.listFiles()) {
-                                f2.delete();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        jProgressBar1.setIndeterminate(true);
+                        jProgressBar1.setVisible(true);
+                        jLabel13.setText("Start Data Processing");
+                    }
+                }.start();
+                new Thread("DisplayThread") {
+                    @Override
+                    public void run() {
+                        exp = initExperiment();
+                        jButton2.setEnabled(false);
+                        jProgressBar1.setMaximum(100);
+
+                        final File cpsFile = new File(jTextField3.getText());
+                        //File folder = new File(cpsFile.getParent()); 
+                        String res = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();//getResource("GUI.class").getPath();////getResource("GUI.class").getPath();
+                        System.out.println(res);
+                        final String resFold =res.substring(1, res.length() - 31); //"F:\\csf-work\\PeptideShakerFileReader";//
+                        System.out.println(resFold);
+                     //   File resourcefolder = new File("F:\\csf-work\\PeptideShakerFileReader\\resources");//PeptideShakerFileReader-0.1
+                        //    File resourcefolder = new File(resFold + "\\PeptideShakerFileReader-0.1\\resources");
+                       File resourcefolder = new File(resFold + "resources");
+                        if (resourcefolder.exists()) {
+                            for (File f : resourcefolder.listFiles()) {
+                                if (f.getName().equalsIgnoreCase("matches")) {
+                                    for (File f2 : f.listFiles()) {
+                                        f2.delete();
+                                    }
+                                }
+                            }
+
+                        } else {
+                            System.out.println("res file is not exist");
+                        }
+                        PSFileImporter fileImporter = new PSFileImporter(jProgressBar1);
+                        RunWorker t = new RunWorker(fileImporter, cpsFile, resFold);
+                        t.execute();
+                        while (!t.isDone()) {
+                            try {
+                                Thread.sleep(50);
+                            } catch (Exception e) {
+                                //e.printStackTrace();
                             }
                         }
-                    } 
-                    
-                }else{
-                    System.out.println("res file is not exist");
-                }
-                PSFileImporter fileImporter = new PSFileImporter(jProgressBar1);
-                RunWorker t = new RunWorker(fileImporter,cpsFile, resFold);
-                t.execute();
-                while (!t.isDone()) {
-                    try{
-                            Thread.sleep(50);
-                    }catch(Exception e){e.printStackTrace();}
-                }
-                cleanFields();
-                jButton2.setEnabled(true);
-                jProgressBar1.setValue(0);
-                jProgressBar1.setVisible(false);
-                }
-             }.start();
-                
+                        cleanFields();
+                        jButton2.setEnabled(true);
+                        jProgressBar1.setValue(0);
+                        jProgressBar1.setVisible(false);
+                    }
+                }.start();
+
 
             } catch (Exception e) {
-                e.printStackTrace();
+                //   e.printStackTrace();
             }
 
         }
@@ -534,10 +547,11 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
         JFileChooser chooser = new JFileChooser();
         FileFilter ff = new FileFilter() {
 
+            @Override
             public boolean accept(final File pathname) {
                 return pathname.getName().endsWith(".txt");
             }
-
+            @Override
             public String getDescription() {
                 return "*.txt";
             }
@@ -611,17 +625,12 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                GUI gui =  new GUI();                
                gui.setVisible(true);
             }
         });
-//        final Executor executor = Executors.newCachedThreadPool();
-//        executor.execute( new Runnable() {
-//            public void run() {
-//                new GUI().setVisible(true);
-//            }
-//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -636,6 +645,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -649,12 +659,14 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField10;
     private javax.swing.JTextField jTextField11;
     private javax.swing.JTextField jTextField12;
+    private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
@@ -665,28 +677,27 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
     private javax.swing.JTextField jTextField9;
     // End of variables declaration//GEN-END:variables
 
- @Override
+    @Override
     public void cancelProgress() {
-//        progressDialog.dispose();
         System.exit(0);
     }
- 
-    private ExperimentBean initExperiment()
-    {
-         
-      
+
+    private ExperimentBean initExperiment() {
+
+
         ExperimentBean newExp = new ExperimentBean();
+        newExp.setExpType(1);
         String expName = jTextField2.getText();
-        String expSpecies= jTextField5.getText();//(String) speciesField.getValue(); 
-        String expSampleType = jTextField9.getText();//(String) sampleTypeField.getValue();
-        String expSampleProcessing =jTextField10.getText();// (String) sampleProcessingField.getValue();
-        String expInstrumentType =jTextField11.getText();// (String) instrumentTypeField.getValue();
-        String expFragMode = jTextField8.getText();//(String) fragModeField.getValue();
-        String expUploadedByName = jTextField7.getText();//(String) UploadedByNameField.getValue();
-        String expEmail =jTextField12.getText();// (String) emailField.getValue();
-        String expPublicationLink =jTextField6.getText();// (String) publicationLinkField.getValue();
-        String expDescription = jTextArea1.getText();//(String) descriptionField.getValue();
-        
+        String expSpecies = jTextField5.getText();
+        String expSampleType = jTextField9.getText();
+        String expSampleProcessing = jTextField10.getText();
+        String expInstrumentType = jTextField11.getText();
+        String expFragMode = jTextField8.getText();
+        String expUploadedByName = jTextField7.getText();
+        String expEmail = jTextField12.getText();
+        String expPublicationLink = jTextField6.getText();
+        String expDescription = jTextArea1.getText();
+
         newExp.setName(expName);
         newExp.setSpecies(expSpecies);
         newExp.setSampleType(expSampleType);
@@ -701,206 +712,151 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent{
 
         return newExp;
     }
-    
-    private void cleanFields()
-    {
+
+    private void cleanFields() {
         jTextField1.setForeground(Color.black);
-        jPasswordField1.setForeground(Color.black);        
+        jTextField13.setForeground(Color.black);
+        jPasswordField1.setForeground(Color.black);
         jTextField2.setForeground(Color.black);
         jTextField2.setText("");
         jTextField3.setForeground(Color.black);
-        jTextField3.setText("");     
-        jTextField4.setText("");   
+        jTextField3.setText("");
+        jTextField4.setText("");
         jTextArea1.setForeground(Color.black);
         jTextArea1.setText("");
         jTextField5.setForeground(Color.black);
         jTextField5.setText("");
-        jTextField6.setText("");   
-        jTextField7.setForeground(Color.black);   
-       // jTextField7.setText("");
+        jTextField6.setText("");
+        jTextField7.setForeground(Color.black);
         jTextField8.setForeground(Color.black);
-        jTextField8.setText("");       
+        jTextField8.setText("");
         jTextField11.setForeground(Color.black);
-        jTextField11.setText("");        
+        jTextField11.setText("");
         jTextField9.setForeground(Color.black);
-        jTextField9.setText("");        
+        jTextField9.setText("");
         jTextField10.setForeground(Color.black);
-        jTextField10.setText("");        
+        jTextField10.setText("");
         jTextField12.setForeground(Color.black);
-        //jTextField12.setText("");
-    
+
     }
-    
-    
-    private boolean valiField()
-    {
-        
+
+    private boolean valiField() {
         boolean valid = true;
         String errorMessage = "This Field Can Not Be Empty";
         String errorName = "Not Valid Name Please choose Another Name";
-       
         jTextField1.setForeground(Color.black);
-        jPasswordField1.setForeground(Color.black);        
+        jPasswordField1.setForeground(Color.black);
         jTextField2.setForeground(Color.black);
         jTextField3.setForeground(Color.black);
-        
-        
         jTextArea1.setForeground(Color.black);
         jTextField5.setForeground(Color.black);
-        jTextField7.setForeground(Color.black);       
+        jTextField7.setForeground(Color.black);
         jTextField8.setForeground(Color.black);
-        
-        
         jTextField11.setForeground(Color.black);
-        
-        
         jTextField9.setForeground(Color.black);
-        
-        
         jTextField10.setForeground(Color.black);
-        
-        
         jTextField12.setForeground(Color.black);
-       String ExpName = "";
-        
-        if(jTextField1.getText()== null||jTextField1.getText().equals("")||jTextField1.getText().equalsIgnoreCase(errorMessage))
-        {
+        String ExpName = "";
+        if (jTextField1.getText() == null || jTextField1.getText().equals("") || jTextField1.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField1.setForeground(Color.red);
             jTextField1.setText(errorMessage);
-            
-        }       
-        else if(jTextField2.getText()== null||jTextField2.getText().equals("")||jTextField2.getText().equalsIgnoreCase(errorMessage)||jTextField2.getText().equalsIgnoreCase(errorName))
-        {
+        } else if (jTextField2.getText() == null || jTextField2.getText().equals("") || jTextField2.getText().equalsIgnoreCase(errorMessage) || jTextField2.getText().equalsIgnoreCase(errorName)) {
             valid = false;
             jTextField2.setForeground(Color.red);
-            if(jTextField2.getText().equalsIgnoreCase(errorName))
+            if (jTextField2.getText().equalsIgnoreCase(errorName)) {
                 jTextField2.setText(errorName);
-            else
-               jTextField2.setText(errorMessage); 
-            
-        }
-        else if(jTextArea1.getText()== null||jTextArea1.getText().equals("")||jTextArea1.getText().equalsIgnoreCase(errorMessage))
-        {
+            } else {
+                jTextField2.setText(errorMessage);
+            }
+        } else if (jTextArea1.getText() == null || jTextArea1.getText().equals("") || jTextArea1.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextArea1.setForeground(Color.red);
             jTextArea1.setText(errorMessage);
-          
-            
-        }else if(jTextField8.getText()== null||jTextField8.getText().equals("")||jTextField8.getText().equalsIgnoreCase(errorMessage))
-        {
+        } else if (jTextField8.getText() == null || jTextField8.getText().equals("") || jTextField8.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField8.setForeground(Color.red);
             jTextField8.setText(errorMessage);
-          
-            
+        }else if (jTextField13.getText() == null || jTextField13.getText().equals("") || jTextField13.getText().equalsIgnoreCase(errorMessage)) {
+            valid = false;
+            jTextField13.setForeground(Color.red);
+            jTextField13.setText(errorMessage);
         }
-        else if(jTextField5.getText()== null||jTextField5.getText().equals("")||jTextField5.getText().equalsIgnoreCase(errorMessage))
-        {
+        else if (jTextField5.getText() == null || jTextField5.getText().equals("") || jTextField5.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField5.setForeground(Color.red);
             jTextField5.setText(errorMessage);
-          
-            
-        }
-        else if(jTextField11.getText()== null||jTextField11.getText().equals("")||jTextField11.getText().equalsIgnoreCase(errorMessage))
-        {
+        } else if (jTextField11.getText() == null || jTextField11.getText().equals("") || jTextField11.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField11.setForeground(Color.red);
             jTextField11.setText(errorMessage);
-          
-            
-        }else if(jTextField9.getText()== null||jTextField9.getText().equals("")||jTextField9.getText().equalsIgnoreCase(errorMessage))
-        {
+        } else if (jTextField9.getText() == null || jTextField9.getText().equals("") || jTextField9.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField9.setForeground(Color.red);
             jTextField9.setText(errorMessage);
-          
-            
-        } 
-        
-        
-       
-         else if(jTextField10.getText()== null||jTextField10.getText().equals("")||jTextField10.getText().equalsIgnoreCase(errorMessage))
-        {
+        } else if (jTextField10.getText() == null || jTextField10.getText().equals("") || jTextField10.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField10.setForeground(Color.red);
             jTextField10.setText(errorMessage);
-          
-            
-        }
-         
-         else if(jTextField12.getText()== null||jTextField12.getText().equals("")||jTextField12.getText().equalsIgnoreCase(errorMessage))
-        {
+        } else if (jTextField12.getText() == null || jTextField12.getText().equals("") || jTextField12.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField12.setForeground(Color.red);
             jTextField12.setText(errorMessage);
-          
-            
-        }
-         else if(jTextField7.getText()== null||jTextField7.getText().equals("")||jTextField7.getText().equalsIgnoreCase(errorMessage))
-        {
+        } else if (jTextField7.getText() == null || jTextField7.getText().equals("") || jTextField7.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField7.setForeground(Color.red);
             jTextField7.setText(errorMessage);
-          
-            
-        }
-           
-        else if(jTextField3.getText()== null||jTextField3.getText().equals("")||jTextField3.getText().equalsIgnoreCase(errorMessage))
-        {
+        } else if (jTextField3.getText() == null || jTextField3.getText().equals("") || jTextField3.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField3.setForeground(Color.red);
             jTextField3.setText(errorMessage);
-          
-            
         }
-        if(valid){
-            exphandeler = new Handler("jdbc:mysql://localhost:3306/", "csf_db_5_F","com.mysql.jdbc.Driver", jTextField1.getText(), jPasswordField1.getText());
-               
+        if (valid) {
+            exphandeler = new Handler("jdbc:mysql://"+jTextField13.getText()+":3306/", "csf_db_6_F", "com.mysql.jdbc.Driver", jTextField1.getText(), jPasswordField1.getText());
+
             boolean checkName = exphandeler.checkName(jTextField2.getText());
-            if(!checkName)
-            {
+            if (!checkName) {
                 valid = false;
                 jTextField2.setForeground(Color.red);
                 jTextField2.setText(errorName);
             }
         }
-        
-        
+
+
         return valid;
     }
-    
-    
-     class RunWorker extends SwingWorker<Boolean, Boolean> {
 
-         private PSFileImporter fileImporter;
-         private File cpsFile;
-         private String resFold;
-        public RunWorker(PSFileImporter fileImporter,File cpsFile, String resFold) {
+    class RunWorker extends SwingWorker<Boolean, Boolean> {
+
+        private PSFileImporter fileImporter;
+        private File cpsFile;
+        private String resFold;
+
+        public RunWorker(PSFileImporter fileImporter, File cpsFile, String resFold) {
             this.fileImporter = fileImporter;
             this.cpsFile = cpsFile;
             this.resFold = resFold;
         }
 
+        @Override
         protected Boolean doInBackground() throws Exception {
             jLabel13.setText("Importing Data....");
-           fileImporter.importPeptideShakerFile(cpsFile, resFold);
-                System.out.println("file imported and ready to use");
-                DataHandler dataHandler = new DataHandler();
-                exp = dataHandler.handelData(fileImporter, exp,jLabel13);
-                if (jTextField4.getText() != null && !jTextField4.getText().equalsIgnoreCase("")) {
-                     jLabel13.setText("Adding Glycopeptides Data....");
-                    File glycopeptide = new File(jTextField4.getText());
-                    exp = dataHandler.addGlicoPep(glycopeptide, exp);
-                }
-                 jLabel13.setText("Start Storing Data....");
-                boolean test = exphandeler.handelExp(exp);
-            if(test)
-                  jLabel13.setText("Done!");
-            else
-                  jLabel13.setText("Failed :(");
-            
+            fileImporter.importPeptideShakerFile(cpsFile, resFold);
+            System.out.println("file imported and ready to use");
+            DataHandler dataHandler = new DataHandler();
+            exp = dataHandler.handelData(fileImporter, exp, jLabel13);
+            if (jTextField4.getText() != null && !jTextField4.getText().equalsIgnoreCase("")) {
+                jLabel13.setText("Adding Glycopeptides Data....");
+                File glycopeptide = new File(jTextField4.getText());
+                exp = dataHandler.addGlicoPep(glycopeptide, exp);
+            }
+            jLabel13.setText("Start Storing Data....");
+            boolean test = exphandeler.handelExp(exp);
+            if (test) {
+                jLabel13.setText("Done!");
+            } else {
+                jLabel13.setText("Failed :(");
+            }
             return test;
         }
     }

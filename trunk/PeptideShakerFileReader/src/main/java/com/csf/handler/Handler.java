@@ -10,7 +10,7 @@ import com.pepshack.util.beans.ExperimentBean;
 
 /**
  *
- * @author Yehia Mokhtar
+ * @author Yehia Farag
  */
 public class Handler {
     private DAL dal ;

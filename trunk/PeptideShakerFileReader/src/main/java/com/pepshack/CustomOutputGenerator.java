@@ -1,13 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pepshack;
 
 /**
  *
- * @author Yehia Mokhtar
+ * @author Yehia Farag
  */
+import com.compomics.util.experiment.annotation.gene.GeneFactory;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.Peptide;
@@ -24,6 +21,7 @@ import com.pepshack.util.beans.ExperimentBean;
 import com.pepshack.util.beans.FractionBean;
 import com.pepshack.util.beans.PeptideBean;
 import com.pepshack.util.beans.ProteinBean;
+import static eu.isas.peptideshaker.export.OutputGenerator.SEPARATOR;
 import static eu.isas.peptideshaker.export.OutputGenerator.getPeptideModificationLocations;
 import static eu.isas.peptideshaker.export.OutputGenerator.getPeptideModificationsAsString;
 import eu.isas.peptideshaker.myparameters.PSParameter;
@@ -75,9 +73,10 @@ public class CustomOutputGenerator {
      * The writer used to send the output to file.
      *
      */
-  //  private PSParameter proteinPSParameter = new PSParameter();
-  //  private PSParameter peptidePSParameter = new PSParameter();
-  //  private PSParameter secondaryPSParameter = new PSParameter();
+    /**
+     * The gene factory.
+     */
+    private GeneFactory geneFactory = GeneFactory.getInstance();
 
     /**
      * Constructor.
@@ -90,25 +89,21 @@ public class CustomOutputGenerator {
         identification = importer.getIdentification();
         progressDialog = new ProgressDialogX(false);
     }
-
-    private  ArrayList<String> proteinKeys;
+    private ArrayList<String> proteinKeys;
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
     public synchronized Map<String, ProteinBean> getProteinsOutput() {
         final Map<String, ProteinBean> proteinList = new HashMap<String, ProteinBean>();//use only in case of protein files
         // create final versions of all variables use inside the export thread   
         Calendar cal = Calendar.getInstance();
         cal.getTime();
-        
+
         System.out.println("Starting time : " + sdf.format(cal.getTime()));
 
         if (proteinKeys == null) {
             proteinKeys = identification.getProteinIdentification();
-             //proteinKeys = importer.getIdentificationFeaturesGenerator().getValidatedProteins();
-               System.out.println("validated are "+proteinKeys.size());
-               System.out.println("all prot  are "+identification.getProteinIdentification().size());
-        }
+         }
         try {
-//            mainProgressDialog.setTitle("Getting Proteins Data. Please Wait...");
             // store the maximal protein set of validated proteins
             Thread t = new Thread("ExportThread") {
                 @Override
@@ -117,25 +112,19 @@ public class CustomOutputGenerator {
                         PSParameter proteinPSParameter = new PSParameter();
                         PSParameter peptidePSParameter = new PSParameter();
                         int proteinCounter = 0;
-
-//                        mainProgressDialog.setTitle("Loading Protein Matches. Please Wait...");
                         identification.loadProteinMatches(progressDialog);
-//                        mainProgressDialog.setTitle("Loading Protein Details. Please Wait...");
                         identification.loadProteinMatchParameters(proteinPSParameter, progressDialog);
-
-                        //  progressDialog.setIndeterminate(false);
-                        //   progressDialog.setMaxProgressValue(proteinKeys.size());
-                        //   progressDialog.setValue(0);
-//                        mainProgressDialog.setTitle("Getting the Proteins Data. Please Wait...");
-
                         boolean createMaximalProteinSet = false;
                         ArrayList<String> maximalProteinSet = new ArrayList<String>();
                         ProteinBean pb;
                         for (String proteinKey : proteinKeys) { // @TODO: replace by batch selection!!!                         
-                         
-                           pb = new ProteinBean();
+
+                            pb = new ProteinBean();
                             proteinPSParameter = (PSParameter) identification.getProteinMatchParameter(proteinKey, proteinPSParameter);
+                            //updates in new peptide shaker
                             ProteinMatch proteinMatch = identification.getProteinMatch(proteinKey);
+
+
                             pb.setAccession(proteinMatch.getMainMatch());
                             if (createMaximalProteinSet && !maximalProteinSet.contains(proteinMatch.getMainMatch())) {
                                 maximalProteinSet.add(proteinMatch.getMainMatch());//no use for now
@@ -146,8 +135,9 @@ public class CustomOutputGenerator {
                             boolean first = true;
                             StringBuilder completeProteinGroup = new StringBuilder();
                             for (String otherProtein : allProteins) {
-                                if (otherProtein.equalsIgnoreCase(proteinMatch.getMainMatch())) 
-                                        continue;
+                                if (otherProtein.equalsIgnoreCase(proteinMatch.getMainMatch())) {
+                                    continue;
+                                }
                                 if (createMaximalProteinSet && !maximalProteinSet.contains(otherProtein)) {
                                     maximalProteinSet.add(otherProtein);
                                 }
@@ -160,7 +150,7 @@ public class CustomOutputGenerator {
 
                             pb.setProteinInferenceClass(proteinPSParameter.getProteinInferenceClassAsString());
                             try {
-                                pb.setDescription(sequenceFactory.getHeader(proteinMatch.getMainMatch()).getDescription());
+                                pb.setDescription(sequenceFactory.getHeader(proteinMatch.getMainMatch()).getSimpleProteinDescription());
                             } catch (Exception e) {
                                 System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
                             }
@@ -170,17 +160,21 @@ public class CustomOutputGenerator {
                             } catch (Exception e) {
                                 System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
                             }
-                          
-                           
-                            /**
-                             * ********************************************
-                             */  
-                            ArrayList<String> peptideKeys = proteinMatch.getPeptideMatches();           
+                            // gene name and chromosome number
+                            String tempGeneName = sequenceFactory.getHeader(proteinMatch.getMainMatch()).getGeneName();
+                            if (tempGeneName != null) {
+                                pb.setGeneName(tempGeneName);
+                            }
+                            String chromosomeNumber = geneFactory.getChromosomeForGeneName(tempGeneName);
+                            if (chromosomeNumber != null) {
+                                pb.setChromosomeNumber(chromosomeNumber);
+                             }
+                            ArrayList<String> peptideKeys = proteinMatch.getPeptideMatches();
                             identification.loadPeptideMatches(peptideKeys, null);
                             identification.loadPeptideMatchParameters(peptideKeys, peptidePSParameter, null);
-  
+
                             Protein currentProtein = sequenceFactory.getProtein(proteinMatch.getMainMatch());
-                          
+
                             boolean allPeptidesEnzymatic = true;
                             // see if we have non-tryptic peptides
                             for (String peptideKey : peptideKeys) {
@@ -196,11 +190,9 @@ public class CustomOutputGenerator {
                                 }
                             }
                             pb.setNonEnzymaticPeptides(!allPeptidesEnzymatic);
-                            /**
-                             * ********************************************
-                             */
                             try {
-                                String str1 = (importer.getIdentificationFeaturesGenerator().getPrimaryPTMSummary(proteinKey));
+
+                                String str1 = (importer.getIdentificationFeaturesGenerator().getPrimaryPTMSummary(proteinKey, SEPARATOR));
 
                                 String[] strArr = str1.split("\\|");
                                 if (strArr.length == 2) {
@@ -211,11 +203,7 @@ public class CustomOutputGenerator {
                                     pb.setNumberConfident("");
 
                                 }
-
-//                                System.out.println("origenal ptm "+importer.getIdentificationFeaturesGenerator().getPrimaryPTMSummary(proteinKey, SEPARATOR));
-//                                                    writer.write(peptideShakerGUI.getIdentificationFeaturesGenerator().getSecondaryPTMSummary(proteinKey, SEPARATOR) + SEPARATOR);
-//                                                
-                                String str2 = (importer.getIdentificationFeaturesGenerator().getSecondaryPTMSummary(proteinKey) + SEPARATOR);
+                                String str2 = (importer.getIdentificationFeaturesGenerator().getSecondaryPTMSummary(proteinKey, SEPARATOR) + SEPARATOR);
                                 String[] strArr2 = str2.split("\\|");
                                 if (strArr2.length == 2) {
                                     pb.setOtherPtmSites(strArr2[0]);
@@ -233,8 +221,8 @@ public class CustomOutputGenerator {
                                 e.printStackTrace();
                             }
                             try {
-                               pb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
-                                                    
+                                pb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -302,17 +290,14 @@ public class CustomOutputGenerator {
             cal.getTime();
             System.out.println("peptide start  time is :" + sdf.format(cal.getTime()));
 
-//            mainProgressDialog.setTitle("Getting Peptides Data. Please Wait...");
             Thread t = new Thread("ExportThread") {
                 @Override
                 public void run() {
                     try {
-                       
+
                         PSParameter peptidePSParameter = new PSParameter();
                         PSParameter secondaryPSParameter = new PSParameter();
-//                        mainProgressDialog.setTitle("Loading Peptide Matches. Please Wait...");
                         identification.loadPeptideMatches(progressDialog);
-//                        mainProgressDialog.setTitle("Loading Peptide Details. Please Wait...");
                         identification.loadPeptideMatchParameters(peptidePSParameter, progressDialog);
                         int index = 0;
                         PeptideBean pb = null;
@@ -320,22 +305,20 @@ public class CustomOutputGenerator {
                         ModificationProfile ptmProfile = importer.getSearchParameters().getModificationProfile();
                         HashMap<String, HashMap<Integer, String[]>> surroundingAAs = new HashMap<String, HashMap<Integer, String[]>>();
 
-                        for (String peptideKey : peptideKeys) 
-                        { // @TODO: replace by batch selection!!!                            
-//                            System.out.println("peptideKey -->> " + peptideKey);
-                            pb = new PeptideBean();
+                        for (String peptideKey : peptideKeys) { // @TODO: replace by batch selection!!!                            
+                           pb = new PeptideBean();
                             boolean shared = false;
                             PeptideMatch peptideMatch = identification.getPeptideMatch(peptideKey);
                             peptidePSParameter = (PSParameter) identification.getPeptideMatchParameter(peptideKey, peptidePSParameter);
                             Peptide peptide = peptideMatch.getTheoreticPeptide();
                             ArrayList<String> possibleProteins = new ArrayList<String>();
                             ArrayList<String> orderedProteinsKeys = new ArrayList<String>(); // @TODO: could be merged with one of the other maps perhaps?
-                           for (String parentProtein : peptide.getParentProteins()) {
-                               ArrayList<String> parentProteins = identification.getProteinMap().get(parentProtein);
-                               if (parentProteins != null) {
-                                 for (String proteinKey1 : parentProteins) {
-                                    if (!possibleProteins.contains(proteinKey1)) {
-                                         try {
+                            for (String parentProtein : peptide.getParentProteins()) {
+                                ArrayList<String> parentProteins = identification.getProteinMap().get(parentProtein);
+                                if (parentProteins != null) {
+                                    for (String proteinKey1 : parentProteins) {
+                                        if (!possibleProteins.contains(proteinKey1)) {
+                                            try {
                                                 proteinMatch = identification.getProteinMatch(proteinKey1);
                                                 if (proteinMatch.getPeptideMatches().contains(peptideKey)) {
                                                     possibleProteins.add(proteinKey1);
@@ -401,7 +384,7 @@ public class CustomOutputGenerator {
                             pb.setOtherProteinDescriptions(secondaryProteinsDescriptions);
                             pb.setPeptideProteinsDescriptions(peptideProteinDescriptions);
                             pb.setProteinInference(peptidePSParameter.getProteinInferenceClassAsString());
-                            
+
                             for (String proteinAccession : orderedProteinsKeys) {
                                 surroundingAAs.put(proteinAccession,
                                         sequenceFactory.getProtein(proteinAccession).getSurroundingAA(peptide.getSequence(),
@@ -445,7 +428,6 @@ public class CustomOutputGenerator {
                             }
                             subSequence = subSequence.substring(0, subSequence.length() - 1);
                             pb.setAaAfter(subSequence);
-                            //writer.write(subSequence + SEPARATOR);
                             boolean isEnzymatic = sequenceFactory.getProtein(proteinMatch.getMainMatch()).isEnzymaticPeptide(peptide.getSequence(),
                                     importer.getSearchParameters().getEnzyme());
                             pb.setEnzymatic(isEnzymatic);
@@ -520,24 +502,20 @@ public class CustomOutputGenerator {
         } catch (Exception e) {
             e.printStackTrace();
         }
-         Calendar cal = Calendar.getInstance();
-         cal.getTime();
-         System.out.println("peptide end  time is :" + sdf.format(cal.getTime()));
+        Calendar cal = Calendar.getInstance();
+        cal.getTime();
+        System.out.println("peptide end  time is :" + sdf.format(cal.getTime()));
         return peptideList;
     }
 
     public ExperimentBean getFractionsOutput(final ExperimentBean exp) {
         // @TODO: add the non enzymatic peptides detected information!!
         // create final versions of all variables use inside the export thread
-         Calendar cal = Calendar.getInstance();
-         cal.getTime();
-         System.out.println("fraction start  time is :" + sdf.format(cal.getTime()));
+        Calendar cal = Calendar.getInstance();
+        cal.getTime();
+        System.out.println("fraction start  time is :" + sdf.format(cal.getTime()));
         final ArrayList<String> proteinKeys;
         proteinKeys = identification.getProteinIdentification();
-//         mainProgressDialog.setTitle("Loading Proteins for fractions Details. Please Wait...");
-                        
-//        proteinKeys = importer.getIdentificationFeaturesGenerator().getValidatedProteins();
-//               mainProgressDialog.setTitle("Loading fractions Details. Please Wait...");
         final Map<Integer, FractionBean> fractionsList = new HashMap<Integer, FractionBean>();
         try {
             final ArrayList<String> fractionFileNames = new ArrayList<String>();
@@ -546,8 +524,8 @@ public class CustomOutputGenerator {
 
                 fractionFileNames.add(fileName);
             }
-            if(fractionFileNames.isEmpty()||fractionFileNames.size() == 1)
-            {   exp.setFractionsList(fractionsList);
+            if (fractionFileNames.isEmpty() || fractionFileNames.size() == 1) {
+                exp.setFractionsList(fractionsList);
                 return exp;
             }
             Thread t = new Thread("ExportThread") {
@@ -558,22 +536,14 @@ public class CustomOutputGenerator {
                         PSParameter proteinPSParameter = new PSParameter();
                         PSParameter peptidePSParameter = new PSParameter();
                         int proteinCounter = 0;
-//                        mainProgressDialog.setTitle("Loading matches Details. Please Wait...");
-      
-                      //  identification.loadProteinMatches(progressDialog);
-                     //   identification.loadProteinMatchParameters(proteinPSParameter, progressDialog);
-                        for (int z = 1; z <= fractionFileNames.size(); z++) {
+                       for (int z = 1; z <= fractionFileNames.size(); z++) {
                             FractionBean fb = new FractionBean();
                             Map<String, ProteinBean> temProteinList = new HashMap<String, ProteinBean>();
                             fb.setProteinList(temProteinList);
                             fb.setFractionIndex(z);
                             fractionsList.put((z), fb);
                         }
-
-//                         mainProgressDialog.setTitle("reading fraction data. Please Wait...");
-      
                         for (String proteinKey : proteinKeys) {
-//                            System.out.println("fraction for proteinKey -->> " + proteinKey);
                             proteinPSParameter = (PSParameter) identification.getProteinMatchParameter(proteinKey, proteinPSParameter);
                             ProteinMatch proteinMatch = identification.getProteinMatch(proteinKey);
                             ProteinBean pb = null;
@@ -599,6 +569,8 @@ public class CustomOutputGenerator {
                                 pb.setProteinInferenceClass(proteinPSParameter.getProteinInferenceClassAsString());
                                 try {
                                     pb.setDescription(sequenceFactory.getHeader(proteinMatch.getMainMatch()).getDescription());
+
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -613,7 +585,6 @@ public class CustomOutputGenerator {
                                 }
                                 try {
                                     pb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
-//                                                    writer.write(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey) + SEPARATOR);
                                 } catch (Exception e) {
                                     String d = "" + Double.NaN;
                                     pb.setNumberValidatedSpectra(Integer.valueOf(d));
@@ -660,8 +631,7 @@ public class CustomOutputGenerator {
                                         && proteinPSParameter.getFractionValidatedPeptides(fraction) != null
                                         && proteinPSParameter.getFractionValidatedPeptides(fraction) > 0) {
 
-                                    HashMap<String, XYDataPoint> expectedMolecularWeightRanges
-                                            = importer.getSearchParameters().getFractionMolecularWeightRanges();
+                                    HashMap<String, XYDataPoint> expectedMolecularWeightRanges = importer.getSearchParameters().getFractionMolecularWeightRanges();
 
                                     if (expectedMolecularWeightRanges != null && expectedMolecularWeightRanges.get(fraction) != null) {
 
@@ -691,8 +661,7 @@ public class CustomOutputGenerator {
                                 if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
                                         && proteinPSParameter.getFractionValidatedSpectra(fraction) != null
                                         && proteinPSParameter.getFractionValidatedSpectra(fraction) > 0) {
-                                    HashMap<String, XYDataPoint> expectedMolecularWeightRanges
-                                            = importer.getSearchParameters().getFractionMolecularWeightRanges();
+                                    HashMap<String, XYDataPoint> expectedMolecularWeightRanges = importer.getSearchParameters().getFractionMolecularWeightRanges();
                                     if (expectedMolecularWeightRanges != null && expectedMolecularWeightRanges.get(fraction) != null) {
 
                                         double lower = expectedMolecularWeightRanges.get(fraction).getX();
@@ -722,32 +691,24 @@ public class CustomOutputGenerator {
                                 if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
                                         && proteinPSParameter.getFractionValidatedPeptides(fraction) != null) {
                                     tempPb.setNumberOfPeptidePerFraction(proteinPSParameter.getFractionValidatedPeptides(fraction));
-                                    //System.out.println("  tempPb.setNumberOfPeptidePerFraction(  "+tempPb.getNumberOfPeptidePerFraction());
-                                    //writer.write(proteinPSParameter.getFractionValidatedPeptides(fraction) + SEPARATOR);
-                                } else {
-                                    //               System.out.println("  tempPb.setNumberOfPeptidePerFraction(  "+tempPb.getNumberOfPeptidePerFraction());
+                                  } else {
+                                    
                                     tempPb.setNumberOfPeptidePerFraction(0);
-////System.out.println("  tempPb.setNumberOfPeptidePerFraction(  "+tempPb.getNumberOfPeptidePerFraction());
-                                    //  writer.write("0.0" + SEPARATOR);
                                 }
 
                                 if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
                                         && proteinPSParameter.getFractionValidatedSpectra(fraction) != null) {
                                     tempPb.setNumberOfSpectraPerFraction(proteinPSParameter.getFractionValidatedSpectra(fraction));
-                                    // writer.write(proteinPSParameter.getFractionValidatedSpectra(fraction) + SEPARATOR);
-                                } else {
+                                   } else {
                                     tempPb.setNumberOfSpectraPerFraction(0);
-                                    //  writer.write("0.0" + SEPARATOR);
-                                }
+                                  }
 
                                 if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
                                         && proteinPSParameter.getPrecursorIntensityAveragePerFraction(fraction) != null) {
                                     tempPb.setAveragePrecursorIntensityPerFraction(proteinPSParameter.getPrecursorIntensityAveragePerFraction(fraction));
-                                    // writer.write(proteinPSParameter.getPrecursorIntensityAveragePerFraction(fraction) + SEPARATOR);
-                                } else {
+                                 } else {
                                     tempPb.setAveragePrecursorIntensityPerFraction(0.0);
-                                    //  writer.write("0.0" + SEPARATOR);
-                                }
+                                 }
                                 temProteinList.put(tempPb.getAccession(), tempPb);
                                 fb.setProteinList(temProteinList);
                                 fractionsList.put((index), fb);
@@ -770,9 +731,9 @@ public class CustomOutputGenerator {
             e.printStackTrace();
         }
         exp.setFractionsList(fractionsList);
-         cal = Calendar.getInstance();
-         cal.getTime();
-         System.out.println("fractin end  time is :" + sdf.format(cal.getTime()));
+        cal = Calendar.getInstance();
+        cal.getTime();
+        System.out.println("fractin end  time is :" + sdf.format(cal.getTime()));
         return exp;
     }
 
