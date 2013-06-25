@@ -31,6 +31,8 @@ public class ProteinBean implements Serializable{
         this.spectrumFractionSpread_lower_range_kDa = pb.getSpectrumFractionSpread_lower_range_kDa();
         this.spectrumFractionSpread_upper_range_kDa = pb.getSpectrumFractionSpread_upper_range_kDa();
         this.nonEnzymaticPeptides = pb.isNonEnzymaticPeptides();
+        this.geneName = pb.getGeneName();
+        this.chromosomeNumber = pb.getChromosomeNumber();
        
     }
 	/**
@@ -40,6 +42,25 @@ public class ProteinBean implements Serializable{
 	private String accession;
 	private String Description;
         private boolean validated;
+        
+        private String geneName;
+        private String chromosomeNumber;
+
+    public String getGeneName() {
+        return geneName;
+    }
+
+    public void setGeneName(String geneName) {
+        this.geneName = geneName;
+    }
+
+    public String getChromosomeNumber() {
+        return chromosomeNumber;
+    }
+
+    public void setChromosomeNumber(String chromosomeNumber) {
+        this.chromosomeNumber = chromosomeNumber;
+    }
 
     public boolean isValidated() {
         return validated;

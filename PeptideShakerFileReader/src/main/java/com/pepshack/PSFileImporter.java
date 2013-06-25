@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
+import com.compomics.util.preferences.GenePreferences;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -325,11 +326,16 @@ public class PSFileImporter {
 	                        tempPTMScoringPreferences.setaScoreCalculation(tempSettings.getPTMScoringPreferences().aScoreCalculation());
 	                        tempPTMScoringPreferences.setaScoreNeutralLosses(tempSettings.getPTMScoringPreferences().isaScoreNeutralLosses());
 	                        tempPTMScoringPreferences.setFlrThreshold(tempSettings.getPTMScoringPreferences().getFlrThreshold());
-	                        experimentSettings = new PeptideShakerSettings(tempSettings.getSearchParameters(), tempSettings.getAnnotationPreferences(),
+	                        //missing gene refrences
+                                GenePreferences genePreferences = getGenePreferences();
+                           //     String selectedSpecies = genePreferences.getCurrentSpecies();
+                            //    String speciesDatabase = genePreferences.getEnsemblDatabaseName(selectedSpecies);
+                                
+                                experimentSettings = new PeptideShakerSettings(tempSettings.getSearchParameters(), tempSettings.getAnnotationPreferences(),
                                 tempSettings.getSpectrumCountingPreferences(), tempSettings.getProjectDetails(), tempSettings.getFilterPreferences(),
                                 tempSettings.getDisplayPreferences(),
                                 tempSettings.getMetrics(), tempProcessingPreferences, tempSettings.getIdentificationFeaturesCache(),
-                                tempPTMScoringPreferences, new IdFilter());
+                                tempPTMScoringPreferences,genePreferences, new IdFilter());
 ;
 	                    } else {
 	                        experimentSettings = (PeptideShakerSettings) tempExperiment.getUrParam(experimentSettings);
@@ -799,7 +805,7 @@ public class PSFileImporter {
             e.printStackTrace();
         }
         try {
-            GOFactory.getInstance().close();
+            GOFactory.getInstance().closeFiles();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -892,6 +898,16 @@ public class PSFileImporter {
     public void updateAnnotationPreferencesFromSearchSettings() {
         annotationPreferences.setPreferencesFromSearchParamaers(searchParameters);       
     }
+     /**
+     * Returns the gene preferences.
+     *
+     * @return the gene preferences
+     */
+    public GenePreferences getGenePreferences() {
+        return genePreferences;
+    }
+    
+    private GenePreferences genePreferences = new GenePreferences();
 
 	
 
