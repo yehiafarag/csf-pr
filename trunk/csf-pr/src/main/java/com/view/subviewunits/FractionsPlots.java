@@ -541,7 +541,10 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
      }
      */
     private double plotWidthOpt(int rangesNumber) {
-        return Double.valueOf(13 * rangesNumber);
+        if(rangesNumber < 80)
+            return Double.valueOf(13 * rangesNumber);
+        else
+            return Double.valueOf(10 * rangesNumber);
 
     }
 

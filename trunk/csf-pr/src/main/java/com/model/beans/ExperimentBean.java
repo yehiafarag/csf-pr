@@ -13,7 +13,7 @@ public class ExperimentBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private int expFile;//on upload file to get file type
     private int ready;//Complete experience is ready to show
-    private int expId;
+    private int expId,expType;
     private int fractionRange;
     private int peptidesInclude;
     private String name, description;
@@ -217,5 +217,13 @@ public class ExperimentBean implements Serializable {
 
     public void setStanderdPlotProt(List<StandardProteinBean> standerdPlotProt) {
         this.standerdPlotProt = standerdPlotProt;
+    }
+
+    public int getExpType() {
+        return expType;
+    }
+
+    public void setExpType(int expType) {
+        this.expType = expType;
     }
 }

@@ -79,51 +79,6 @@ public class DataAccess implements Serializable {
 
     }
 
-    /*
-     public boolean updateProteinFractionFile1(ExperimentBean exp)
-     {
-     boolean test = false;
-     ExperimentBean tempExp = db.readyExper(exp.getExpId());//check the previous uploaded file
-		
-     if(tempExp.getReady()==1 && tempExp.getFractionsNumber()==0)//we need to update ready number to 2 -- previous file was protein fraction file
-     {
-     tempExp.setFractionsNumber(exp.getFractionsNumber());
-     tempExp.setReady(2);
-     test = db.updateExperiment(tempExp);	//update exp table
-     for(FractionBean fb:exp.getFractionsList().values())
-     {
-     db.insertFraction(fb, exp.getExpId());// update fraction-exp table and fraction table
-     for(ProteinBean pb:fb.getProteinList().values())
-     {
-     db.insertProtDescription(pb.getAccession(),pb.getDescription());//update protein table
-					
-     }
-				
-     }
-			
-			
-     }
-     else
-     {
-     tempExp.setFractionsNumber(exp.getFractionsNumber());
-     tempExp.setReady(2);
-     test = db.updateExperiment(tempExp);	//update exp table
-     for(FractionBean fb:exp.getFractionsList().values())
-     {
-     db.updateFractions(fb, exp.getExpId());// update fraction-exp table and fraction table
-     for(ProteinBean pb:fb.getProteinList().values())
-     {
-     db.insertProtDescription(pb.getAccession(),pb.getDescription());//update protein table
-					
-     }
-				
-     }
-			
-     }
-		
-     return test;
-		
-     }*/
     public boolean removeExperiment(int expId) {
         boolean test = db.removeExperiment(expId);
         return test;
@@ -152,44 +107,7 @@ public class DataAccess implements Serializable {
         return test;
     }
 
-    /*
-     public boolean updatePeptideFile1(ExperimentBean exp) {
-     boolean test = false;
-     ExperimentBean tempExp = db.readyExper(exp.getExpId());//check the previous uploaded file
-     if(tempExp.getPeptidesInclude() == 0)//we need to update peptide file number to 1 
-     {
-     tempExp.setPeptidesInclude(1);
-     tempExp.setPeptidesNumber(exp.getPeptidesNumber());
-     test = db.updateExperiment(tempExp);
-     for(PeptideBean pepb: exp.getPeptideList().values()){
-     db.insertPeptide(-1, pepb,tempExp.getExpId());
-     }
-     }	
-     else
-     {
-     tempExp.setPeptidesNumber(exp.getPeptidesNumber());
-     test = db.updateExperiment(tempExp);
-     for(PeptideBean pepb: exp.getPeptideList().values()){
-     test= db.checkPeptideExisting(pepb.getSequence());
-     if(test)
-     {
-     test = db.updatePeptide(pepb);
-						
-     }
-     else
-     {
-     db.insertPeptide(-1, pepb,tempExp.getExpId());
-     }
-					
-     }
-			
-			
-     }
-		
-		
-     return test;
-     }
-     */
+   
     public Map<String, ProteinBean> getProteinsList(int expId) {
         Map<String, ProteinBean> proteinsList = db.getExpProteinsList(expId);
         return proteinsList;

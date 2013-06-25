@@ -11,7 +11,7 @@ import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
-import java.io.File;
+//import com.vaadin.ui.themes.Reindeer;
 
 public class WelcomePage extends Application implements Serializable {
 	/**
@@ -33,7 +33,6 @@ public class WelcomePage extends Application implements Serializable {
 		setPassword(scx.getInitParameter("password"));   
 		
                
-		//this.setTheme(Runo.THEME_NAME);
 		initLayout();
 	}
 	@SuppressWarnings("deprecation")

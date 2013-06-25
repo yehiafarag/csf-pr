@@ -16,12 +16,15 @@ public class CustomPI extends Embedded implements Serializable,Comparable<Custom
 		super(value,res);
 		this.value = value;
                 this.setHeight("15px");
+                this.setWidth("20px");
 		
 	}
+        @Override
 	public String toString()
 	{
 		return value;
 	}
+        @Override
 	public int compareTo(CustomPI pi) {
 		String valueToCompare = pi.toString();
 		return this.value.compareTo(valueToCompare);
