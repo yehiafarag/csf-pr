@@ -206,7 +206,7 @@
                 </executions>
             </plugin>
             
-             <!-- Zip the jar file and the dependencies -->
+            <!-- Zip the jar file and the dependencies -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4</version>
@@ -276,10 +276,10 @@
     <!-- Dependencies -->
     <dependencies>
 
-              <dependency>
+        <dependency>
             <groupId>eu.isas.peptideshaker</groupId>
             <artifactId>PeptideShaker</artifactId>
-            <version>0.22.2-beta</version>
+            <version>0.22.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>de.proteinms.omxparser</groupId>
@@ -325,29 +325,7 @@
             <version>5.1.24</version>
         </dependency>
 
-<dependency>
-            <groupId>com.compomics</groupId>
-            <artifactId>utilities</artifactId>
-            <version>3.13.54</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-math</artifactId>
-                    <groupId>commons-math</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>servlet-api</artifactId>
-                    <groupId>javax.servlet</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>swingx</artifactId>
-                    <groupId>org.swinglabs</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>swing-layout</artifactId>
-                    <groupId>org.swinglabs</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+   
     </dependencies>
 
 

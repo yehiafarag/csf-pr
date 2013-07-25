@@ -49,6 +49,8 @@ import com.compomics.util.experiment.biology.Peptide;
 import com.compomics.util.experiment.identification.Identification;
 import com.compomics.util.experiment.identification.SpectrumAnnotator;
 import com.compomics.util.experiment.identification.matches.IonMatch;
+import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+import com.compomics.util.experiment.massspectrometry.Spectrum;
 
 import eu.isas.peptideshaker.PeptideShaker;
 import eu.isas.peptideshaker.gui.tabpanels.PtmPanel;
@@ -788,12 +790,9 @@ public class PSFileImporter {
         return spectrumAnnotator;
     }
    
-	public void clearData(boolean clearDatabaseFolder) {
-
-      
+	public void clearData(boolean clearDatabaseFolder) {      
         projectDetails = null;
         spectrumAnnotator = new SpectrumAnnotator();
-
         try {
             spectrumFactory.closeFiles();
         } catch (Exception e) {
@@ -908,6 +907,49 @@ public class PSFileImporter {
     }
     
     private GenePreferences genePreferences = new GenePreferences();
+    
+    
+         /**
+     * Returns the experiment.
+     *
+     * @return the experiment
+     */
+    public MsExperiment getExperiment() {
+        return experiment;
+    }
+      /**
+     * Returns the sample.
+     *
+     * @return the sample
+     */
+    public Sample getSample() {
+        return sample;
+    }
+    /**
+     * Returns the replicate number.
+     *
+     * @return the replicateNumber
+     */
+    public int getReplicateNumber() {
+        return this.replicateNumber;
+    }
+
+    /**
+     * Returns the desired spectrum.
+     *
+     * @param spectrumKey the key of the spectrum
+     * @return the desired spectrum
+     */
+    public MSnSpectrum getSpectrum(String spectrumKey) {
+        String spectrumFile = Spectrum.getSpectrumFile(spectrumKey);
+        String spectrumTitle = Spectrum.getSpectrumTitle(spectrumKey);
+        try {
+            return (MSnSpectrum) spectrumFactory.getSpectrum(spectrumFile, spectrumTitle);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
 	
 
