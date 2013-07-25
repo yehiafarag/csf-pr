@@ -4,21 +4,18 @@ import com.pepshack.util.beans.ExperimentBean;
 import com.pepshack.util.beans.FractionBean;
 import com.pepshack.util.beans.PeptideBean;
 import com.pepshack.util.beans.ProteinBean;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
 
 /**
- *
  * @author Yehia Farag
  */
-public class DB {
+public class DB implements Serializable {
 
     private Connection conn_ii = null;
     private Connection conn = null;
@@ -28,23 +25,17 @@ public class DB {
     private String driver;
     private String userName;
     private String password;
-    private DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-    private DecimalFormat df = null;
 
     public DB(String url, String dbName, String driver, String userName, String password) {
-
         this.url = url;
         this.dbName = dbName;
         this.driver = driver;
         this.userName = userName;
         this.password = password;
-
     }
 
-    public synchronized boolean createTables()//create CSF the database tables if not exist
+    public synchronized boolean createTables() throws SQLException//create CSF the database tables if not exist
     {
-
-
         try {
             try {
                 if (conn_i == null || conn_i.isClosed()) {
@@ -55,8 +46,8 @@ public class DB {
                 String csfSQL = "CREATE DATABASE IF NOT exists  " + dbName;
                 statement.executeUpdate(csfSQL);
                 conn_i.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                System.err.println(e.getLocalizedMessage());
             }
             if (conn_ii == null || conn_ii.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -71,7 +62,7 @@ public class DB {
                 //CREATE TABLE `experiments_table`
                 String experiments_table = "CREATE TABLE IF NOT EXISTS `experiments_table` (\n" + "  `exp_id` int(11) NOT NULL auto_increment,\n" + "  `fraction_range` int(2) NOT NULL default '0',\n" + "  `name` varchar(100) NOT NULL,\n" + "  `fractions_number` int(11) NOT NULL default '0',\n" + "  `ready` int(11) NOT NULL default '0',\n" + "  `uploaded_by` varchar(100) NOT NULL,\n" + "  `peptide_file` int(2) NOT NULL default '0',\n"
                         + "  `species` varchar(100) NOT NULL,\n" + "  `sample_type` varchar(100) NOT NULL,\n" + "  `sample_processing` varchar(100) NOT NULL,\n" + "  `instrument_type` varchar(100) NOT NULL,\n" + "  `frag_mode` varchar(100) NOT NULL,\n" + "  `proteins_number` int(11) NOT NULL default '0',\n" + "  `peptides_number` int(11) NOT NULL default '0',\n" + "  `email` varchar(100) NOT NULL,\n" + "  `pblication_link` varchar(300) NOT NULL default 'NOT AVAILABLE',\n"
-                        + "  `description` varchar(1000) NOT NULL default 'NO DESCRIPTION AVAILABLE',\n" + "  `exp_type` int(10) NOT NULL default '0',\n" + "  PRIMARY KEY  (`exp_id`)\n" + ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;";
+                        + "  `description` varchar(1000) NOT NULL default 'NO DESCRIPTION AVAILABLE',\n" + "  `exp_type` int(10) NOT NULL default '0',\n" + "  PRIMARY KEY  (`exp_id`)\n" + ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;";
                 st.executeUpdate(experiments_table);
 
                 //CREATE TABLE proteins_table
@@ -84,7 +75,8 @@ public class DB {
                 //CREATE TABLE experiment_protein_table
                 String experiment_protein_table = "CREATE TABLE IF NOT EXISTS `experiment_protein_table` (\n" + "  `exp_id` int(11) NOT NULL,\n" + "  `prot_accession` varchar(30) NOT NULL,\n" + "  `other_protein(s)` varchar(1000) default NULL,\n" + "  `protein_inference_class` varchar(100) default NULL,\n" + "  `sequence_coverage(%)` double default NULL,\n" + "  `observable_coverage(%)` double default NULL,\n" + "  `confident_ptm_sites` varchar(500) default NULL,\n" + "  `number_confident` varchar(500) default NULL,\n"
                         + "  `other_ptm_sites` varchar(500) default NULL,\n" + "  `number_other` varchar(500) default NULL,\n" + "  `number_validated_peptides` int(11) default NULL,\n" + "  `number_validated_spectra` int(11) default NULL,\n" + "  `em_pai` double default NULL,\n" + "  `nsaf` double default NULL,\n" + "  `mw_(kDa)` double default NULL,\n" + "  `score` double default NULL,\n" + "  `confidence` double default NULL,\n" + "  `starred` varchar(5) default NULL,\n" + "  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n"
-                        + "  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n" + "  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n" + "  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n" + "  `non_enzymatic_peptides` varchar(5) NOT NULL,\n" + "  `gene_name` varchar(50) NOT NULL default 'Not Available',\n" + "  `chromosome_number` varchar(20) NOT NULL default '',\n" + "  KEY `exp_id` (`exp_id`),\n" + "  KEY `prot_accession` (`prot_accession`)\n" + ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+                        + "  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n" + "  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n" + "  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n" + "  `non_enzymatic_peptides` varchar(5) NOT NULL,\n" + "  `gene_name` varchar(50) NOT NULL default 'Not Available',\n" + "  `chromosome_number` varchar(20) NOT NULL default '',\n" + " `prot_key` varchar(500) NOT NULL, " + "  KEY `exp_id` (`exp_id`),\n"
+                        + "  KEY `prot_key` (`prot_key`)" + ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(experiment_protein_table);
 
                 //CREATE TABLE experiment_fractions_table
@@ -110,7 +102,11 @@ public class DB {
                 st.executeUpdate(fractions_table);
 
                 //CREATE TABLE experiment_peptides_proteins_table
-                String experiment_peptides_proteins_table = "CREATE TABLE IF NOT EXISTS `experiment_peptides_proteins_table` (  `exp_id` varchar(50) NOT NULL,  `peptide_id` int(50) NOT NULL,  `protein` varchar(70) NOT NULL,  UNIQUE KEY `exp_id` (`exp_id`,`peptide_id`,`protein`),  KEY `peptide_id` (`peptide_id`),  KEY `protein` (`protein`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+                String experiment_peptides_proteins_table = "CREATE TABLE IF NOT EXISTS `experiment_peptides_proteins_table` (\n"
+                        + "  `exp_id` varchar(50) NOT NULL,\n"
+                        + "  `peptide_id` int(50) NOT NULL,\n"
+                        + "  `protein` varchar(1000) NOT NULL\n"
+                        + ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(experiment_peptides_proteins_table);
 
                 //CREATE TABLEstandard_plot_proteins
@@ -119,28 +115,20 @@ public class DB {
 
                 conn_ii.close();
 
-
-
-
             } catch (SQLException s) {
-                s.printStackTrace();
-                return false;
+                throw s;
             }
             // 
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
 
         return true;
-
     }
 
     public int setupExperiment(ExperimentBean exp) {
         PreparedStatement insertExpStat = null;
         int id = 0;
-        int test = 0;
-
         String insertExp = "INSERT INTO  `" + dbName + "`.`experiments_table` (`name`,`ready` ,`uploaded_by`,`species`,`sample_type`,`sample_processing`,`instrument_type`,`frag_mode`,`proteins_number` ,	`email` ,`pblication_link`,`description`,`fraction_range`,`peptide_file`,`fractions_number`,`peptides_number`,`exp_type`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;";
         try {
             Class.forName(driver).newInstance();
@@ -177,7 +165,8 @@ public class DB {
             rs.close();
             conn.close();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
         }
         return id;
     }
@@ -198,6 +187,8 @@ public class DB {
             insertProtStat.close();
         } catch (Exception e) {
             test = updateProt(accession, desc);
+            System.out.println(e.getLocalizedMessage());
+//            e.printStackTrace();
         }
         return test;
     }
@@ -215,22 +206,24 @@ public class DB {
             insertProtStat.setString(1, desc.toUpperCase());
             insertProtStat.setString(2, accession.toUpperCase());
             test = insertProtStat.executeUpdate();
-            insertProtStat.clearParameters();;
+            insertProtStat.clearParameters();
             insertProtStat.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
+//            e.printStackTrace();
+
         }
         return test;
     }
 
-    public synchronized int insertProteinExper(int expId, ProteinBean pb) {
+    public synchronized int insertProteinExper(int expId, ProteinBean pb, String key) {
         int test = -1;
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
-            String insertProtExp = "INSERT INTO  `" + dbName + "`.`experiment_protein_table` (`exp_id` ,`prot_accession` ,`other_protein(s)` ,`protein_inference_class` ,`sequence_coverage(%)` ,`observable_coverage(%)` ,`confident_ptm_sites` ,`number_confident` ,`other_ptm_sites` ,`number_other` ,`number_validated_peptides` ,`number_validated_spectra` ,`em_pai` ,`nsaf` ,`mw_(kDa)` ,`score` ,`confidence` ,`starred`,`non_enzymatic_peptides`,`gene_name`,`chromosome_number`)VALUES (?,?,?,  ?, ?, ?, ?,  ?,  ?, ?, ?, ?, ?,  ?, ?,?,?,?,?,?,?);";
+            String insertProtExp = "INSERT INTO  `" + dbName + "`.`experiment_protein_table` (`exp_id` ,`prot_accession` ,`other_protein(s)` ,`protein_inference_class` ,`sequence_coverage(%)` ,`observable_coverage(%)` ,`confident_ptm_sites` ,`number_confident` ,`other_ptm_sites` ,`number_other` ,`number_validated_peptides` ,`number_validated_spectra` ,`em_pai` ,`nsaf` ,`mw_(kDa)` ,`score` ,`confidence` ,`starred`,`non_enzymatic_peptides`,`gene_name`,`chromosome_number`,`prot_key`)VALUES (?,?,?,?,  ?, ?, ?, ?,  ?,  ?, ?, ?, ?, ?,  ?, ?,?,?,?,?,?,?);";
             PreparedStatement insertProtStat = conn.prepareStatement(insertProtExp, Statement.RETURN_GENERATED_KEYS);
             insertProtStat.setInt(1, expId);
             insertProtStat.setString(2, pb.getAccession().toUpperCase());
@@ -252,18 +245,23 @@ public class DB {
             insertProtStat.setString(18, String.valueOf(pb.isStarred()));
             insertProtStat.setString(19, (String.valueOf(pb.isNonEnzymaticPeptides()).toUpperCase()));
 
-            if( pb.getGeneName() ==null)
-                 insertProtStat.setString(20,"");
-            else
+            if (pb.getGeneName() == null) {
+                insertProtStat.setString(20, "");
+            } else {
                 insertProtStat.setString(20, pb.getGeneName().toUpperCase());
-            if(pb.getChromosomeNumber()==null)
-                insertProtStat.setString(21,"");
-            else
+            }
+            if (pb.getChromosomeNumber() == null) {
+                insertProtStat.setString(21, "");
+            } else {
                 insertProtStat.setString(21, pb.getChromosomeNumber().toUpperCase());
+            }
+            insertProtStat.setString(22, (String.valueOf(key).toUpperCase()));
+
             test = insertProtStat.executeUpdate();
             insertProtStat.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
+//            e.printStackTrace();
             return -1;
         }
 
@@ -277,9 +275,6 @@ public class DB {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
-
-
-
             int counter = 0;
             for (PeptideBean pepb : exp.getPeptideList().values()) {
                 insertPeptide(-1, pepb, exp.getExpId());
@@ -295,7 +290,8 @@ public class DB {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
+//            e.printStackTrace();
             return false;
         }
         return true;
@@ -323,7 +319,8 @@ public class DB {
                 rs.close();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e.getLocalizedMessage());
+//                e.printStackTrace();
             }
         }
 
@@ -373,38 +370,60 @@ public class DB {
 
             insertPeptideStat.clearParameters();
             insertPeptideStat.close();
-
-            insertExpProtPept(expId, pepId, pepb.getProtein().toUpperCase());
+            String pepKey = ",";
+            if (!pepb.getProtein().equalsIgnoreCase("shared peptide")) {
+                pepKey = pepKey + pepb.getProtein().toUpperCase();
+            }
+            if (pepb.getOtherProteins() != null && !pepb.getOtherProteins().equals("")&&!pepKey.endsWith(",")) {
+                pepKey = pepKey + "," + pepb.getOtherProteins().toUpperCase();
+            }
+            else if(pepb.getOtherProteins() != null && !pepb.getOtherProteins().equals("")&&pepKey.endsWith(",")){
+                pepKey = pepKey  + pepb.getOtherProteins().toUpperCase();
+            }
+            if (pepb.getPeptideProteins() != null && !pepb.getPeptideProteins().equals("")&&!pepKey.endsWith(",")) {
+                pepKey = pepKey + "," + pepb.getPeptideProteins().toUpperCase();
+            }
+            else  if (pepb.getPeptideProteins() != null && !pepb.getPeptideProteins().equals("")&&pepKey.endsWith(",")) {
+                pepKey = pepKey + pepb.getPeptideProteins().toUpperCase();
+            }
+            if(!pepKey.endsWith(","))
+                pepKey = pepKey + ",";
+            insertExpProtPept(expId, pepId, pepKey);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
             try {
                 insertPeptideStat.close();
             } catch (SQLException e1) {
-                e1.printStackTrace();
+                System.out.println(e1.getLocalizedMessage());
+//                e1.printStackTrace();
             }
         }
 
         return test;
     }
 
-    public int insertExpProtPept(int expId, int pepId, String accession) {
+    public int insertExpProtPept(int expId, int pepId, String pepKey) {
         int test = -1;
+
         try {
 
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
+
             String insertExpProtPeptQ = "INSERT INTO  `" + dbName + "`.`experiment_peptides_proteins_table` (`exp_id` ,`peptide_id`,`protein`)VALUES (?,?,?);";
             PreparedStatement insertExpProtPeptQStat = conn.prepareStatement(insertExpProtPeptQ);
             insertExpProtPeptQStat.setInt(1, expId);
             insertExpProtPeptQStat.setInt(2, pepId);
-            insertExpProtPeptQStat.setString(3, accession.toUpperCase());
+            insertExpProtPeptQStat.setString(3, pepKey.toUpperCase());
             test = insertExpProtPeptQStat.executeUpdate();
             insertExpProtPeptQStat.close();
 
+            conn.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
+//            e.printStackTrace();
         }
 
         return test;
@@ -416,7 +435,6 @@ public class DB {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
-
             String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`,`index`) VALUES (?,?,?,?) ;";
             PreparedStatement insertFractExpStat = conn.prepareStatement(insertFractExp, Statement.RETURN_GENERATED_KEYS);
             int fractId = 0;
@@ -435,12 +453,11 @@ public class DB {
                 rs.close();
                 for (ProteinBean pb : fb.getProteinList().values()) {
                     this.insertProteinFract(fractId, pb);
-
                 }
-
             }
         } catch (Exception exc) {
-            exc.printStackTrace();
+            System.out.println(exc.getLocalizedMessage());
+//            exc.printStackTrace();
             return false;
         }
         return true;
@@ -464,7 +481,8 @@ public class DB {
             test = insertProtFracStat.executeUpdate();
             insertProtFracStat.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
+//            e.printStackTrace();
             return -1;
         }
 
@@ -489,7 +507,8 @@ public class DB {
             selectNameStat.close();
             rs.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
+//            e.printStackTrace();
         }
         return true;
     }

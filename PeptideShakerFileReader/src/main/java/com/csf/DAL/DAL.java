@@ -6,6 +6,7 @@ package com.csf.DAL;
 
 import com.pepshack.util.beans.ExperimentBean;
 import com.pepshack.util.beans.ProteinBean;
+import java.sql.SQLException;
 
 /**
  *
@@ -15,7 +16,7 @@ public class DAL {
 
     private DB database;
 
-    public DAL(String url, String dbName, String driver, String userName, String password) {
+    public DAL(String url, String dbName, String driver, String userName, String password) throws SQLException {
         database = new DB(url, dbName, driver, userName, password);
         database.createTables();
     }
@@ -26,8 +27,9 @@ public class DAL {
     }
 
     public boolean storeProteinsList(ExperimentBean exp) {
-        for (ProteinBean pb : exp.getProteinList().values()) {
-            database.insertProteinExper(exp.getExpId(), pb);
+        for (String key : exp.getProteinList().keySet()) {
+            ProteinBean pb = exp.getProteinList().get(key);
+            database.insertProteinExper(exp.getExpId(), pb, key);
             database.insertProt(pb.getAccession(), pb.getDescription());
         }
 

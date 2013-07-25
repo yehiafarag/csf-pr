@@ -19,13 +19,12 @@ import javax.swing.JLabel;
  */
 public class DataHandler {
 
-    private CustomOutputGenerator outputGenerator;
+    private UpdatedOutputGenerator exporter;
 
     public ExperimentBean handelData(PSFileImporter importer, ExperimentBean exp, JLabel label) {
         label.setText("Start Proteins processing...");
-        outputGenerator = new CustomOutputGenerator(importer);
+        exporter = new UpdatedOutputGenerator(importer);
         exp.setProteinList(this.getProteins());
-        System.out.println(" exp.setProteinList " + exp.getProteinList().size());
         exp.setProteinsNumber(exp.getProteinList().size());
         label.setText("Start Peptides processing...");
         exp.setPeptideList(this.getPeptides());
@@ -42,30 +41,22 @@ public class DataHandler {
         } else {
             exp.setFractionsNumber(0);
         }
-
         importer.clearData(true);
         return exp;
     }
 
     private Map<String, ProteinBean> getProteins() {
-        Map<String, ProteinBean> proteinList = outputGenerator.getProteinsOutput();
-        for (ProteinBean pb : proteinList.values()) {
-            System.out.println("Genename : " + pb.getGeneName() + " conf " + pb.getConfidentPtmSites() + "  confidance " + pb.getNumberConfident() + " other-ptm " + pb.getOtherPtmSites() + " getNumb of others " + pb.getNumberOfOther() + "  " + pb.getDescription());
-        }
+        Map<String, ProteinBean> proteinList = exporter.getProteinsOutput();
         return proteinList;
-
     }
 
     private Map<Integer, PeptideBean> getPeptides() {
-        Map<Integer, PeptideBean> peptideList = outputGenerator.getPeptidesOutput();
-        System.out.println("peptide lis is exsist " + peptideList.size());
+        Map<Integer, PeptideBean> peptideList = exporter.getPeptidesOutput();
         return peptideList;
-
     }
 
     private ExperimentBean getFractionList(ExperimentBean exp) {
-        return outputGenerator.getFractionsOutput(exp);
-
+        return exporter.getFractionsOutput(exp);
     }
 
     private int getValidatedPeptideNuumber(Map<Integer, PeptideBean> pepList) {
@@ -76,7 +67,6 @@ public class DataHandler {
             }
         }
         return number;
-
     }
 
     public ExperimentBean addGlicoPep(File glycopeptide, ExperimentBean exp) {
@@ -86,7 +76,6 @@ public class DataHandler {
             Map<String, PeptideBean> pepList = reader.readGlycoFile(glycopeptide);
             exp = updatePeptideList(pepList, exp);
         }
-
         return exp;
     }
 
@@ -104,14 +93,10 @@ public class DataHandler {
                 if (temPb.isDeamidationAndGlycopattern() != null) {
                     pb.setDeamidationAndGlycopattern(temPb.isDeamidationAndGlycopattern());
                 }
-
             }
             updatedList.put(index, pb);
-
         }
         exp.setPeptideList(updatedList);
         return exp;
-
-
     }
 }
