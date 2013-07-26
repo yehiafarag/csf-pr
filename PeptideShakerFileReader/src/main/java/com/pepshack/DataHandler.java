@@ -26,6 +26,8 @@ public class DataHandler {
         exporter = new UpdatedOutputGenerator(importer);
         exp.setProteinList(this.getProteins());
         exp.setProteinsNumber(exp.getProteinList().size());
+        int numberValidProt = getValidatedPeptidesNumber(exp.getProteinList());
+        exp.setNumberValidProt(numberValidProt);
         label.setText("Start Peptides processing...");
         exp.setPeptideList(this.getPeptides());
         exp.setPeptidesNumber(this.getValidatedPeptideNuumber(exp.getPeptideList()));
@@ -99,4 +101,16 @@ public class DataHandler {
         exp.setPeptideList(updatedList);
         return exp;
     }
+    
+     private int getValidatedPeptidesNumber(Map<String, ProteinBean> proteinsList)
+    {
+        int counter=0;
+        for(ProteinBean pb:proteinsList.values())
+        {
+            if(pb.isValidated())
+                counter++;
+        }
+        return counter;
+    }
+    
 }
