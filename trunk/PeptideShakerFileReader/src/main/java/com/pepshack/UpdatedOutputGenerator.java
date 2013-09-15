@@ -393,7 +393,7 @@ public class UpdatedOutputGenerator {
                                         ArrayList<String> peptideAccessions = new ArrayList<String>(peptide.getParentProteins());
                                         Collections.sort(peptideAccessions);
                                         for (String key : peptideAccessions) {
-                                            if (!accessions.contains(key)) {
+                                            if (shared || !accessions.contains(key)) {
                                                 if (first) {
                                                     first = false;
                                                 } else {

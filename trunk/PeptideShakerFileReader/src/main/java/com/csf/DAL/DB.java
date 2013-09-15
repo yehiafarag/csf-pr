@@ -84,45 +84,42 @@ public class DB implements Serializable {
                         + ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;";
                 st.executeUpdate(experiments_table);
 
-                //CREATE TABLE proteins_table
-                String proteins_table = "CREATE TABLE IF NOT EXISTS `proteins_table` ("
-                        + "`id` int(11) NOT NULL auto_increment,  `accession` varchar(30) NOT NULL,"
-                        + "`description` varchar(500) NOT NULL default 'No Description Available',"
-                        + "PRIMARY KEY  (`accession`),  KEY `id` (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
-                st.executeUpdate(proteins_table);
 
                 //CREATE TABLE experiment_protein_table
-                String experiment_protein_table = "CREATE TABLE IF NOT EXISTS `experiment_protein_table` (\n" +
-"  `exp_id` int(11) NOT NULL,\n" +
-"  `prot_accession` varchar(30) NOT NULL,\n" +
-"  `other_protein(s)` varchar(1000) default NULL,\n" +
-"  `protein_inference_class` varchar(100) default NULL,\n" +
-"  `sequence_coverage(%)` double default NULL,\n" +
-"  `observable_coverage(%)` double default NULL,\n" +
-"  `confident_ptm_sites` varchar(500) default NULL,\n" +
-"  `number_confident` varchar(500) default NULL,\n" +
-"  `other_ptm_sites` varchar(500) default NULL,\n" +
-"  `number_other` varchar(500) default NULL,\n" +
-"  `number_validated_peptides` int(11) default NULL,\n" +
-"  `number_validated_spectra` int(11) default NULL,\n" +
-"  `em_pai` double default NULL,\n" +
-"  `nsaf` double default NULL,\n" +
-"  `mw_(kDa)` double default NULL,\n" +
-"  `score` double default NULL,\n" +
-"  `confidence` double default NULL,\n" +
-"  `starred` varchar(5) default NULL,\n" +
-"  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n" +
-"  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n" +
-"  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n" +
-"  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n" +
-"  `non_enzymatic_peptides` varchar(5) NOT NULL,\n" +
-"  `gene_name` varchar(50) NOT NULL default 'Not Available',\n" +
-"  `chromosome_number` varchar(20) NOT NULL default '',\n" +
-"  `prot_key` varchar(500) NOT NULL,\n" +
-"  `valid` varchar(7) NOT NULL default 'false',\n" +
-"  KEY `exp_id` (`exp_id`),\n" +
-"  KEY `prot_key` (`prot_key`(333))\n" +
-") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+                String experiment_protein_table = "CREATE TABLE IF NOT EXISTS `experiment_protein_table` (\n"
+                        + "  `exp_id` int(11) NOT NULL,\n"
+                        + "  `prot_accession` varchar(30) NOT NULL,\n"
+                        + "  `other_protein(s)` varchar(1000) default NULL,\n"
+                        + "  `protein_inference_class` varchar(100) default NULL,\n"
+                        + "  `sequence_coverage(%)` double default NULL,\n"
+                        + "  `observable_coverage(%)` double default NULL,\n"
+                        + "  `confident_ptm_sites` varchar(500) default NULL,\n"
+                        + "  `number_confident` varchar(500) default NULL,\n"
+                        + "  `other_ptm_sites` varchar(500) default NULL,\n"
+                        + "  `number_other` varchar(500) default NULL,\n"
+                        + "  `number_validated_peptides` int(11) default NULL,\n"
+                        + "  `number_validated_spectra` int(11) default NULL,\n"
+                        + "  `em_pai` double default NULL,\n"
+                        + "  `nsaf` double default NULL,\n"
+                        + "  `mw_(kDa)` double default NULL,\n"
+                        + "  `score` double default NULL,\n"
+                        + "  `confidence` double default NULL,\n"
+                        + "  `starred` varchar(5) default NULL,\n"
+                        + "  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n"
+                        + "  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n"
+                        + "  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n"
+                        + "  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n"
+                        + "  `non_enzymatic_peptides` varchar(5) NOT NULL,\n"
+                        + "  `gene_name` varchar(50) NOT NULL default 'Not Available',\n"
+                        + "  `chromosome_number` varchar(20) NOT NULL default '',\n"
+                        + "  `prot_key` varchar(500) NOT NULL,\n"
+                        + "  `valid` varchar(7) NOT NULL default 'false',\n"
+                        + "  `description` varchar(500) NOT NULL,\n"
+                        + "  `prot_group_id` int(255) NOT NULL auto_increment,\n"
+                        + "  PRIMARY KEY  (`prot_group_id`),\n"
+                        + "  KEY `exp_id` (`exp_id`),\n"
+                        + "  KEY `prot_key` (`prot_key`(333))\n"
+                        + ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;";
                 st.executeUpdate(experiment_protein_table);
 
                 //CREATE TABLE experiment_fractions_table
@@ -136,9 +133,35 @@ public class DB implements Serializable {
                 st.executeUpdate(experiment_peptide_table);
 
                 // CREATE TABLE  `proteins_peptides_table`
-                String proteins_peptides_table = "CREATE TABLE IF NOT EXISTS `proteins_peptides_table` (  `protein` varchar(70) default NULL,  `other_protein(s)` text,  `peptide_protein(s)` text,  `other_protein_description(s)` text,  `peptide_proteins_description(s)` text,  `aa_before` varchar(2000) default NULL,  `sequence` varchar(300) default NULL,  `aa_after` varchar(2000) default NULL,  `peptide_start` text,  `peptide_end` text,"
-                        + "  `variable_modification` varchar(500) default NULL,  `location_confidence` varchar(500) default NULL,  `precursor_charge(s)` varchar(70) default NULL,  `number_of_validated_spectra` int(20) default NULL,  `score` double NOT NULL default '0',  `confidence` double NOT NULL default '0',  `peptide_id` int(50) NOT NULL default '0',  `fixed_modification` varchar(100) default NULL,  `protein_inference` varchar(500) default NULL,  `sequence_tagged` varchar(500) default NULL,  `enzymatic` varchar(5) default NULL,"
-                        + "  `validated` double default NULL,  `starred` varchar(5) default NULL,`glycopattern_position(s)` varchar(100) default NULL, `deamidation_and_glycopattern` varchar(5) default NULL,  KEY `peptide_id` (`peptide_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+                String proteins_peptides_table = "CREATE TABLE IF NOT EXISTS `proteins_peptides_table` (\n"
+                        + "  `protein` varchar(70) default NULL,\n"
+                        + "  `other_protein(s)` text,\n"
+                        + "  `peptide_protein(s)` text,\n"
+                        + "  `other_protein_description(s)` text,\n"
+                        + "  `peptide_proteins_description(s)` text,\n"
+                        + "  `aa_before` varchar(2000) default NULL,\n"
+                        + "  `sequence` varchar(300) default NULL,\n"
+                        + "  `aa_after` varchar(2000) default NULL,\n"
+                        + "  `peptide_start` text,\n"
+                        + "  `peptide_end` text,\n"
+                        + "  `variable_modification` varchar(500) default NULL,\n"
+                        + "  `location_confidence` varchar(500) default NULL,\n"
+                        + "  `precursor_charge(s)` varchar(70) default NULL,\n"
+                        + "  `number_of_validated_spectra` int(20) default NULL,\n"
+                        + "  `score` double NOT NULL default '0',\n"
+                        + "  `confidence` double NOT NULL default '0',\n"
+                        + "  `peptide_id` int(50) NOT NULL default '0',\n"
+                        + "  `fixed_modification` varchar(100) default NULL,\n"
+                        + "  `protein_inference` varchar(500) default NULL,\n"
+                        + "  `sequence_tagged` varchar(500) default NULL,\n"
+                        + "  `enzymatic` varchar(5) default NULL,\n"
+                        + "  `validated` double default NULL,\n"
+                        + "  `starred` varchar(5) default NULL,\n"
+                        + "  `glycopattern_position(s)` varchar(100) default NULL,\n"
+                        + "  `deamidation_and_glycopattern` varchar(5) default NULL,\n"
+                        + "  `exp_id` int(250) NOT NULL default '0',\n"
+                        + "  KEY `peptide_id` (`peptide_id`)\n"
+                        + ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(proteins_peptides_table);
 
                 //CREATE TABLE fractions_table
@@ -218,50 +241,50 @@ public class DB implements Serializable {
         return id;
     }
 
-    public synchronized int insertProt(String accession, String desc)//fill protein table
-    {
-        int test = -1;
-        try {
-            if (conn == null || conn.isClosed()) {
-                Class.forName(driver).newInstance();
-                conn = DriverManager.getConnection(url + dbName, userName, password);
-            }
-            String insertProt = "INSERT INTO  `" + dbName + "`.`proteins_table` (`accession` ,`description`)VALUES (?,?);";
-            PreparedStatement insertProtStat = conn.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
-            insertProtStat.setString(1, accession.toUpperCase());
-            insertProtStat.setString(2, desc.toUpperCase());
-            test = insertProtStat.executeUpdate();
-            insertProtStat.close();
-        } catch (Exception e) {
-            test = updateProt(accession, desc);
-            System.out.println(e.getLocalizedMessage());
-//            e.printStackTrace();
-        }
-        return test;
-    }
+//    public synchronized int insertProt(String accession, String desc)//fill protein table
+//    {
+//        int test = -1;
+//        try {
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+////            String insertProt = "INSERT INTO  `" + dbName + "`.`proteins_table` (`accession` ,`description`)VALUES (?,?);";
+////            PreparedStatement insertProtStat = conn.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
+////            insertProtStat.setString(1, accession.toUpperCase());
+////            insertProtStat.setString(2, desc.toUpperCase());
+////            test = insertProtStat.executeUpdate();
+////            insertProtStat.close();
+//        } catch (Exception e) {
+//            test = updateProt(accession, desc);
+//            System.out.println(e.getLocalizedMessage());
+////            e.printStackTrace();
+//        }
+//        return test;
+//    }
 
-    private synchronized int updateProt(String accession, String desc)//fill protein table
-    {
-        int test = -1;
-        try {
-            if (conn == null || conn.isClosed()) {
-                Class.forName(driver).newInstance();
-                conn = DriverManager.getConnection(url + dbName, userName, password);
-            }
-            String insertProt = "UPDATE  `" + dbName + "`.`proteins_table` SET `description` = ? WHERE `accession`=?;";
-            PreparedStatement insertProtStat = conn.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
-            insertProtStat.setString(1, desc.toUpperCase());
-            insertProtStat.setString(2, accession.toUpperCase());
-            test = insertProtStat.executeUpdate();
-            insertProtStat.clearParameters();
-            insertProtStat.close();
-        } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
-//            e.printStackTrace();
-
-        }
-        return test;
-    }
+//    private synchronized int updateProt(String accession, String desc)//fill protein table
+//    {
+//        int test = -1;
+//        try {
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            String insertProt = "UPDATE  `" + dbName + "`.`proteins_table` SET `description` = ? WHERE `accession`=?;";
+//            PreparedStatement insertProtStat = conn.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
+//            insertProtStat.setString(1, desc.toUpperCase());
+//            insertProtStat.setString(2, accession.toUpperCase());
+//            test = insertProtStat.executeUpdate();
+//            insertProtStat.clearParameters();
+//            insertProtStat.close();
+//        } catch (Exception e) {
+//            System.out.println(e.getLocalizedMessage());
+////            e.printStackTrace();
+//
+//        }
+//        return test;
+//    }
 
     public synchronized int insertProteinExper(int expId, ProteinBean pb, String key) {
         int test = -1;
@@ -270,7 +293,7 @@ public class DB implements Serializable {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
-            String insertProtExp = "INSERT INTO  `" + dbName + "`.`experiment_protein_table` (`exp_id` ,`prot_accession` ,`other_protein(s)` ,`protein_inference_class` ,`sequence_coverage(%)` ,`observable_coverage(%)` ,`confident_ptm_sites` ,`number_confident` ,`other_ptm_sites` ,`number_other` ,`number_validated_peptides` ,`number_validated_spectra` ,`em_pai` ,`nsaf` ,`mw_(kDa)` ,`score` ,`confidence` ,`starred`,`non_enzymatic_peptides`,`gene_name`,`chromosome_number`,`prot_key`,`valid`)VALUES (?,?,?,?,?,  ?, ?, ?, ?,  ?,  ?, ?, ?, ?, ?,  ?, ?,?,?,?,?,?,?);";
+            String insertProtExp = "INSERT INTO  `" + dbName + "`.`experiment_protein_table` (`exp_id` ,`prot_accession` ,`other_protein(s)` ,`protein_inference_class` ,`sequence_coverage(%)` ,`observable_coverage(%)` ,`confident_ptm_sites` ,`number_confident` ,`other_ptm_sites` ,`number_other` ,`number_validated_peptides` ,`number_validated_spectra` ,`em_pai` ,`nsaf` ,`mw_(kDa)` ,`score` ,`confidence` ,`starred`,`non_enzymatic_peptides`,`gene_name`,`chromosome_number`,`prot_key`,`valid`,`description`)VALUES (?,?,?,?,?,  ?, ?, ?, ?,  ?,  ?, ?, ?, ?, ?,  ?, ?,?,?,?,?,?,?,?);";
             PreparedStatement insertProtStat = conn.prepareStatement(insertProtExp, Statement.RETURN_GENERATED_KEYS);
             insertProtStat.setInt(1, expId);
             insertProtStat.setString(2, pb.getAccession().toUpperCase());
@@ -303,7 +326,8 @@ public class DB implements Serializable {
                 insertProtStat.setString(21, pb.getChromosomeNumber().toUpperCase());
             }
             insertProtStat.setString(22, (String.valueOf(key).toUpperCase()));
-            insertProtStat.setString(23,(pb.isValidated()+"").toUpperCase());
+            insertProtStat.setString(23, (pb.isValidated() + "").toUpperCase());
+            insertProtStat.setString(24, pb.getDescription().toUpperCase());
 
             test = insertProtStat.executeUpdate();
             insertProtStat.close();
@@ -325,6 +349,9 @@ public class DB implements Serializable {
             }
             int counter = 0;
             for (PeptideBean pepb : exp.getPeptideList().values()) {
+                if (pepb.getDecoy() == 1) {
+                    continue;
+                }
                 insertPeptide(-1, pepb, exp.getExpId());
                 counter++;
                 if (counter == 10000) {
@@ -347,8 +374,8 @@ public class DB implements Serializable {
 
     public synchronized int insertPeptide(int pepId, PeptideBean pepb, int expId) {
         String insertPeptide = "INSERT INTO  `" + dbName + "`.`proteins_peptides_table` (`protein` ,`other_protein(s)` ,`peptide_protein(s)` ,`other_protein_description(s)` ,`peptide_proteins_description(s)` ,`aa_before` ,`sequence` ,"
-                + "`aa_after` ,`peptide_start` ,`peptide_end` ,`variable_modification` ,`location_confidence` ,`precursor_charge(s)` ,`number_of_validated_spectra` ,`score` ,`confidence` ,`peptide_id`,`fixed_modification`,`protein_inference`,`sequence_tagged`,`enzymatic`,`validated`,`starred`,`glycopattern_position(s)`,`deamidation_and_glycopattern` )VALUES ("
-                + "?,?,?,?,?,?,?,?,?,?,? , ? , ?,?,?,?,?,?,?,?,?,?,?,?,?);";
+                + "`aa_after` ,`peptide_start` ,`peptide_end` ,`variable_modification` ,`location_confidence` ,`precursor_charge(s)` ,`number_of_validated_spectra` ,`score` ,`confidence` ,`peptide_id`,`fixed_modification`,`protein_inference`,`sequence_tagged`,`enzymatic`,`validated`,`starred`,`glycopattern_position(s)`,`deamidation_and_glycopattern`,`exp_id` )VALUES ("
+                + "?,?,?,?,?,?,?,?,?,?,? , ? , ?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
         if (pepId == -1)//generate peptide id
         {
             String insertPeptideExp = "INSERT INTO  `" + dbName + "`.`experiment_peptides_table` (`exp_id`) VALUES (?) ;";
@@ -413,6 +440,7 @@ public class DB implements Serializable {
             } else {
                 insertPeptideStat.setString(25, "");
             }
+            insertPeptideStat.setInt(26, expId);
 
             test = insertPeptideStat.executeUpdate();
 
@@ -537,7 +565,7 @@ public class DB implements Serializable {
 
     }
 
-    public boolean checkName(String name) {
+    public boolean checkName(String name) throws SQLException{
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -555,6 +583,7 @@ public class DB implements Serializable {
             rs.close();
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
+            throw  new SQLException();
 //            e.printStackTrace();
         }
         return true;

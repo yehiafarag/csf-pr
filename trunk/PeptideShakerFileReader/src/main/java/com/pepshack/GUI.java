@@ -196,6 +196,11 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         });
 
         jPasswordField1.setText("jPasswordField1");
+        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Experiment Name:");
 
@@ -623,6 +628,10 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -848,9 +857,9 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
             jTextField14.setText(errorMessage);
         } else {
             valid = true;
-            File resourcefolder = new File(jTextField14.getText(), "resources");
-            if (resourcefolder.exists()) {
-                for (File f : resourcefolder.listFiles()) {
+            File localResourcefolder = new File(jTextField14.getText(), "resources");
+            if (localResourcefolder.exists()) {
+                for (File f : localResourcefolder.listFiles()) {
                     if (f.getName().equalsIgnoreCase("matches")) {
                         for (File f2 : f.listFiles()) {
                             f2.delete();
@@ -866,18 +875,23 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         }
         if (valid) {
             try {
-                exphandeler = new Handler("jdbc:mysql://" + jTextField13.getText() + ":3306/", "csf_db_6_F", "com.mysql.jdbc.Driver", jTextField1.getText(), jPasswordField1.getText());
+                exphandeler = new Handler("jdbc:mysql://" + jTextField13.getText() + ":3306/", "csf_db_8_F", "com.mysql.jdbc.Driver", jTextField1.getText(), jPasswordField1.getText());
             } catch (SQLException sqlE) {
                 valid = false;
                 jTextField13.setText("Please check Database Params");
                 jTextField13.setForeground(Color.red);
                 return valid;
-            }
+            }try{
             boolean checkName = exphandeler.checkName(jTextField2.getText());
             if (!checkName) {
+                System.out.println("database conn is faild");
                 valid = false;
                 jTextField2.setForeground(Color.red);
                 jTextField2.setText(errorName);
+            }
+            }catch(SQLException sqlExp){
+                jPasswordField1.setForeground(Color.red);
+                 valid = false;            
             }
         }
 

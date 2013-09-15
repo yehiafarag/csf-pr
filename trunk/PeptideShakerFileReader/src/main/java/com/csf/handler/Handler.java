@@ -35,7 +35,7 @@ public class Handler {
         return test;
     }
 
-    public boolean checkName(String name) {
+    public boolean checkName(String name) throws SQLException {
         boolean test = dal.checkName(name);
         return test;
     }

@@ -30,7 +30,7 @@ public class DAL {
         for (String key : exp.getProteinList().keySet()) {
             ProteinBean pb = exp.getProteinList().get(key);
             database.insertProteinExper(exp.getExpId(), pb, key);
-            database.insertProt(pb.getAccession(), pb.getDescription());
+//            database.insertProt(pb.getAccession(), pb.getDescription());
         }
 
         return true;
@@ -46,7 +46,7 @@ public class DAL {
         return test;
     }
 
-    public boolean checkName(String name) {
+    public boolean checkName(String name)  throws SQLException {
         boolean test = database.checkName(name);
         return test;
 
