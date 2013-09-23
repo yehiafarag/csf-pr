@@ -32,6 +32,7 @@ public class Handler {
         if (!exp.getFractionsList().isEmpty()) {
             test = dal.storeFractionsList(exp);
         }
+        System.gc();
         return test;
     }
 
