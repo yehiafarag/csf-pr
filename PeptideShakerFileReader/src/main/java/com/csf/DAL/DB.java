@@ -187,7 +187,6 @@ public class DB implements Serializable {
             } catch (SQLException s) {
                 throw s;
             }
-            // 
         } catch (Exception e) {
             return false;
         }
@@ -235,56 +234,10 @@ public class DB implements Serializable {
             rs.close();
             conn.close();
         } catch (Exception e) {
-//            e.printStackTrace();
             System.out.println(e.getLocalizedMessage());
         }
         return id;
     }
-
-//    public synchronized int insertProt(String accession, String desc)//fill protein table
-//    {
-//        int test = -1;
-//        try {
-//            if (conn == null || conn.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-////            String insertProt = "INSERT INTO  `" + dbName + "`.`proteins_table` (`accession` ,`description`)VALUES (?,?);";
-////            PreparedStatement insertProtStat = conn.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
-////            insertProtStat.setString(1, accession.toUpperCase());
-////            insertProtStat.setString(2, desc.toUpperCase());
-////            test = insertProtStat.executeUpdate();
-////            insertProtStat.close();
-//        } catch (Exception e) {
-//            test = updateProt(accession, desc);
-//            System.out.println(e.getLocalizedMessage());
-////            e.printStackTrace();
-//        }
-//        return test;
-//    }
-
-//    private synchronized int updateProt(String accession, String desc)//fill protein table
-//    {
-//        int test = -1;
-//        try {
-//            if (conn == null || conn.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            String insertProt = "UPDATE  `" + dbName + "`.`proteins_table` SET `description` = ? WHERE `accession`=?;";
-//            PreparedStatement insertProtStat = conn.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
-//            insertProtStat.setString(1, desc.toUpperCase());
-//            insertProtStat.setString(2, accession.toUpperCase());
-//            test = insertProtStat.executeUpdate();
-//            insertProtStat.clearParameters();
-//            insertProtStat.close();
-//        } catch (Exception e) {
-//            System.out.println(e.getLocalizedMessage());
-////            e.printStackTrace();
-//
-//        }
-//        return test;
-//    }
 
     public synchronized int insertProteinExper(int expId, ProteinBean pb, String key) {
         int test = -1;
@@ -333,7 +286,6 @@ public class DB implements Serializable {
             insertProtStat.close();
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-//            e.printStackTrace();
             return -1;
         }
 
@@ -366,7 +318,6 @@ public class DB implements Serializable {
 
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-//            e.printStackTrace();
             return false;
         }
         return true;
@@ -395,7 +346,6 @@ public class DB implements Serializable {
 
             } catch (Exception e) {
                 System.out.println(e.getLocalizedMessage());
-//                e.printStackTrace();
             }
         }
 
@@ -470,7 +420,6 @@ public class DB implements Serializable {
                 insertPeptideStat.close();
             } catch (SQLException e1) {
                 System.out.println(e1.getLocalizedMessage());
-//                e1.printStackTrace();
             }
         }
 
@@ -498,7 +447,6 @@ public class DB implements Serializable {
             conn.close();
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-//            e.printStackTrace();
         }
 
         return test;
@@ -532,7 +480,6 @@ public class DB implements Serializable {
             }
         } catch (Exception exc) {
             System.out.println(exc.getLocalizedMessage());
-//            exc.printStackTrace();
             return false;
         }
         return true;
@@ -552,20 +499,17 @@ public class DB implements Serializable {
             insertProtFracStat.setInt(3, fpb.getNumberOfPeptidePerFraction());
             insertProtFracStat.setInt(4, fpb.getNumberOfSpectraPerFraction());
             insertProtFracStat.setDouble(5, fpb.getAveragePrecursorIntensityPerFraction());
-
             test = insertProtFracStat.executeUpdate();
             insertProtFracStat.close();
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-//            e.printStackTrace();
             return -1;
         }
-
         return test;
 
     }
 
-    public boolean checkName(String name) throws SQLException{
+    public boolean checkName(String name) throws SQLException {
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -583,8 +527,7 @@ public class DB implements Serializable {
             rs.close();
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
-            throw  new SQLException();
-//            e.printStackTrace();
+            throw new SQLException();
         }
         return true;
     }

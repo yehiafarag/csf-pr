@@ -935,7 +935,10 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                                 }
                             }
 
-                        } 
+                        }
+                        Thread.sleep(10000);
+                        System.gc();
+                        System.exit(0);
             } else {
                 jLabel13.setText("Failed :(");
             }
