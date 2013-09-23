@@ -102,7 +102,7 @@ public class SearchUnit extends CustomComponent implements ClickListener, Serial
 
         //search form layout
         final Form newSearchForm = new Form();
-        searchField = new TextArea("Search Key ");
+        searchField = new TextArea("Searching Key ");
         searchField.setDescription("For Multiple Search...Please Use One key word Per Line !");
         searchField.setValue(defaultText);
         searchField.setImmediate(true);
