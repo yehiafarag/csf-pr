@@ -28,7 +28,7 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
-    private Map<Integer, ProteinBean> protienFractionList;
+    //private Map<Integer, ProteinBean> protienFractionList;
     private double mw;
     private ArrayList<String> ranges;
     private Button close;
@@ -41,10 +41,9 @@ public class FractionsPlots extends VerticalLayout implements Serializable {
     @SuppressWarnings("deprecation")
     public FractionsPlots(Map<Integer, ProteinBean> protienFractionList, double mw,  List<StandardProteinBean> standProtList) {
         this.mw = mw;
-        this.ranges = ranges;
         setSpacing(true);
         this.setWidth("80%");
-        this.protienFractionList = protienFractionList;
+      //  this.protienFractionList = protienFractionList;
         VerticalLayout vlo = plotFull(protienFractionList, mw, standProtList);
         vlo.setStyle(Runo.PANEL_LIGHT);
         vlo.setWidth("100%");

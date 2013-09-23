@@ -61,6 +61,7 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
       
         eh = new ExperimentHandler(url, dbName, driver, userName, password);
         this.updateComponents(this.user);
+       
         auth = new Authenticator(url, dbName, driver, userName, password);
         pi.setValue(0f);
         pi.setCaption("Loading...");
@@ -548,11 +549,7 @@ public class UploadUnit extends CustomComponent implements Upload.Receiver, Uplo
             }
         } 
         else//update old experiment
-        {
-
-               
-                
-                
+        {          
             String str = select.getValue().toString();
             String[] strArr = str.split("\t");
             int id = (Integer.valueOf(strArr[0]));

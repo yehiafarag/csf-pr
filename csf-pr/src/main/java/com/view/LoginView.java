@@ -49,7 +49,6 @@ public class LoginView extends VerticalLayout implements TabSheet.SelectedTabCha
     private TabSheet mainTab;
     private ExperimentBean expDet;
     private VerticalLayout removeExperimentLayout;
-    @SuppressWarnings("unused")
     private Tab t1, t2, t3, t4;
     private VerticalLayout l1;
     private VerticalLayout l2, l3, l4;

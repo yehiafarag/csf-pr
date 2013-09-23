@@ -31,6 +31,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ChameleonTheme;
 import com.view.subviewunits.ExperimentsTable;
 import com.view.subviewunits.ExperimentDetails;
 import com.view.subviewunits.FractionsPlots;
@@ -216,7 +217,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
         protTableLayout.setComponentAlignment(protTable, Alignment.TOP_CENTER);
         protTableLayout.setMargin(true, false, false, false);
         Button expBtnProtTable = new Button("Export Proteins");
-        expBtnProtTable.setStyle(Reindeer.BUTTON_SMALL);
+        expBtnProtTable.setStyle(Reindeer.BUTTON_SMALL);//Reindeer.BUTTON_SMALL);
         expBtnProtTable.setHeight("19px");
         expBtnProtTable.addListener(new ClickListener() {
             private static final long serialVersionUID = -73954695086117200L;
@@ -319,6 +320,7 @@ public class ProteinView extends VerticalLayout implements Serializable, Propert
         final VerticalLayout fractionLayout = new VerticalLayout();
         protTableLayout.addComponent(fractionLayout);
         fractionLayout.setWidth("100%");
+        
         protTable.addListener(new Property.ValueChangeListener() {
             /**
              *
