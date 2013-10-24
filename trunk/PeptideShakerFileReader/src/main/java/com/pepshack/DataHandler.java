@@ -38,7 +38,7 @@ public class DataHandler {
         }
         label.setText("Start Fractions processing...");
         exp = this.getFractionList(exp);
-        if (!exp.getFractionsList().isEmpty() || exp.getFractionsList().size() != 1) {
+        if (!exp.getFractionsList().isEmpty() ){//|| exp.getFractionsList().size() != 1) {
             exp.setFractionsNumber(exp.getFractionsList().size());
         } else {
             exp.setFractionsNumber(0);
