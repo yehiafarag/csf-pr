@@ -165,7 +165,7 @@ public class DB implements Serializable {
                 st.executeUpdate(proteins_peptides_table);
 
                 //CREATE TABLE fractions_table
-                String fractions_table = "CREATE TABLE IF NOT EXISTS `fractions_table` (  `fraction_id` int(11) NOT NULL,`prot_accession` varchar(30) NOT NULL,"
+                String fractions_table = "CREATE TABLE IF NOT EXISTS `fractions_table` (  `fraction_id` int(11) NOT NULL,`prot_accession` varchar(500) NOT NULL,"
                         + "`number_peptides` int(11) NOT NULL default '0',  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `number_spectra` int(11) NOT NULL default '0',`average_ precursor_intensity` double default NULL," + "KEY `prot_accession` (`prot_accession`), KEY `fraction_id` (`fraction_id`),	FOREIGN KEY (`prot_accession`) REFERENCES proteins_table(`accession`) ON DELETE CASCADE,"
                         + "FOREIGN KEY (`fraction_id`) REFERENCES experiment_fractions_table(`fraction_id`) ON DELETE CASCADE	) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(fractions_table);
@@ -495,7 +495,7 @@ public class DB implements Serializable {
             String insertProtFract = "INSERT INTO  `" + dbName + "`.`fractions_table` (`fraction_id` ,`prot_accession` ,`number_peptides` ,`number_spectra` ,`average_ precursor_intensity`)VALUES (?, ?,  ?,  ?,  ?);";
             PreparedStatement insertProtFracStat = conn.prepareStatement(insertProtFract, Statement.RETURN_GENERATED_KEYS);
             insertProtFracStat.setInt(1, fractId);
-            insertProtFracStat.setString(2, fpb.getAccession().toUpperCase());
+            insertProtFracStat.setString(2,fpb.getAccession().toUpperCase()+","+fpb.getOtherProteins());
             insertProtFracStat.setInt(3, fpb.getNumberOfPeptidePerFraction());
             insertProtFracStat.setInt(4, fpb.getNumberOfSpectraPerFraction());
             insertProtFracStat.setDouble(5, fpb.getAveragePrecursorIntensityPerFraction());

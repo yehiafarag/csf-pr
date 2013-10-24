@@ -567,7 +567,7 @@ public class UpdatedOutputGenerator {
 
                 fractionFileNames.add(fileName);
             }
-            if (fractionFileNames.isEmpty() || fractionFileNames.size() == 1) {
+            if (fractionFileNames.isEmpty() ){//|| fractionFileNames.size() == 1) {
                 exp.setFractionsList(fractionsList);
                 return exp;
             }
@@ -588,9 +588,41 @@ public class UpdatedOutputGenerator {
                         for (String proteinKey : proteinKeys) {
                             proteinPSParameter = (PSParameter) identification.getProteinMatchParameter(proteinKey, proteinPSParameter);
                             ProteinMatch proteinMatch = identification.getProteinMatch(proteinKey);
+                            
+                            
+                              ArrayList<String> maximalProteinSet = new ArrayList<String>();
+                         String accession =      proteinMatch.getMainMatch();
+                         String otherProteins ="";
+                                       maximalProteinSet.add(proteinMatch.getMainMatch());
+                                        
+                                        if (true ) {
+                                            boolean first = true;
+                                            // sort so that the protein accessions always come in the same order
+                                            ArrayList<String> allProteins = proteinMatch.getTheoreticProteinsAccessions();
+                                            Collections.sort(allProteins);
+                                            StringBuilder completeProteinGroup = new StringBuilder();
+
+                                            for (String otherProtein : allProteins) {
+                                                if (otherProtein.equalsIgnoreCase(proteinMatch.getMainMatch())) {
+                                                    continue;
+                                                }
+                                                if (true && !maximalProteinSet.contains(otherProtein)) {
+                                                    maximalProteinSet.add(otherProtein);
+                                                }
+                                                if (completeProteinGroup.length() > 0) {
+                                                    completeProteinGroup.append(",");
+                                                }
+                                                completeProteinGroup.append(otherProtein);
+                                            }
+
+                                            
+                                               otherProteins = completeProteinGroup.toString();
+                                          
+                                        }
+                            
                             ProteinBean pb = null;
                             if (exp.getProteinList() != null) {
-                                pb = exp.getProteinList().get(proteinKey);
+                                pb = exp.getProteinList().get(accession+ "," + otherProteins);
                             }
                             if (pb == null) {
                                 pb = new ProteinBean();
