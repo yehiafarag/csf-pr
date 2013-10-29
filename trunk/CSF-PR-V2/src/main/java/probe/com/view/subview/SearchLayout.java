@@ -441,7 +441,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                                             break;
                                         }
                                     }
-                                    Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession, fractionsList, exp.getExpId());
+                                    Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession+","+otherAccession, fractionsList, exp.getExpId());
                                     FractionsLayout flo = new FractionsLayout(accession, mw, proteinFractionAvgList, standardProtPlotList, exp.getName());
                                     flo.setMargin(new MarginInfo(false, false, false, false));
                                     fractionsLayout.addComponent(flo);
