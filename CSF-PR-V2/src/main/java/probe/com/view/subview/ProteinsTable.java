@@ -123,15 +123,15 @@ public class ProteinsTable extends Table implements Serializable {
             validated.setDescription("" + pb.isValidated());
 
 
-            if (pb.getProteinInferenceClass().equalsIgnoreCase("SINGLE PROTEIN")) {
+            if (pb.getProteinInferenceClass().trim().equalsIgnoreCase("SINGLE PROTEIN")) {
                 res2 = new ExternalResource("http://sphotos-d.ak.fbcdn.net/hphotos-ak-snc6/263426_116594491857485_1503571748_n.jpg");
-            } else if (pb.getProteinInferenceClass().equalsIgnoreCase("UNRELATED PROTEINS")) {
+            } else if (pb.getProteinInferenceClass().trim().equalsIgnoreCase("UNRELATED PROTEINS")) {
                 res2 = new ExternalResource("http://sphotos-h.ak.fbcdn.net/hphotos-ak-prn1/549354_116594531857481_1813966302_n.jpg");
             } else if (pb.getProteinInferenceClass().equalsIgnoreCase("ISOFORMS")) {
                 res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
-            } else if (pb.getProteinInferenceClass().equalsIgnoreCase("UNRELATED ISOFORMS") || pb.getProteinInferenceClass().equalsIgnoreCase("ISOFORMS AND UNRELATED PROTEIN(S)")) {
+            } else if (pb.getProteinInferenceClass().trim().equalsIgnoreCase("UNRELATED ISOFORMS") || pb.getProteinInferenceClass().equalsIgnoreCase("ISOFORMS AND UNRELATED PROTEIN(S)")) {
                 res2 = new ExternalResource("http://sphotos-a.ak.fbcdn.net/hphotos-ak-prn1/544345_116594495190818_129866024_n.jpg");
-            } else if (pb.getProteinInferenceClass().equalsIgnoreCase("Related Proteins")) {
+            } else if (pb.getProteinInferenceClass().trim().equalsIgnoreCase("Related Proteins")) {
                 res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
                 pi = new CustomPI(pb.getProteinInferenceClass(), res2);
                 pi.setDescription(pb.getProteinInferenceClass());

@@ -128,7 +128,7 @@ public class ExperimentHandler implements Serializable {
 
     public Map<Integer, FractionBean> getFractionsList(int expId, Map<Integer, ExperimentBean> expList) {
         Map<Integer, FractionBean> fractionsList;
-        if (expList.containsKey(expId) && expList.get(expId).getFractionsList() != null) {
+        if (expList.containsKey(expId) && expList.get(expId).getFractionsList() != null && (!expList.get(expId).getFractionsList().isEmpty())) {
             //check if exp updated if not
             fractionsList = expList.get(expId).getFractionsList();
         } else {

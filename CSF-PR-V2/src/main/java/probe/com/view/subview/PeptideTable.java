@@ -136,18 +136,18 @@ public class PeptideTable extends Table implements Serializable {
                 pi = new CustomPI(pb.getProteinInference(), res2);
                 pi.setDescription(pb.getProteinInference());
 
-            } else if (pb.getProteinInference().equalsIgnoreCase("UNRELATED PROTEINS")) {
+            } else if (pb.getProteinInference().trim().equalsIgnoreCase("UNRELATED PROTEINS")) {
 
                 res2 = new ExternalResource("http://sphotos-h.ak.fbcdn.net/hphotos-ak-prn1/549354_116594531857481_1813966302_n.jpg");
                 pi = new CustomPI(pb.getProteinInference(), res2);
                 pi.setDescription(pb.getProteinInference());
 
-            } else if (pb.getProteinInference().equalsIgnoreCase("Related Proteins")) {
+            } else if (pb.getProteinInference().trim().equalsIgnoreCase("Related Proteins")) {
                 res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
                 pi = new CustomPI(pb.getProteinInference(), res2);
                 pi.setDescription(pb.getProteinInference());
 
-            } else if (pb.getProteinInference().equalsIgnoreCase("UNRELATED ISOFORMS") || pb.getProteinInference().equalsIgnoreCase("ISOFORMS AND UNRELATED PROTEIN(S)")) {
+            } else if (pb.getProteinInference().trim().equalsIgnoreCase("UNRELATED ISOFORMS") || pb.getProteinInference().equalsIgnoreCase("ISOFORMS AND UNRELATED PROTEIN(S)")) {
                 res2 = new ExternalResource("http://sphotos-a.ak.fbcdn.net/hphotos-ak-prn1/544345_116594495190818_129866024_n.jpg");
                 pi = new CustomPI(pb.getProteinInference(), res2);
                 pi.setDescription(pb.getProteinInference());
