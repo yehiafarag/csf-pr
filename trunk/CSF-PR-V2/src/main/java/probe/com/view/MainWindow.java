@@ -33,6 +33,7 @@ public class MainWindow extends VerticalLayout implements Serializable {
         //body
         Body body = new Body(expHandler);
         this.addComponent(body);
+        
 
 
     }

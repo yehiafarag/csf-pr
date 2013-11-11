@@ -123,7 +123,7 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
             selectLayout.setComponentAlignment(selectExp, Alignment.TOP_LEFT);
             //selectLayout.setExpandRatio(selectExp, 0.4f);
 
-            Label infoLable = new Label("<center style='background-color:#E6E6FA;'><p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Bar charts showing the distribution of the protein in the fractions cut from the gel.<br/>Three charts show number of peptides, number of spectra and average precursor intensity.<br/>The fraction number represents the gel pieces cut from top to bottom.<br/>Protein standards (dark blue bars) indicate the molecular weight range of each fraction. Darker blue bars mark the area where the protein's theoretical mass suggests the protein should occur. </p></center>");
+            Label infoLable = new Label("<p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Bar charts showing the distribution of the protein in the fractions cut from the gel.<br/>Three charts show number of peptides, number of spectra and average precursor intensity.<br/>The fraction number represents the gel pieces cut from top to bottom.<br/>Protein standards (dark blue bars) indicate the molecular weight range of each fraction. Darker blue bars mark the area where the protein's theoretical mass suggests the protein should occur. </p>");
             infoLable.setContentMode(Label.CONTENT_XHTML);
             infoLable.setWidth("450px");
             infoLable.setStyleName(Reindeer.LAYOUT_BLUE);
@@ -257,7 +257,7 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                                 }
                                 fractionsList = expHandler.getFractionsList(exp.getExpId(), expList);
                                 List<StandardProteinBean> standardProtPlotList = expHandler.getStandardProtPlotList(exp.getExpId());
-                                if (exp == null || exp.getReady() != 2 || standardProtPlotList == null || standardProtPlotList.isEmpty() || fractionsList == null || fractionsList.isEmpty()) {
+                                if (exp == null || standardProtPlotList == null || standardProtPlotList.isEmpty() || fractionsList == null || fractionsList.isEmpty()) {
                                     if (protTableLayout.getProtTable() != null) {
                                         protTableLayout.getProtTable().setHeight("267.5px");
                                         protTableLayout.setProtSize("267.5px");
@@ -285,10 +285,13 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                                                 break;
                                             }
                                         }
-                                        Map<Integer, ProteinBean> proteinFractionAvgList =
-                                                expHandler.getProteinFractionAvgList(accession+","+otherAccession, fractionsList, exp.getExpId());
-                                        fractionLayout.addComponent(new FractionsLayout(
-                                                accession, mw, proteinFractionAvgList, standardProtPlotList, exp.getName()));
+                                        Map<Integer, ProteinBean> proteinFractionAvgList = expHandler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, exp.getExpId());
+                                        if (proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
+                                            fractionLayout.removeAllComponents();
+                                        } else {
+                                            fractionLayout.addComponent(new FractionsLayout(
+                                                    accession, mw, proteinFractionAvgList, standardProtPlotList, exp.getName()));
+                                        }
                                     } else {
 //                                        Notification.show("YOU NEED TO SELECT A READY DATASET FIRST!");
                                     }

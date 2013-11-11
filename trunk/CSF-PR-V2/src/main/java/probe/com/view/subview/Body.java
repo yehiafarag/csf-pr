@@ -10,6 +10,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Runo;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import probe.com.control.ExperimentHandler;
@@ -43,6 +44,8 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
     private void initBody() {
 
         expListStr = new TreeMap<Integer, String>();
+        if(expList == null)
+            expList= new HashMap<Integer, ExperimentBean>();
         for (int key2 : expList.keySet()) {
             ExperimentBean expB = expList.get(key2);
             expListStr.put(key2, "\t" + expB.getName());

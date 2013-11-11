@@ -111,6 +111,8 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
 
                     if (highScore < pb.getNumberOfPeptidePerFraction()) {
                         highScore = pb.getNumberOfPeptidePerFraction();
+                        if(highScore == 0)
+                            highScore =1d;
                     }
                     x++;
                     f++;
@@ -145,6 +147,8 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
 
                     if (highScore < pb.getNumberOfSpectraPerFraction()) {
                         highScore = pb.getNumberOfSpectraPerFraction();
+                        if(highScore == 0)
+                            highScore =1d;
                     }
                     x++;
                     f++;
@@ -180,6 +184,8 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
 
                     if (highScore < avg) {
                         highScore = avg;
+                        if(highScore == 0)
+                            highScore =1d;
                     }
                     x++;
                     f++;

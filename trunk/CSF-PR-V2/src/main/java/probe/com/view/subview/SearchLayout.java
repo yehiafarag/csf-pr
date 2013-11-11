@@ -248,6 +248,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
         HorizontalLayout infoIco = help.getInfoNote(infoLable);
         infoIco.setMargin(new MarginInfo(false, true, false, true));
         topRightLayout.addComponent(infoIco);
+        topRightLayout.setExpandRatio(infoIco, 0.8f);
         topRightLayout.setComponentAlignment(infoIco, Alignment.MIDDLE_RIGHT);
         errorLabelII.setVisible(false);
 
