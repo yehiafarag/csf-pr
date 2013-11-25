@@ -161,16 +161,16 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
             this.addComponent(pepTable);
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {
                 csvExport = new CsvExport(pepTable, typeGroup + " Peptides");
-                csvExport.setReportTitle(typeGroup + " Peptides" + " for Data Set ( " + expName + " )");
-                csvExport.setExportFileName(typeGroup + " Peptides" + " for ( " + expName + " ).csv");
+                csvExport.setReportTitle(typeGroup + " Peptides" + " for Data Set ( CSF-PR / " + expName + " )");
+                csvExport.setExportFileName(typeGroup + " Peptides" + " for ( CSF-PR / " + expName + " ).csv");
                 csvExport.setMimeType(CsvExport.CSV_MIME_TYPE);
                 csvExport.setDisplayTotals(false);
                 csvExport.export();
 
             } else {
                 excelExport = new ExcelExport(pepTable);
-                excelExport.setReportTitle(type + " Peptides" + " for Data Set ( " + expName + " )");
-                excelExport.setExportFileName(type + " Peptides" + " for ( " + expName + " ).xls");
+                excelExport.setReportTitle(typeGroup + " Peptides" + " for Data Set ( CSF-PR / " + expName + " )");
+                excelExport.setExportFileName(typeGroup + " Peptides" + " for ( CSF-PR / " + expName + " ).xls");
                 excelExport.setMimeType(ExcelExport.EXCEL_MIME_TYPE);
                 excelExport.setDisplayTotals(false);
                 excelExport.export();
@@ -185,7 +185,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
                 pl = handler.getProtAllPep(accession, otherAccession, expList, true);
 
             } else if (typeGroup.getValue().toString().equalsIgnoreCase("All")) {
-                pl = handler.getProtAllPep(accession, otherAccession, expList, true);
+                pl = handler.getProtAllPep(accession, otherAccession, expList, false);
             }
 
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {
@@ -210,17 +210,17 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
             searcheResultsTable.setVisible(false);
             this.addComponent(searcheResultsTable);
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {
-                csvExport = new CsvExport(searcheResultsTable, typeGroup + " Search Results");
-                csvExport.setReportTitle(typeGroup + " Proteins' Search Results");
-                csvExport.setExportFileName(typeGroup + " Proteins' Search Results.csv");
+                csvExport = new CsvExport(searcheResultsTable,  " Search Results");
+                csvExport.setReportTitle(" CSF-PR Search Results");
+                csvExport.setExportFileName(" CSF-PR Search Results.csv");
                 csvExport.setMimeType(CsvExport.CSV_MIME_TYPE);
                 csvExport.setDisplayTotals(false);
                 csvExport.export();
 
             } else {
                 excelExport = new ExcelExport(searcheResultsTable);
-                excelExport.setReportTitle(typeGroup + " Proteins' Search Results");
-                excelExport.setExportFileName(typeGroup + " Proteins' Search Results.xls");
+                excelExport.setReportTitle(" CSF-PR Search Results");
+                excelExport.setExportFileName(" CSF-PR Search Results.xls");
                 excelExport.setMimeType(ExcelExport.EXCEL_MIME_TYPE);
                 excelExport.setDisplayTotals(false);
                 excelExport.export();
@@ -244,6 +244,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
                 protTable = new ProteinsTable(proteinsList, fractionNumber);
             }
 
+            protTable.setVisible(false);
             this.addComponent(protTable);
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {
                 exportCsv(protTable, "Proteins", expName, accession);
@@ -268,7 +269,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
             this.addComponent(pepTable);
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {
                 csvExport = new CsvExport(pepTable, typeGroup + " Peptides");
-                csvExport.setReportTitle(typeGroup + " Peptides for ( " + accession + " )  for Data Set ( " + expName + " )");
+                csvExport.setReportTitle(typeGroup + " Peptides for ( " + accession + " )  for Data Set ( CSF-PR / " + expName + " )");
                 csvExport.setExportFileName(typeGroup + " Peptides" + " for ( " + accession + " ).csv");
                 csvExport.setMimeType(CsvExport.CSV_MIME_TYPE);
                 csvExport.setDisplayTotals(false);
@@ -276,7 +277,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
 
             } else {
                 excelExport = new ExcelExport(pepTable);
-                excelExport.setReportTitle(typeGroup + " Peptides for ( " + accession + " )  for Data Set ( " + expName + " )");
+                excelExport.setReportTitle(typeGroup + " Peptides for ( " + accession + " )  for Data Set ( CSF-PR / " + expName + " )");
                 excelExport.setExportFileName(typeGroup + " Peptides" + " for ( " + accession + " ).xls");
                 excelExport.setMimeType(ExcelExport.EXCEL_MIME_TYPE);
                 excelExport.setDisplayTotals(false);
@@ -289,7 +290,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
 
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {
                 csvExport = new CsvExport(fractionTable, " Fractions");
-                csvExport.setReportTitle(" Fractions for ( " + accession + " )  for Data Set ( " + expName + " )");
+                csvExport.setReportTitle(" Fractions for ( " + accession + " )  for Data Set ( CSF-PR / " + expName + " )");
                 csvExport.setExportFileName(" Fractions" + " for ( " + accession + " ).csv");
                 csvExport.setMimeType(CsvExport.CSV_MIME_TYPE);
                 csvExport.setDisplayTotals(false);
@@ -297,7 +298,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
 
             } else {
                 excelExport = new ExcelExport(fractionTable);
-                excelExport.setReportTitle(" Fractions for ( " + accession + " )  for Data Set ( " + expName + " )");
+                excelExport.setReportTitle(" Fractions for ( " + accession + " )  for Data Set ( CSF-PR / " + expName + " )");
                 excelExport.setExportFileName(" Fractions" + " for ( " + accession + " ).xls");
                 excelExport.setMimeType(ExcelExport.EXCEL_MIME_TYPE);
                 excelExport.setDisplayTotals(false);
@@ -317,14 +318,14 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
 
         csvExport = new CsvExport(t, type);
         if (type.equalsIgnoreCase("Proteins")) {
-            csvExport.setReportTitle(type + " for Data Set ( " + name + " )");
-            csvExport.setExportFileName(type + " for ( " + name + " ).csv");
+            csvExport.setReportTitle("CSF-PR / " + name + " / Proteins / "+type);
+            csvExport.setExportFileName("CSF-PR / " + name + " / Proteins / "+type+".csv");
         } else if (type.equalsIgnoreCase("Peptides")) {
-            csvExport.setReportTitle("Peptides for ( " + accession + " ) Data Set ( " + name + " )");
-            csvExport.setExportFileName("Peptides for ( " + accession + " ).csv");
+            csvExport.setReportTitle("CSF-PR / " + name + " / "+accession+" / Peptides / "+type);
+            csvExport.setExportFileName("CSF-PR / " + name + " / "+accession+" / Peptides / "+type+".csv");
         } else if (type.equalsIgnoreCase("Fractions")) {
-            csvExport.setReportTitle("Fractions for ( " + accession + " ) Data Set ( " + name + " )");
-            csvExport.setExportFileName("Fractions for ( " + accession + " ).csv");
+            csvExport.setReportTitle("CSF-PR / " + name + " / "+accession+" / Fractions ");
+            csvExport.setExportFileName("CSF-PR / " + name + " / "+accession+" / Fractions .csv");
 
         }
         csvExport.setMimeType(CsvExport.CSV_MIME_TYPE);
@@ -337,15 +338,15 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
     private void exportXls(Table table, String type, String name, String accession) {
         excelExport = new ExcelExport(table);
         if (type.equalsIgnoreCase("Proteins")) {
-            excelExport.setReportTitle(type + " for Data Set ( " + name + " )");
-            excelExport.setExportFileName(type + " for ( " + name + " ).xls");
+            excelExport.setReportTitle("CSF-PR / " + name + " / Proteins / "+type);
+            excelExport.setExportFileName("CSF-PR / " + name + " / Proteins / "+type+".xls");
         } else if (type.equalsIgnoreCase("Peptides")) {
-            excelExport.setReportTitle("Peptides for ( " + accession + " ) Data Set ( " + name + " )");
-            excelExport.setExportFileName("Peptides for ( " + accession + " ).csv");
+            excelExport.setReportTitle("CSF-PR / " + name + " / "+accession+" / Peptides / "+type);
+            excelExport.setExportFileName("CSF-PR / " + name + " / "+accession+" / Peptides / "+type+".csv");
 
         } else if (type.equalsIgnoreCase("Fractions")) {
-            excelExport.setReportTitle("Fractions for ( " + accession + " ) Data Set ( " + name + " )");
-            excelExport.setExportFileName("Fractions for ( " + accession + " ).xls");
+            excelExport.setReportTitle("CSF-PR / " + name + " / "+accession+" / Fractions ");
+            csvExport.setExportFileName("CSF-PR / " + name + " / "+accession+" / Fractions .xls");
 
         }
         excelExport.setMimeType(ExcelExport.EXCEL_MIME_TYPE);
@@ -363,14 +364,14 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
             addComponent(pt);
             if (index == 0) {
                 csvExport = new CsvExport(pt, "Peptides");
-                csvExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
-                csvExport.setExportFileName("Protein's Peptides for ( " + accession + " ).csv");
+                csvExport.setReportTitle("CSF-PR / " + key + " / "+accession+" / Peptides");
+                csvExport.setExportFileName(accession + " Peptides.csv");
                 csvExport.setMimeType(CsvExport.CSV_MIME_TYPE);
                 csvExport.setDisplayTotals(false);
                 csvExport.convertTable();
                 index++;
             } else {
-                csvExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
+                csvExport.setReportTitle("CSF-PR / " + key + " / "+accession+" / Peptides");
                 csvExport.setDisplayTotals(false);
                 csvExport.setRowHeaders(false);
                 csvExport.setNextTable(pt, key);
@@ -391,15 +392,15 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
             addComponent(pt);
             if (index == 0) {
                 excelExport = new ExcelExport(pt, "Peptides");
-                excelExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
-                excelExport.setExportFileName("Protein's Peptides for ( " + accession + " ).xls");
+                excelExport.setReportTitle("CSF-PR / " + key + " / "+accession+" / Peptides");
+                excelExport.setExportFileName(accession + " Peptides.xls");
                 excelExport.setMimeType(CsvExport.EXCEL_MIME_TYPE);
                 excelExport.setDisplayTotals(false);
                 excelExport.convertTable();
                 index++;
             } else {
-                excelExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
-                excelExport.setDisplayTotals(false);
+                 excelExport.setReportTitle("CSF-PR / " + key + " / "+accession+" / Peptides");
+               excelExport.setDisplayTotals(false);
                 excelExport.setRowHeaders(false);
                 excelExport.setNextTable(pt, key);
                 excelExport.setDisplayTotals(false);

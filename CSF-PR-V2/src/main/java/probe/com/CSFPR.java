@@ -1,5 +1,7 @@
 package probe.com;
 
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
@@ -97,5 +99,6 @@ public class CSFPR extends UI {
         MainWindow mw = new MainWindow(url, dbName, driver, userName, password, image1, image2, image3);
         this.getPage().setTitle("CSF Proteome Resource (CSF-PR)");
         setContent(mw);
+        
     }
 }

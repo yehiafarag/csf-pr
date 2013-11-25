@@ -8,6 +8,7 @@ import com.vaadin.data.Property;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupView;
@@ -35,17 +36,24 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
     private VerticalLayout exportSearchTableLayout = new VerticalLayout();
     private PopupView expBtnSearchResultsTable;
     private Property.ValueChangeListener listener;
-
+    private Label  searchResultstLabel= new Label();
+    private int validatedNum;
+    
     public SearchResultsTableLayout(ExperimentHandler handler, final Map<Integer, ExperimentBean> expList, final Map<Integer, ProteinBean> fullExpProtList, boolean validatedOnly) {
 
         this.setWidth("100%");
         this.setSpacing(true);
 //        this.setMargin(true);
         this.setStyleName(Reindeer.LAYOUT_WHITE);
+        searchResultstLabel.setContentMode(Label.CONTENT_XHTML);
+        searchResultstLabel.setHeight("30px");
+        this.addComponent(searchResultstLabel);
         this.addComponent(searchResultsTableLayout);
         this.setComponentAlignment(searchResultsTableLayout, Alignment.MIDDLE_CENTER);
 
-        searcheResultsTable = new SearchResultsTable(expList, fullExpProtList);
+        final Map<Integer, ProteinBean> vProteinsList = getValidatedList(fullExpProtList);
+        searchResultstLabel.setValue("<h4 style='font-family:verdana;color:black;'> Search Results (" + vProteinsList.size() + ")</h4>");
+        searcheResultsTable = new SearchResultsTable(expList, vProteinsList);
         searchResultsTableLayout.addComponent(searcheResultsTable);
         currentTable = searcheResultsTable;
 
@@ -78,6 +86,9 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
         final OptionGroup selectionType = new OptionGroup();
         selectionType.setMultiSelect(true);
         Object itemId = selectionType.addItem("\t\tShow Validated Proteins Only");
+        selectionType.select("\t\tShow Validated Proteins Only");                
+        selectionType.setReadOnly(validatedOnly);
+        
         selectionType.setHeight("15px");
         lowerRightLayout.addComponent(selectionType);
         lowerRightLayout.setComponentAlignment(selectionType, Alignment.BOTTOM_LEFT);
@@ -111,10 +122,11 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
         selectionType.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                if (selectionType.isSelected("\t\tShow Validated Proteins Only")) {
-                    Map<Integer, ProteinBean> vProteinsList = getValidatedList(fullExpProtList);
+                if (!selectionType.isSelected("\t\tShow Validated Proteins Only")) {
+                   // Map<Integer, ProteinBean> vProteinsList = getValidatedList(fullExpProtList);
+                    searchResultstLabel.setValue("<h4 style='font-family:verdana;color:black;'> Search Results ("+ vProteinsList.size()+"/"+fullExpProtList.size()+")</h4>");
                     searchResultsTableLayout.removeAllComponents();
-                    vt = new SearchResultsTable(expList, vProteinsList);
+                    vt = new SearchResultsTable(expList, fullExpProtList);
                     searchResultsTableLayout.addComponent(vt);
                     trs1.setTable(vt);
                     vt.setHeight(getCurrentTable().getHeight() + "");
@@ -122,6 +134,8 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
                     vt.addListener(getListener());
                     currentTable = vt;
                 } else {
+                    searchResultstLabel.setValue("<h4 style='font-family:verdana;color:black;'> Search Results ("+ vProteinsList.size()+")</h4>");
+                   
                     searchResultsTableLayout.removeAllComponents();
                     searchResultsTableLayout.addComponent(searcheResultsTable);
                     trs1.setTable(searcheResultsTable);
@@ -130,18 +144,7 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
                     searcheResultsTable.addListener(getListener());
                 }
             }
-            private Map<Integer, ProteinBean> getValidatedList(Map<Integer, ProteinBean> proteinsList) {
-                Map<Integer, ProteinBean> vProteinsList = new HashMap<Integer, ProteinBean>();
-                for (int str : proteinsList.keySet()) {
-                    ProteinBean pb = proteinsList.get(str);
-                    if (pb.isValidated()) {
-                        vProteinsList.put(str, pb);
-                    }
-
-                }
-                return vProteinsList;
-
-            }
+            
         });
         if (validatedOnly) {
             selectionType.select(itemId);
@@ -182,4 +185,17 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
     public SearchResultsTable getCurrentTable() {
         return currentTable;
     }
+    
+    private Map<Integer, ProteinBean> getValidatedList(Map<Integer, ProteinBean> proteinsList) {
+                Map<Integer, ProteinBean> vProteinsList = new HashMap<Integer, ProteinBean>();
+                for (int str : proteinsList.keySet()) {
+                    ProteinBean pb = proteinsList.get(str);
+                    if (pb.isValidated()) {
+                        vProteinsList.put(str, pb);
+                    }
+
+                }
+                return vProteinsList;
+
+            }
 }

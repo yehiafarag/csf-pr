@@ -9,9 +9,11 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Map;
 
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
 import probe.com.model.beans.ProteinBean;
 import probe.com.view.subview.util.CustomEmbedded;
@@ -30,6 +32,7 @@ public class ProteinsTable extends Table implements Serializable {
 
     public ProteinsTable(Map<String, ProteinBean> proteinsList, int fractionNumber) {
 
+        Map<String,Integer> rankMap = initRank(proteinsList);
         this.setSelectable(true);
         this.setColumnReorderingAllowed(true);
         this.setColumnCollapsingAllowed(true);
@@ -48,7 +51,7 @@ public class ProteinsTable extends Table implements Serializable {
         this.setColumnCollapsed("Other Protein(s)", true);
 
         this.addContainerProperty("Description", String.class, null);
-        this.addContainerProperty("Chr", String.class, null, "Chr", null, com.vaadin.ui.Table.ALIGN_RIGHT);
+        this.addContainerProperty("Chr", String.class, null, "CHROMOSOME", null, com.vaadin.ui.Table.ALIGN_RIGHT);
 
         this.addContainerProperty("Gene Name", String.class, null);
 //        this.setColumnCollapsed("Gene Name", true);
@@ -58,6 +61,7 @@ public class ProteinsTable extends Table implements Serializable {
         this.addContainerProperty("# Validated Peptides", Integer.class, null, "#Peptides", null, com.vaadin.ui.Table.ALIGN_RIGHT);
         this.addContainerProperty("# Validated Spectra", Integer.class, null, "#Spectra", null, com.vaadin.ui.Table.ALIGN_RIGHT);
         this.addContainerProperty("NSAF", Double.class, null, "NSAF", null, com.vaadin.ui.Table.ALIGN_RIGHT);
+        this.addContainerProperty("RANK", Integer.class, null, "RANK", null, com.vaadin.ui.Table.ALIGN_RIGHT);
         this.addContainerProperty("MW", Double.class, null, "MW", null, com.vaadin.ui.Table.ALIGN_RIGHT);
         String Confidence = "Confidence";
         this.addContainerProperty(Confidence, Double.class, null, Confidence, null, com.vaadin.ui.Table.ALIGN_CENTER);
@@ -161,10 +165,11 @@ public class ProteinsTable extends Table implements Serializable {
             }
 
 
+            int rank = rankMap.get(pb.getAccession()+","+pb.getOtherProteins());
             if (fractionNumber <= 0) {
-                this.addItem(new Object[]{index, pi, link, pb.getOtherProteins(), pb.getDescription(), pb.getChromosomeNumber(), pb.getGeneName(), Double.valueOf(df.format(pb.getSequenceCoverage())), nonEnz, pb.getNumberValidatedPeptides(), pb.getNumberValidatedSpectra(), Double.valueOf(df.format(pb.getNsaf())), Double.valueOf(df.format(pb.getMw_kDa())), Double.valueOf(df.format(pb.getConfidence())), validated}, new Integer(index));
+                this.addItem(new Object[]{index, pi, link, pb.getOtherProteins(), pb.getDescription(), pb.getChromosomeNumber(), pb.getGeneName(), Double.valueOf(df.format(pb.getSequenceCoverage())), nonEnz, pb.getNumberValidatedPeptides(), pb.getNumberValidatedSpectra(), Double.valueOf(df.format(pb.getNsaf())),rank, Double.valueOf(df.format(pb.getMw_kDa())), Double.valueOf(df.format(pb.getConfidence())), validated}, new Integer(index));
             } else {
-                this.addItem(new Object[]{index, pi, link, pb.getOtherProteins(), pb.getDescription(), pb.getChromosomeNumber(), pb.getGeneName(), Double.valueOf(df.format(pb.getSequenceCoverage())), nonEnz, pb.getNumberValidatedPeptides(), pb.getNumberValidatedSpectra(), Double.valueOf(df.format(pb.getNsaf())), Double.valueOf(df.format(pb.getMw_kDa())), Double.valueOf(df.format(pb.getConfidence())), d1, d2, d3, d4, validated}, new Integer(index));
+                this.addItem(new Object[]{index, pi, link, pb.getOtherProteins(), pb.getDescription(), pb.getChromosomeNumber(), pb.getGeneName(), Double.valueOf(df.format(pb.getSequenceCoverage())), nonEnz, pb.getNumberValidatedPeptides(), pb.getNumberValidatedSpectra(), Double.valueOf(df.format(pb.getNsaf())),rank, Double.valueOf(df.format(pb.getMw_kDa())), Double.valueOf(df.format(pb.getConfidence())), d1, d2, d3, d4, validated}, new Integer(index));
             }
 
             index++;
@@ -180,7 +185,7 @@ public class ProteinsTable extends Table implements Serializable {
                 setColumnExpandRatio(propertyId.toString(), 0.5f);
             }
         }
-        setColumnWidth("Chr", 20);
+        setColumnWidth("Chr", 35);
         setColumnWidth("Index", 35);
         setColumnWidth(Protein_Inference, 35);
         TreeMap<Integer, String> sortMap = new TreeMap<Integer, String>();
@@ -200,52 +205,52 @@ public class ProteinsTable extends Table implements Serializable {
             tableSearchMapIndex.put(str, key);
         }
 
-        this.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
-            private static final long serialVersionUID = 6268199275509867378L;
-
-            @Override
-            public String generateDescription(Component source, Object itemId, Object propertyId) {
-                if (propertyId == null) {
-                } else if (propertyId.equals("Accession")) {
-                    return "Accession";
-                } else if (propertyId.equals("SpectrumFractionSpread_lower_range_kDa")) {
-                    return "Spectrum Lower Range (kDa)";
-                } else if (propertyId.equals("SpectrumFractionSpread_upper_range_kDa")) {
-                    return "Spectrum Upper Range (kDa)";
-                } else if (propertyId.equals("PeptideFractionSpread_lower_range_kDa")) {
-                    return "Peptide lowerrange (kDa)";
-                } else if (propertyId.equals("PeptideFractionSpread_upper_range_kDa")) {
-                    return "Peptide Upper Range (kDa)";
-                } else if (propertyId.equals("Non Enzymatic_Peptides")) {
-                    return "Non Enzymatic_Peptides";
-                } else if (propertyId.equals("Protein Inference")) {
-                    return "Protein Inference";
-                } else if (propertyId.equals("Other Protein(s)")) {
-                    return "Other Protein(s)";
-                } else if (propertyId.equals("Description")) {
-                    return "Description";
-                } else if (propertyId.equals("Sequence Coverage(%)")) {
-                    return "Sequence Coverage(%)";
-                } else if (propertyId.equals("# Validated Peptides")) {
-                    return "# Validated Peptides";
-                } else if (propertyId.equals("# Validated Spectra")) {
-                    return "# Validated Spectra";
-                } else if (propertyId.equals("NSAF")) {
-                    return "NSAF";
-                } else if (propertyId.equals("# Validated Spectra")) {
-                    return "# Validated Spectra";
-                } else if (propertyId.equals("MW")) {
-                    return "MW";
-                } else if (propertyId.equals("Confidence")) {
-                    return "Confidence";
-                } else if (propertyId.equals("Chr")) {
-                    return "Chromosome Number";
-                }
-
-                return null;
-            }
-        });
-
+//        this.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+//            private static final long serialVersionUID = 6268199275509867378L;
+//
+//            @Override
+//            public String generateDescription(Component source, Object itemId, Object propertyId) {
+//                if (propertyId == null) {
+//                } else if (propertyId.equals("Accession")) {
+//                    return "Accession";
+//                } else if (propertyId.equals("SpectrumFractionSpread_lower_range_kDa")) {
+//                    return "Spectrum Lower Range (kDa)";
+//                } else if (propertyId.equals("SpectrumFractionSpread_upper_range_kDa")) {
+//                    return "Spectrum Upper Range (kDa)";
+//                } else if (propertyId.equals("PeptideFractionSpread_lower_range_kDa")) {
+//                    return "Peptide lowerrange (kDa)";
+//                } else if (propertyId.equals("PeptideFractionSpread_upper_range_kDa")) {
+//                    return "Peptide Upper Range (kDa)";
+//                } else if (propertyId.equals("Non Enzymatic_Peptides")) {
+//                    return "Non Enzymatic_Peptides";
+//                } else if (propertyId.equals("Protein Inference")) {
+//                    return "Protein Inference";
+//                } else if (propertyId.equals("Other Protein(s)")) {
+//                    return "Other Protein(s)";
+//                } else if (propertyId.equals("Description")) {
+//                    return "Description";
+//                } else if (propertyId.equals("Sequence Coverage(%)")) {
+//                    return "Sequence Coverage(%)";
+//                } else if (propertyId.equals("# Validated Peptides")) {
+//                    return "# Validated Peptides";
+//                } else if (propertyId.equals("# Validated Spectra")) {
+//                    return "# Validated Spectra";
+//                } else if (propertyId.equals("NSAF")) {
+//                    return "NSAF";
+//                } else if (propertyId.equals("# Validated Spectra")) {
+//                    return "# Validated Spectra";
+//                } else if (propertyId.equals("MW")) {
+//                    return "MW";
+//                } else if (propertyId.equals("Confidence")) {
+//                    return "Confidence";
+//                } else if (propertyId.equals("Chr")) {
+//                    return "Chromosome Number";
+//                }
+//
+//                return null;
+//            }
+//        });
+//
     }
 
     public Map<String, Integer> getTableSearchMap() {
@@ -258,5 +263,32 @@ public class ProteinsTable extends Table implements Serializable {
 
     public void setTableSearchMapIndex(Map<String, Integer> tableSearchMapIndex) {
         this.tableSearchMapIndex = tableSearchMapIndex;
+    }
+    private  Map<String,Integer> initRank(Map<String, ProteinBean> proteinsList)
+    {
+        List<ProteinBean> protList = new ArrayList<ProteinBean>();
+        Map<String,Integer> rankMap = new TreeMap<String, Integer>();
+        protList.addAll(proteinsList.values());
+        Collections.sort(protList);
+        double currentNsaf = -1;
+        int rank = 0;
+        for(int index=(protList.size()-1);index >=0;index--)            
+        {
+            ProteinBean pb = protList.get(index);
+            if(currentNsaf != pb.getNsaf())
+                rank++;
+           
+            rankMap.put(pb.getAccession()+","+pb.getOtherProteins(),rank);
+            currentNsaf = pb.getNsaf();       
+           
+        }
+//////        for(String str :rankMap.keySet())
+//////        {
+//////            System.out.println("prot key is "+str+"  prot Rank "+rankMap.get(str));
+//////        }
+//////            System.out.println(proteinsList.keySet());
+         
+        return rankMap;
+    
     }
 }

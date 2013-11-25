@@ -157,8 +157,7 @@ public class ExperimentHandler implements Serializable {
                 proteinFractList.put(fb.getFractionIndex(), fb.getProteinList().get(accession));
                 
             }
-            System.out.println("exp id  "+expId+"  fraction prot key "+accession+"  fraction list  --?? "+proteinFractList);
-        
+           
         }
         return proteinFractList;
     }

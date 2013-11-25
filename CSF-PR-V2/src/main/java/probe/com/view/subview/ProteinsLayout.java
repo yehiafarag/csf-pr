@@ -123,10 +123,10 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
             selectLayout.setComponentAlignment(selectExp, Alignment.TOP_LEFT);
             //selectLayout.setExpandRatio(selectExp, 0.4f);
 
-            Label infoLable = new Label("<p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Bar charts showing the distribution of the protein in the fractions cut from the gel.<br/>Three charts show number of peptides, number of spectra and average precursor intensity.<br/>The fraction number represents the gel pieces cut from top to bottom.<br/>Protein standards (dark blue bars) indicate the molecular weight range of each fraction. Darker blue bars mark the area where the protein's theoretical mass suggests the protein should occur. </p>");
+            Label infoLable = new Label("<p  style='font-family:verdana;color:black;font-weight:bold;'>Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='font-family:verdana;color:black;font-weight:bold;'>Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='font-family:verdana;color:black;font-weight:bold;'>Bar charts showing the distribution of the protein in the fractions cut from the gel. Three charts show number of peptides, number of spectra and average precursor intensity. The fraction number represents the gel pieces cut from top to bottom. Protein standards (dark blue bars) indicate the molecular weight range of each fraction. Darker blue bars mark the area where the protein's theoretical mass suggests the protein should occur. </p>");
             infoLable.setContentMode(Label.CONTENT_XHTML);
             infoLable.setWidth("450px");
-            infoLable.setStyleName(Reindeer.LAYOUT_BLUE);
+            // infoLable.setStyleName(Reindeer.LAYOUT_BLUE);
 
             Help help = new Help();
             HorizontalLayout infoIco = help.getInfoNote(infoLable);
@@ -224,8 +224,12 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                             otherAccession = item.getItemProperty("Other Protein(s)").toString();
 
                             CustomExportBtnLayout ce1 = new CustomExportBtnLayout(expHandler, "allProtPep", exp.getExpId(), exp.getName(), accession, otherAccession, expList, null, 0, null, null, null);
-                            PopupView p1 = new PopupView("Export All (" + accession + ")'s Peptides", ce1);
-                            protTableLayout.setExpBtnProtAllPepTable(p1, new PopupView("Export Proteins", (new CustomExportBtnLayout(expHandler, "prots", exp.getExpId(), exp.getName(), accession, otherAccession, expList, proteinsList, exp.getFractionsNumber(), null, null, null))));
+                            CustomExportBtnLayout ce2 = (new CustomExportBtnLayout(expHandler, "prots", exp.getExpId(), exp.getName(), accession, otherAccession, expList, proteinsList, exp.getFractionsNumber(), null, null, null));
+
+                            PopupView p1 = new PopupView("Export All Peptides (" + accession + ")", ce1);
+                            PopupView p2 = new PopupView("Export Proteins", ce2);
+
+                            protTableLayout.setExpBtnProtAllPepTable(p1, p2);
                             if (key < 0) {
                             } else {
                                 exp = expList.get(exp.getExpId());
@@ -250,7 +254,7 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                                     peptideLayout.setHeight("" + protTableLayout.getHeight());
                                     peptideLayout.addComponent(cpeptideLayout);
                                     CustomExportBtnLayout ce3 = new CustomExportBtnLayout(expHandler, "protPep", exp.getExpId(), exp.getName(), accession, otherAccession, expList, null, 0, pepProtList, null, null);
-                                    PopupView p3 = new PopupView("Export (" + accession + ")'s Peptides", ce3);
+                                    PopupView p3 = new PopupView("Export Peptides (" + accession + ")", ce3);
                                     cpeptideLayout.setExpBtnPepTable(p3);
 
 
@@ -285,7 +289,7 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                                                 break;
                                             }
                                         }
-                                        Map<Integer, ProteinBean> proteinFractionAvgList = expHandler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, exp.getExpId());
+                                        Map<Integer, ProteinBean> proteinFractionAvgList = expHandler.getProteinFractionAvgList(accession /*+ "," + otherAccession*/, fractionsList, exp.getExpId());
                                         if (proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
                                             fractionLayout.removeAllComponents();
                                         } else {
@@ -302,30 +306,30 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                     //add prot table listener
                     protTableLayout.getProtTable().addListener(listener);
                     protTableLayout.setListener(listener);
+                    selectionIndexes = util.getSearchIndexesSet(protTableLayout.getProtTable().getTableSearchMap(), protTableLayout.getProtTable().getTableSearchMapIndex(), protTableLayout.getSearchField().getValue().toString().toUpperCase().trim());
+                    protTableLayout.getProtTable().setCurrentPageFirstItemId(1);
                     protTableLayout.getProtTable().select(1);
                     protTableLayout.getProtTable().commit();
-
                     ActionButtonTextField searchButtonTextField = ActionButtonTextField.extend(protTableLayout.getSearchField());
                     searchButtonTextField.getState().type = ActionButtonType.ACTION_SEARCH;
-
                     searchButtonTextField.addClickListener(new ActionButtonTextField.ClickListener() {
                         @Override
                         public void buttonClick(ActionButtonTextField.ClickEvent clickEvent) {
                             selectionIndexes = util.getSearchIndexesSet(protTableLayout.getProtTable().getTableSearchMap(), protTableLayout.getProtTable().getTableSearchMapIndex(), protTableLayout.getSearchField().getValue().toString().toUpperCase().trim());
                             if (!selectionIndexes.isEmpty()) {
                                 if (selectionIndexes.size() > 1) {
-                                    protTableLayout.getNextSearch().setEnabled(true);                                    
+                                    protTableLayout.getNextSearch().setEnabled(true);
                                     protTableLayout.getNextSearch().focus();
                                 } else {
                                     protTableLayout.getNextSearch().setEnabled(false);
                                 }
                                 protIndex = 1;
                                 nextIndex = selectionIndexes.firstKey();
-                                protTableLayout.getProtCounter().setValue("( "+(protIndex++)+" of "+selectionIndexes.size()+" )");
+                                protTableLayout.getProtCounter().setValue("( " + (protIndex++) + " of " + selectionIndexes.size() + " )");
                                 protTableLayout.getProtTable().setCurrentPageFirstItemId(selectionIndexes.get(nextIndex));
                                 protTableLayout.getProtTable().select(selectionIndexes.get(nextIndex));
                                 protTableLayout.getProtTable().commit();
-                                
+
                             } else {
                                 Notification.show("Not Exist");
                                 protIndex = 1;
@@ -339,7 +343,8 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                         public void focus(FieldEvents.FocusEvent event) {
                             protTableLayout.getNextSearch().setEnabled(false);
                             protTableLayout.getProtCounter().setValue("");
-                            protIndex = 1;                               
+
+                            protIndex = 1;
 
                         }
                     });
@@ -352,8 +357,8 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
 
                             protTableLayout.getProtTable().select(selectionIndexes.get(nextIndex));
                             protTableLayout.getProtTable().commit();
-                             protTableLayout.getProtCounter().setValue("( "+ (protIndex++) +" of "+selectionIndexes.size()+" )");
-                               
+                            protTableLayout.getProtCounter().setValue("( " + (protIndex++) + " of " + selectionIndexes.size() + " )");
+
 
 
                             if (nextIndex == selectionIndexes.lastKey()) {
@@ -368,7 +373,8 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
             }
         }
     }
-private int protIndex = 1;
+    private int protIndex = 1;
+
     public Map<Integer, ExperimentBean> getExpList() {
         return expList;
     }
