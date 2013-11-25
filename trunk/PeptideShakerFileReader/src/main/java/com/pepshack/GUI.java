@@ -10,7 +10,6 @@ import java.io.File;
 import java.sql.SQLException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-
 import javax.swing.SwingWorker;
 
 /**
@@ -875,7 +874,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         }
         if (valid) {
             try {
-                exphandeler = new Handler("jdbc:mysql://" + jTextField13.getText() + ":3306/", "csf_db_8_F", "com.mysql.jdbc.Driver", jTextField1.getText(), jPasswordField1.getText());
+                exphandeler = new Handler("jdbc:mysql://" + jTextField13.getText() + ":3306/", "csf_db_v2", "com.mysql.jdbc.Driver", jTextField1.getText(), jPasswordField1.getText());
             } catch (SQLException sqlE) {
                 valid = false;
                 jTextField13.setText("Please check Database Params");

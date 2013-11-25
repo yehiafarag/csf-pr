@@ -6,7 +6,6 @@ package probe.com.view.subview.util;
 
 import com.vaadin.addon.tableexport.CsvExport;
 import com.vaadin.addon.tableexport.ExcelExport;
-import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Table;
@@ -93,13 +92,13 @@ public class ExportButtonLayoutGenerator extends VerticalLayout implements Seria
 
         csvExport = new CsvExport(t, type);
         if (type.equalsIgnoreCase("Proteins")) {
-            csvExport.setReportTitle(type + " for Data Set ( " + name + " )");
+            csvExport.setReportTitle(type + " for Data Set ( CSF-PR / " + name + " )");
             csvExport.setExportFileName(type + " for ( " + name + " ).csv");
         } else if (type.equalsIgnoreCase("Peptides")) {
-            csvExport.setReportTitle("Peptides for ( " + accession + " ) Data Set ( " + name + " )");
+            csvExport.setReportTitle("Peptides for ( " + accession + " ) Data Set ( CSF-PR /  " + name + " )");
             csvExport.setExportFileName("Peptides for ( " + accession + " ).csv");
         } else if (type.equalsIgnoreCase("Fractions")) {
-            csvExport.setReportTitle("Fractions for ( " + accession + " ) Data Set ( " + name + " )");
+            csvExport.setReportTitle("Fractions for ( " + accession + " ) Data Set ( CSF-PR / " + name + " )");
             csvExport.setExportFileName("Fractions for ( " + accession + " ).csv");
 
         }
@@ -113,14 +112,14 @@ public class ExportButtonLayoutGenerator extends VerticalLayout implements Seria
     private void exportXls(Table t, String type, String name, String accession) {
         excelExport = new ExcelExport(t);
         if (type.equalsIgnoreCase("Proteins")) {
-            excelExport.setReportTitle(type + " for Data Set ( " + name + " )");
+            excelExport.setReportTitle(type + " for Data Set ( CSF-PR / " + name + " )");
             excelExport.setExportFileName(type + " for ( " + name + " ).xls");
         } else if (type.equalsIgnoreCase("Peptides")) {
-            excelExport.setReportTitle("Peptides for ( " + accession + " ) Data Set ( " + name + " )");
+            excelExport.setReportTitle("Peptides for ( " + accession + " ) Data Set ( CSF-PR / " + name + " )");
             excelExport.setExportFileName("Peptides for ( " + accession + " ).csv");
 
         } else if (type.equalsIgnoreCase("Fractions")) {
-            excelExport.setReportTitle("Fractions for ( " + accession + " ) Data Set ( " + name + " )");
+            excelExport.setReportTitle("Fractions for ( " + accession + " ) Data Set ( CSF-PR / " + name + " )");
             excelExport.setExportFileName("Fractions for ( " + accession + " ).xls");
 
         }
@@ -138,14 +137,14 @@ public class ExportButtonLayoutGenerator extends VerticalLayout implements Seria
             addComponent(pt);
             if (index == 0) {
                 csvExport = new CsvExport(pt, "Peptides");
-                csvExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
+                csvExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( CSF-PR / " + key + " ) Data Set");
                 csvExport.setExportFileName("Protein's Peptides for ( " + accession + " ).csv");
                 csvExport.setMimeType(CsvExport.CSV_MIME_TYPE);
                 csvExport.setDisplayTotals(false);
                 csvExport.convertTable();
                 index++;
             } else {
-                csvExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
+                csvExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( CSF-PR / " + key + " ) Data Set");
                 csvExport.setDisplayTotals(false);
                 csvExport.setRowHeaders(false);
                 csvExport.setNextTable(pt, key);
@@ -166,14 +165,14 @@ public class ExportButtonLayoutGenerator extends VerticalLayout implements Seria
             addComponent(pt);
             if (index == 0) {
                 excelExport = new ExcelExport(pt, "Peptides");
-                excelExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
+                excelExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( CSF-PR / " + key + " ) Data Set");
                 excelExport.setExportFileName("Protein's Peptides for ( " + accession + " ).xls");
                 excelExport.setMimeType(CsvExport.EXCEL_MIME_TYPE);
                 excelExport.setDisplayTotals(false);
                 excelExport.convertTable();
                 index++;
             } else {
-                excelExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( " + key + " ) Data Set");
+                excelExport.setReportTitle("Protein's Peptides for  ( " + accession + " ) from ( CSF-PR / " + key + " ) Data Set");
                 excelExport.setDisplayTotals(false);
                 excelExport.setRowHeaders(false);
                 excelExport.setNextTable(pt, key);

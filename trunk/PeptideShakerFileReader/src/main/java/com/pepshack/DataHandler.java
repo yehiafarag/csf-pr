@@ -31,17 +31,17 @@ public class DataHandler {
         label.setText("Start Peptides processing...");
         exp.setPeptideList(this.getPeptides());
         exp.setPeptidesNumber(this.getValidatedPeptideNuumber(exp.getPeptideList()));
-        if (!exp.getPeptideList().isEmpty()) {
-            exp.setPeptidesInclude(1);
-        } else {
+        if (exp.getPeptideList().isEmpty()) {
             exp.setPeptidesInclude(0);
+        } else {
+            exp.setPeptidesInclude(1);
         }
         label.setText("Start Fractions processing...");
         exp = this.getFractionList(exp);
-        if (!exp.getFractionsList().isEmpty() ){//|| exp.getFractionsList().size() != 1) {
-            exp.setFractionsNumber(exp.getFractionsList().size());
-        } else {
+        if (exp.getFractionsList().isEmpty()) {//|| exp.getFractionsList().size() != 1) {
             exp.setFractionsNumber(0);
+        } else {
+            exp.setFractionsNumber(exp.getFractionsList().size());
         }
         importer.clearData(true);
         return exp;
@@ -101,16 +101,15 @@ public class DataHandler {
         exp.setPeptideList(updatedList);
         return exp;
     }
-    
-     private int getValidatedPeptidesNumber(Map<String, ProteinBean> proteinsList)
-    {
-        int counter=0;
-        for(ProteinBean pb:proteinsList.values())
-        {
-            if(pb.isValidated())
+
+    private int getValidatedPeptidesNumber(Map<String, ProteinBean> proteinsList) {
+        int counter = 0;
+        for (ProteinBean pb : proteinsList.values()) {
+            if (pb.isValidated()) {
                 counter++;
+            }
         }
         return counter;
     }
-    
+
 }

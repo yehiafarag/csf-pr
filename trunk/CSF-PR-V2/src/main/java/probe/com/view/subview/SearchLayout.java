@@ -56,7 +56,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
     private ExperimentHandler handler;
     private String defaultText = "one keyword per line, and choose the search options";
     private String selectDatasetStr = "Search All Datasets";
-    private Label searchByLabel, errorLabelI, searchResultstLabel;// = new  Label();
+    private Label searchByLabel, errorLabelI;// = new  Label();
     private CustomErrorLabel errorLabelII;
     private String selectMethodStr = "Please Select Search Method";
     private TreeMap<Integer, String> expListStr;
@@ -77,7 +77,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
     private Map<String, ProteinBean> proteinsList;
     private OptionGroup validatedResults = new OptionGroup();
     private HorizontalLayout searchPropLayout = new HorizontalLayout();
-    private boolean validatedOnly =false;
+    private boolean validatedOnly =true;
 
     public SearchLayout(ExperimentHandler handler, TreeMap<Integer, String> expListStr, Map<Integer, ExperimentBean> expList) {
         this.handler = handler;
@@ -95,10 +95,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
 
         downLayout.setSpacing(true);
         downLayout.setMargin(new MarginInfo(false, false, true, false));
-        searchResultstLabel = new Label("<h4 style='font-family:verdana;color:black;'> Search Results </h4>");
-        searchResultstLabel.setContentMode(Label.CONTENT_XHTML);
-        searchResultstLabel.setHeight("30px");
-        downLayout.addComponent(searchResultstLabel);
+        
 
         downLayout.addComponent(searchTableLayout);
         searchTableLayout.setWidth("100%");
@@ -169,9 +166,6 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
         topLeftLayout.addComponent(selectExp);
 
 
-
-
-
         searchByLabel = new Label("<h4 style='font-family:verdana;color:black;'>Search By:</h4>");
         searchByLabel.setContentMode(Label.CONTENT_XHTML);
         searchByLabel.setHeight("30px");
@@ -194,6 +188,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
         validatedResults = new OptionGroup();
         validatedResults.setMultiSelect(true);
         validatedResults.addItem("Validated Proteins Results Only");
+        validatedResults.select("Validated Proteins Results Only");
         validatedResults.setHeight("15px");
         searchPropLayout.addComponent(validatedResults);
         searchPropLayout.setComponentAlignment(validatedResults, Alignment.MIDDLE_RIGHT);
@@ -222,7 +217,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
         topRightLayout.setExpandRatio(searchButton, 0.9f);
         topRightLayout.setMargin(new MarginInfo(true,true, true,false));
 
-        Label infoLable = new Label("<center style='background-color:#E6E6FA;'><p  style='background-color:#E6E6FA;font-family:verdana;color:black;font-weight:bold;'>Type in search keywords (one per line) and choose the search type. All experiments containing protein(s) where the keyword is found are listed. View the information about each protein from each experiment separately by selecting them from the list.</p></center>");
+        Label infoLable = new Label("<p  style='font-family:verdana;color:black;font-weight:bold;'>Type in search keywords (one per line) and choose the search type. All experiments containing protein(s) where the keyword is found are listed. View the information about each protein from each experiment separately by selecting them from the list.</p>");
         infoLable.setContentMode(Label.CONTENT_XHTML);
         infoLable.setWidth("300px");
         infoLable.setStyleName(Reindeer.LAYOUT_BLUE);
@@ -344,6 +339,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
             } else {
 
                 downLayout.setVisible(true);
+                
                 final SearchResultsTableLayout searcheResultsTableLayout = new SearchResultsTableLayout(handler, expList, fullExpProtList,validatedOnly);
                 searchTableLayout.addComponent(searcheResultsTableLayout);
                 Property.ValueChangeListener listener = new Property.ValueChangeListener() {

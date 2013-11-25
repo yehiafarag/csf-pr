@@ -6,7 +6,6 @@ package probe.com.view.subview;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -116,49 +115,49 @@ public class SearchResultsTable extends Table implements Serializable {
             indexing++;
 
         }
-        this.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
-            private static final long serialVersionUID = 6268199275509867378L;
-
-            @Override
-            public String generateDescription(Component source, Object itemId, Object propertyId) {
-                if (propertyId == null) {
-                } else if (propertyId.equals("Experiment")) {
-                    return "Experiment";
-                } else if (propertyId.equals("Accession")) {
-                    return "Accession";
-                } else if (propertyId.equals("Sample Type")) {
-                    return "Sample Type";
-                } else if (propertyId.equals("Species")) {
-                    return "Species";
-                } else if (propertyId.equals("Sample Processing")) {
-                    return "Sample Processing";
-                } else if (propertyId.equals("Instrument Type")) {
-                    return "Instrument Type";
-                } else if (propertyId.equals("Other Protein(s)")) {
-                    return "Other Protein(s)";
-                } else if (propertyId.equals("Description")) {
-                    return "Description";
-                } else if (propertyId.equals("Sequence Coverage(%)")) {
-                    return "Sequence Coverage(%)";
-                } else if (propertyId.equals("# Validated Peptides")) {
-                    return "# Validated Peptides";
-                } else if (propertyId.equals("# Validated Spectra")) {
-                    return "# Validated Spectra";
-                } else if (propertyId.equals("MW")) {
-                    return "MW";
-                } else if (propertyId.equals("Confidence")) {
-                    return "Confidence";
-                } else if (propertyId.equals("NSAF")) {
-                    return "NSAF";
-                } else if (propertyId.equals("Protein Inference")) {
-                    return "Protein Inference";
-                } else if (propertyId.equals("Frag. Mode")) {
-                    return "Frag. Mode";
-                }
-                return null;
-            }
-        });
-
-
+//        this.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+//            private static final long serialVersionUID = 6268199275509867378L;
+//
+//            @Override
+//            public String generateDescription(Component source, Object itemId, Object propertyId) {
+//                if (propertyId == null) {
+//                } else if (propertyId.equals("Experiment")) {
+//                    return "Experiment";
+//                } else if (propertyId.equals("Accession")) {
+//                    return "Accession";
+//                } else if (propertyId.equals("Sample Type")) {
+//                    return "Sample Type";
+//                } else if (propertyId.equals("Species")) {
+//                    return "Species";
+//                } else if (propertyId.equals("Sample Processing")) {
+//                    return "Sample Processing";
+//                } else if (propertyId.equals("Instrument Type")) {
+//                    return "Instrument Type";
+//                } else if (propertyId.equals("Other Protein(s)")) {
+//                    return "Other Protein(s)";
+//                } else if (propertyId.equals("Description")) {
+//                    return "Description";
+//                } else if (propertyId.equals("Sequence Coverage(%)")) {
+//                    return "Sequence Coverage(%)";
+//                } else if (propertyId.equals("# Validated Peptides")) {
+//                    return "# Validated Peptides";
+//                } else if (propertyId.equals("# Validated Spectra")) {
+//                    return "# Validated Spectra";
+//                } else if (propertyId.equals("MW")) {
+//                    return "MW";
+//                } else if (propertyId.equals("Confidence")) {
+//                    return "Confidence";
+//                } else if (propertyId.equals("NSAF")) {
+//                    return "NSAF";
+//                } else if (propertyId.equals("Protein Inference")) {
+//                    return "Protein Inference";
+//                } else if (propertyId.equals("Frag. Mode")) {
+//                    return "Frag. Mode";
+//                }
+//                return null;
+//            }
+//        });
+//
+//
     }
 }

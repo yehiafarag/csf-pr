@@ -9,7 +9,6 @@ import java.util.Set;
 import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import probe.com.model.beans.PeptideBean;
 import probe.com.view.subview.util.CustomEmbedded;
@@ -74,11 +73,7 @@ public class PeptideTable extends Table implements Serializable {
         this.addContainerProperty("Sequence Tagged", String.class, null, "Sequence Annotated", null, com.vaadin.ui.Table.ALIGN_LEFT);
         this.addContainerProperty("Enzymatic", CustomEmbedded.class, null, "Enzymatic", null, com.vaadin.ui.Table.ALIGN_CENTER);
         this.addContainerProperty("Validated", CustomEmbedded.class, null, "Validated", null, com.vaadin.ui.Table.ALIGN_CENTER);
-
-
-
         this.addContainerProperty("Deamidation & Glycopattern", CustomEmbedded.class, null, "Deamidation & Glycopattern", null, com.vaadin.ui.Table.ALIGN_CENTER);
-
         this.addContainerProperty("Glycopattern Positions", String.class, null, "Glycopattern Positions", null, com.vaadin.ui.Table.ALIGN_RIGHT);
 
 
@@ -176,92 +171,84 @@ public class PeptideTable extends Table implements Serializable {
             } else {
                 seq = new CustomLabel(pb.getSequence(), "black");
             }
-
             seq.setDescription("The Peptide Sequence: " + pb.getSequence());
             this.addItem(new Object[]{index, pi, pb.getPeptideProteins(), seq, pb.getAaBefore(), pb.getAaAfter(), pb.getPeptideStart(), pb.getPeptideEnd(), pb.getNumberOfValidatedSpectra(),
                 Double.valueOf(df.format(pb.getConfidence())), pb.getOtherProteins(), pb.getOtherProteinDescriptions(), pb.getPeptideProteinsDescriptions(),
                 pb.getVariableModification(), pb.getLocationConfidence(), pb.getPrecursorCharges(), pb.getSequenceTagged(), enz, validated, deamidationAndGlycopattern, pb.getGlycopatternPositions()}, new Integer(index));
             index++;
-
         }
         this.sort(new String[]{Confidence, "# Validated Spectra"}, new boolean[]{false, false});
         this.setSortAscending(false);
-
-
         int indexing = 1;
         for (Object id : this.getItemIds()) {
             Item item = this.getItem(id);
             item.getItemProperty("Index").setValue(indexing);
             indexing++;
-
         }
-
         for (Object propertyId : this.getSortableContainerPropertyIds()) {
-
             if (propertyId.toString().equals(sequence)) {
                 setColumnExpandRatio(propertyId, 2.0f);
             } else {
                 setColumnExpandRatio(propertyId.toString(), 0.5f);
             }
-
         }
         setColumnWidth("Index", 35);
         setColumnWidth(Protein_Inference, 35);
-        this.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
-            private static final long serialVersionUID = 6268199275509867378L;
-
-            @Override
-            public String generateDescription(Component source, Object itemId, Object propertyId) {
-                if (propertyId == null) {
-                    ;
-                } else if (propertyId.equals("Peptide Protein(s)")) {
-                    return "Peptide Protein(s)";
-                } else if (propertyId.equals("Protein Inference")) {
-                    return "Protein Inference";
-                } else if (propertyId.equals("Peptide Prot. Descrip.")) {
-                    return "Peptide Proteins Description(s)";
-                } else if (propertyId.equals("Other Prot Descrip.")) {
-                    return "Other Protein Description";
-                } else if (propertyId.equals(sequence)) {
-                    return "Sequence";
-
-                } else if (propertyId.equals("Enzymatic")) {
-                    return "Enzymatic";
-
-                } else if (propertyId.equals("Sequence Tagged")) {
-                    return "Sequence Annotated";
-                } else if (propertyId.equals("AA Before")) {
-                    return "AA Before";
-                } else if (propertyId.equals("AA After")) {
-                    return "AA After";
-                } else if (propertyId.equals("Peptide Start")) {
-                    return "Peptide Start";
-                } else if (propertyId.equals("Peptide End")) {
-                    return "Peptide End";
-                } else if (propertyId.equals("# Validated Spectra")) {
-                    return "# Validated Spectra";
-                } else if (propertyId.equals("Score")) {
-                    return "Score";
-                } /*   else if(propertyId.equals("Starred")) {
-                 return "Starred";
-                 }
-                 */ else if (propertyId.equals("Validated")) {
-                    return "Validated";
-                } else if (propertyId.equals("Confidence")) {
-                    return "Confidence";
-                } else if (propertyId.equals("Other Protein(s)")) {
-                    return "Other Protein(s)";
-                } else if (propertyId.equals("Variable Modification")) {
-                    return "Variable Modification";
-                } else if (propertyId.equals("Location Confidence")) {
-                    return "Location Confidence";
-                } else if (propertyId.equals("Precursor Charge(s)")) {
-                    return "Precursor Charge(s)";
-                }
-
-                return null;
-            }
-        });
-
+//        this.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
+//            private static final long serialVersionUID = 6268199275509867378L;
+//
+//            @Override
+//            public String generateDescription(Component source, Object itemId, Object propertyId) {
+//                if (propertyId == null) {
+//                    ;
+//                } else if (propertyId.equals("Peptide Protein(s)")) {
+//                    return "Peptide Protein(s)";
+//                } else if (propertyId.equals("Protein Inference")) {
+//                    return "Protein Inference";
+//                } else if (propertyId.equals("Peptide Prot. Descrip.")) {
+//                    return "Peptide Proteins Description(s)";
+//                } else if (propertyId.equals("Other Prot Descrip.")) {
+//                    return "Other Protein Description";
+//                } else if (propertyId.equals(sequence)) {
+//                    return "Sequence";
+//
+//                } else if (propertyId.equals("Enzymatic")) {
+//                    return "Enzymatic";
+//
+//                } else if (propertyId.equals("Sequence Tagged")) {
+//                    return "Sequence Annotated";
+//                } else if (propertyId.equals("AA Before")) {
+//                    return "AA Before";
+//                } else if (propertyId.equals("AA After")) {
+//                    return "AA After";
+//                } else if (propertyId.equals("Peptide Start")) {
+//                    return "Peptide Start";
+//                } else if (propertyId.equals("Peptide End")) {
+//                    return "Peptide End";
+//                } else if (propertyId.equals("# Validated Spectra")) {
+//                    return "# Validated Spectra";
+//                } else if (propertyId.equals("Score")) {
+//                    return "Score";
+//                } /*   else if(propertyId.equals("Starred")) {
+//                 return "Starred";
+//                 }
+//                 */ else if (propertyId.equals("Validated")) {
+//                    return "Validated";
+//                } else if (propertyId.equals("Confidence")) {
+//                    return "Confidence";
+//                } else if (propertyId.equals("Other Protein(s)")) {
+//                    return "Other Protein(s)";
+//                } else if (propertyId.equals("Variable Modification")) {
+//                    return "Variable Modification";
+//                } else if (propertyId.equals("Location Confidence")) {
+//                    return "Location Confidence";
+//                } else if (propertyId.equals("Precursor Charge(s)")) {
+//                    return "Precursor Charge(s)";
+//                }
+//
+//                return null;
+//            }
+//        });
+//
     }
 }

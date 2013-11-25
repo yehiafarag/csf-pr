@@ -23,7 +23,6 @@ import java.util.Map;
 import probe.com.control.ExperimentHandler;
 import probe.com.model.beans.ExperimentBean;
 import probe.com.model.beans.ProteinBean;
-import probe.com.view.subview.util.Help;
 import probe.com.view.subview.util.TableResizeSet;
 
 /**
@@ -87,7 +86,8 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
 //        topLayout.setExpandRatio(infoIco, 0.35f);
         
         
-        Label protLabel = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Proteins (" + exp.getNumberValidProt() + "/" + exp.getProteinsNumber() + ")</h4>");
+        Label protLabel =  new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Proteins (" + exp.getNumberValidProt() + ")</h4>");
+                    //new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Proteins (" + exp.getNumberValidProt() + "/" + exp.getProteinsNumber() + ")</h4>");
         protLabel.setContentMode(Label.CONTENT_XHTML);
         protLabel.setHeight("40px");
         protLabelLayout.addComponent(protLabel);
@@ -125,10 +125,11 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
         
         this.addComponent(protTableLayout);
         this.setComponentAlignment(protTableLayout, Alignment.MIDDLE_CENTER);
-        
-        protTable = new ProteinsTable(proteinsList, exp.getFractionsNumber());
-        protTableLayout.addComponent(protTable);
-        currentTable = protTable;
+         Map<String, ProteinBean> vProteinsList = getValidatedList(proteinsList);
+                    
+        vt = new ProteinsTable(vProteinsList, exp.getFractionsNumber());
+        protTableLayout.addComponent(vt);
+        currentTable = vt;
         
         
         HorizontalLayout lowerLayout = new HorizontalLayout();
@@ -161,6 +162,8 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
         final OptionGroup selectionType = new OptionGroup();
         selectionType.setMultiSelect(true);
         selectionType.addItem("\t\tShow Validated Proteins Only");
+        selectionType.select("\t\tShow Validated Proteins Only");
+       
         selectionType.setHeight("15px");
         lowerRightLayout.addComponent(selectionType);
         lowerRightLayout.setComponentAlignment(selectionType, Alignment.BOTTOM_LEFT);
@@ -194,9 +197,9 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
                     protLabel.setContentMode(Label.CONTENT_XHTML);
                     protLabel.setHeight("40px");
                     protLabelLayout.addComponent(protLabel);
-                    Map<String, ProteinBean> vProteinsList = getValidatedList(proteinsList);
+                   // Map<String, ProteinBean> vProteinsList = getValidatedList(proteinsList);
                     protTableLayout.removeAllComponents();
-                    vt = new ProteinsTable(vProteinsList, exp.getFractionsNumber());
+                   // vt = protTable;
                     protTableLayout.addComponent(vt);
                     trs1.setTable(vt);
                     vt.setHeight(protTable.getHeight() + "");
@@ -210,6 +213,7 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
                     Label protLabel = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Proteins (" + exp.getNumberValidProt() + "/" + exp.getProteinsNumber() + ")</h4>");
                     protLabel.setContentMode(Label.CONTENT_XHTML);
                     protLabel.setHeight("40px");
+                    protTable = new ProteinsTable(proteinsList, exp.getFractionsNumber());
                     protLabelLayout.addComponent(protLabel);
                     protTableLayout.removeAllComponents();
                     protTableLayout.addComponent(protTable);
@@ -222,20 +226,10 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
                 }
             }
             
-            private Map<String, ProteinBean> getValidatedList(Map<String, ProteinBean> proteinsList) {
-                Map<String, ProteinBean> vProteinsList = new HashMap<String, ProteinBean>();
-                for (String str : proteinsList.keySet()) {
-                    ProteinBean pb = proteinsList.get(str);
-                    if (pb.isValidated()) {
-                        vProteinsList.put(str, pb);
-                    }
-                    
-                }
-                return vProteinsList;
-                
-            }
+            
         });
-        
+//        selectionType.select(selectId);
+//        selectionType.commit();
         
     }
     
@@ -256,20 +250,16 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
     
     private void updateExportLayouts() {
         
-        exportAllPepLayout.removeAllComponents();
-        
-        
-        expBtnProtAllPepTable.setHideOnMouseOut(false);
-        
-        exportAllPepLayout.addComponent(expBtnProtAllPepTable);
-        
+        exportAllPepLayout.removeAllComponents();        
+        expBtnProtAllPepTable.setHideOnMouseOut(false);        
+        exportAllPepLayout.addComponent(expBtnProtAllPepTable);        
         expBtnProtAllPepTable.setDescription("Export all Protien's Peptides from all Data Sets");
         exportAllPepLayout.setComponentAlignment(expBtnProtAllPepTable, Alignment.MIDDLE_LEFT);
         
         exportProtLayout.removeAllComponents();
         expBtnProtPepTable.setHideOnMouseOut(false);
         exportProtLayout.addComponent(expBtnProtPepTable);
-        expBtnProtPepTable.setDescription("Export Protiens");
+        expBtnProtPepTable.setDescription("Export Protiens");       
         exportProtLayout.setComponentAlignment(expBtnProtPepTable, Alignment.MIDDLE_LEFT);
         
     }
@@ -289,4 +279,16 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
     public Label getProtCounter() {
         return protCounter;
     }
+    private Map<String, ProteinBean> getValidatedList(Map<String, ProteinBean> proteinsList) {
+                Map<String, ProteinBean> vProteinsList = new HashMap<String, ProteinBean>();
+                for (String str : proteinsList.keySet()) {
+                    ProteinBean pb = proteinsList.get(str);
+                    if (pb.isValidated()) {
+                        vProteinsList.put(str, pb);
+                    }
+                    
+                }
+                return vProteinsList;
+                
+            }
 }

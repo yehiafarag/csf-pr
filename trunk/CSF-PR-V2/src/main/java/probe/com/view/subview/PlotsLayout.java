@@ -49,7 +49,7 @@ import probe.com.view.subview.util.GeneralUtil;
 public class PlotsLayout extends VerticalLayout implements Serializable {
 
     private GeneralUtil util = new GeneralUtil("chart");
-    private Notification notidication;
+    private Notification notification;
 
     public PlotsLayout(String lable, Map<Integer, ProteinBean> protienFractionList, Map<String, List<StandardProteinBean>> standProtList, double mw) {
         if (!protienFractionList.isEmpty()) {
@@ -91,7 +91,7 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                         if (spb.getLowerFraction() == f) {
                             ++x;
                             initRealValue[x] = 0.0d;
-                            strArr[x] = alfabet.pollFirst();
+                            strArr[x] =" ";// alfabet.pollFirst();
                             spb.setFractionIndicator(strArr[x].toString());
                             standProtMap.put(x, spb);
                             break;
@@ -102,7 +102,7 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                         if (spb.getLowerFraction() == f) {
                             ++x;
                             initRealValue[x] = 0.0d;
-                            strArr[x] = alfabet.pollFirst();
+                            strArr[x] = " ";//alfabet.pollFirst();
                             spb.setFractionIndicator(strArr[x].toString());
                             standProtMap.put(x, spb);
                         }
@@ -127,7 +127,7 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                         if (spb.getLowerFraction() == f) {
                             ++x;
                             initRealValue[x] = 0.0d;
-                            strArr[x] = alfabet.pollFirst();
+                            strArr[x] = " ";//alfabet.pollFirst();
                             spb.setFractionIndicator(strArr[x].toString());
                             standProtMap.put(x, spb);
                             break;
@@ -138,7 +138,7 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                         if (spb.getLowerFraction() == f) {
                             ++x;
                             initRealValue[x] = 0.0d;
-                            strArr[x] = alfabet.pollFirst();
+                            strArr[x] = " ";//alfabet.pollFirst();
                             spb.setFractionIndicator(strArr[x].toString());
                             standProtMap.put(x, spb);
                         }
@@ -164,7 +164,7 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                         if (spb.getLowerFraction() == f) {
                             ++x;
                             initRealValue[x] = 0.0d;
-                            strArr[x] = alfabet.pollFirst();
+                            strArr[x] =" ";// alfabet.pollFirst();
                             spb.setFractionIndicator(strArr[x].toString());
                             standProtMap.put(x, spb);
                             break;
@@ -175,7 +175,7 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                         if (spb.getLowerFraction() == f) {
                             ++x;
                             initRealValue[x] = 0.0d;
-                            strArr[x] = alfabet.pollFirst();
+                            strArr[x] =" ";// alfabet.pollFirst();
                             spb.setFractionIndicator(strArr[x].toString());
                             standProtMap.put(x, spb);
                         }
@@ -274,8 +274,8 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                     .setGridBorderWidth(2.5f);
             Series series = new Series()
                     .addSeries(new XYseries().setIndex(0).setLabel("Real Values").setShowLabel(false).setShadow(false).setDisableStack(false))//.setPointLabels(realVallab))
-                    .addSeries(new XYseries().setIndex(2).setLabel("Theoretical Protien").setShowLabel(false).setShadow(false).setDisableStack(false))
-                    .addSeries(new XYseries().setIndex(1).setLabel("Standared Protien").setShowLabel(false).setShadow(false).setDisableStack(false));//.setPointLabels(thiolab ))
+                    .addSeries(new XYseries().setIndex(2).setLabel("Theoretical Protein").setShowLabel(false).setShadow(false).setDisableStack(false))
+                    .addSeries(new XYseries().setIndex(1).setLabel("Standard Protein").setShowLabel(false).setShadow(false).setDisableStack(false));//.setPointLabels(thiolab ))
 
             Highlighter highlighter = new Highlighter()
                     .setUseAxesFormatters(true)
@@ -339,14 +339,15 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                         StandardProteinBean spb = standProtMap.get(event.getChartData().getPointIndex().intValue());
                         String desc = "";
                         if (spb.isTheoretical()) {
-                            desc = "Theoretical Protien\nMW: " + spb.getMW_kDa() + " kDa\nBetween Fractions " + spb.getLowerFraction() + " and " + spb.getUpperFraction();
+                            desc = "Theoretical Protein\nMW: " + spb.getMW_kDa() + " kDa\nBetween Fractions " + spb.getLowerFraction() + " and " + spb.getUpperFraction();
                         } else {
-                            desc = "Standared Protien\nMW: " + spb.getMW_kDa() + " kDa\nBetween Fractions: " + spb.getLowerFraction() + " and " + spb.getUpperFraction();
+                            desc = "Standared Protein\nMW: " + spb.getMW_kDa() + " kDa\nBetween Fractions: " + spb.getLowerFraction() + " and " + spb.getUpperFraction();
 
                         }
-                        notidication = new Notification(" " + spb.getFractionIndicator() + "  " + spb.getName(), desc, Type.TRAY_NOTIFICATION, false);
-                        notidication.setPosition(Position.BOTTOM_RIGHT);
-                        notidication.show(Page.getCurrent());
+                        notification = new Notification(" " + spb.getFractionIndicator() + "  " + spb.getName(), desc, Type.TRAY_NOTIFICATION, false);
+                        notification.setPosition(Position.BOTTOM_RIGHT);
+                        notification.show(Page.getCurrent());
+                        notification.setDelayMsec(1);
                     }
                 }
             });
@@ -358,30 +359,31 @@ public class PlotsLayout extends VerticalLayout implements Serializable {
                         StandardProteinBean spb = standProtMap.get(event.getChartData().getPointIndex().intValue());
                         String desc = "";
                         if (spb.isTheoretical()) {
-                            desc = "<p width='250px'>Index:  " + spb.getFractionIndicator() + " <br/>Theoretical Protien<br/>MW: " + spb.getMW_kDa() + " kDa<br/>Between Fractions: " + spb.getLowerFraction() + " and " + spb.getUpperFraction() + "</p>";
+                            desc = "<p width='250px'>"/*Index:  " + spb.getFractionIndicator() + " <br/>*/+"Theoretical Protein<br/>MW: " + spb.getMW_kDa() + " kDa<br/>Between Fractions: " + spb.getLowerFraction() + " and " + spb.getUpperFraction() + "</p>";
                         } else {
-                            desc = "<p width='150px'>Index:  " + spb.getFractionIndicator() + " <br/>Standared Protien<br/>MW: " + spb.getMW_kDa() + " kDa<br/>Between Fractions: " + spb.getLowerFraction() + " and " + spb.getUpperFraction() + "</p>";
+                            desc = "<p width='150px'>"/*Index:  " + spb.getFractionIndicator() + " <br/>*/+"Standared Protein<br/>MW: " + spb.getMW_kDa() + " kDa<br/>Between Fractions: " + spb.getLowerFraction() + " and " + spb.getUpperFraction() + "</p>";
 
                         }
-                        notidication = new Notification("<h4>" + spb.getName() + "</h4>", desc, Type.TRAY_NOTIFICATION, true);
-                        notidication.setPosition(Position.BOTTOM_RIGHT);
-                        notidication.show(Page.getCurrent());
+                        notification = new Notification("" + spb.getName() + "", desc, Type.TRAY_NOTIFICATION, true);
+                        notification.setPosition(Position.BOTTOM_RIGHT);
+                        notification.show(Page.getCurrent());
+                         notification.setDelayMsec(1);
                     }
 
                 }
             });
-            chart.addHandler(new ChartDataMouseLeaveHandler() {
-                @Override
-                public void onChartDataMouseLeave(ChartDataMouseLeaveEvent event) {
-                    if (notidication != null) {
-                        notidication.setDelayMsec(0);
-                    }
-
-                }
-            });
-            if (lable.equalsIgnoreCase("#Peptides")) {
+//            chart.addHandler(new ChartDataMouseLeaveHandler() {
+//                @Override
+//                public void onChartDataMouseLeave(ChartDataMouseLeaveEvent event) {
+//                    if (notification != null) {
+//                        notification.setDelayMsec(1);
+//                    }
+//
+//                }
+//            });
+            if (lable.equalsIgnoreCase("#Peptides")&&highScore!=1) {
                 chart.setMarginLeft(25);
-            } else if (lable.equalsIgnoreCase("#Spectra")) {
+            } else if (lable.equalsIgnoreCase("#Spectra")&&highScore!=1) {
                 chart.setMarginLeft(25);
             }
         }

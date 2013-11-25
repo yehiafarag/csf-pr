@@ -1571,7 +1571,6 @@ public class DataBase implements Serializable {
             }
             ResultSet rs = selectProStat.executeQuery();
             while (rs.next()) {
-                System.out.println("prot search result pb "+accession);
                 ProteinBean temPb = new ProteinBean();
                 temPb.setExpId(expId);
                 temPb.setAccession(accession);
@@ -1847,7 +1846,6 @@ public class DataBase implements Serializable {
             ResultSet rs = selectProStat.executeQuery();
             int in=1;
                while (rs.next()) {
-                   System.out.println("Active "+ in++);
                 ProteinBean temPb = new ProteinBean();
                 temPb.setExpId(expId);
                 temPb.setAccession(rs.getString("prot_accession"));

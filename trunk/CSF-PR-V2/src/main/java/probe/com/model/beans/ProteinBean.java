@@ -2,7 +2,7 @@ package probe.com.model.beans;
 
 import java.io.Serializable;
 
-public class ProteinBean implements Serializable {
+public class ProteinBean implements Serializable,Comparable<ProteinBean> {
 
     public ProteinBean() {
     }
@@ -356,5 +356,14 @@ public class ProteinBean implements Serializable {
 
     public void setProtGroupId(int protGroupId) {
         this.protGroupId = protGroupId;
+    }
+
+    @Override
+    public int compareTo(ProteinBean o) {
+        if(this.nsaf > o.getNsaf())
+            return 1;
+        else
+            return -1;
+    
     }
 }
