@@ -160,10 +160,15 @@ public class DB implements Serializable {
                         + "  `glycopattern_position(s)` varchar(100) default NULL,\n"
                         + "  `deamidation_and_glycopattern` varchar(5) default NULL,\n"
                         + "  `exp_id` int(250) NOT NULL default '0',\n"
+                        + "  `likelyNotGlycosite` varchar(5) NOT NULL default 'FALSE',\n"
                         + "  KEY `peptide_id` (`peptide_id`)\n"
                         + ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(proteins_peptides_table);
-
+                
+                
+                //TEMPRARLY ADD WILL REMOVE NEXT TIME 
+                String alterPeptideTable = "ALTER TABLE  `proteins_peptides_table` ADD  `likelyNotGlycosite` VARCHAR( 5 ) NOT NULL DEFAULT  'FALSE';";
+                st.executeUpdate(alterPeptideTable);
                 //CREATE TABLE fractions_table
                 String fractions_table = "CREATE TABLE IF NOT EXISTS `fractions_table` (  `fraction_id` int(11) NOT NULL,`prot_accession` varchar(500) NOT NULL,"
                         + "`number_peptides` int(11) NOT NULL default '0',  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `number_spectra` int(11) NOT NULL default '0',`average_ precursor_intensity` double default NULL," + "KEY `prot_accession` (`prot_accession`), KEY `fraction_id` (`fraction_id`),	FOREIGN KEY (`prot_accession`) REFERENCES proteins_table(`accession`) ON DELETE CASCADE,"
@@ -325,8 +330,8 @@ public class DB implements Serializable {
 
     public synchronized int insertPeptide(int pepId, PeptideBean pepb, int expId) {
         String insertPeptide = "INSERT INTO  `" + dbName + "`.`proteins_peptides_table` (`protein` ,`other_protein(s)` ,`peptide_protein(s)` ,`other_protein_description(s)` ,`peptide_proteins_description(s)` ,`aa_before` ,`sequence` ,"
-                + "`aa_after` ,`peptide_start` ,`peptide_end` ,`variable_modification` ,`location_confidence` ,`precursor_charge(s)` ,`number_of_validated_spectra` ,`score` ,`confidence` ,`peptide_id`,`fixed_modification`,`protein_inference`,`sequence_tagged`,`enzymatic`,`validated`,`starred`,`glycopattern_position(s)`,`deamidation_and_glycopattern`,`exp_id` )VALUES ("
-                + "?,?,?,?,?,?,?,?,?,?,? , ? , ?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+                + "`aa_after` ,`peptide_start` ,`peptide_end` ,`variable_modification` ,`location_confidence` ,`precursor_charge(s)` ,`number_of_validated_spectra` ,`score` ,`confidence` ,`peptide_id`,`fixed_modification`,`protein_inference`,`sequence_tagged`,`enzymatic`,`validated`,`starred`,`glycopattern_position(s)`,`deamidation_and_glycopattern`,`likelyNotGlycosite`,`exp_id` )VALUES ("
+                + "?,?,?,?,?,?,?,?,?,?,? , ? , ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
         if (pepId == -1)//generate peptide id
         {
             String insertPeptideExp = "INSERT INTO  `" + dbName + "`.`experiment_peptides_table` (`exp_id`) VALUES (?) ;";
@@ -388,9 +393,14 @@ public class DB implements Serializable {
             if (pepb.isDeamidationAndGlycopattern() != null && pepb.isDeamidationAndGlycopattern()) {
                 insertPeptideStat.setString(25, String.valueOf(pepb.isDeamidationAndGlycopattern()).toUpperCase());
             } else {
-                insertPeptideStat.setString(25, "");
+                insertPeptideStat.setString(25, "FALSE");
             }
-            insertPeptideStat.setInt(26, expId);
+            if (pepb.isLikelyNotGlycopeptide() != null && pepb.isLikelyNotGlycopeptide()) {
+                insertPeptideStat.setString(26, String.valueOf(pepb.isLikelyNotGlycopeptide()).toUpperCase());
+            } else {
+                insertPeptideStat.setString(26, "FALSE");
+            }
+            insertPeptideStat.setInt(27, expId);
 
             test = insertPeptideStat.executeUpdate();
 

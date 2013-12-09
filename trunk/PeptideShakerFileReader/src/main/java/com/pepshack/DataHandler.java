@@ -26,7 +26,7 @@ public class DataHandler {
         exporter = new UpdatedOutputGenerator(importer);
         exp.setProteinList(this.getProteins());
         exp.setProteinsNumber(exp.getProteinList().size());
-        int numberValidProt = getValidatedPeptidesNumber(exp.getProteinList());
+        int numberValidProt = getValidatedProtNumber(exp.getProteinList());
         exp.setNumberValidProt(numberValidProt);
         label.setText("Start Peptides processing...");
         exp.setPeptideList(this.getPeptides());
@@ -64,14 +64,18 @@ public class DataHandler {
     private int getValidatedPeptideNuumber(Map<Integer, PeptideBean> pepList) {
         int number = 0;
         for (PeptideBean pepb : pepList.values()) {
-            if (pepb.getValidated() == 1.0) {
+            if (pepb.getDecoy()!=1 && pepb.getValidated() == 1.0) {
                 number++;
+                
             }
         }
+        
+        System.out.println("all pep number "+pepList.size());
+        System.out.println("v pep number "+number);
         return number;
     }
 
-    public ExperimentBean addGlicoPep(File glycopeptide, ExperimentBean exp) {
+    public  ExperimentBean addGlicoPep(File glycopeptide, ExperimentBean exp) {
         if (!glycopeptide.exists())
                ; else {
             FilesReader reader = new FilesReader();
@@ -85,15 +89,21 @@ public class DataHandler {
         Map<Integer, PeptideBean> updatedList = new HashMap<Integer, PeptideBean>();
         for (int index : exp.getPeptideList().keySet()) {
             PeptideBean pb = exp.getPeptideList().get(index);
+            pb.setLikelyNotGlycosite(false);
+             pb.setDeamidationAndGlycopattern(false);
+             pb.setGlycopatternPositions("");
+                
             String key = "[" + pb.getProtein() + "][" + pb.getSequenceTagged() + "]";
             if (pepList.containsKey(key)) {
-                System.out.println("Updating is working");
                 PeptideBean temPb = pepList.get(key);
                 if (temPb.getGlycopatternPositions() != null) {
                     pb.setGlycopatternPositions(temPb.getGlycopatternPositions());
                 }
                 if (temPb.isDeamidationAndGlycopattern() != null) {
                     pb.setDeamidationAndGlycopattern(temPb.isDeamidationAndGlycopattern());
+                }
+                if (temPb.isLikelyNotGlycopeptide()) {
+                    pb.setLikelyNotGlycosite(temPb.isLikelyNotGlycopeptide());
                 }
             }
             updatedList.put(index, pb);
@@ -102,7 +112,7 @@ public class DataHandler {
         return exp;
     }
 
-    private int getValidatedPeptidesNumber(Map<String, ProteinBean> proteinsList) {
+    private int getValidatedProtNumber(Map<String, ProteinBean> proteinsList) {
         int counter = 0;
         for (ProteinBean pb : proteinsList.values()) {
             if (pb.isValidated()) {
