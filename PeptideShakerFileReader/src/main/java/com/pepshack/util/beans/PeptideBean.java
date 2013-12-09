@@ -34,6 +34,7 @@ public class PeptideBean implements Serializable {
     private boolean starred;
     private Boolean deamidationAndGlycopattern;
     private String glycopatternPositions;
+    private Boolean likelyNotGlycosite;
 
     public String getProtein() {
         return protein;
@@ -242,5 +243,21 @@ public class PeptideBean implements Serializable {
 
     public void setGlycopatternPositions(String glycopatternPositions) {
         this.glycopatternPositions = glycopatternPositions;
+    }
+
+    public Boolean getDeamidationAndGlycopattern() {
+        return deamidationAndGlycopattern;
+    }
+
+    public void setDeamidationAndGlycopattern(Boolean deamidationAndGlycopattern) {
+        this.deamidationAndGlycopattern = deamidationAndGlycopattern;
+    }
+
+    public Boolean isLikelyNotGlycopeptide() {
+        return likelyNotGlycosite;
+    }
+
+    public void setLikelyNotGlycosite(boolean likelyNotGlycosite) {
+        this.likelyNotGlycosite = likelyNotGlycosite;
     }
 }
