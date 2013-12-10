@@ -9,6 +9,7 @@ import java.util.Set;
 import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Table;
 import probe.com.model.beans.PeptideBean;
 import probe.com.view.subview.util.CustomEmbedded;
@@ -54,8 +55,6 @@ public class PeptideTable extends Table implements Serializable {
         this.setColumnCollapsed("Peptide End", true);
 
         this.addContainerProperty("# Validated Spectra", Integer.class, null, "#Spectra", null, com.vaadin.ui.Table.ALIGN_RIGHT);
-        String Confidence = "Confidence";
-        this.addContainerProperty(Confidence, Double.class, null, Confidence, null, com.vaadin.ui.Table.ALIGN_RIGHT);
         this.addContainerProperty("Other Protein(s)", String.class, null);
         this.addContainerProperty("Other Prot Descrip.", String.class, null);
 
@@ -70,13 +69,19 @@ public class PeptideTable extends Table implements Serializable {
 
         this.addContainerProperty("Precursor Charge(s)", String.class, null, "Precursor Charge(s)", null, com.vaadin.ui.Table.ALIGN_RIGHT);
 
-        this.addContainerProperty("Sequence Tagged", String.class, null, "Sequence Annotated", null, com.vaadin.ui.Table.ALIGN_LEFT);
         this.addContainerProperty("Enzymatic", CustomEmbedded.class, null, "Enzymatic", null, com.vaadin.ui.Table.ALIGN_CENTER);
-        this.addContainerProperty("Validated", CustomEmbedded.class, null, "Validated", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        
+        this.addContainerProperty("Sequence Tagged", String.class, null, "Sequence Annotated", null, com.vaadin.ui.Table.ALIGN_LEFT);
         this.addContainerProperty("Deamidation & Glycopattern", CustomEmbedded.class, null, "Deamidation & Glycopattern", null, com.vaadin.ui.Table.ALIGN_CENTER);
         this.addContainerProperty("Glycopattern Positions", String.class, null, "Glycopattern Positions", null, com.vaadin.ui.Table.ALIGN_RIGHT);
+       
+        this.addContainerProperty("Likely Not Glycosite", CustomEmbedded.class, null, "Likely Not Glycosite", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        
 
-
+        String Confidence = "Confidence";
+        this.addContainerProperty(Confidence, Double.class, null, Confidence, null, com.vaadin.ui.Table.ALIGN_RIGHT);        
+         this.addContainerProperty("Validated", CustomEmbedded.class, null, "Validated", null, com.vaadin.ui.Table.ALIGN_CENTER);
+       
 
         CustomEmbedded enz = null;
         Resource res = null;
@@ -87,14 +92,15 @@ public class PeptideTable extends Table implements Serializable {
         CustomLabel seq = null;
 
         CustomEmbedded deamidationAndGlycopattern = null;
+        CustomEmbedded likelyNotGlycosite = null;
 
         CustomEmbedded validated = null;
         int index = 1;
         for (PeptideBean pb : peptideList.values()) {
             if (pb.isEnzymatic()) {
-                res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
+                res = new ThemeResource("img/true.jpg");//new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
             } else {
-                res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
+                res = new ThemeResource("img/false.jpg");//new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
             }
 
             enz = new CustomEmbedded(pb.isEnzymatic(), res);
@@ -103,19 +109,19 @@ public class PeptideTable extends Table implements Serializable {
             enz.setDescription("" + pb.isEnzymatic());
 
             if (pb.isDeamidationAndGlycopattern() == null) {
-                res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
+                res3 = new ThemeResource("img/false.jpg");//new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
                 deamidationAndGlycopattern = new CustomEmbedded(false, res3);
                 deamidationAndGlycopattern.setWidth("16px");
                 deamidationAndGlycopattern.setHeight("16px");
                 deamidationAndGlycopattern.setDescription("FALSE");
             } else if (pb.isDeamidationAndGlycopattern()) {
-                res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
+                res3 = new ThemeResource("img/true.jpg");//new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
                 deamidationAndGlycopattern = new CustomEmbedded(pb.isDeamidationAndGlycopattern(), res3);
                 deamidationAndGlycopattern.setWidth("16px");
                 deamidationAndGlycopattern.setHeight("16px");
                 deamidationAndGlycopattern.setDescription("" + pb.isDeamidationAndGlycopattern());
             } else {
-                res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
+                res3 = new ThemeResource("img/false.jpg");// new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
 
                 deamidationAndGlycopattern = new CustomEmbedded(pb.isDeamidationAndGlycopattern(), res3);
                 deamidationAndGlycopattern.setWidth("16px");
@@ -123,6 +129,28 @@ public class PeptideTable extends Table implements Serializable {
                 deamidationAndGlycopattern.setDescription("" + pb.isDeamidationAndGlycopattern());
 
             }
+            if (pb.isLikelyNotGlycopeptide() == null) {
+                res3 = new ThemeResource("img/false.jpg");//new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
+                likelyNotGlycosite = new CustomEmbedded(false, res3);
+                likelyNotGlycosite.setWidth("16px");
+                likelyNotGlycosite.setHeight("16px");
+                likelyNotGlycosite.setDescription("FALSE");
+            } else if (pb.isLikelyNotGlycopeptide()) {
+                res3 = new ThemeResource("img/true.jpg");// new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
+                likelyNotGlycosite = new CustomEmbedded(pb.isLikelyNotGlycopeptide(), res3);
+                likelyNotGlycosite.setWidth("16px");
+                likelyNotGlycosite.setHeight("16px");
+                likelyNotGlycosite.setDescription("" + pb.isLikelyNotGlycopeptide());
+            } else {
+                res3 = new ThemeResource("img/false.jpg");//new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
+
+                likelyNotGlycosite = new CustomEmbedded(pb.isLikelyNotGlycopeptide(), res3);
+                likelyNotGlycosite.setWidth("16px");
+                likelyNotGlycosite.setHeight("16px");
+                likelyNotGlycosite.setDescription("" + pb.isLikelyNotGlycopeptide());
+
+            }
+
 
 
             if (pb.getProteinInference() == null) {
@@ -152,9 +180,9 @@ public class PeptideTable extends Table implements Serializable {
 
             if (pb.getValidated() == 1.0) {
                 valid = true;
-                res2 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
+                res2 = new ThemeResource("img/true.jpg");//new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
             } else {
-                res2 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
+                res2 = new ThemeResource("img/false.jpg");//new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
             }
 
             validated = new CustomEmbedded(valid, res2);
@@ -173,8 +201,8 @@ public class PeptideTable extends Table implements Serializable {
             }
             seq.setDescription("The Peptide Sequence: " + pb.getSequence());
             this.addItem(new Object[]{index, pi, pb.getPeptideProteins(), seq, pb.getAaBefore(), pb.getAaAfter(), pb.getPeptideStart(), pb.getPeptideEnd(), pb.getNumberOfValidatedSpectra(),
-                Double.valueOf(df.format(pb.getConfidence())), pb.getOtherProteins(), pb.getOtherProteinDescriptions(), pb.getPeptideProteinsDescriptions(),
-                pb.getVariableModification(), pb.getLocationConfidence(), pb.getPrecursorCharges(), pb.getSequenceTagged(), enz, validated, deamidationAndGlycopattern, pb.getGlycopatternPositions()}, new Integer(index));
+                pb.getOtherProteins(), pb.getOtherProteinDescriptions(), pb.getPeptideProteinsDescriptions(),
+                pb.getVariableModification(), pb.getLocationConfidence(), pb.getPrecursorCharges(),enz, pb.getSequenceTagged(),  deamidationAndGlycopattern,pb.getGlycopatternPositions(),likelyNotGlycosite,Double.valueOf(df.format(pb.getConfidence())),validated}, new Integer(index));
             index++;
         }
         this.sort(new String[]{Confidence, "# Validated Spectra"}, new boolean[]{false, false});
@@ -194,6 +222,8 @@ public class PeptideTable extends Table implements Serializable {
         }
         setColumnWidth("Index", 35);
         setColumnWidth(Protein_Inference, 35);
+        setColumnWidth("Validated", 35);
+        setColumnWidth(Confidence, 35);
 //        this.setItemDescriptionGenerator(new ItemDescriptionGenerator() {
 //            private static final long serialVersionUID = 6268199275509867378L;
 //

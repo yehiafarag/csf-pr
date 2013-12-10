@@ -20,7 +20,10 @@
    -ms-filter: alpha(opacity=80);  
    filter: alpha(opacity=80);  
  }  
-
+ .spacer v-verticallayout v-layout v-vertical v-widget spacer v-verticallayout-spacer v-has-width v-has-height{
+     background: #4d749f;
+     
+ }
 
 .v-tabsheet-tabitem-selected {
 	border: none;

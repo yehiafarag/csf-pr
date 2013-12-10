@@ -54,7 +54,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
     private OptionGroup searchbyGroup;
     private Button searchButton = new Button("");
     private ExperimentHandler handler;
-    private String defaultText = "one keyword per line, and choose the search options";
+    private String defaultText = "Please use one key-word per line and choose the search options";
     private String selectDatasetStr = "Search All Datasets";
     private Label searchByLabel, errorLabelI;// = new  Label();
     private CustomErrorLabel errorLabelII;
@@ -118,7 +118,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
 
         //search form layout
         searchField = new TextArea();//("Searching Key ");
-        searchField.setDescription("one keyword per line, and choose the search options");
+       // searchField.setDescription("one keyword per line, and choose the search options");
         searchField.setValue(defaultText);
         searchField.setWidth("350px");
         searchField.setImmediate(true);
@@ -131,7 +131,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
 
             @Override
             public void focus(FieldEvents.FocusEvent event) {
-                if (defaultText.equals("one keyword per line, and choose the search options")) {
+                if (defaultText.equals("Please use one key-word per line and choose the search options")) {
                     searchField.setValue("");
                 }
 
@@ -160,7 +160,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                 searchButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
             }
         });
-        selectExp.setDescription(selectDatasetStr);
+        //selectExp.setDescription(selectDatasetStr);
         selectExp.setNullSelectionAllowed(false);
         selectExp.setWidth("350px");
         topLeftLayout.addComponent(selectExp);
@@ -187,8 +187,8 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
 
         validatedResults = new OptionGroup();
         validatedResults.setMultiSelect(true);
-        validatedResults.addItem("Validated Proteins Results Only");
-        validatedResults.select("Validated Proteins Results Only");
+        validatedResults.addItem("Validated Proteins Only");
+        validatedResults.select("Validated Proteins Only");
         validatedResults.setHeight("15px");
         searchPropLayout.addComponent(validatedResults);
         searchPropLayout.setComponentAlignment(validatedResults, Alignment.MIDDLE_RIGHT);
@@ -198,7 +198,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
         validatedResults.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                if (validatedResults.isSelected("Validated Proteins Results Only")) {
+                if (validatedResults.isSelected("Validated Proteins Only")) {
                     validatedOnly = true;
 
                 } else {
@@ -208,16 +208,17 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
         });
 
         //topright layout
+        topRightLayout.setWidth("100%");
         searchButton.setStyleName(Reindeer.BUTTON_LINK);
 //        searchButton.setIcon(new ExternalResource("http://icons.iconarchive.com/icons/ampeross/qetto-2/96/search-icon.png"));
-        searchButton.setIcon(new ThemeResource("img/search_2.png"));
-        searchButton.setDescription("Search");
+        searchButton.setIcon(new ThemeResource("img/search_22.png"));
+        //searchButton.setDescription("Search");
         topRightLayout.addComponent(searchButton);
         topRightLayout.setComponentAlignment(searchButton, Alignment.BOTTOM_LEFT);
         topRightLayout.setExpandRatio(searchButton, 0.9f);
         topRightLayout.setMargin(new MarginInfo(true,true, true,false));
 
-        Label infoLable = new Label("<p  style='font-family:verdana;color:black;font-weight:bold;'>Type in search keywords (one per line) and choose the search type. All experiments containing protein(s) where the keyword is found are listed. View the information about each protein from each experiment separately by selecting them from the list.</p>");
+        Label infoLable = new Label("<div style='border:1px outset black;text-align:justify;text-justify:inter-word;'><h3 style='font-family:verdana;color:black;font-weight:bold;margin-left:20px;margin-right:20px;'>Help!</h3><p  style='font-family:verdana;color:black;margin-left:20px;margin-right:20px;'>Type in search keywords (one per line) and choose the search type. All experiments containing protein(s) where the keyword is found are listed. View the information about each protein from each experiment separately by selecting them from the list.</p></div>");
         infoLable.setContentMode(Label.CONTENT_XHTML);
         infoLable.setWidth("300px");
         infoLable.setStyleName(Reindeer.LAYOUT_BLUE);
@@ -228,22 +229,23 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
         //errorLabelI error in search keyword 
         errorLabelI = new Label("<h3 Style='color:red;'>Please Enter Valid Key Word </h3>");
         errorLabelI.setContentMode(Label.CONTENT_XHTML);
+        
         topRightLayout.addComponent(errorLabelI);
-        topRightLayout.setComponentAlignment(errorLabelI, Alignment.MIDDLE_RIGHT);
+        topRightLayout.setComponentAlignment(errorLabelI, Alignment.MIDDLE_CENTER);
         errorLabelI.setVisible(false);
 
         topRightLayout.setExpandRatio(errorLabelI, 0.1f);
 
         errorLabelII = new CustomErrorLabel();
         topRightLayout.addComponent(errorLabelII);
-        topRightLayout.setComponentAlignment(errorLabelII, Alignment.MIDDLE_RIGHT);
+        topRightLayout.setComponentAlignment(errorLabelII, Alignment.MIDDLE_CENTER);
         topRightLayout.setExpandRatio(errorLabelII, 0.1f);
 
         Help help = new Help();
         HorizontalLayout infoIco = help.getInfoNote(infoLable);
         infoIco.setMargin(new MarginInfo(false, true, false, true));
         topRightLayout.addComponent(infoIco);
-        topRightLayout.setExpandRatio(infoIco, 0.8f);
+        //topRightLayout.setExpandRatio(infoIco, 0.8f);
         topRightLayout.setComponentAlignment(infoIco, Alignment.MIDDLE_RIGHT);
         errorLabelII.setVisible(false);
 
@@ -266,7 +268,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
         Object searchDatasetTypeObject = selectExp.getValue();
         Object protSearchObject = searchField.getValue();
 
-        if (protSearchObject == null || protSearchObject.toString().equals("") || protSearchObject.toString().equals("For Multiple Search...Please Use One key word Per Line !")) {
+        if (protSearchObject == null || protSearchObject.toString().equals("") || protSearchObject.toString().length() < 4 || protSearchObject.toString().equals("Please use one key-word per line and choose the search options")) {
             errorLabelI.setVisible(true);
             searchField.focus();
         } else {
@@ -379,7 +381,11 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                         exp.setProteinList(proteinsList);
                         expList.put(exp.getExpId(), exp);
                         CustomExportBtnLayout ce1 = new CustomExportBtnLayout(handler, "allProtPep", expId, expName, accession, otherAccession, expList, null, 0, null, null, null);
-                        PopupView p1 = new PopupView("Export All (" + accession + ")'s Peptides", ce1);
+                        PopupView p1 = new PopupView("Export CSF-PR Peptides for (" + accession + " )", ce1);
+                        p1.setDescription("Export CSF-PR Peptides for ( "+accession+" ) for All Available Datasets");
+                            
+//                        CustomExportBtnLayout ce1 = new CustomExportBtnLayout(handler, "allProtPep", expId, expName, accession, otherAccession, expList, null, 0, null, null, null);
+//                        PopupView p1 = new PopupView("Export All (" + accession + ")'s Peptides", ce1);
                         searcheResultsTableLayout.setExpBtnProtAllPepTable(p1);// new PopupView("Export Proteins", (new CustomExportBtnLayout(handler, "prots",expId, expName, accession, otherAccession, expList, proteinsList, exp.getFractionsNumber(), null,null))));
 
                         if (key < 0) {
@@ -404,17 +410,20 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                                 // pepTableLayout.setHeight("" + searcheResultsTableLayout.getCurrentTable().getHeight());
                                 pepTableLayout.addComponent(cpeptideLayout);
                                 CustomExportBtnLayout ce3 = new CustomExportBtnLayout(handler, "protPep", exp.getExpId(), exp.getName(), accession, otherAccession, expList, null, 0, pepProtList, null, null);
-                                PopupView p3 = new PopupView("Export (" + accession + ")'s Peptides", ce3);
-                                cpeptideLayout.setExpBtnPepTable(p3);
+                                PopupView p3 = new PopupView("Export CSF-PR (" + accession + ") Peptides ", ce3);
+                                cpeptideLayout.setExpBtnPepTable(p3,accession,exp.getName());
 
 
                             }
                             fractionsList = handler.getFractionsList(exp.getExpId(), expList);
+                            
+                            
                             List<StandardProteinBean> standardProtPlotList = handler.getStandardProtPlotList(exp.getExpId());
                             if (exp == null || exp.getReady() != 2 || standardProtPlotList == null || standardProtPlotList.isEmpty() || fractionsList == null || fractionsList.isEmpty()) {
                                 if (searcheResultsTableLayout.getCurrentTable() != null) {
                                     searcheResultsTableLayout.getCurrentTable().setHeight("267.5px");
-                                    cpeptideLayout.getPepTable().setHeight("267.5px");
+                                    if( cpeptideLayout.getPepTable() != null)
+                                        cpeptideLayout.getPepTable().setHeight("267.5px");
                                 }
 
                             } else {
@@ -433,15 +442,19 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                                         }
                                         mw = Double.valueOf(str);
                                     }
-                                    while (true) {
-                                        if (fractionsList.size() > 0) {
-                                            break;
-                                        }
-                                    }
-                                    Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession+","+otherAccession, fractionsList, exp.getExpId());
+//                                    while (true) {
+//                                        if (fractionsList.size() > 0) {
+//                                            break;
+//                                        }
+//                                    }
+                                    Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession/*+","+otherAccession*/, fractionsList, exp.getExpId());
+                                     if (proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
+                                            fractionsLayout.removeAllComponents();
+                                        } else {
                                     FractionsLayout flo = new FractionsLayout(accession, mw, proteinFractionAvgList, standardProtPlotList, exp.getName());
                                     flo.setMargin(new MarginInfo(false, false, false, false));
                                     fractionsLayout.addComponent(flo);
+                                     }
                                 } else {
 //                                    Notification.show("YOU NEED TO SELECT A READY DATASET FIRST!");
                                 }

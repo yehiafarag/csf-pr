@@ -58,29 +58,31 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
         currentTable = searcheResultsTable;
 
 
-        HorizontalLayout lowerLayout = new HorizontalLayout();
+       HorizontalLayout lowerLayout = new HorizontalLayout();
         lowerLayout.setWidth("100%");
         lowerLayout.setHeight("25px");
-        Panel toolbar = new Panel(lowerLayout);
-        toolbar.setStyleName(Reindeer.PANEL_LIGHT);
-        toolbar.setHeight("35px");
-        this.addComponent(toolbar);
-        this.setComponentAlignment(toolbar, Alignment.TOP_CENTER);
-
-        VerticalLayout lowerLeftLayout = new VerticalLayout();
+//        Panel toolbar = new Panel(lowerLayout);
+//        toolbar.setStyleName(Reindeer.PANEL_LIGHT);
+//        toolbar.setHeight("35px");
+        this.addComponent(lowerLayout);
+        this.setComponentAlignment(lowerLayout, Alignment.TOP_CENTER);
+        
+        
+        HorizontalLayout lowerLeftLayout = new HorizontalLayout();
+        lowerLeftLayout.setSpacing(true);
         lowerLayout.addComponent(lowerLeftLayout);
-        lowerLayout.setComponentAlignment(lowerLeftLayout, Alignment.BOTTOM_LEFT);
-        lowerLayout.setExpandRatio(lowerLeftLayout, 0.4f);
-
-
+        lowerLeftLayout.setMargin(new MarginInfo(false, false, false, false));
+        lowerLayout.setComponentAlignment(lowerLeftLayout, Alignment.MIDDLE_LEFT);
+      //  lowerLayout.setExpandRatio(lowerLeftLayout, 0.2f);
+        
+        
         HorizontalLayout lowerRightLayout = new HorizontalLayout();
         lowerRightLayout.setSpacing(true);
-        lowerRightLayout.setWidth("670px");
+        lowerRightLayout.setWidth("450px");
         lowerLayout.addComponent(lowerRightLayout);
         lowerLayout.setComponentAlignment(lowerRightLayout, Alignment.BOTTOM_RIGHT);
-        lowerLayout.setExpandRatio(lowerRightLayout, 0.6f);
-
-
+        //lowerLayout.setExpandRatio(lowerRightLayout, 0.8f);
+        
 
 
         final OptionGroup selectionType = new OptionGroup();
@@ -90,34 +92,39 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
         selectionType.setReadOnly(validatedOnly);
         
         selectionType.setHeight("15px");
-        lowerRightLayout.addComponent(selectionType);
-        lowerRightLayout.setComponentAlignment(selectionType, Alignment.BOTTOM_LEFT);
+        lowerLeftLayout.addComponent(selectionType);
+        lowerLeftLayout.setComponentAlignment(selectionType, Alignment.BOTTOM_LEFT);
 
 
 
         final TableResizeSet trs1 = new TableResizeSet(currentTable, currentTable.getHeight() + "");//resize tables 
-        lowerRightLayout.addComponent(trs1);
-        lowerRightLayout.setComponentAlignment(trs1, Alignment.BOTTOM_CENTER);
+        lowerLeftLayout.addComponent(trs1);
+        lowerLeftLayout.setComponentAlignment(trs1, Alignment.BOTTOM_CENTER);
 
 
         exportAllPepLayout.setWidth("200px");
-        exportAllPepLayout.setMargin(new MarginInfo(false, true, false, false));
+       // exportAllPepLayout.setMargin(new MarginInfo(false, false, false, false));
         lowerRightLayout.addComponent(exportAllPepLayout);
-        lowerRightLayout.setComponentAlignment(exportAllPepLayout, Alignment.BOTTOM_LEFT);
+        lowerRightLayout.setComponentAlignment(exportAllPepLayout, Alignment.BOTTOM_RIGHT);
         exportAllPepLayout.setVisible(true);
 
-        exportSearchTableLayout.setWidth("150px");
+        exportSearchTableLayout.setWidth("200px");
         lowerRightLayout.addComponent(exportSearchTableLayout);
         lowerRightLayout.setComponentAlignment(exportSearchTableLayout, Alignment.BOTTOM_RIGHT);
 
         CustomExportBtnLayout ce2 = new CustomExportBtnLayout(handler, "searchResult", 0, null, null, null, expList, null, 0, null, null, fullExpProtList);
-        expBtnSearchResultsTable = new PopupView("Export Search Results", ce2);
+        expBtnSearchResultsTable = new PopupView("Export CSF-PR Search Results", ce2);
         exportSearchTableLayout.removeAllComponents();
         expBtnSearchResultsTable.setHideOnMouseOut(false);
         exportSearchTableLayout.addComponent(expBtnSearchResultsTable);
-        expBtnSearchResultsTable.setDescription("Export Search Results");
+        expBtnSearchResultsTable.setDescription("Export CSF-PR Search Results");
         exportSearchTableLayout.setComponentAlignment(expBtnSearchResultsTable, Alignment.MIDDLE_LEFT);
 
+        Label lab = new Label("Export CSF-PR Protein Peptides");
+        lab.setDescription("Export CSF-PR Peptides for The Selected Protein from All Available Datasets");
+       exportAllPepLayout.addComponent(lab);
+   
+        
         selectionType.setImmediate(true);
         selectionType.addListener(new Property.ValueChangeListener() {
             @Override
@@ -148,10 +155,12 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
         });
         if (validatedOnly) {
             selectionType.select(itemId);
-            selectionType.setVisible(false);
+            selectionType.setVisible(true);
+            selectionType.setReadOnly(true);
 
         } else {
             selectionType.setVisible(true);
+            selectionType.setReadOnly(false);
         }
 
     }
@@ -178,7 +187,7 @@ public class SearchResultsTableLayout extends VerticalLayout implements Serializ
         exportAllPepLayout.removeAllComponents();
         expBtnProtAllPepTable.setHideOnMouseOut(false);
         exportAllPepLayout.addComponent(expBtnProtAllPepTable);
-        expBtnProtAllPepTable.setDescription("Export all Protien's Peptides from all Data Sets");
+        //expBtnProtAllPepTable.setDescription("Export all Protien's Peptides from all Data Sets");
         exportAllPepLayout.setComponentAlignment(expBtnProtAllPepTable, Alignment.MIDDLE_LEFT);
     }
 

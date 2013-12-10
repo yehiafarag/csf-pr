@@ -70,44 +70,39 @@ public class HomeLayout extends VerticalLayout implements Serializable {
 
         VerticalLayout leftLayout = new VerticalLayout();
         leftLayout.setWidth("100%");
-        leftLayout.setMargin(true);
+        leftLayout.setMargin(new MarginInfo(true, true, true, false));
         topLayout.addComponent(leftLayout);
         //topLayout.setExpandRatio(leftLayout, 0.4f);
 
         VerticalLayout rightLayout = new VerticalLayout();
         rightLayout.setWidth("100%");
         topLayout.addComponent(rightLayout);
-      //  topLayout.setExpandRatio(rightLayout, 0.6f);
+        //  topLayout.setExpandRatio(rightLayout, 0.6f);
 
-        Label infoLable = new Label("<h2>Welcome to CSF Proteome Resource (CSF-PR)</h2>");
+        Label infoLable = new Label("<h2 style='margin-left:40px;'>Welcome to CSF Proteome Resource (CSF-PR)</h2>");
         infoLable.setContentMode(Label.CONTENT_XHTML);
         leftLayout.addComponent(infoLable);
-        leftLayout.setComponentAlignment(infoLable, Alignment.MIDDLE_CENTER);
+        leftLayout.setComponentAlignment(infoLable, Alignment.MIDDLE_LEFT);
 
 
 
-        Label para_1 = new Label("<p align='justify' Style='color:#585858;'><font size=\"2\">CSF Proteome Resource (CSF-PR) is an online repository of mass spectrometry based proteomics "
-                
+        Label para_1 = new Label("<p align='justify' Style='margin-left:40px;color:#585858;'><font size=\"2\">CSF Proteome Resource (CSF-PR) is an online repository of mass spectrometry based proteomics "
                 + "experiments on human cerebrospinal fluid (CSF). CSF is in direct contact with the central nervous"
-                
                 + "system (CNS) and can give indications about the state of the CNS.This is particularly relevant for "
-                
                 + "neurodegenerative diseases, such as Multiple Sclerosis, where CSF would be a natural place to look "
-                
                 + "for disease biomarkers.</font></p>");
 
         para_1.setContentMode(Label.CONTENT_XHTML);
         leftLayout.addComponent(para_1);
 
 
-        Label para_2 = new Label("<p align='justify' Style='color:#585858;'><font size=\"2\">The data can be viewed by selecting individual experiments or by searching for key words (protein "
-                
+        Label para_2 = new Label("<p align='justify' Style='margin-left:40px;color:#585858;'><font size=\"2\">The data can be viewed by selecting individual experiments or by searching for key words (protein "
                 + "name/accession number or peptide sequence) across all experiments. For GeLC-MS experiments the "
-                
                 + "distribution of the identified proteins in the gel is also displayed.</font></p>");
 
         para_2.setContentMode(Label.CONTENT_XHTML);
         leftLayout.addComponent(para_2);
+
 
         ThemeResource img1 = new ThemeResource("img/overview.jpg");
         Link image1 = new Link(null, new ThemeResource("img/fulloverview.jpg"));
@@ -120,7 +115,7 @@ public class HomeLayout extends VerticalLayout implements Serializable {
 
 
 
-        Label para_3 = new Label("<p align='justify' Style='color:#585858;'><font size=\"2\">CSF-PR is being developed by the <a Style='color:#585858;' href='http://www.uib.no/rg/probe' target=\"_blank\">Proteomics Unit</a> at the<a Style='color:#585858;' href='http://www.uib.no/biomedisin/en' target=\"_blank\"> Department of Biomedicine at the University of Bergen</a>, Norway, in close collaboration with <a Style='color:#585858;' href='http://www.helse-bergen.no/omoss/avdelinger/ms/Sider/om-oss.aspx' target=\"_blank\">The Norwegian Multiple Sclerosis Competence Centre</a>, Haukeland University Hospital, Bergen, Norway.</font></p>");
+        Label para_3 = new Label("<p align='justify' Style='margin-left:40px;color:#585858;'><font size=\"2\">CSF-PR is being developed by the <a Style='color:#585858;' href='http://www.uib.no/rg/probe' target=\"_blank\">Proteomics Unit</a> at the<a Style='color:#585858;' href='http://www.uib.no/biomedisin/en' target=\"_blank\"> Department of Biomedicine at the University of Bergen</a>, Norway, in close collaboration with <a Style='color:#585858;' href='http://www.helse-bergen.no/omoss/avdelinger/ms/Sider/om-oss.aspx' target=\"_blank\">The Norwegian Multiple Sclerosis Competence Centre</a>, Haukeland University Hospital, Bergen, Norway.</font></p>");
         para_3.setContentMode(Label.CONTENT_XHTML);
         leftLayout.addComponent(para_3);
 //        bottomLayout.setExpandRatio(para_3, 0.95f);

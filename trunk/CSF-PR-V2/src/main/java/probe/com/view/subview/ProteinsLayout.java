@@ -66,6 +66,7 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
     private GeneralUtil util = new GeneralUtil();
     private TreeMap<Integer, Integer> selectionIndexes;
     private int nextIndex;
+    private Help help = new Help();
 
     public ProteinsLayout(ExperimentHandler expHandler, TreeMap<Integer, String> expListStr, Map<Integer, ExperimentBean> expList) {
         this.expHandler = expHandler;
@@ -117,18 +118,19 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
             selectExp.setImmediate(true);
             selectExp.addListener(this);
             selectExp.setWidth("90%");
-            selectExp.setDescription("Please Select Dataset");
+//            selectExp.setDescription("Please Select Dataset");
             selectExp.setNullSelectionAllowed(false);
             selectLayout.addComponent(selectExp);
             selectLayout.setComponentAlignment(selectExp, Alignment.TOP_LEFT);
             //selectLayout.setExpandRatio(selectExp, 0.4f);
 
-            Label infoLable = new Label("<p  style='font-family:verdana;color:black;font-weight:bold;'>Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='font-family:verdana;color:black;font-weight:bold;'>Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. </p><p  style='font-family:verdana;color:black;font-weight:bold;'>Bar charts showing the distribution of the protein in the fractions cut from the gel. Three charts show number of peptides, number of spectra and average precursor intensity. The fraction number represents the gel pieces cut from top to bottom. Protein standards (dark blue bars) indicate the molecular weight range of each fraction. Darker blue bars mark the area where the protein's theoretical mass suggests the protein should occur. </p>");
+            Label infoLable = new Label("<div style='border:1px outset black;text-align:justify;text-justify:inter-word;'><h3 style='font-family:verdana;color:black;font-weight:bold;margin-left:20px;margin-right:20px;'>Help!</h3><p  style='font-family:verdana;color:black;margin-left:20px;margin-right:20px;'>Select an experiment in the roll down menu on top to view all proteins identified in the selected experiment. Select a protein to see below all Peptides identified for the protein, and if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed under Fractions. The ranking of the selected protein based on the NSAF scores. To show information about the experiment, press Dataset Information.  Use the search box to navigate in the experiment selected.</p><p  style='font-family:verdana;color:black;margin-left:20px;margin-right:20px;'>Under Fractions, bar charts show the distribution of the selected protein across the fractions cut from the gel. Three charts show number of peptides, number of spectra and average precursor intensity. The fraction number represents the gel pieces cut from top to bottom. Protein standards <font color='#CDE1FF'>(light blue bars)</font> indicate the molecular weight range of each fraction. <font color='#79AFFF'>Darker blue bars</font> mark between which two standards the protein's theoretical mass suggests the protein should be found.</p></div>");
             infoLable.setContentMode(Label.CONTENT_XHTML);
             infoLable.setWidth("450px");
+            
             // infoLable.setStyleName(Reindeer.LAYOUT_BLUE);
 
-            Help help = new Help();
+            help = new Help();
             HorizontalLayout infoIco = help.getInfoNote(infoLable);
             selectLayout.addComponent(infoIco);
             selectLayout.setComponentAlignment(infoIco, Alignment.TOP_RIGHT);
@@ -226,8 +228,14 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                             CustomExportBtnLayout ce1 = new CustomExportBtnLayout(expHandler, "allProtPep", exp.getExpId(), exp.getName(), accession, otherAccession, expList, null, 0, null, null, null);
                             CustomExportBtnLayout ce2 = (new CustomExportBtnLayout(expHandler, "prots", exp.getExpId(), exp.getName(), accession, otherAccession, expList, proteinsList, exp.getFractionsNumber(), null, null, null));
 
-                            PopupView p1 = new PopupView("Export All Peptides (" + accession + ")", ce1);
-                            PopupView p2 = new PopupView("Export Proteins", ce2);
+                            PopupView p1 = new PopupView("Export CSF-PR Peptides for ("+accession+" )", ce1);
+                            p1.setDescription("Export CSF-PR Peptides for ( "+accession+" ) for All Available Datasets");
+                            PopupView p2 = new PopupView("Export CSF-PR Proteins", ce2);
+                            p2.setDescription("Export CSF-PR Proteins for ( "+ exp.getName()+" )");
+                            
+                           //   HorizontalLayout p1 = help.getExpIcon(ce1,"Export CSF-PR Peptides for ( "+accession+" ) for all datasets.","CSF-PR Peptides for ( "+accession+" )");
+                           //   HorizontalLayout p2 = help.getExpIcon(ce2,"Export CSF-PR Proteins for ( "+ exp.getName()+" )","Export CSF-PR Proteins for ( "+ exp.getName()+" )" );
+       
 
                             protTableLayout.setExpBtnProtAllPepTable(p1, p2);
                             if (key < 0) {
@@ -254,8 +262,8 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                                     peptideLayout.setHeight("" + protTableLayout.getHeight());
                                     peptideLayout.addComponent(cpeptideLayout);
                                     CustomExportBtnLayout ce3 = new CustomExportBtnLayout(expHandler, "protPep", exp.getExpId(), exp.getName(), accession, otherAccession, expList, null, 0, pepProtList, null, null);
-                                    PopupView p3 = new PopupView("Export Peptides (" + accession + ")", ce3);
-                                    cpeptideLayout.setExpBtnPepTable(p3);
+                                    PopupView p3 = new PopupView("Export CSF-PR (" + accession + ") Peptides ", ce3);
+                                    cpeptideLayout.setExpBtnPepTable(p3,accession,exp.getName());
 
 
                                 }
@@ -289,7 +297,7 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                                                 break;
                                             }
                                         }
-                                        Map<Integer, ProteinBean> proteinFractionAvgList = expHandler.getProteinFractionAvgList(accession /*+ "," + otherAccession*/, fractionsList, exp.getExpId());
+                                        Map<Integer, ProteinBean> proteinFractionAvgList = expHandler.getProteinFractionAvgList(accession/*+ "," + otherAccession*/, fractionsList, exp.getExpId());
                                         if (proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
                                             fractionLayout.removeAllComponents();
                                         } else {
@@ -307,8 +315,8 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                     protTableLayout.getProtTable().addListener(listener);
                     protTableLayout.setListener(listener);
                     selectionIndexes = util.getSearchIndexesSet(protTableLayout.getProtTable().getTableSearchMap(), protTableLayout.getProtTable().getTableSearchMapIndex(), protTableLayout.getSearchField().getValue().toString().toUpperCase().trim());
-                    protTableLayout.getProtTable().setCurrentPageFirstItemId(1);
-                    protTableLayout.getProtTable().select(1);
+                    protTableLayout.getProtTable().setCurrentPageFirstItemId(protTableLayout.getProtTable().getFirstIndex());
+                    protTableLayout.getProtTable().select(protTableLayout.getProtTable().getFirstIndex());
                     protTableLayout.getProtTable().commit();
                     ActionButtonTextField searchButtonTextField = ActionButtonTextField.extend(protTableLayout.getSearchField());
                     searchButtonTextField.getState().type = ActionButtonType.ACTION_SEARCH;

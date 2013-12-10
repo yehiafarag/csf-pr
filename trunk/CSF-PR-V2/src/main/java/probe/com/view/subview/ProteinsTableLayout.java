@@ -94,7 +94,7 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
         
         
         searchField = new TextField(" ");
-        searchField.setDescription("Search Proteins");
+        searchField.setDescription("Search Proteins By Name or Accession");
         
         topLayout.addComponent(searchField);
         topLayout.setComponentAlignment(searchField, Alignment.TOP_RIGHT);
@@ -135,26 +135,27 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
         HorizontalLayout lowerLayout = new HorizontalLayout();
         lowerLayout.setWidth("100%");
         lowerLayout.setHeight("25px");
-        Panel toolbar = new Panel(lowerLayout);
-        toolbar.setStyleName(Reindeer.PANEL_LIGHT);
-        toolbar.setHeight("35px");
-        this.addComponent(toolbar);
-        this.setComponentAlignment(toolbar, Alignment.TOP_CENTER);
+//        Panel toolbar = new Panel(lowerLayout);
+//        toolbar.setStyleName(Reindeer.PANEL_LIGHT);
+//        toolbar.setHeight("35px");
+        this.addComponent(lowerLayout);
+        this.setComponentAlignment(lowerLayout, Alignment.TOP_CENTER);
         
         
         HorizontalLayout lowerLeftLayout = new HorizontalLayout();
+        lowerLeftLayout.setSpacing(true);
         lowerLayout.addComponent(lowerLeftLayout);
-        lowerLeftLayout.setMargin(new MarginInfo(false, false, false, true));
+        lowerLeftLayout.setMargin(new MarginInfo(false, false, false, false));
         lowerLayout.setComponentAlignment(lowerLeftLayout, Alignment.MIDDLE_LEFT);
-        lowerLayout.setExpandRatio(lowerLeftLayout, 0.4f);
+      //  lowerLayout.setExpandRatio(lowerLeftLayout, 0.2f);
         
         
         HorizontalLayout lowerRightLayout = new HorizontalLayout();
         lowerRightLayout.setSpacing(true);
-        lowerRightLayout.setWidth("600px");
+        lowerRightLayout.setWidth("450px");
         lowerLayout.addComponent(lowerRightLayout);
         lowerLayout.setComponentAlignment(lowerRightLayout, Alignment.BOTTOM_RIGHT);
-        lowerLayout.setExpandRatio(lowerRightLayout, 0.6f);
+        //lowerLayout.setExpandRatio(lowerRightLayout, 0.8f);
         
         
         
@@ -165,24 +166,24 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
         selectionType.select("\t\tShow Validated Proteins Only");
        
         selectionType.setHeight("15px");
-        lowerRightLayout.addComponent(selectionType);
-        lowerRightLayout.setComponentAlignment(selectionType, Alignment.BOTTOM_LEFT);
+        lowerLeftLayout.addComponent(selectionType);
+        lowerLeftLayout.setComponentAlignment(selectionType, Alignment.BOTTOM_LEFT);
         
         
         
         
         
-        final TableResizeSet trs1 = new TableResizeSet(protTable, protSize);//resize tables 
-        lowerRightLayout.addComponent(trs1);
-        lowerRightLayout.setComponentAlignment(trs1, Alignment.BOTTOM_RIGHT);
+        final TableResizeSet trs1 = new TableResizeSet(vt, protSize);//resize tables 
+        lowerLeftLayout.addComponent(trs1);
+        lowerLeftLayout.setComponentAlignment(trs1, Alignment.BOTTOM_LEFT);
         
         
-        exportAllPepLayout.setWidth("200px");
+        exportAllPepLayout.setWidth("150px");//("200px");
         lowerRightLayout.addComponent(exportAllPepLayout);
         lowerRightLayout.setComponentAlignment(exportAllPepLayout, Alignment.BOTTOM_RIGHT);
         
         
-        exportProtLayout.setWidth("100px");
+        exportProtLayout.setWidth("150px");//("100px");
         lowerRightLayout.addComponent(exportProtLayout);
         lowerRightLayout.setComponentAlignment(exportProtLayout, Alignment.BOTTOM_RIGHT);
         
@@ -251,15 +252,15 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
     private void updateExportLayouts() {
         
         exportAllPepLayout.removeAllComponents();        
-        expBtnProtAllPepTable.setHideOnMouseOut(false);        
+       // expBtnProtAllPepTable.setHideOnMouseOut(false);        
         exportAllPepLayout.addComponent(expBtnProtAllPepTable);        
-        expBtnProtAllPepTable.setDescription("Export all Protien's Peptides from all Data Sets");
+     //   expBtnProtAllPepTable.setDescription("Export all Protien's Peptides from all Data Sets");
         exportAllPepLayout.setComponentAlignment(expBtnProtAllPepTable, Alignment.MIDDLE_LEFT);
         
         exportProtLayout.removeAllComponents();
-        expBtnProtPepTable.setHideOnMouseOut(false);
+//        expBtnProtPepTable.setHideOnMouseOut(false);
         exportProtLayout.addComponent(expBtnProtPepTable);
-        expBtnProtPepTable.setDescription("Export Protiens");       
+       // expBtnProtPepTable.setDescription("Export Protiens");       
         exportProtLayout.setComponentAlignment(expBtnProtPepTable, Alignment.MIDDLE_LEFT);
         
     }

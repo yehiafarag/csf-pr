@@ -100,12 +100,16 @@ public class SearchResultsTable extends Table implements Serializable {
         for (Object propertyId : this.getSortableContainerPropertyIds()) {
             if (propertyId.toString().equals("Description")) {
                 setColumnExpandRatio(propertyId, 4.0f);
-            } else {
+            }else {
                 setColumnExpandRatio(propertyId.toString(), 0.5f);
             }
 
         }
+          this.sort(new String[]{Confidence, "# Validated Peptides"}, new boolean[]{false, false});
+
         setColumnWidth("Index", 35);
+        setColumnWidth("Experiment", 115);
+        setColumnWidth("Accession", 60);
         this.setSortContainerPropertyId(Confidence);
         this.setSortAscending(false);
         int indexing = 1;

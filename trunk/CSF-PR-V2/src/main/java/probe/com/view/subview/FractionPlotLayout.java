@@ -36,9 +36,9 @@ public class FractionPlotLayout extends VerticalLayout implements Serializable {
         leftSideLayout = new VerticalLayout();
         rightSideLayout = new VerticalLayout();
         rightSideLayout.setStyleName(Reindeer.LAYOUT_WHITE);
-        rightSideLayout.setWidth("40px");
+//        rightSideLayout.setWidth("40px");
         rightSideLayout.setSizeFull();
-        rightSideLayout.setMargin(true);
+        rightSideLayout.setMargin(false);
         this.standProtGroups = initGroups(standProtList, mw);
         
 //        final Table protStandTable = getStandardPlotTable(this.standProtGroups);
@@ -110,50 +110,50 @@ public class FractionPlotLayout extends VerticalLayout implements Serializable {
 
     }
 
-    private Table getStandardPlotTable(Map<String, List<StandardProteinBean>> standProtGroups) {
-        Table table = new Table();
-        table.setHeight("240px");
-        table.setWidth("100%");
-        table.setSelectable(false);
-        table.setColumnReorderingAllowed(true);
-        table.setColumnCollapsingAllowed(true);
-        table.setImmediate(true); // react at once when something is selected
-        table.addContainerProperty("Col", CustomPI.class, null, "", null, com.vaadin.ui.Table.ALIGN_CENTER);
-
-        table.addContainerProperty("Protein", String.class, null, "Protein", null, com.vaadin.ui.Table.ALIGN_CENTER);
-        table.addContainerProperty("MW", Double.class, null, "MW", null, com.vaadin.ui.Table.ALIGN_CENTER);
-        /* Add a few items in the table. */
-        int x = 0;
-        for (String key : standProtGroups.keySet()) {
-            CustomPI ce = null;
-            if (key.equalsIgnoreCase("#79AFFF")) {
-                List<StandardProteinBean> lsp = standProtGroups.get(key);
-                for (StandardProteinBean spb : lsp) {
-                    ce = new CustomPI("Selected Standard Plot", new ExternalResource("https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-frc3/q92/999992_175881092595491_1738137462_n.jpg"));
-                    table.addItem(new Object[]{ce, spb.getName(), spb.getMW_kDa()}, new Integer(x + 1));
-                    x++;
-                }
-            } else {
-                List<StandardProteinBean> lsp = standProtGroups.get(key);
-                for (StandardProteinBean spb : lsp) {
-                    ce = new CustomPI("Standard Plot", new ExternalResource("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-ash3/528295_137541356429465_212869913_n.jpg"));
-                    table.addItem(new Object[]{ce, spb.getName(), spb.getMW_kDa()}, new Integer(x + 1));
-                    x++;
-                }
-            }
-
-        }
-        for (Object propertyId : table.getSortableContainerPropertyIds()) {
-            if (propertyId.toString().equals("Protein")) {
-                table.setColumnExpandRatio(propertyId.toString(), 2.5f);
-            } else {
-                table.setColumnExpandRatio(propertyId.toString(), 1.0f);
-            }
-        }
-        table.setSortContainerPropertyId("MW");
-        table.setSortAscending(false);
-        return table;
-    }
+//    private Table getStandardPlotTable(Map<String, List<StandardProteinBean>> standProtGroups) {
+//        Table table = new Table();
+//        table.setHeight("240px");
+//        table.setWidth("100%");
+//        table.setSelectable(false);
+//        table.setColumnReorderingAllowed(true);
+//        table.setColumnCollapsingAllowed(true);
+//        table.setImmediate(true); // react at once when something is selected
+//        table.addContainerProperty("Col", CustomPI.class, null, "", null, com.vaadin.ui.Table.ALIGN_CENTER);
+//
+//        table.addContainerProperty("Protein", String.class, null, "Protein", null, com.vaadin.ui.Table.ALIGN_CENTER);
+//        table.addContainerProperty("MW", Double.class, null, "MW", null, com.vaadin.ui.Table.ALIGN_CENTER);
+//        /* Add a few items in the table. */
+//        int x = 0;
+//        for (String key : standProtGroups.keySet()) {
+//            CustomPI ce = null;
+//            if (key.equalsIgnoreCase("#79AFFF")) {
+//                List<StandardProteinBean> lsp = standProtGroups.get(key);
+//                for (StandardProteinBean spb : lsp) {
+//                    ce = new CustomPI("Selected Standard Plot", new ExternalResource("https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-frc3/q92/999992_175881092595491_1738137462_n.jpg"));
+//                    table.addItem(new Object[]{ce, spb.getName(), spb.getMW_kDa()}, new Integer(x + 1));
+//                    x++;
+//                }
+//            } else {
+//                List<StandardProteinBean> lsp = standProtGroups.get(key);
+//                for (StandardProteinBean spb : lsp) {
+//                    ce = new CustomPI("Standard Plot", new ExternalResource("https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-ash3/528295_137541356429465_212869913_n.jpg"));
+//                    table.addItem(new Object[]{ce, spb.getName(), spb.getMW_kDa()}, new Integer(x + 1));
+//                    x++;
+//                }
+//            }
+//
+//        }
+//        for (Object propertyId : table.getSortableContainerPropertyIds()) {
+//            if (propertyId.toString().equals("Protein")) {
+//                table.setColumnExpandRatio(propertyId.toString(), 2.5f);
+//            } else {
+//                table.setColumnExpandRatio(propertyId.toString(), 1.0f);
+//            }
+//        }
+//        table.setSortContainerPropertyId("MW");
+//        table.setSortAscending(false);
+//        return table;
+//    }
 
 //    public PopupView getPopup() {
 //        return popup;
