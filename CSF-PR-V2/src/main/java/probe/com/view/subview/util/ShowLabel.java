@@ -5,6 +5,7 @@
 package probe.com.view.subview.util;
 
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Label;
 import java.io.Serializable;
 
@@ -26,11 +27,12 @@ public final class ShowLabel extends Label implements Serializable {
     public void updateIcon(boolean show) {
         if (show) {
             show = false;
-            setIcon(new ExternalResource("https://fbcdn-sphotos-d-a.akamaihd.net/hphotos-ak-prn2/1175716_173022812881319_804705945_n.jpg"));
-
+            setIcon(new ThemeResource("img/down.jpg"));//setIcon(new ExternalResource("https://fbcdn-sphotos-f-a.akamaihd.net/hphotos-ak-prn2/1185892_173022819547985_676735970_n.jpg"));
+          
+            
         } else {
             show = true;
-            setIcon(new ExternalResource("https://fbcdn-sphotos-f-a.akamaihd.net/hphotos-ak-prn2/1185892_173022819547985_676735970_n.jpg"));
+            setIcon(new ThemeResource("img/right.jpg"));//new ExternalResource("https://fbcdn-sphotos-d-a.akamaihd.net/hphotos-ak-prn2/1175716_173022812881319_804705945_n.jpg"));
 
 
         }

@@ -7,10 +7,8 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +41,7 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
         return pepTable;
     }
 
-    public PeptidesTableLayout(final int validPep, int totalPep, final String desc, final Map<Integer, PeptideBean> pepProtList, final String accession, final String expName) {
+    public PeptidesTableLayout(final int validPep, final int totalPep, final String desc, final Map<Integer, PeptideBean> pepProtList, final String accession, final String expName) {
         //for  peptides information (table) view
         MarginInfo m = new MarginInfo(false, false, true, false);
         this.setMargin(m);
@@ -60,7 +58,8 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
         headerLayout.setComponentAlignment(show, Alignment.BOTTOM_LEFT);
         stat = true;
 
-        final Label pepLabel = new Label("<h4 style='font-family:verdana;color:black;'>Peptides (" + validPep + "/" + totalPep + ") " + desc + "</h4>");
+        final Label pepLabel  = new Label("<h4 style='font-family:verdana;color:black;'>Peptides (" + validPep + ") " + desc + "</h4>");
+                    // new Label("<h4 style='font-family:verdana;color:black;'>Peptides (" + validPep + "/" + totalPep + ") " + desc + "</h4>");
         pepLabel.setContentMode(Label.CONTENT_XHTML);
         pepLabel.setHeight("45px");
         headerLayout.addComponent(pepLabel);
@@ -74,49 +73,53 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
         mainLayout.setComponentAlignment(pepTableLayout, Alignment.MIDDLE_CENTER);
 
 
-        pepTable = new PeptideTable(pepProtList, null);
-        pepTableLayout.addComponent(pepTable);
+         Map<Integer, PeptideBean> vPepProtList = getValidatedList(pepProtList);
+
+        vt = new PeptideTable(vPepProtList, null);
+        pepTableLayout.addComponent(vt);
         if (trs != null) {
             PepSize = trs.getCurrentSize();
         }
-        pepTable.setHeight(PepSize);
+        vt.setHeight(PepSize);
 
         HorizontalLayout lowerLayout = new HorizontalLayout();
         lowerLayout.setWidth("100%");
         lowerLayout.setHeight("25px");
         lowerLayout.setSpacing(false);
-        Panel toolbar = new Panel(lowerLayout);     
-        toolbar.setStyleName(Reindeer.PANEL_LIGHT);
-        toolbar.setHeight("35px");   
-        mainLayout.addComponent(toolbar);
-        mainLayout.setComponentAlignment(toolbar, Alignment.TOP_CENTER);
+      //  Panel toolbar = new Panel(lowerLayout);     
+        //toolbar.setStyleName(Reindeer.PANEL_LIGHT);
+       // toolbar.setHeight("35px");   
+        mainLayout.addComponent(lowerLayout);
+        mainLayout.setComponentAlignment(lowerLayout, Alignment.TOP_CENTER);
         
-        VerticalLayout lowerLeftLayout = new VerticalLayout();
+        HorizontalLayout lowerLeftLayout = new HorizontalLayout();
          lowerLayout.addComponent(lowerLeftLayout);
-        lowerLeftLayout.setMargin(new MarginInfo(false, false, false, true));
+         lowerLeftLayout.setSpacing(true);
+        lowerLeftLayout.setMargin(new MarginInfo(false, false, false, false));
         lowerLayout.setComponentAlignment(lowerLeftLayout, Alignment.MIDDLE_LEFT);       
-        lowerLayout.setExpandRatio(lowerLeftLayout, 0.4f);
+        //lowerLayout.setExpandRatio(lowerLeftLayout, 0.4f);
 
         HorizontalLayout lowerRightLayout = new HorizontalLayout();
-        lowerRightLayout.setSpacing(true);
-        lowerRightLayout.setWidth("600px");
+        //lowerRightLayout.setSpacing(true);
+        lowerRightLayout.setWidth("450px");
         lowerLayout.addComponent(lowerRightLayout);
         lowerLayout.setComponentAlignment(lowerRightLayout, Alignment.BOTTOM_RIGHT);
-        lowerLayout.setExpandRatio(lowerRightLayout, 0.6f);
+        //lowerLayout.setExpandRatio(lowerRightLayout, 0.5f);
  
 
         final OptionGroup selectionType = new OptionGroup();
         selectionType.setMultiSelect(true);
         selectionType.addItem("\t\tShow Validated Peptides Only");
+        selectionType.select("\t\tShow Validated Peptides Only");
         selectionType.setHeight("15px");
-        lowerRightLayout.addComponent(selectionType);
-        lowerRightLayout.setComponentAlignment(selectionType, Alignment.BOTTOM_LEFT);
+        lowerLeftLayout.addComponent(selectionType);
+        lowerLeftLayout.setComponentAlignment(selectionType, Alignment.BOTTOM_LEFT);
 
-        final TableResizeSet trs1 = new TableResizeSet(pepTable, PepSize);//resize tables 
-        lowerRightLayout.addComponent(trs1);
-        lowerRightLayout.setComponentAlignment(trs1, Alignment.BOTTOM_LEFT);
+        final TableResizeSet trs1 = new TableResizeSet(vt, PepSize);//resize tables 
+        lowerLeftLayout.addComponent(trs1);
+        lowerLeftLayout.setComponentAlignment(trs1, Alignment.BOTTOM_LEFT);
         
-        exportPepLayout.setWidth("170px");
+        exportPepLayout.setWidth("200px");
         lowerRightLayout.addComponent(exportPepLayout);
         lowerRightLayout.setComponentAlignment(exportPepLayout, Alignment.BOTTOM_RIGHT);
 
@@ -148,17 +151,17 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
                     headerLayout.addComponent(show);
                     headerLayout.setComponentAlignment(show, Alignment.BOTTOM_LEFT);
 
-                    Label pepLabel = new Label("<h4 style='font-family:verdana;color:black;'>Peptides (" + validPep + ") " + desc + "</h4>");
+                   // Label pepLabel = new Label("<h4 style='font-family:verdana;color:black;'>Peptides (" + validPep + ") " + desc + "</h4>");
                     pepLabel.setContentMode(Label.CONTENT_XHTML);
                     pepLabel.setHeight("45px");
                     headerLayout.addComponent(pepLabel);
                     headerLayout.setComponentAlignment(pepLabel, Alignment.TOP_RIGHT);
 
 
-                    Map<Integer, PeptideBean> vPepProtList = getValidatedList(pepProtList);
+                   // Map<Integer, PeptideBean> vPepProtList = getValidatedList(pepProtList);
 
                     pepTableLayout.removeAllComponents();
-                    vt = new PeptideTable(vPepProtList, null);
+                   // vt = new PeptideTable(vPepProtList, null);
                     pepTableLayout.addComponent(vt);
                     trs1.setTable(vt);
                     vt.setHeight(pepTable.getHeight() + "");
@@ -169,10 +172,13 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
                     headerLayout.removeAllComponents();
                     headerLayout.addComponent(show);
                     headerLayout.setComponentAlignment(show, Alignment.BOTTOM_LEFT);
+                    Label pepLabel = new Label("<h4 style='font-family:verdana;color:black;'>Peptides (" + validPep + "/" + totalPep + ") " + desc + "</h4>");
+                    pepLabel.setContentMode(Label.CONTENT_XHTML);
                     headerLayout.addComponent(pepLabel);
                     headerLayout.setComponentAlignment(pepLabel, Alignment.TOP_RIGHT);
 
                     pepTableLayout.removeAllComponents();
+                    pepTable = new PeptideTable(pepProtList, null);
                     pepTableLayout.addComponent(pepTable);
                     trs1.setTable(pepTable);
                     pepTable.setHeight(vt.getHeight() + "");
@@ -180,7 +186,12 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
                 }
             }
 
-            private Map<Integer, PeptideBean> getValidatedList(Map<Integer, PeptideBean> pepProtList) {
+           
+        });
+
+    }
+    
+     private Map<Integer, PeptideBean> getValidatedList(Map<Integer, PeptideBean> pepProtList) {
                 Map<Integer, PeptideBean> vPepList = new HashMap<Integer, PeptideBean>();
                 for (int key : pepProtList.keySet()) {
                     PeptideBean pb = pepProtList.get(key);
@@ -192,9 +203,6 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
                 return vPepList;
 
             }
-        });
-
-    }
 
     public String getPepSize() {
         return PepSize;
@@ -212,17 +220,17 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
         this.trs = trs;
     }
 
-    public void setExpBtnPepTable(PopupView expBtnPepPepTable) {
+    public void setExpBtnPepTable(PopupView expBtnPepPepTable,String accession,String expName) {
         this.expBtnPepPepTable = expBtnPepPepTable;
-        updateExportLayouts();
+        updateExportLayouts(accession,expName);
 
     }
 
-    private void updateExportLayouts() {
+    private void updateExportLayouts(String accession,String expName) {
         exportPepLayout.removeAllComponents();
         expBtnPepPepTable.setHideOnMouseOut(false);
         exportPepLayout.addComponent(expBtnPepPepTable);
-        expBtnPepPepTable.setDescription("Export Peptides");
+        expBtnPepPepTable.setDescription("Export CSF-PR Peptides for ( "+accession+" ) from "+expName);
         exportPepLayout.setComponentAlignment(expBtnPepPepTable, Alignment.MIDDLE_LEFT);
 
     }

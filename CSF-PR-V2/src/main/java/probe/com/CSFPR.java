@@ -1,7 +1,5 @@
 package probe.com;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
@@ -81,24 +79,24 @@ public class CSFPR extends UI {
 
 
         //ExternalResource ico_1 = new ExternalResource("http://sphotos-d.ak.fbcdn.net/hphotos-ak-ash3/574636_108340259349575_2027925130_n.jpg");
-        ThemeResource ico_1= new ThemeResource("img/probe.jpg");
+        ThemeResource ico_1 = new ThemeResource("img/probe2.jpg");
         Link image1 = new Link(null, new ExternalResource("http://www.uib.no/rg/probe"));
         image1.setIcon(ico_1);
         image1.setTargetName("_blank");
 
         Link image2 = new Link(null, new ExternalResource("http://www.uib.no/"));
 //        image2.setIcon(new ExternalResource("http://sphotos-d.ak.fbcdn.net/hphotos-ak-prn1/533227_118477988335802_947238298_n.jpg"));
-        image2.setIcon(new ThemeResource("img/uib.jpg"));
+        image2.setIcon(new ThemeResource("img/uib2.jpg"));
         image2.setTargetName("_blank");
         image2.setWidth("105px");
 
         Link image3 = new Link(null, new ExternalResource("http://www.stiftkgj.no/"));
-        image3.setIcon(new ThemeResource("img/kgj.jpg"));
+        image3.setIcon(new ThemeResource("img/kgj2.jpg"));
         image3.setTargetName("_blank");
 
         MainWindow mw = new MainWindow(url, dbName, driver, userName, password, image1, image2, image3);
         this.getPage().setTitle("CSF Proteome Resource (CSF-PR)");
         setContent(mw);
-        
+
     }
 }

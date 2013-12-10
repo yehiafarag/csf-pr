@@ -168,6 +168,7 @@ public class DataBase implements Serializable {
                         + "  `glycopattern_position(s)` varchar(100) default NULL,\n"
                         + "  `deamidation_and_glycopattern` varchar(5) default NULL,\n"
                         + "  `exp_id` int(250) NOT NULL default '0',\n"
+                        + "  `likelyNotGlycosite` varchar(5) NOT NULL default 'FALSE',\n"
                         + "  KEY `peptide_id` (`peptide_id`)\n"
                         + ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(proteins_peptides_table);
@@ -195,7 +196,7 @@ public class DataBase implements Serializable {
             // 
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
-            
+
             return false;
         }
 
@@ -204,58 +205,6 @@ public class DataBase implements Serializable {
     }
 
 //		Storing Data
-//    public synchronized boolean setProteinFile(ExperimentBean exp) {
-//        if (exp.getExpId() == -1)//new Experiment
-//        {
-//            PreparedStatement insertExpStat = null;
-//            int id = 0;
-//            int test = 0;
-//
-//            String insertExp = "INSERT INTO  `" + dbName + "`.`experiments_table` (`name`,`ready` ,`uploaded_by`,`species`,`sample_type`,`sample_processing`,`instrument_type`,`frag_mode`,`proteins_number` ,	`email` ,`pblication_link`,`description`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ;";
-//            try {
-//                if (conn == null || conn.isClosed()) {
-//                    Class.forName(driver).newInstance();
-//                    conn = DriverManager.getConnection(url + dbName, userName, password);
-//                }
-//                insertExpStat = conn.prepareStatement(insertExp, Statement.RETURN_GENERATED_KEYS);
-//                insertExpStat.setString(1, exp.getName().toUpperCase());
-//                insertExpStat.setInt(2, 1);
-//                insertExpStat.setString(3, exp.getUploadedByName().toUpperCase());
-//                insertExpStat.setString(4, exp.getSpecies());
-//                insertExpStat.setString(5, exp.getSampleType());
-//                insertExpStat.setString(6, exp.getSampleProcessing());
-//                insertExpStat.setString(7, exp.getInstrumentType());
-//                insertExpStat.setString(8, exp.getFragMode());
-//                insertExpStat.setInt(9, exp.getProteinsNumber());
-//                insertExpStat.setString(10, exp.getEmail().toUpperCase());
-//                if (exp.getPublicationLink() != null) {
-//                    insertExpStat.setString(11, exp.getPublicationLink());
-//                } else {
-//                    insertExpStat.setString(11, "NOT AVAILABLE");
-//                }
-//                insertExpStat.setString(12, exp.getDescription());
-//                insertExpStat.executeUpdate();
-//                ResultSet rs = insertExpStat.getGeneratedKeys();
-//                while (rs.next()) {
-//                    id = rs.getInt(1);
-//                }
-//                for (ProteinBean pb : exp.getProteinList().values()) {
-//                    test = this.insertProteinExper(conn, driver, url, dbName, userName, password, id, pb);
-//                    test = this.insertProt(conn, pb.getAccession(), pb.getDescription());
-//                }
-//                // 
-//            } catch (Exception e) {
-//                System.err.println(e.getLocalizedMessage());
-//                return false;
-//            }
-//
-//            if (test > 0) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
     public synchronized boolean setProteinFractionFile(ExperimentBean exp) {
         if (exp.getExpId() == -1)//new Experiment
         {
@@ -324,89 +273,6 @@ public class DataBase implements Serializable {
         return false;
     }
 
-//    public synchronized boolean setPeptideFile(ExperimentBean exp) {
-//        if (exp.getExpId() == -1)//new Experiment
-//        {
-//            PreparedStatement insertExpStat = null;
-//            PreparedStatement insertPeptExpStat = null;
-//            int expId = 0;
-//            int PepId = 0;
-//            int test = 0;
-//            String insertExp = "INSERT INTO  `" + dbName + "`.`experiments_table` (`name`,`ready`,`uploaded_by`,`species`,`sample_type`,`sample_processing`,`instrument_type`,`frag_mode`,`fractions_number` ,	`email` ,`pblication_link`,`peptide_file`,`peptides_number`,`description`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;";
-//            String insertPeptideExp = "INSERT INTO  `" + dbName + "`.`experiment_peptides_table` (`exp_id`) VALUES (?) ;";
-//            try {
-//                if (conn == null || conn.isClosed()) {
-//                    Class.forName(driver).newInstance();
-//                    conn = DriverManager.getConnection(url + dbName, userName, password);
-//                }
-//                insertExpStat = conn.prepareStatement(insertExp, Statement.RETURN_GENERATED_KEYS);
-//                insertExpStat.setString(1, exp.getName().toUpperCase());
-//                insertExpStat.setInt(2, 0);
-//                insertExpStat.setString(3, exp.getUploadedByName().toUpperCase());
-//
-//                insertExpStat.setString(4, exp.getSpecies());
-//
-//                insertExpStat.setString(5, exp.getSampleType());
-//
-//                insertExpStat.setString(6, exp.getSampleProcessing());
-//
-//                insertExpStat.setString(7, exp.getInstrumentType());
-//
-//                insertExpStat.setString(8, exp.getFragMode());
-//
-//                insertExpStat.setInt(9, 0);
-//                insertExpStat.setString(10, exp.getEmail().toUpperCase());
-//                if (exp.getPublicationLink() != null) {
-//                    insertExpStat.setString(11, exp.getPublicationLink().toUpperCase());
-//                } else {
-//                    insertExpStat.setString(11, "NOT AVAILABLE");
-//                }
-//                insertExpStat.setInt(12, 1);
-//                insertExpStat.setInt(13, exp.getPeptidesNumber());
-//                insertExpStat.setString(14, exp.getDescription());
-//                insertExpStat.executeUpdate();
-//                ResultSet rs = insertExpStat.getGeneratedKeys();
-//                while (rs.next()) {
-//                    expId = rs.getInt(1);
-//                }
-//                rs.close();
-//                int counter = 0;
-//                for (PeptideBean pepb : exp.getPeptideList().values()) {
-//                    insertPeptExpStat = conn.prepareStatement(insertPeptideExp, Statement.RETURN_GENERATED_KEYS);
-//                    insertPeptExpStat.setInt(1, expId);
-//                    insertPeptExpStat.executeUpdate();
-//                    rs = insertPeptExpStat.getGeneratedKeys();
-//                    while (rs.next()) {
-//                        PepId = rs.getInt(1);
-//
-//                    }
-//                    insertPeptExpStat.clearParameters();
-//                    rs.close();
-//                    test = this.insertPeptide(conn, PepId, pepb, expId);
-//
-//                    counter++;
-//                    if (counter == 10000) {
-//                        conn.close();
-//
-//                        Thread.sleep(100);
-//                        Class.forName(driver).newInstance();
-//
-//                        conn = DriverManager.getConnection(url + dbName, userName, password);
-//                        counter = 0;
-//                    }
-//                }
-//
-//            } catch (Exception e) {
-//                System.err.println(e.getLocalizedMessage());
-//                return false;
-//            }
-//            if (test > 0) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
     public synchronized int insertFraction(Connection conn2, FractionBean fraction, int expId) {
         String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`,`index`) VALUES (?,?,?,?) ;";
         int fractId = -1;
@@ -438,62 +304,6 @@ public class DataBase implements Serializable {
         return 0;
     }
 
-//    private synchronized int insertProteinExper(Connection conn2, String driver, String url, String dbName, String userName, String password, int expId, ProteinBean pb) {
-//        int test = -1;
-//        try {
-//            if (conn2 == null || conn2.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            String insertProtExp = "INSERT INTO  `" + dbName + "`.`experiment_protein_table` (`exp_id` ,`prot_accession` ,`other_protein(s)` ,`protein_inference_class` ,`sequence_coverage(%)` ,`observable_coverage(%)` ,`confident_ptm_sites` ,`number_confident` ,`other_ptm_sites` ,`number_other` ,`number_validated_peptides` ,`number_validated_spectra` ,`em_pai` ,`nsaf` ,`mw_(kDa)` ,`score` ,`confidence` ,`starred`,`non_enzymatic_peptides`)VALUES (?,?,?,  ?, ?, ?, ?,  ?,  ?, ?, ?, ?, ?,  ?, ?,?,?,?,?);";
-//            PreparedStatement insertProtStat = conn2.prepareStatement(insertProtExp, Statement.RETURN_GENERATED_KEYS);
-//            insertProtStat.setInt(1, expId);
-//            insertProtStat.setString(2, pb.getAccession().toUpperCase());
-//            insertProtStat.setString(3, pb.getOtherProteins().toUpperCase());
-//            insertProtStat.setString(4, pb.getProteinInferenceClass().toUpperCase());
-//            insertProtStat.setDouble(5, pb.getSequenceCoverage());
-//            insertProtStat.setDouble(6, pb.getObservableCoverage());
-//            insertProtStat.setString(7, pb.getConfidentPtmSites().toUpperCase());// `confidence` ,`starred`
-//            insertProtStat.setString(8, pb.getNumberConfident().toString());
-//            insertProtStat.setString(9, pb.getOtherPtmSites().toUpperCase());
-//            insertProtStat.setString(10, pb.getNumberOfOther().toUpperCase());
-//            insertProtStat.setInt(11, pb.getNumberValidatedPeptides());
-//            insertProtStat.setInt(12, pb.getNumberValidatedSpectra());
-//            insertProtStat.setDouble(13, pb.getEmPai());
-//            insertProtStat.setDouble(14, pb.getNsaf());
-//            insertProtStat.setDouble(15, pb.getMw_kDa());
-//            insertProtStat.setDouble(16, pb.getScore());
-//            insertProtStat.setDouble(17, pb.getConfidence());
-//            insertProtStat.setString(18, String.valueOf(pb.isStarred()));
-//            insertProtStat.setString(19, (String.valueOf(pb.isNonEnzymaticPeptides()).toUpperCase()));
-//            test = insertProtStat.executeUpdate();
-//            insertProtStat.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return -1;
-//        }
-//
-//        return test;
-//    }
-//    private synchronized int insertProt(Connection conn2, String accession, String desc)//fill protein table
-//    {
-//        int test = -1;
-//        try {
-//            if (conn2 == null || conn2.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            String insertProt = "INSERT INTO  `" + dbName + "`.`proteins_table` (`accession` ,`description`)VALUES (?,?);";
-//            PreparedStatement insertProtStat = conn2.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
-//            insertProtStat.setString(1, accession.toUpperCase());
-//            insertProtStat.setString(2, desc.toUpperCase());
-//            test = insertProtStat.executeUpdate();
-//            insertProtStat.close();
-//        } catch (Exception e) {
-//            test = updateProt(conn2, driver, url, dbName, userName, password, accession, desc);
-//        }
-//        return test;
-//    }
     private synchronized int insertProteinFract(Connection conn2, int fractId, ProteinBean fpb) {
         int test = -1;
         try {
@@ -519,164 +329,6 @@ public class DataBase implements Serializable {
         return test;
     }
 
-//    public synchronized int insertProtDescription(Connection conn2, String accession, String description) {
-//
-//        int test = -1;
-//        try {
-//            if (conn2 == null || conn2.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            String insertProtDesc = "INSERT INTO  `" + dbName + "`.`proteins_table` (`accession` ,`description`)VALUES (?,?);";
-//            PreparedStatement insertProtDescStat = conn2.prepareStatement(insertProtDesc);
-//            insertProtDescStat.setString(1, accession.toUpperCase());
-//            insertProtDescStat.setString(2, description.toUpperCase());
-//            test = insertProtDescStat.executeUpdate();
-//            insertProtDescStat.close();
-//
-//        } catch (com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e)//in case of protein existence so update description
-//        {
-//
-//            try {
-//                if (conn2 == null || conn2.isClosed()) {
-//                    Class.forName(driver).newInstance();
-//                    conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//                }
-//                String updateProtDesc = "UPDATE  `" + dbName + "`.`proteins_table` SET `description`=? WHERE `accession` = ? ;";
-//                PreparedStatement updateProtDescStat = conn2.prepareStatement(updateProtDesc);
-//                updateProtDescStat.setString(2, accession.toUpperCase());
-//                updateProtDescStat.setString(1, description.toUpperCase());
-//                test = updateProtDescStat.executeUpdate();
-//                updateProtDescStat.close();
-//            } catch (Exception e2) {
-//                e2.printStackTrace();
-//            }
-//
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return test;
-//    }
-//    public synchronized int insertPeptide(Connection conn2, int pepId, PeptideBean pepb, int expId) {
-//        String insertPeptide = "INSERT INTO  `" + dbName + "`.`proteins_peptides_table` (`protein` ,`other_protein(s)` ,`peptide_protein(s)` ,`other_protein_description(s)` ,`peptide_proteins_description(s)` ,`aa_before` ,`sequence` ,"
-//                + "`aa_after` ,`peptide_start` ,`peptide_end` ,`variable_modification` ,`location_confidence` ,`precursor_charge(s)` ,`number_of_validated_spectra` ,`score` ,`confidence` ,`peptide_id`,`fixed_modification`,`protein_inference`,`sequence_tagged`,`enzymatic`,`validated`,`starred`,`glycopattern_position(s)`,`deamidation_and_glycopattern` )VALUES ("
-//                + "?,?,?,?,?,?,?,?,?,?,? , ? , ?,?,?,?,?,?,?,?,?,?,?,?,?);";
-//        if (pepId == -1)//generate peptide id
-//        {
-//            String insertPeptideExp = "INSERT INTO  `" + dbName + "`.`experiment_peptides_table` (`exp_id`) VALUES (?) ;";
-//            try {
-//                if (conn2 == null || conn2.isClosed()) {
-//                    Class.forName(driver).newInstance();
-//                    conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//                }
-//                PreparedStatement insertPeptExpStat = conn2.prepareStatement(insertPeptideExp, Statement.RETURN_GENERATED_KEYS);
-//                insertPeptExpStat.setInt(1, expId);
-//                insertPeptExpStat.executeUpdate();
-//                ResultSet rs = insertPeptExpStat.getGeneratedKeys();
-//                while (rs.next()) {
-//                    pepId = rs.getInt(1);
-//                }
-//                rs.close();
-//
-//            } catch (Exception e) {
-//                System.err.println(e.getLocalizedMessage());
-////                e.printStackTrace();
-//            }
-//        }
-//
-//        int test = -1;
-//        PreparedStatement insertPeptideStat = null;
-//        try {
-//            if (conn2 == null || conn2.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            insertPeptideStat = conn2.prepareStatement(insertPeptide, Statement.RETURN_GENERATED_KEYS);
-//            insertPeptideStat.setString(1, pepb.getProtein().toUpperCase());
-//            insertPeptideStat.setString(2, pepb.getOtherProteins().toUpperCase());
-//            insertPeptideStat.setString(3, pepb.getPeptideProteins().toUpperCase());
-//            insertPeptideStat.setString(4, pepb.getOtherProteinDescriptions().toUpperCase());
-//            insertPeptideStat.setString(5, pepb.getPeptideProteinsDescriptions().toUpperCase());
-//            insertPeptideStat.setString(6, pepb.getAaBefore().toUpperCase());
-//            insertPeptideStat.setString(7, pepb.getSequence().toUpperCase());
-//            insertPeptideStat.setString(8, pepb.getAaAfter().toUpperCase());
-//            insertPeptideStat.setString(9, pepb.getPeptideStart().toUpperCase());
-//            insertPeptideStat.setString(10, pepb.getPeptideEnd().toUpperCase());
-//            insertPeptideStat.setString(11, pepb.getVariableModification().toUpperCase());
-//            insertPeptideStat.setString(12, pepb.getLocationConfidence().toUpperCase());
-//            insertPeptideStat.setString(13, pepb.getPrecursorCharges().toUpperCase());
-//            insertPeptideStat.setInt(14, pepb.getNumberOfValidatedSpectra());
-//            insertPeptideStat.setDouble(15, pepb.getScore());
-//            insertPeptideStat.setDouble(16, pepb.getConfidence());
-//            insertPeptideStat.setInt(17, pepId);
-//            insertPeptideStat.setString(18, pepb.getFixedModification().toUpperCase());
-//            insertPeptideStat.setString(19, pepb.getProteinInference());
-//            insertPeptideStat.setString(20, pepb.getSequenceTagged());
-//            insertPeptideStat.setString(21, String.valueOf(pepb.isEnzymatic()).toUpperCase());
-//            insertPeptideStat.setDouble(22, pepb.getValidated());
-//            insertPeptideStat.setString(23, String.valueOf(pepb.isStarred()).toUpperCase());
-//            if (pepb.getGlycopatternPositions() != null) {
-//                insertPeptideStat.setString(24, pepb.getGlycopatternPositions());
-//            } else {
-//                insertPeptideStat.setString(24, null);
-//            }
-//            if (pepb.isDeamidationAndGlycopattern() != null && pepb.isDeamidationAndGlycopattern()) {
-//                insertPeptideStat.setString(25, String.valueOf(pepb.isDeamidationAndGlycopattern()).toUpperCase());
-//            } else {
-//                insertPeptideStat.setString(25, "");
-//            }
-//
-//            test = insertPeptideStat.executeUpdate();
-//
-//            insertPeptideStat.clearParameters();
-//            insertPeptideStat.close();
-//
-//            insertExpProtPept(expId, pepId, pepb.getProtein().toUpperCase(), conn2);
-//        } catch (Exception e) {
-//            System.err.println(e.getLocalizedMessage());
-////            e.printStackTrace();
-//            try {
-//                insertPeptideStat.close();
-//            } catch (SQLException e1) {
-////                e1.printStackTrace();
-//                System.err.println(e1.getLocalizedMessage());
-//            }
-//        }
-//
-//        return test;
-//    }
-
-//    public synchronized boolean addProtine(Connection conn2, ProteinBean pb, int expId) {
-//
-//        int test = this.insertProteinExper(conn2, driver, url, dbName, userName, password, expId, pb);
-//        test = this.insertProt(conn2, pb.getAccession(), pb.getDescription());
-//        if (test > 0) {
-//            return true;
-//        }
-//
-//        return false;
-//    }
-//    private synchronized int updateProt(Connection conn2, String driver, String url, String dbName, String userName, String password, String accession, String desc)//fill protein table
-//    {
-//        int test = -1;
-//        try {
-//            if (conn2 == null || conn2.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            String insertProt = "UPDATE  `" + dbName + "`.`proteins_table` SET `description` = ? WHERE `accession`=?;";
-//            PreparedStatement insertProtStat = conn2.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
-//            insertProtStat.setString(1, desc.toUpperCase());
-//            insertProtStat.setString(2, accession.toUpperCase());
-//            test = insertProtStat.executeUpdate();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return test;
-//    }
     public synchronized int updateFractionNumber(Connection conn2, int expId, int fractionsNumber) {
         int test = -1;
         try {
@@ -712,7 +364,7 @@ public class DataBase implements Serializable {
 
             updateExperStat.setString(1, exp.getName().toUpperCase());
             updateExperStat.setInt(2, exp.getFractionsNumber());
-            updateExperStat.setInt(3,2);
+            updateExperStat.setInt(3, 2);
             updateExperStat.setString(4, exp.getUploadedByName().toUpperCase());
             updateExperStat.setInt(5, exp.getPeptidesInclude());
             updateExperStat.setString(6, exp.getPublicationLink());
@@ -734,99 +386,6 @@ public class DataBase implements Serializable {
 
     }
 
-//    public synchronized boolean updateProtein(Connection conn2, ProteinBean pb, int expId) {
-//        PreparedStatement updateProtStat = null;
-//        try {
-//            if (conn2 == null || conn2.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            String updateProt = "UPDATE `" + dbName + "`.`experiment_protein_table` SET  `other_protein(s)`=? ,`protein_inference_class`=? ,`sequence_coverage(%)` =?,`observable_coverage(%)`=? ,`confident_ptm_sites`=? ,`number_confident` =?,`other_ptm_sites`=? ,`number_other`=? ,`number_validated_peptides` =?,`number_validated_spectra`=? ,`em_pai` =?,`nsaf` =?,`mw_(kDa)`=? ,`score` =?,`confidence`=? ,`starred`=? , `non_enzymatic_peptides`=? WHERE  `exp_id`=? AND `prot_accession`=?";
-//            updateProtStat = conn2.prepareStatement(updateProt, Statement.RETURN_GENERATED_KEYS);
-//            updateProtStat.setString(1, pb.getOtherProteins().toUpperCase());
-//            updateProtStat.setString(2, pb.getProteinInferenceClass().toUpperCase());
-//            updateProtStat.setDouble(3, pb.getSequenceCoverage());
-//            updateProtStat.setDouble(4, pb.getObservableCoverage());
-//            updateProtStat.setString(5, pb.getConfidentPtmSites().toUpperCase());// `confidence` ,`starred`
-//            updateProtStat.setString(6, pb.getNumberConfident().toString());
-//            updateProtStat.setString(7, pb.getOtherPtmSites().toUpperCase());
-//            updateProtStat.setString(8, pb.getNumberOfOther().toUpperCase());
-//            updateProtStat.setInt(9, pb.getNumberValidatedPeptides());
-//            updateProtStat.setInt(10, pb.getNumberValidatedSpectra());
-//            updateProtStat.setDouble(11, pb.getEmPai());
-//            updateProtStat.setDouble(12, pb.getNsaf());
-//            updateProtStat.setDouble(13, pb.getMw_kDa());
-//            updateProtStat.setDouble(14, pb.getScore());
-//            updateProtStat.setDouble(15, pb.getConfidence());
-//            updateProtStat.setString(16, String.valueOf(pb.isStarred()));
-//            updateProtStat.setString(17, (String.valueOf(pb.isNonEnzymaticPeptides()).toUpperCase()));
-//            updateProtStat.setInt(18, expId);
-//            updateProtStat.setString(19, pb.getAccession().toUpperCase());
-//            int test = updateProtStat.executeUpdate();
-////            test = this.updateProt(conn2, driver, url, dbName, userName, password, pb.getAccession(), pb.getDescription());
-//
-//            if (test > 0) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//
-//    }
-//    public synchronized boolean updatePeptide(Connection conn2, PeptideBean pepb) {
-//        try {
-//            if (conn2 == null || conn2.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            String updatePeptideNumber = "UPDATE  `proteins_peptides_table` SET `protein`=? ,`other_protein(s)`=? ,`peptide_protein(s)`=? ,`other_protein_description(s)`=? ,`peptide_proteins_description(s)`=? ,`aa_before`=? ,`sequence`=? ,"
-//                    + "`aa_after`=? ,`peptide_start`=? ,`peptide_end`=? ,`variable_modification`=? ,`location_confidence`=? ,`precursor_charge(s)`=? ,`number_of_validated_spectra`=? ,`score`=? ,`confidence`=?,	,`protein_inference`=?,`sequence_tagged`=?,`enzymatic`=?,`validated`=?,`starred`=? 	`glycopattern_position(s)`=?,`deamidation_and_glycopattern`=?  WHERE `sequence` = ?;";
-//            PreparedStatement insertPeptideStat = conn2.prepareStatement(updatePeptideNumber);
-//            insertPeptideStat.setString(1, pepb.getProtein().toUpperCase());
-//            insertPeptideStat.setString(2, pepb.getOtherProteins().toUpperCase());
-//            insertPeptideStat.setString(3, pepb.getPeptideProteins().toUpperCase());
-//            insertPeptideStat.setString(4, pepb.getOtherProteinDescriptions().toUpperCase());
-//            insertPeptideStat.setString(5, pepb.getPeptideProteinsDescriptions().toUpperCase());
-//            insertPeptideStat.setString(6, pepb.getAaBefore().toUpperCase());
-//            insertPeptideStat.setString(7, pepb.getSequence().toUpperCase());
-//            insertPeptideStat.setString(8, pepb.getAaAfter().toUpperCase());
-//            insertPeptideStat.setString(9, pepb.getPeptideStart().toUpperCase());
-//            insertPeptideStat.setString(10, pepb.getPeptideEnd().toUpperCase());
-//            insertPeptideStat.setString(11, pepb.getVariableModification().toUpperCase());
-//            insertPeptideStat.setString(12, pepb.getLocationConfidence().toUpperCase());
-//            insertPeptideStat.setString(13, pepb.getPrecursorCharges().toUpperCase());
-//            insertPeptideStat.setInt(14, pepb.getNumberOfValidatedSpectra());
-//            insertPeptideStat.setDouble(15, pepb.getScore());
-//            insertPeptideStat.setDouble(16, pepb.getConfidence());
-//
-//            insertPeptideStat.setString(17, pepb.getProteinInference().toUpperCase());
-//            insertPeptideStat.setString(18, pepb.getSequenceTagged().toUpperCase());
-//            insertPeptideStat.setString(19, String.valueOf(pepb.isEnzymatic()).toUpperCase());
-//            insertPeptideStat.setDouble(20, pepb.getValidated());
-//            insertPeptideStat.setString(21, String.valueOf(pepb.isStarred()).toUpperCase());
-//            insertPeptideStat.setString(22, pepb.getGlycopatternPositions());
-//
-//            if (pepb.isDeamidationAndGlycopattern()) {
-//                insertPeptideStat.setString(23, String.valueOf(pepb.isDeamidationAndGlycopattern()).toUpperCase());
-//            } else {
-//                insertPeptideStat.setString(23, "");
-//            }
-//
-//
-//
-//            insertPeptideStat.setString(24, pepb.getSequence());
-//            insertPeptideStat.executeUpdate();
-//            insertPeptideStat.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//        return true;
-//
-//    }
     public synchronized boolean updateFractions(Connection conn2, FractionBean fb, int expId) {
         List<Integer> fractionIDs = this.getFractionIdsList(expId);
         for (int fractId : fractionIDs) {
@@ -1350,6 +909,7 @@ public class DataBase implements Serializable {
                     if (str != null && !str.equals("")) {
                         pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
                     }
+                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
 
                     peptidesList.put(pepb.getPeptideId(), pepb);
 
@@ -1418,12 +978,13 @@ public class DataBase implements Serializable {
 
                 temPb.setValidated(Boolean.valueOf(rs.getString("valid")));
                 temPb.setDescription(rs.getString("description"));
-                if(temPb.getOtherProteins()==null||temPb.getOtherProteins().equals(""))
+                if (temPb.getOtherProteins() == null || temPb.getOtherProteins().equals("")) {
                     proteinExpList.put(temPb.getAccession(), temPb);
-                else
-                    proteinExpList.put(temPb.getAccession()+","+temPb.getOtherProteins(), temPb);
+                } else {
+                    proteinExpList.put(temPb.getAccession() + "," + temPb.getOtherProteins(), temPb);
+                }
             }
-            rs.close();           
+            rs.close();
 
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
@@ -1547,14 +1108,15 @@ public class DataBase implements Serializable {
         }
     }
 
-    public synchronized Map<Integer, ProteinBean>   searchProtein(String accession, int expId,boolean validatedOnly) {
+    public synchronized Map<Integer, ProteinBean> searchProtein(String accession, int expId, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
-        String selectPro ="";
+        String selectPro = "";
         boolean test = false;
-        if(validatedOnly) 
+        if (validatedOnly) {
             selectPro = "SELECT * FROM `experiment_protein_table` Where `exp_id`=? AND  `prot_key` LIKE(?) AND `valid`=?;";
-        else
+        } else {
             selectPro = "SELECT * FROM `experiment_protein_table` Where `exp_id`=? AND `prot_key` LIKE(?);";
+        }
 
 
         Map<Integer, ProteinBean> protExpList = new HashMap<Integer, ProteinBean>();
@@ -1616,73 +1178,6 @@ public class DataBase implements Serializable {
 
     }
 
-//    private synchronized ProteinBean getProtein(String accession, int expId) {
-//        try {
-//            PreparedStatement selectProtExpStat = null;
-//            String selectProtExp = "SELECT * FROM `experiment_protein_table` WHERE `exp_id`=? AND `prot_accession`=?;";
-//            if (conn == null || conn.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            selectProtExpStat = conn.prepareStatement(selectProtExp);
-//            selectProtExpStat.setInt(1, expId);
-//            selectProtExpStat.setString(2, accession);
-//            ResultSet rs = selectProtExpStat.executeQuery();
-//            ProteinBean temPb = null;
-//            while (rs.next()) {
-//                temPb = new ProteinBean();
-//                temPb.setAccession(accession);
-//                temPb.setOtherProteins(rs.getString("other_protein(s)"));
-//                temPb.setProteinInferenceClass(rs.getString("protein_inference_class"));
-//                temPb.setSequenceCoverage(rs.getDouble("sequence_coverage(%)"));
-//                temPb.setObservableCoverage(rs.getDouble("observable_coverage(%)"));
-//                temPb.setConfidentPtmSites(rs.getString("confident_ptm_sites"));
-//                temPb.setNumberConfident(rs.getString("number_confident"));
-//                temPb.setOtherPtmSites(rs.getString("other_ptm_sites"));
-//                temPb.setNumberOfOther(rs.getString("number_other"));
-//                temPb.setNumberValidatedPeptides(rs.getInt("number_validated_peptides"));
-//                temPb.setNumberValidatedSpectra(rs.getInt("number_validated_spectra"));
-//                temPb.setEmPai(rs.getDouble("em_pai"));
-//                temPb.setNsaf(rs.getDouble("nsaf"));
-//                temPb.setMw_kDa(rs.getDouble("mw_(kDa)"));
-//                temPb.setScore(rs.getDouble("score"));
-//                temPb.setConfidence(rs.getDouble("confidence"));
-//                temPb.setStarred(Boolean.valueOf(rs.getString("starred")));
-//                temPb.setNonEnzymaticPeptides(Boolean.valueOf(rs.getString("non_enzymatic_peptides").toUpperCase()));
-//
-//                temPb.setSpectrumFractionSpread_lower_range_kDa(rs.getString("spectrum_fraction_spread_lower_range_kDa"));
-//                temPb.setSpectrumFractionSpread_upper_range_kDa(rs.getString("spectrum_fraction_spread_upper_range_kDa"));
-//                temPb.setPeptideFractionSpread_lower_range_kDa(rs.getString("peptide_fraction_spread_lower_range_kDa"));
-//                temPb.setPeptideFractionSpread_upper_range_kDa(rs.getString("peptide_fraction_spread_upper_range_kDa"));
-//
-//                temPb.setGeneName(rs.getString("gene_name"));
-//                temPb.setChromosomeNumber(rs.getString("chromosome_number"));
-//                temPb.setValidated(Boolean.valueOf(rs.getString("valid")));
-//            }
-//            rs.close();
-//            if (temPb == null) {
-//                return null;
-//            }
-//            PreparedStatement selectProtStat = null;
-//            String selectProt = "SELECT   `description` FROM `proteins_table` WHERE `accession`= ? ";
-//            if (conn == null || conn.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            selectProtStat = conn.prepareStatement(selectProt);
-//            selectProtStat.setString(1, accession.toUpperCase());
-//            rs = selectProtStat.executeQuery();
-//            while (rs.next()) {
-//                temPb.setDescription(rs.getString("description"));
-//            }
-//            rs.close();
-//            return temPb;
-//        } catch (Exception e) {
-//            System.err.println(e.getLocalizedMessage());
-//        }
-//        return null;
-//    }
-
     public synchronized Map<Integer, PeptideBean> getPeptidesProtList(Set<Integer> peptideIds) {
 
         ResultSet rs = null;
@@ -1735,6 +1230,8 @@ public class DataBase implements Serializable {
                     if (str != null && !str.equals("")) {
                         pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
                     }
+
+                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
 
 
                     peptidesList.put(pepb.getPeptideId(), pepb);
@@ -1824,15 +1321,16 @@ public class DataBase implements Serializable {
 
     }
 
-    public synchronized Map<Integer, ProteinBean> searchProteinByName(String protSearch, int expId,boolean validatedOnly) {
+    public synchronized Map<Integer, ProteinBean> searchProteinByName(String protSearch, int expId, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
-         String selectPro="";
-        Map<Integer, ProteinBean>  proteinsList = new HashMap<Integer, ProteinBean >();
-       
-         if(validatedOnly) 
-            selectPro =  "SELECT * FROM `experiment_protein_table` WHERE `description` LIKE (?) AND `exp_id`=? AND `valid`=?;";
-        else
-            selectPro =  "SELECT * FROM `experiment_protein_table` WHERE `description` LIKE (?) AND `exp_id`=? ";
+        String selectPro = "";
+        Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
+
+        if (validatedOnly) {
+            selectPro = "SELECT * FROM `experiment_protein_table` WHERE `description` LIKE (?) AND `exp_id`=? AND `valid`=?;";
+        } else {
+            selectPro = "SELECT * FROM `experiment_protein_table` WHERE `description` LIKE (?) AND `exp_id`=? ";
+        }
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -1841,11 +1339,12 @@ public class DataBase implements Serializable {
             selectProStat = conn.prepareStatement(selectPro);
             selectProStat.setString(1, "%" + protSearch + "%");
             selectProStat.setInt(2, expId);
-             if(validatedOnly) 
-                  selectProStat.setString(3, "TRUE");
+            if (validatedOnly) {
+                selectProStat.setString(3, "TRUE");
+            }
             ResultSet rs = selectProStat.executeQuery();
-            int in=1;
-               while (rs.next()) {
+            int in = 1;
+            while (rs.next()) {
                 ProteinBean temPb = new ProteinBean();
                 temPb.setExpId(expId);
                 temPb.setAccession(rs.getString("prot_accession"));
@@ -1878,7 +1377,7 @@ public class DataBase implements Serializable {
                 temPb.setValidated(Boolean.valueOf(rs.getString("valid")));
                 temPb.setProtGroupId(rs.getInt("prot_group_id"));
                 proteinsList.put(temPb.getProtGroupId(), temPb);
-            
+
             }
             rs.close();
             return proteinsList;
@@ -1890,13 +1389,13 @@ public class DataBase implements Serializable {
         return null;
     }
 
-    public synchronized Map<Integer,ProteinBean> searchProteinByPeptideSequence(String protSearch, int expId,boolean validatedOnly) {
+    public synchronized Map<Integer, ProteinBean> searchProteinByPeptideSequence(String protSearch, int expId, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
-         PreparedStatement selectPepIdStat = null;
-      Map<Integer, ProteinBean>  proteinsList = new HashMap<Integer, ProteinBean >();
-      List<Integer> pepIdList = new ArrayList<Integer>();
+        PreparedStatement selectPepIdStat = null;
+        Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
+        List<Integer> pepIdList = new ArrayList<Integer>();
         String selectPepId = "SELECT `peptide_id`  FROM `proteins_peptides_table` WHERE `exp_id` = ? AND `sequence` = ? ;";
-       Set<String> accessionList = new HashSet<String>();
+        Set<String> accessionList = new HashSet<String>();
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -1925,15 +1424,16 @@ public class DataBase implements Serializable {
                 while (rs_.next()) {
                     accessionList.add(rs_.getString("protein"));
                 }
-               rs_.close();
+                rs_.close();
 
                 for (String accKey : accessionList) {
                     String[] AccArr = accKey.split(",");
                     for (String str : AccArr) {
                         if (str.length() > 3) {
-                            Map<Integer, ProteinBean>  tempProteinsList= this.searchProtein(str.trim(), expId, validatedOnly);
-                           if(tempProteinsList != null)
-                                   proteinsList.putAll(tempProteinsList);
+                            Map<Integer, ProteinBean> tempProteinsList = this.searchProtein(str.trim(), expId, validatedOnly);
+                            if (tempProteinsList != null) {
+                                proteinsList.putAll(tempProteinsList);
+                            }
                         }
                     }
                 }
@@ -2154,39 +1654,6 @@ public class DataBase implements Serializable {
         return false;
     }
 
-    ///new v-2
-//    public synchronized List<ProteinBean> searchOtherProteins(String accession, int expId, List<ProteinBean> protList) {
-//        PreparedStatement selectProStat = null;
-//        String selectPro = "SELECT `prot_accession` FROM `experiment_protein_table` Where `exp_id`=? AND `other_protein(s)` LIKE (?);";
-//
-//        try {
-//            if (conn == null || conn.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            selectProStat = conn.prepareStatement(selectPro);
-//            selectProStat.setString(2, "%" + accession + "%");
-//            selectProStat.setInt(1, expId);
-//            ResultSet rs = selectProStat.executeQuery();
-//            List<String> accsList = new ArrayList<String>();
-//            while (rs.next()) {
-//                accsList.add(rs.getString("prot_accession"));
-//
-//            }
-//            for (String acc : accsList) {
-//                ProteinBean pb = this.getProtein(acc, expId);
-//                protList.add(pb);
-//
-//            }
-//            rs.close();
-//            return protList;
-//        } catch (Exception e) {
-//            System.err.println(e.getLocalizedMessage());
-////            e.printStackTrace();
-//            return null;
-//        }
-//    }
-
     public boolean updateFractionRange(ExperimentBean exp) {
         List<Integer> fractionIDs = this.getFractionIdsList(exp.getExpId());
         java.util.Collections.sort(fractionIDs);
@@ -2308,8 +1775,6 @@ public class DataBase implements Serializable {
                 }
                 for (ProteinBean pb : fb.getProteinList().values()) {
                     this.insertProteinFract(conn2, fractId, pb);
-//                    this.insertProt(conn2, pb.getAccession(), pb.getDescription());
-
                 }
                 rs.close();
             }
@@ -2322,28 +1787,6 @@ public class DataBase implements Serializable {
         return true;
     }
 
-//    public synchronized boolean checkAndUpdateProt(ExperimentBean exp) {
-//        boolean test = false;
-//        try {
-//            if (conn == null || conn.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            for (ProteinBean pb : exp.getProteinList().values()) {
-//                test = checkProteinExisting(exp.getExpId(), pb.getAccession());
-//                if (test)//existing protein
-//                {
-//                    test = updateProtein(conn, pb, exp.getExpId());
-//                } else {
-//                    test = addProtine(conn, pb, exp.getExpId());
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            test = false;
-//        }
-//        return test;
-//    }
     public synchronized boolean updateProtFractionFile(ExperimentBean tempExp, ExperimentBean exp) {
         boolean test = true;
         try {
@@ -2358,11 +1801,6 @@ public class DataBase implements Serializable {
                 test = updateExperiment(conn, tempExp);	//update exp table
                 for (FractionBean fb : exp.getFractionsList().values()) {
                     insertFraction(conn, fb, exp.getExpId());// update fraction-exp table and fraction table
-//                    for (ProteinBean pb : fb.getProteinList().values()) {
-//                        insertProtDescription(conn, pb.getAccession(), pb.getDescription());//update protein table
-//
-//                    }
-
                 }
             } else {
                 tempExp.setFractionsNumber(exp.getFractionsNumber());
@@ -2381,110 +1819,7 @@ public class DataBase implements Serializable {
         return test;
     }
 
-//    public synchronized boolean updatePeptideFile(ExperimentBean tempExp, ExperimentBean exp) {
-//        boolean test = false;
-//        try {
-//            if (conn == null || conn.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            this.removePepFile(conn, exp);
-//            if (tempExp.getPeptidesInclude() == 0)//we need to update peptide file number to 1 
-//            {
-//                tempExp.setPeptidesInclude(1);
-//                tempExp.setPeptidesNumber(exp.getPeptidesNumber());
-//                test = updateExperiment(conn, tempExp);
-//                for (PeptideBean pepb : exp.getPeptideList().values()) {
-//                    insertPeptide(conn, -1, pepb, tempExp.getExpId());
-//                }
-//            } else {
-//
-//                tempExp.setPeptidesNumber(exp.getPeptidesNumber());
-//                test = updateExperiment(conn, tempExp);
-//                int counter = 0;
-//                for (PeptideBean pepb : exp.getPeptideList().values()) {
-//                    insertPeptide(conn, -1, pepb, tempExp.getExpId());
-//                    counter++;
-//                    if (counter == 10000) {
-//                        conn.close();
-//                        Thread.sleep(100);
-//                        Class.forName(driver).newInstance();
-//                        conn = DriverManager.getConnection(url + dbName, userName, password);
-//                        counter = 0;
-//                    }
-//                }
-//
-//
-//            }
-//
-//
-//        } catch (Exception e) {
-//            System.err.println(e.getLocalizedMessage());
-////            e.printStackTrace();
-//            test = false;
-//        }
-//        return test;
-//    }
-
-//    private boolean removePepFile(Connection conn2, ExperimentBean exp) {
-//        PreparedStatement getPepExpStat = null;//done
-//        PreparedStatement remPepStat = null;//done
-//        PreparedStatement remPepExpStat = null;//done
-//        PreparedStatement remPepProExpStat = null;
-//
-//        try {
-//            if (conn2 == null || conn2.isClosed()) {
-//                Class.forName(driver).newInstance();
-//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
-//            }
-//            String remPep = "DELETE FROM `" + dbName + "`.`proteins_peptides_table`   WHERE  `peptide_id` =? ";
-//            String selectPepList = "SELECT `pep_id` FROM `experiment_peptides_table` where `exp_id` = ?";
-//
-//            getPepExpStat = conn2.prepareStatement(selectPepList);
-//            getPepExpStat.setInt(1, exp.getExpId());
-//            ResultSet rs = getPepExpStat.executeQuery();
-//            ArrayList<Integer> pepIdList = new ArrayList<Integer>();
-//            while (rs.next()) {
-//                int pep_id = rs.getInt("pep_id");
-//                pepIdList.add(pep_id);
-//
-//            }
-//            rs.close();
-//            for (int pepb : pepIdList) {
-//                remPepStat = conn2.prepareStatement(remPep);
-//                remPepStat.setInt(1, pepb);
-//                remPepStat.executeUpdate();
-//                remPepStat.clearParameters();
-//                remPepStat.close();
-//            }
-//
-//
-//            String removePep = "DELETE FROM `experiment_peptides_table`   WHERE `exp_id` = ? ;";
-//
-//            remPepExpStat = conn2.prepareStatement(removePep);
-//            remPepExpStat.setInt(1, exp.getExpId());
-//            remPepExpStat.executeUpdate();
-//            remPepExpStat.clearParameters();
-//            remPepExpStat.close();
-//
-//            String remPepProExp = "DELETE FROM `" + dbName + "`.`experiment_peptides_proteins_table`   WHERE  `exp_id` =? ";
-//            remPepProExpStat = conn2.prepareStatement(remPepProExp);
-//            remPepProExpStat.setInt(1, exp.getExpId());
-//            remPepProExpStat.executeUpdate();
-//            remPepProExpStat.clearParameters();
-//            remPepProExpStat.close();
-//
-//
-//
-//            return true;
-//        } catch (Exception e) {
-//            System.err.println(e.getLocalizedMessage());
-////            e.printStackTrace();
-//            return false;
-//        }
-//
-//    }
-       public boolean setStandardPlotProt(ExperimentBean exp) {
+    public boolean setStandardPlotProt(ExperimentBean exp) {
         // TODO Auto-generated method stub
         return false;
     }
@@ -2573,6 +1908,7 @@ public class DataBase implements Serializable {
                     if (str != null && !str.equals("")) {
                         pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
                     }
+                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
 
                     if (pepb.getDecoy() != 1) {
                         peptidesList.put(pepb.getPeptideId(), pepb);
@@ -2744,7 +2080,7 @@ public class DataBase implements Serializable {
             }
             PreparedStatement updateExpStat = conn.prepareStatement(updateExp, Statement.RETURN_GENERATED_KEYS);
             updateExpStat.setString(1, exp.getName().toUpperCase());
-            updateExpStat.setInt(2,2);
+            updateExpStat.setInt(2, 2);
             updateExpStat.setString(3, exp.getUploadedByName().toUpperCase());
             updateExpStat.setString(4, exp.getSpecies());
             updateExpStat.setString(5, exp.getSampleType());
@@ -2772,4 +2108,670 @@ public class DataBase implements Serializable {
 
         return false;
     }
+
+    //    public synchronized boolean setProteinFile(ExperimentBean exp) {
+//        if (exp.getExpId() == -1)//new Experiment
+//        {
+//            PreparedStatement insertExpStat = null;
+//            int id = 0;
+//            int test = 0;
+//
+//            String insertExp = "INSERT INTO  `" + dbName + "`.`experiments_table` (`name`,`ready` ,`uploaded_by`,`species`,`sample_type`,`sample_processing`,`instrument_type`,`frag_mode`,`proteins_number` ,	`email` ,`pblication_link`,`description`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ;";
+//            try {
+//                if (conn == null || conn.isClosed()) {
+//                    Class.forName(driver).newInstance();
+//                    conn = DriverManager.getConnection(url + dbName, userName, password);
+//                }
+//                insertExpStat = conn.prepareStatement(insertExp, Statement.RETURN_GENERATED_KEYS);
+//                insertExpStat.setString(1, exp.getName().toUpperCase());
+//                insertExpStat.setInt(2, 1);
+//                insertExpStat.setString(3, exp.getUploadedByName().toUpperCase());
+//                insertExpStat.setString(4, exp.getSpecies());
+//                insertExpStat.setString(5, exp.getSampleType());
+//                insertExpStat.setString(6, exp.getSampleProcessing());
+//                insertExpStat.setString(7, exp.getInstrumentType());
+//                insertExpStat.setString(8, exp.getFragMode());
+//                insertExpStat.setInt(9, exp.getProteinsNumber());
+//                insertExpStat.setString(10, exp.getEmail().toUpperCase());
+//                if (exp.getPublicationLink() != null) {
+//                    insertExpStat.setString(11, exp.getPublicationLink());
+//                } else {
+//                    insertExpStat.setString(11, "NOT AVAILABLE");
+//                }
+//                insertExpStat.setString(12, exp.getDescription());
+//                insertExpStat.executeUpdate();
+//                ResultSet rs = insertExpStat.getGeneratedKeys();
+//                while (rs.next()) {
+//                    id = rs.getInt(1);
+//                }
+//                for (ProteinBean pb : exp.getProteinList().values()) {
+//                    test = this.insertProteinExper(conn, driver, url, dbName, userName, password, id, pb);
+//                    test = this.insertProt(conn, pb.getAccession(), pb.getDescription());
+//                }
+//                // 
+//            } catch (Exception e) {
+//                System.err.println(e.getLocalizedMessage());
+//                return false;
+//            }
+//
+//            if (test > 0) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
+//    public synchronized boolean setPeptideFile(ExperimentBean exp) {
+//        if (exp.getExpId() == -1)//new Experiment
+//        {
+//            PreparedStatement insertExpStat = null;
+//            PreparedStatement insertPeptExpStat = null;
+//            int expId = 0;
+//            int PepId = 0;
+//            int test = 0;
+//            String insertExp = "INSERT INTO  `" + dbName + "`.`experiments_table` (`name`,`ready`,`uploaded_by`,`species`,`sample_type`,`sample_processing`,`instrument_type`,`frag_mode`,`fractions_number` ,	`email` ,`pblication_link`,`peptide_file`,`peptides_number`,`description`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;";
+//            String insertPeptideExp = "INSERT INTO  `" + dbName + "`.`experiment_peptides_table` (`exp_id`) VALUES (?) ;";
+//            try {
+//                if (conn == null || conn.isClosed()) {
+//                    Class.forName(driver).newInstance();
+//                    conn = DriverManager.getConnection(url + dbName, userName, password);
+//                }
+//                insertExpStat = conn.prepareStatement(insertExp, Statement.RETURN_GENERATED_KEYS);
+//                insertExpStat.setString(1, exp.getName().toUpperCase());
+//                insertExpStat.setInt(2, 0);
+//                insertExpStat.setString(3, exp.getUploadedByName().toUpperCase());
+//
+//                insertExpStat.setString(4, exp.getSpecies());
+//
+//                insertExpStat.setString(5, exp.getSampleType());
+//
+//                insertExpStat.setString(6, exp.getSampleProcessing());
+//
+//                insertExpStat.setString(7, exp.getInstrumentType());
+//
+//                insertExpStat.setString(8, exp.getFragMode());
+//
+//                insertExpStat.setInt(9, 0);
+//                insertExpStat.setString(10, exp.getEmail().toUpperCase());
+//                if (exp.getPublicationLink() != null) {
+//                    insertExpStat.setString(11, exp.getPublicationLink().toUpperCase());
+//                } else {
+//                    insertExpStat.setString(11, "NOT AVAILABLE");
+//                }
+//                insertExpStat.setInt(12, 1);
+//                insertExpStat.setInt(13, exp.getPeptidesNumber());
+//                insertExpStat.setString(14, exp.getDescription());
+//                insertExpStat.executeUpdate();
+//                ResultSet rs = insertExpStat.getGeneratedKeys();
+//                while (rs.next()) {
+//                    expId = rs.getInt(1);
+//                }
+//                rs.close();
+//                int counter = 0;
+//                for (PeptideBean pepb : exp.getPeptideList().values()) {
+//                    insertPeptExpStat = conn.prepareStatement(insertPeptideExp, Statement.RETURN_GENERATED_KEYS);
+//                    insertPeptExpStat.setInt(1, expId);
+//                    insertPeptExpStat.executeUpdate();
+//                    rs = insertPeptExpStat.getGeneratedKeys();
+//                    while (rs.next()) {
+//                        PepId = rs.getInt(1);
+//
+//                    }
+//                    insertPeptExpStat.clearParameters();
+//                    rs.close();
+//                    test = this.insertPeptide(conn, PepId, pepb, expId);
+//
+//                    counter++;
+//                    if (counter == 10000) {
+//                        conn.close();
+//
+//                        Thread.sleep(100);
+//                        Class.forName(driver).newInstance();
+//
+//                        conn = DriverManager.getConnection(url + dbName, userName, password);
+//                        counter = 0;
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//                System.err.println(e.getLocalizedMessage());
+//                return false;
+//            }
+//            if (test > 0) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
+//    private synchronized int insertProteinExper(Connection conn2, String driver, String url, String dbName, String userName, String password, int expId, ProteinBean pb) {
+//        int test = -1;
+//        try {
+//            if (conn2 == null || conn2.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            String insertProtExp = "INSERT INTO  `" + dbName + "`.`experiment_protein_table` (`exp_id` ,`prot_accession` ,`other_protein(s)` ,`protein_inference_class` ,`sequence_coverage(%)` ,`observable_coverage(%)` ,`confident_ptm_sites` ,`number_confident` ,`other_ptm_sites` ,`number_other` ,`number_validated_peptides` ,`number_validated_spectra` ,`em_pai` ,`nsaf` ,`mw_(kDa)` ,`score` ,`confidence` ,`starred`,`non_enzymatic_peptides`)VALUES (?,?,?,  ?, ?, ?, ?,  ?,  ?, ?, ?, ?, ?,  ?, ?,?,?,?,?);";
+//            PreparedStatement insertProtStat = conn2.prepareStatement(insertProtExp, Statement.RETURN_GENERATED_KEYS);
+//            insertProtStat.setInt(1, expId);
+//            insertProtStat.setString(2, pb.getAccession().toUpperCase());
+//            insertProtStat.setString(3, pb.getOtherProteins().toUpperCase());
+//            insertProtStat.setString(4, pb.getProteinInferenceClass().toUpperCase());
+//            insertProtStat.setDouble(5, pb.getSequenceCoverage());
+//            insertProtStat.setDouble(6, pb.getObservableCoverage());
+//            insertProtStat.setString(7, pb.getConfidentPtmSites().toUpperCase());// `confidence` ,`starred`
+//            insertProtStat.setString(8, pb.getNumberConfident().toString());
+//            insertProtStat.setString(9, pb.getOtherPtmSites().toUpperCase());
+//            insertProtStat.setString(10, pb.getNumberOfOther().toUpperCase());
+//            insertProtStat.setInt(11, pb.getNumberValidatedPeptides());
+//            insertProtStat.setInt(12, pb.getNumberValidatedSpectra());
+//            insertProtStat.setDouble(13, pb.getEmPai());
+//            insertProtStat.setDouble(14, pb.getNsaf());
+//            insertProtStat.setDouble(15, pb.getMw_kDa());
+//            insertProtStat.setDouble(16, pb.getScore());
+//            insertProtStat.setDouble(17, pb.getConfidence());
+//            insertProtStat.setString(18, String.valueOf(pb.isStarred()));
+//            insertProtStat.setString(19, (String.valueOf(pb.isNonEnzymaticPeptides()).toUpperCase()));
+//            test = insertProtStat.executeUpdate();
+//            insertProtStat.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return -1;
+//        }
+//
+//        return test;
+//    }
+//    private synchronized int insertProt(Connection conn2, String accession, String desc)//fill protein table
+//    {
+//        int test = -1;
+//        try {
+//            if (conn2 == null || conn2.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            String insertProt = "INSERT INTO  `" + dbName + "`.`proteins_table` (`accession` ,`description`)VALUES (?,?);";
+//            PreparedStatement insertProtStat = conn2.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
+//            insertProtStat.setString(1, accession.toUpperCase());
+//            insertProtStat.setString(2, desc.toUpperCase());
+//            test = insertProtStat.executeUpdate();
+//            insertProtStat.close();
+//        } catch (Exception e) {
+//            test = updateProt(conn2, driver, url, dbName, userName, password, accession, desc);
+//        }
+//        return test;
+//    }
+    
+//    public synchronized int insertProtDescription(Connection conn2, String accession, String description) {
+//
+//        int test = -1;
+//        try {
+//            if (conn2 == null || conn2.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            String insertProtDesc = "INSERT INTO  `" + dbName + "`.`proteins_table` (`accession` ,`description`)VALUES (?,?);";
+//            PreparedStatement insertProtDescStat = conn2.prepareStatement(insertProtDesc);
+//            insertProtDescStat.setString(1, accession.toUpperCase());
+//            insertProtDescStat.setString(2, description.toUpperCase());
+//            test = insertProtDescStat.executeUpdate();
+//            insertProtDescStat.close();
+//
+//        } catch (com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e)//in case of protein existence so update description
+//        {
+//
+//            try {
+//                if (conn2 == null || conn2.isClosed()) {
+//                    Class.forName(driver).newInstance();
+//                    conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//                }
+//                String updateProtDesc = "UPDATE  `" + dbName + "`.`proteins_table` SET `description`=? WHERE `accession` = ? ;";
+//                PreparedStatement updateProtDescStat = conn2.prepareStatement(updateProtDesc);
+//                updateProtDescStat.setString(2, accession.toUpperCase());
+//                updateProtDescStat.setString(1, description.toUpperCase());
+//                test = updateProtDescStat.executeUpdate();
+//                updateProtDescStat.close();
+//            } catch (Exception e2) {
+//                e2.printStackTrace();
+//            }
+//
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return test;
+//    }
+//    public synchronized int insertPeptide(Connection conn2, int pepId, PeptideBean pepb, int expId) {
+//        String insertPeptide = "INSERT INTO  `" + dbName + "`.`proteins_peptides_table` (`protein` ,`other_protein(s)` ,`peptide_protein(s)` ,`other_protein_description(s)` ,`peptide_proteins_description(s)` ,`aa_before` ,`sequence` ,"
+//                + "`aa_after` ,`peptide_start` ,`peptide_end` ,`variable_modification` ,`location_confidence` ,`precursor_charge(s)` ,`number_of_validated_spectra` ,`score` ,`confidence` ,`peptide_id`,`fixed_modification`,`protein_inference`,`sequence_tagged`,`enzymatic`,`validated`,`starred`,`glycopattern_position(s)`,`deamidation_and_glycopattern` )VALUES ("
+//                + "?,?,?,?,?,?,?,?,?,?,? , ? , ?,?,?,?,?,?,?,?,?,?,?,?,?);";
+//        if (pepId == -1)//generate peptide id
+//        {
+//            String insertPeptideExp = "INSERT INTO  `" + dbName + "`.`experiment_peptides_table` (`exp_id`) VALUES (?) ;";
+//            try {
+//                if (conn2 == null || conn2.isClosed()) {
+//                    Class.forName(driver).newInstance();
+//                    conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//                }
+//                PreparedStatement insertPeptExpStat = conn2.prepareStatement(insertPeptideExp, Statement.RETURN_GENERATED_KEYS);
+//                insertPeptExpStat.setInt(1, expId);
+//                insertPeptExpStat.executeUpdate();
+//                ResultSet rs = insertPeptExpStat.getGeneratedKeys();
+//                while (rs.next()) {
+//                    pepId = rs.getInt(1);
+//                }
+//                rs.close();
+//
+//            } catch (Exception e) {
+//                System.err.println(e.getLocalizedMessage());
+////                e.printStackTrace();
+//            }
+//        }
+//
+//        int test = -1;
+//        PreparedStatement insertPeptideStat = null;
+//        try {
+//            if (conn2 == null || conn2.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            insertPeptideStat = conn2.prepareStatement(insertPeptide, Statement.RETURN_GENERATED_KEYS);
+//            insertPeptideStat.setString(1, pepb.getProtein().toUpperCase());
+//            insertPeptideStat.setString(2, pepb.getOtherProteins().toUpperCase());
+//            insertPeptideStat.setString(3, pepb.getPeptideProteins().toUpperCase());
+//            insertPeptideStat.setString(4, pepb.getOtherProteinDescriptions().toUpperCase());
+//            insertPeptideStat.setString(5, pepb.getPeptideProteinsDescriptions().toUpperCase());
+//            insertPeptideStat.setString(6, pepb.getAaBefore().toUpperCase());
+//            insertPeptideStat.setString(7, pepb.getSequence().toUpperCase());
+//            insertPeptideStat.setString(8, pepb.getAaAfter().toUpperCase());
+//            insertPeptideStat.setString(9, pepb.getPeptideStart().toUpperCase());
+//            insertPeptideStat.setString(10, pepb.getPeptideEnd().toUpperCase());
+//            insertPeptideStat.setString(11, pepb.getVariableModification().toUpperCase());
+//            insertPeptideStat.setString(12, pepb.getLocationConfidence().toUpperCase());
+//            insertPeptideStat.setString(13, pepb.getPrecursorCharges().toUpperCase());
+//            insertPeptideStat.setInt(14, pepb.getNumberOfValidatedSpectra());
+//            insertPeptideStat.setDouble(15, pepb.getScore());
+//            insertPeptideStat.setDouble(16, pepb.getConfidence());
+//            insertPeptideStat.setInt(17, pepId);
+//            insertPeptideStat.setString(18, pepb.getFixedModification().toUpperCase());
+//            insertPeptideStat.setString(19, pepb.getProteinInference());
+//            insertPeptideStat.setString(20, pepb.getSequenceTagged());
+//            insertPeptideStat.setString(21, String.valueOf(pepb.isEnzymatic()).toUpperCase());
+//            insertPeptideStat.setDouble(22, pepb.getValidated());
+//            insertPeptideStat.setString(23, String.valueOf(pepb.isStarred()).toUpperCase());
+//            if (pepb.getGlycopatternPositions() != null) {
+//                insertPeptideStat.setString(24, pepb.getGlycopatternPositions());
+//            } else {
+//                insertPeptideStat.setString(24, null);
+//            }
+//            if (pepb.isDeamidationAndGlycopattern() != null && pepb.isDeamidationAndGlycopattern()) {
+//                insertPeptideStat.setString(25, String.valueOf(pepb.isDeamidationAndGlycopattern()).toUpperCase());
+//            } else {
+//                insertPeptideStat.setString(25, "");
+//            }
+//
+//            test = insertPeptideStat.executeUpdate();
+//
+//            insertPeptideStat.clearParameters();
+//            insertPeptideStat.close();
+//
+//            insertExpProtPept(expId, pepId, pepb.getProtein().toUpperCase(), conn2);
+//        } catch (Exception e) {
+//            System.err.println(e.getLocalizedMessage());
+////            e.printStackTrace();
+//            try {
+//                insertPeptideStat.close();
+//            } catch (SQLException e1) {
+////                e1.printStackTrace();
+//                System.err.println(e1.getLocalizedMessage());
+//            }
+//        }
+//
+//        return test;
+//    }
+
+//    public synchronized boolean addProtine(Connection conn2, ProteinBean pb, int expId) {
+//
+//        int test = this.insertProteinExper(conn2, driver, url, dbName, userName, password, expId, pb);
+//        test = this.insertProt(conn2, pb.getAccession(), pb.getDescription());
+//        if (test > 0) {
+//            return true;
+//        }
+//
+//        return false;
+//    }
+//    private synchronized int updateProt(Connection conn2, String driver, String url, String dbName, String userName, String password, String accession, String desc)//fill protein table
+//    {
+//        int test = -1;
+//        try {
+//            if (conn2 == null || conn2.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            String insertProt = "UPDATE  `" + dbName + "`.`proteins_table` SET `description` = ? WHERE `accession`=?;";
+//            PreparedStatement insertProtStat = conn2.prepareStatement(insertProt, Statement.RETURN_GENERATED_KEYS);
+//            insertProtStat.setString(1, desc.toUpperCase());
+//            insertProtStat.setString(2, accession.toUpperCase());
+//            test = insertProtStat.executeUpdate();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return test;
+//    }
+//    public synchronized boolean updateProtein(Connection conn2, ProteinBean pb, int expId) {
+//        PreparedStatement updateProtStat = null;
+//        try {
+//            if (conn2 == null || conn2.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            String updateProt = "UPDATE `" + dbName + "`.`experiment_protein_table` SET  `other_protein(s)`=? ,`protein_inference_class`=? ,`sequence_coverage(%)` =?,`observable_coverage(%)`=? ,`confident_ptm_sites`=? ,`number_confident` =?,`other_ptm_sites`=? ,`number_other`=? ,`number_validated_peptides` =?,`number_validated_spectra`=? ,`em_pai` =?,`nsaf` =?,`mw_(kDa)`=? ,`score` =?,`confidence`=? ,`starred`=? , `non_enzymatic_peptides`=? WHERE  `exp_id`=? AND `prot_accession`=?";
+//            updateProtStat = conn2.prepareStatement(updateProt, Statement.RETURN_GENERATED_KEYS);
+//            updateProtStat.setString(1, pb.getOtherProteins().toUpperCase());
+//            updateProtStat.setString(2, pb.getProteinInferenceClass().toUpperCase());
+//            updateProtStat.setDouble(3, pb.getSequenceCoverage());
+//            updateProtStat.setDouble(4, pb.getObservableCoverage());
+//            updateProtStat.setString(5, pb.getConfidentPtmSites().toUpperCase());// `confidence` ,`starred`
+//            updateProtStat.setString(6, pb.getNumberConfident().toString());
+//            updateProtStat.setString(7, pb.getOtherPtmSites().toUpperCase());
+//            updateProtStat.setString(8, pb.getNumberOfOther().toUpperCase());
+//            updateProtStat.setInt(9, pb.getNumberValidatedPeptides());
+//            updateProtStat.setInt(10, pb.getNumberValidatedSpectra());
+//            updateProtStat.setDouble(11, pb.getEmPai());
+//            updateProtStat.setDouble(12, pb.getNsaf());
+//            updateProtStat.setDouble(13, pb.getMw_kDa());
+//            updateProtStat.setDouble(14, pb.getScore());
+//            updateProtStat.setDouble(15, pb.getConfidence());
+//            updateProtStat.setString(16, String.valueOf(pb.isStarred()));
+//            updateProtStat.setString(17, (String.valueOf(pb.isNonEnzymaticPeptides()).toUpperCase()));
+//            updateProtStat.setInt(18, expId);
+//            updateProtStat.setString(19, pb.getAccession().toUpperCase());
+//            int test = updateProtStat.executeUpdate();
+////            test = this.updateProt(conn2, driver, url, dbName, userName, password, pb.getAccession(), pb.getDescription());
+//
+//            if (test > 0) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//
+//    }
+//    public synchronized boolean updatePeptide(Connection conn2, PeptideBean pepb) {
+//        try {
+//            if (conn2 == null || conn2.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            String updatePeptideNumber = "UPDATE  `proteins_peptides_table` SET `protein`=? ,`other_protein(s)`=? ,`peptide_protein(s)`=? ,`other_protein_description(s)`=? ,`peptide_proteins_description(s)`=? ,`aa_before`=? ,`sequence`=? ,"
+//                    + "`aa_after`=? ,`peptide_start`=? ,`peptide_end`=? ,`variable_modification`=? ,`location_confidence`=? ,`precursor_charge(s)`=? ,`number_of_validated_spectra`=? ,`score`=? ,`confidence`=?,	,`protein_inference`=?,`sequence_tagged`=?,`enzymatic`=?,`validated`=?,`starred`=? 	`glycopattern_position(s)`=?,`deamidation_and_glycopattern`=?  WHERE `sequence` = ?;";
+//            PreparedStatement insertPeptideStat = conn2.prepareStatement(updatePeptideNumber);
+//            insertPeptideStat.setString(1, pepb.getProtein().toUpperCase());
+//            insertPeptideStat.setString(2, pepb.getOtherProteins().toUpperCase());
+//            insertPeptideStat.setString(3, pepb.getPeptideProteins().toUpperCase());
+//            insertPeptideStat.setString(4, pepb.getOtherProteinDescriptions().toUpperCase());
+//            insertPeptideStat.setString(5, pepb.getPeptideProteinsDescriptions().toUpperCase());
+//            insertPeptideStat.setString(6, pepb.getAaBefore().toUpperCase());
+//            insertPeptideStat.setString(7, pepb.getSequence().toUpperCase());
+//            insertPeptideStat.setString(8, pepb.getAaAfter().toUpperCase());
+//            insertPeptideStat.setString(9, pepb.getPeptideStart().toUpperCase());
+//            insertPeptideStat.setString(10, pepb.getPeptideEnd().toUpperCase());
+//            insertPeptideStat.setString(11, pepb.getVariableModification().toUpperCase());
+//            insertPeptideStat.setString(12, pepb.getLocationConfidence().toUpperCase());
+//            insertPeptideStat.setString(13, pepb.getPrecursorCharges().toUpperCase());
+//            insertPeptideStat.setInt(14, pepb.getNumberOfValidatedSpectra());
+//            insertPeptideStat.setDouble(15, pepb.getScore());
+//            insertPeptideStat.setDouble(16, pepb.getConfidence());
+//
+//            insertPeptideStat.setString(17, pepb.getProteinInference().toUpperCase());
+//            insertPeptideStat.setString(18, pepb.getSequenceTagged().toUpperCase());
+//            insertPeptideStat.setString(19, String.valueOf(pepb.isEnzymatic()).toUpperCase());
+//            insertPeptideStat.setDouble(20, pepb.getValidated());
+//            insertPeptideStat.setString(21, String.valueOf(pepb.isStarred()).toUpperCase());
+//            insertPeptideStat.setString(22, pepb.getGlycopatternPositions());
+//
+//            if (pepb.isDeamidationAndGlycopattern()) {
+//                insertPeptideStat.setString(23, String.valueOf(pepb.isDeamidationAndGlycopattern()).toUpperCase());
+//            } else {
+//                insertPeptideStat.setString(23, "");
+//            }
+//
+//
+//
+//            insertPeptideStat.setString(24, pepb.getSequence());
+//            insertPeptideStat.executeUpdate();
+//            insertPeptideStat.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//        return true;
+//
+//    }
+//    private synchronized ProteinBean getProtein(String accession, int expId) {
+//        try {
+//            PreparedStatement selectProtExpStat = null;
+//            String selectProtExp = "SELECT * FROM `experiment_protein_table` WHERE `exp_id`=? AND `prot_accession`=?;";
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            selectProtExpStat = conn.prepareStatement(selectProtExp);
+//            selectProtExpStat.setInt(1, expId);
+//            selectProtExpStat.setString(2, accession);
+//            ResultSet rs = selectProtExpStat.executeQuery();
+//            ProteinBean temPb = null;
+//            while (rs.next()) {
+//                temPb = new ProteinBean();
+//                temPb.setAccession(accession);
+//                temPb.setOtherProteins(rs.getString("other_protein(s)"));
+//                temPb.setProteinInferenceClass(rs.getString("protein_inference_class"));
+//                temPb.setSequenceCoverage(rs.getDouble("sequence_coverage(%)"));
+//                temPb.setObservableCoverage(rs.getDouble("observable_coverage(%)"));
+//                temPb.setConfidentPtmSites(rs.getString("confident_ptm_sites"));
+//                temPb.setNumberConfident(rs.getString("number_confident"));
+//                temPb.setOtherPtmSites(rs.getString("other_ptm_sites"));
+//                temPb.setNumberOfOther(rs.getString("number_other"));
+//                temPb.setNumberValidatedPeptides(rs.getInt("number_validated_peptides"));
+//                temPb.setNumberValidatedSpectra(rs.getInt("number_validated_spectra"));
+//                temPb.setEmPai(rs.getDouble("em_pai"));
+//                temPb.setNsaf(rs.getDouble("nsaf"));
+//                temPb.setMw_kDa(rs.getDouble("mw_(kDa)"));
+//                temPb.setScore(rs.getDouble("score"));
+//                temPb.setConfidence(rs.getDouble("confidence"));
+//                temPb.setStarred(Boolean.valueOf(rs.getString("starred")));
+//                temPb.setNonEnzymaticPeptides(Boolean.valueOf(rs.getString("non_enzymatic_peptides").toUpperCase()));
+//
+//                temPb.setSpectrumFractionSpread_lower_range_kDa(rs.getString("spectrum_fraction_spread_lower_range_kDa"));
+//                temPb.setSpectrumFractionSpread_upper_range_kDa(rs.getString("spectrum_fraction_spread_upper_range_kDa"));
+//                temPb.setPeptideFractionSpread_lower_range_kDa(rs.getString("peptide_fraction_spread_lower_range_kDa"));
+//                temPb.setPeptideFractionSpread_upper_range_kDa(rs.getString("peptide_fraction_spread_upper_range_kDa"));
+//
+//                temPb.setGeneName(rs.getString("gene_name"));
+//                temPb.setChromosomeNumber(rs.getString("chromosome_number"));
+//                temPb.setValidated(Boolean.valueOf(rs.getString("valid")));
+//            }
+//            rs.close();
+//            if (temPb == null) {
+//                return null;
+//            }
+//            PreparedStatement selectProtStat = null;
+//            String selectProt = "SELECT   `description` FROM `proteins_table` WHERE `accession`= ? ";
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            selectProtStat = conn.prepareStatement(selectProt);
+//            selectProtStat.setString(1, accession.toUpperCase());
+//            rs = selectProtStat.executeQuery();
+//            while (rs.next()) {
+//                temPb.setDescription(rs.getString("description"));
+//            }
+//            rs.close();
+//            return temPb;
+//        } catch (Exception e) {
+//            System.err.println(e.getLocalizedMessage());
+//        }
+//        return null;
+//    }
+    ///new v-2
+//    public synchronized List<ProteinBean> searchOtherProteins(String accession, int expId, List<ProteinBean> protList) {
+//        PreparedStatement selectProStat = null;
+//        String selectPro = "SELECT `prot_accession` FROM `experiment_protein_table` Where `exp_id`=? AND `other_protein(s)` LIKE (?);";
+//
+//        try {
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            selectProStat = conn.prepareStatement(selectPro);
+//            selectProStat.setString(2, "%" + accession + "%");
+//            selectProStat.setInt(1, expId);
+//            ResultSet rs = selectProStat.executeQuery();
+//            List<String> accsList = new ArrayList<String>();
+//            while (rs.next()) {
+//                accsList.add(rs.getString("prot_accession"));
+//
+//            }
+//            for (String acc : accsList) {
+//                ProteinBean pb = this.getProtein(acc, expId);
+//                protList.add(pb);
+//
+//            }
+//            rs.close();
+//            return protList;
+//        } catch (Exception e) {
+//            System.err.println(e.getLocalizedMessage());
+////            e.printStackTrace();
+//            return null;
+//        }
+//    }
+//    public synchronized boolean checkAndUpdateProt(ExperimentBean exp) {
+//        boolean test = false;
+//        try {
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            for (ProteinBean pb : exp.getProteinList().values()) {
+//                test = checkProteinExisting(exp.getExpId(), pb.getAccession());
+//                if (test)//existing protein
+//                {
+//                    test = updateProtein(conn, pb, exp.getExpId());
+//                } else {
+//                    test = addProtine(conn, pb, exp.getExpId());
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            test = false;
+//        }
+//        return test;
+//    }
+//    public synchronized boolean updatePeptideFile(ExperimentBean tempExp, ExperimentBean exp) {
+//        boolean test = false;
+//        try {
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            this.removePepFile(conn, exp);
+//            if (tempExp.getPeptidesInclude() == 0)//we need to update peptide file number to 1 
+//            {
+//                tempExp.setPeptidesInclude(1);
+//                tempExp.setPeptidesNumber(exp.getPeptidesNumber());
+//                test = updateExperiment(conn, tempExp);
+//                for (PeptideBean pepb : exp.getPeptideList().values()) {
+//                    insertPeptide(conn, -1, pepb, tempExp.getExpId());
+//                }
+//            } else {
+//
+//                tempExp.setPeptidesNumber(exp.getPeptidesNumber());
+//                test = updateExperiment(conn, tempExp);
+//                int counter = 0;
+//                for (PeptideBean pepb : exp.getPeptideList().values()) {
+//                    insertPeptide(conn, -1, pepb, tempExp.getExpId());
+//                    counter++;
+//                    if (counter == 10000) {
+//                        conn.close();
+//                        Thread.sleep(100);
+//                        Class.forName(driver).newInstance();
+//                        conn = DriverManager.getConnection(url + dbName, userName, password);
+//                        counter = 0;
+//                    }
+//                }
+//
+//
+//            }
+//
+//
+//        } catch (Exception e) {
+//            System.err.println(e.getLocalizedMessage());
+////            e.printStackTrace();
+//            test = false;
+//        }
+//        return test;
+//    }
+//    private boolean removePepFile(Connection conn2, ExperimentBean exp) {
+//        PreparedStatement getPepExpStat = null;//done
+//        PreparedStatement remPepStat = null;//done
+//        PreparedStatement remPepExpStat = null;//done
+//        PreparedStatement remPepProExpStat = null;
+//
+//        try {
+//            if (conn2 == null || conn2.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn2 = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            String remPep = "DELETE FROM `" + dbName + "`.`proteins_peptides_table`   WHERE  `peptide_id` =? ";
+//            String selectPepList = "SELECT `pep_id` FROM `experiment_peptides_table` where `exp_id` = ?";
+//
+//            getPepExpStat = conn2.prepareStatement(selectPepList);
+//            getPepExpStat.setInt(1, exp.getExpId());
+//            ResultSet rs = getPepExpStat.executeQuery();
+//            ArrayList<Integer> pepIdList = new ArrayList<Integer>();
+//            while (rs.next()) {
+//                int pep_id = rs.getInt("pep_id");
+//                pepIdList.add(pep_id);
+//
+//            }
+//            rs.close();
+//            for (int pepb : pepIdList) {
+//                remPepStat = conn2.prepareStatement(remPep);
+//                remPepStat.setInt(1, pepb);
+//                remPepStat.executeUpdate();
+//                remPepStat.clearParameters();
+//                remPepStat.close();
+//            }
+//
+//
+//            String removePep = "DELETE FROM `experiment_peptides_table`   WHERE `exp_id` = ? ;";
+//
+//            remPepExpStat = conn2.prepareStatement(removePep);
+//            remPepExpStat.setInt(1, exp.getExpId());
+//            remPepExpStat.executeUpdate();
+//            remPepExpStat.clearParameters();
+//            remPepExpStat.close();
+//
+//            String remPepProExp = "DELETE FROM `" + dbName + "`.`experiment_peptides_proteins_table`   WHERE  `exp_id` =? ";
+//            remPepProExpStat = conn2.prepareStatement(remPepProExp);
+//            remPepProExpStat.setInt(1, exp.getExpId());
+//            remPepProExpStat.executeUpdate();
+//            remPepProExpStat.clearParameters();
+//            remPepProExpStat.close();
+//
+//
+//
+//            return true;
+//        } catch (Exception e) {
+//            System.err.println(e.getLocalizedMessage());
+////            e.printStackTrace();
+//            return false;
+//        }
+//
+//    }
 }

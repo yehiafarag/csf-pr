@@ -100,7 +100,7 @@ public class ExperimentHandler implements Serializable {
             int x = 0;
             for (PeptideBean pb : peptidesList.values()) {
 
-                if (pb.getValidated() == 1) {
+                if (pb.getValidated() == 1.0) {
                     validatedPtidesList.put(x++, pb);
                 }
             }
@@ -125,6 +125,24 @@ public class ExperimentHandler implements Serializable {
 //        }
         return peptidesProtList;
     }
+    
+    
+
+    public Map<Integer, FractionBean> getProtFractionsList(int expId, Map<Integer, ExperimentBean> expList,String protKey) {
+        Map<Integer, FractionBean> fractionsList;
+        if (expList.containsKey(expId) && expList.get(expId).getFractionsList() != null && (!expList.get(expId).getFractionsList().isEmpty())) {
+            //check if exp updated if not
+            fractionsList = expList.get(expId).getFractionsList();
+            
+        } else {
+            fractionsList = em.getFractionsList(expId);
+        }
+
+        return fractionsList;
+
+    }
+
+   
 
     public Map<Integer, FractionBean> getFractionsList(int expId, Map<Integer, ExperimentBean> expList) {
         Map<Integer, FractionBean> fractionsList;

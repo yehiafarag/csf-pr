@@ -4,7 +4,7 @@
  */
 package probe.com.view.subview;
 
-import com.vaadin.server.ExternalResource;
+//import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
@@ -44,8 +44,9 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
     private void initBody() {
 
         expListStr = new TreeMap<Integer, String>();
-        if(expList == null)
-            expList= new HashMap<Integer, ExperimentBean>();
+        if (expList == null) {
+            expList = new HashMap<Integer, ExperimentBean>();
+        }
         for (int key2 : expList.keySet()) {
             ExperimentBean expB = expList.get(key2);
             expListStr.put(key2, "\t" + expB.getName());
@@ -74,10 +75,10 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         t.setWidth("100%");
         t1 = t.addTab(homeLayout, "Home", null);
         t2 = t.addTab(proteinsLayout, "Proteins", null);
-        t2.setDescription("Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. ");       
+        t2.setDescription("Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. ");
 //        ThemeResource icon = new ThemeResource("img/search25x25.png");
-        ExternalResource icon = new ExternalResource("http://www.akpress.org/skin/frontend/ak_amphib/default//images/search_icon.png");
-        t3 = t.addTab(l3, "Search", icon);        
+        // ThemeResource icon = new ThemeResource("img/search_icon.png");
+        t3 = t.addTab(l3, "Search");//, icon);        
         t3.setDescription("Search Proteins");
         t4 = t.addTab(l4, "Dataset Editor (Require Sign In)", null);
         t.addListener(this);
@@ -137,10 +138,11 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
     private Button getAdminIco() {
         Button b = new Button("(Admin Login)");
 //        b.setH)eight("50px");
-        b.setStyleName(Runo.BUTTON_LINK);        
+        b.setStyleName(Runo.BUTTON_LINK);
         b.setDescription("Dataset Editor (Require Sign In)");
-      //  b.setIcon(new ExternalResource("http://sphotos-c.ak.fbcdn.net/hphotos-ak-ash3/600305_124728624377405_1884648661_n.jpg"));
-        b.addListener(new Button.ClickListener() {            /**
+        //  b.setIcon(new ExternalResource("http://sphotos-c.ak.fbcdn.net/hphotos-ak-ash3/600305_124728624377405_1884648661_n.jpg"));
+        b.addListener(new Button.ClickListener() {
+            /**
              *
              */
             private static final long serialVersionUID = 1L;

@@ -8,13 +8,13 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.themes.Runo;
 import probe.com.control.ExperimentHandler;
 import probe.com.model.beans.ExperimentBean;
 import probe.com.view.subview.util.CustomExportBtnLayout;
+import probe.com.view.subview.util.Help;
 import probe.com.view.subview.util.ShowLabel;
 
 @SuppressWarnings("serial")
@@ -23,6 +23,7 @@ public class ExperimentDetails extends VerticalLayout implements Serializable, c
     private VerticalLayout body;
     private Label ExpLable;
     private HorizontalLayout header;
+    private Help help = new Help();
      
     private ShowLabel show;
 
@@ -176,13 +177,16 @@ public class ExperimentDetails extends VerticalLayout implements Serializable, c
         ExpLable2_9.setContentMode(Label.CONTENT_XHTML);
         ExpLable2_9.setHeight("45px");
         
-        PopupView popup = new PopupView("(Export All)", (new CustomExportBtnLayout(expHandler,"allPep",exp.getExpId(),exp.getName(),null,null,null,null,0,null,null,null)) );
-	popup.setHideOnMouseOut(false);
-       
         
         
+//        PopupView popup = new PopupView("(Export All)", (new CustomExportBtnLayout(expHandler,"allPep",exp.getExpId(),exp.getName(),null,null,null,null,0,null,null,null)) );
+//	popup.setHideOnMouseOut(false);
+        
+       HorizontalLayout expIcon = help.getExpIcon(new CustomExportBtnLayout(expHandler, "allPep", exp.getExpId(), exp.getName(), null, null, null, null, 0, null, null, null), "Export All Peptides for " + exp.getName(), "");
+
+
         pepHlo.addComponent(ExpLable2_9);
-       pepHlo.addComponent(popup);
+        pepHlo.addComponent(expIcon);
 
 
 
@@ -195,7 +199,7 @@ public class ExperimentDetails extends VerticalLayout implements Serializable, c
         l2.addComponent(ExpLable1_3);
         l2.addComponent(pepHlo);
         //l2.addComponent(popup);
-        pepHlo.setComponentAlignment(popup, Alignment.MIDDLE_CENTER);
+        pepHlo.setComponentAlignment(expIcon, Alignment.MIDDLE_CENTER);
         pepHlo.setSpacing(true);
 
         VerticalLayout l3 = new VerticalLayout();

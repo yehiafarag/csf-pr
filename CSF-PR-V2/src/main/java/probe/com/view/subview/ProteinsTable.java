@@ -30,6 +30,7 @@ public class ProteinsTable extends Table implements Serializable {
     private Map<String, Integer> tableSearchMap = new HashMap<String, Integer>();
     private Map<String, Integer> tableSearchMapIndex = new HashMap<String, Integer>();
 
+    private int firstIndex;
     public ProteinsTable(Map<String, ProteinBean> proteinsList, int fractionNumber) {
 
         Map<String,Integer> rankMap = initRank(proteinsList);
@@ -187,12 +188,17 @@ public class ProteinsTable extends Table implements Serializable {
         }
         setColumnWidth("Chr", 35);
         setColumnWidth("Index", 35);
+        setColumnWidth("Validated", 35);
         setColumnWidth(Protein_Inference, 35);
+        setColumnWidth(Confidence, 35);
+        
         TreeMap<Integer, String> sortMap = new TreeMap<Integer, String>();
         int indexing = 1;
         for (Object id : this.getItemIds()) {
             Item item = this.getItem(id);
             item.getItemProperty("Index").setValue(indexing);
+            if(indexing == 1)
+                firstIndex = (Integer)id;
             sortMap.put(indexing, item.getItemProperty("Accession").getValue().toString().toUpperCase().trim() + "," + item.getItemProperty("Other Protein(s)").getValue().toString().toUpperCase().trim() + "," + item.getItemProperty("Description").getValue().toString().toUpperCase().trim() + "," + (Integer) id);
             indexing++;
         }
@@ -290,5 +296,9 @@ public class ProteinsTable extends Table implements Serializable {
          
         return rankMap;
     
+    }
+
+    public int getFirstIndex() {
+        return firstIndex;
     }
 }

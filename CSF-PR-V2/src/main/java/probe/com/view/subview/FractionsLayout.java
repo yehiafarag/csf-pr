@@ -94,24 +94,24 @@ public class FractionsLayout extends VerticalLayout implements Serializable {
         lowerLayout.setWidth("100%");
         lowerLayout.setHeight("25px");
         lowerLayout.setMargin((new MarginInfo(false, true, false, true)));
-        lowerLayout.setSpacing(true);
+        lowerLayout.setSpacing(false);
 
-        Panel toolbar = new Panel(lowerLayout);
-        toolbar.setStyleName(Reindeer.PANEL_LIGHT);
-        toolbar.setHeight("35px");
-        toolbar.setWidth("100%");
-        mainLayout.addComponent(toolbar);
-        mainLayout.setComponentAlignment(toolbar, Alignment.TOP_CENTER);
+//        Panel toolbar = new Panel(lowerLayout);
+//        toolbar.setStyleName(Reindeer.PANEL_LIGHT);
+////       toolbar.setHeight("35px");
+//        toolbar.setWidth("100%");
+        mainLayout.addComponent(lowerLayout);
+        mainLayout.setComponentAlignment(lowerLayout, Alignment.TOP_CENTER);
 
-        exportFracLayout.setWidth("100px");
+        exportFracLayout.setWidth("200px");
         lowerLayout.addComponent(exportFracLayout);
         lowerLayout.setComponentAlignment(exportFracLayout, Alignment.MIDDLE_RIGHT);
         lowerLayout.setExpandRatio(exportFracLayout, 0.1f);
         final Table fractTable = getFractionTable(proteinFractionAvgList);
         fractTable.setVisible(false);
         this.addComponent(fractTable);
-        expBtnFracTable = new PopupView("Export Fractions", new CustomExportBtnLayout(null, "fractions", 0, expName, accession, accession, null, null, 0, null, fractTable, null));
-
+        expBtnFracTable = new PopupView("Export CSF-PR Fractions ( "+accession+" )", new CustomExportBtnLayout(null, "fractions", 0, expName, accession, accession, null, null, 0, null, fractTable, null));
+       // expBtnFracTable = new Help().getExpIcon(new CustomExportBtnLayout(null, "fractions", 0, expName, accession, accession, null, null, 0, null, fractTable, null), "Export CSF-PR / "+expName+" / Fractions", "Export CSF-PR / "+expName+" / Fractions");
         exportFracLayout.addComponent(expBtnFracTable);
         exportFracLayout.setMargin(new MarginInfo(false, true, false, false));
         exportFracLayout.setComponentAlignment(expBtnFracTable, Alignment.BOTTOM_CENTER);
