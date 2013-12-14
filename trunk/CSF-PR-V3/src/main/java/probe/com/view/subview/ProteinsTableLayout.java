@@ -151,10 +151,10 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
         
         HorizontalLayout lowerRightLayout = new HorizontalLayout();
         lowerRightLayout.setSpacing(true);
-        lowerRightLayout.setWidth("450px");
+        lowerRightLayout.setWidth("550px");
         lowerLayout.addComponent(lowerRightLayout);
         lowerLayout.setComponentAlignment(lowerRightLayout, Alignment.BOTTOM_RIGHT);
-        //lowerLayout.setExpandRatio(lowerRightLayout, 0.8f);       
+        lowerLayout.setExpandRatio(lowerRightLayout, 0.7f);       
         
         
         final OptionGroup selectionType = new OptionGroup();
@@ -172,12 +172,12 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
         lowerLeftLayout.setComponentAlignment(trs1, Alignment.BOTTOM_LEFT);
         
         
-        exportAllPepLayout.setWidth("150px");//("200px");
+        exportAllPepLayout.setWidth("250px");//("200px");
         lowerRightLayout.addComponent(exportAllPepLayout);
         lowerRightLayout.setComponentAlignment(exportAllPepLayout, Alignment.BOTTOM_RIGHT);
         
         
-        exportProtLayout.setWidth("150px");//("100px");
+        exportProtLayout.setWidth("250px");//("100px");
         lowerRightLayout.addComponent(exportProtLayout);
         lowerRightLayout.setComponentAlignment(exportProtLayout, Alignment.BOTTOM_RIGHT);
         
