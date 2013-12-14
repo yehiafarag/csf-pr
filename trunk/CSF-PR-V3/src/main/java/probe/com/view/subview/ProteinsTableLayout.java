@@ -177,7 +177,7 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
         lowerRightLayout.setComponentAlignment(exportAllPepLayout, Alignment.BOTTOM_RIGHT);
         
         
-        exportProtLayout.setWidth("250px");//("100px");
+        exportProtLayout.setWidth("230px");//("100px");
         lowerRightLayout.addComponent(exportProtLayout);
         lowerRightLayout.setComponentAlignment(exportProtLayout, Alignment.BOTTOM_RIGHT);
         
