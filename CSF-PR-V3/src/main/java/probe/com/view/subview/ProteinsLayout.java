@@ -228,10 +228,10 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                             CustomExportBtnLayout ce1 = new CustomExportBtnLayout(expHandler, "allProtPep", exp.getExpId(), exp.getName(), accession, otherAccession, expList, null, 0, null, null, null);
                             CustomExportBtnLayout ce2 = (new CustomExportBtnLayout(expHandler, "prots", exp.getExpId(), exp.getName(), accession, otherAccession, expList, proteinsList, exp.getFractionsNumber(), null, null, null));
 
-                            PopupView p1 = new PopupView("Export CSF-PR Peptides for ("+accession+" )", ce1);
-                            p1.setDescription("Export CSF-PR Peptides for ( "+accession+" ) for All Available Datasets");
-                            PopupView p2 = new PopupView("Export CSF-PR Proteins", ce2);
-                            p2.setDescription("Export CSF-PR Proteins for ( "+ exp.getName()+" )");
+                            PopupView p1 = new PopupView("Export Peptides from All Datasets for ( "+accession+" )", ce1);
+                            p1.setDescription("Export CSF-PR Peptides for ( "+accession+" ) from All Datasets");
+                            PopupView p2 = new PopupView("Export All Proteins from Selected Dataset", ce2);
+                            p2.setDescription("Export All Proteins from ( "+ exp.getName()+" ) Dataset");
                             
                            //   HorizontalLayout p1 = help.getExpIcon(ce1,"Export CSF-PR Peptides for ( "+accession+" ) for all datasets.","CSF-PR Peptides for ( "+accession+" )");
                            //   HorizontalLayout p2 = help.getExpIcon(ce2,"Export CSF-PR Proteins for ( "+ exp.getName()+" )","Export CSF-PR Proteins for ( "+ exp.getName()+" )" );
@@ -262,8 +262,9 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                                     peptideLayout.setHeight("" + protTableLayout.getHeight());
                                     peptideLayout.addComponent(cpeptideLayout);
                                     CustomExportBtnLayout ce3 = new CustomExportBtnLayout(expHandler, "protPep", exp.getExpId(), exp.getName(), accession, otherAccession, expList, null, 0, pepProtList, null, null);
-                                    PopupView p3 = new PopupView("Export CSF-PR (" + accession + ") Peptides ", ce3);
-                                    cpeptideLayout.setExpBtnPepTable(p3,accession,exp.getName());
+                                    PopupView p3 = new PopupView("Export Peptides from Selected Dataset for ( " + accession + " )", ce3);
+                                    p3.setDescription("Export Peptides from ( "+exp.getName()+" ) Dataset for ( " + accession + " )");
+                                    cpeptideLayout.setExpBtnPepTable(p3);
 
 
                                 }

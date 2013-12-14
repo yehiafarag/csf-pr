@@ -409,13 +409,15 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                                 pepTableLayout.addComponent(cpeptideLayout);
                                 CustomExportBtnLayout ce3 = new CustomExportBtnLayout(handler, "protPep", exp.getExpId(), exp.getName(), accession, otherAccession, expList, null, 0, pepProtList, null, null);
                                 PopupView p3 = new PopupView("Export Peptides from Selected Dataset for (" + accession + " )", ce3);
-                                cpeptideLayout.setExpBtnPepTable(p3,accession,exp.getName());
+
+                                p3.setDescription("Export Peptides from ( " + exp.getName() + " ) Dataset for ( " + accession + " )");
+                                cpeptideLayout.setExpBtnPepTable(p3);
 
 
                             }
                             fractionsList = handler.getFractionsList(exp.getExpId(), expList);
-                            
-                            
+
+
                             List<StandardProteinBean> standardProtPlotList = handler.getStandardProtPlotList(exp.getExpId());
                             if (exp == null || exp.getReady() != 2 || standardProtPlotList == null || standardProtPlotList.isEmpty() || fractionsList == null || fractionsList.isEmpty()) {
                                 if (searcheResultsTableLayout.getCurrentTable() != null) {

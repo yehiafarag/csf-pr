@@ -95,7 +95,6 @@ public class FractionPlotLayout extends VerticalLayout implements Serializable {
 
         }
         for (StandardProteinBean spb : standProtList) {
-
             if ((spb.getMW_kDa() == closeLowe.getMW_kDa() && spb.getName().equalsIgnoreCase(closeLowe.getName())) || (spb.getMW_kDa() == closeUpper.getMW_kDa() && spb.getName().equalsIgnoreCase(closeUpper.getName()))) {
                spb.setTheoretical(true);
                 redList.add(spb);

@@ -220,17 +220,17 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
         this.trs = trs;
     }
 
-    public void setExpBtnPepTable(PopupView expBtnPepPepTable,String accession,String expName) {
+    public void setExpBtnPepTable(PopupView expBtnPepPepTable) {
         this.expBtnPepPepTable = expBtnPepPepTable;
-        updateExportLayouts(accession,expName);
+        updateExportLayouts();
 
     }
 
-    private void updateExportLayouts(String accession,String expName) {
+    private void updateExportLayouts() {
         exportPepLayout.removeAllComponents();
         expBtnPepPepTable.setHideOnMouseOut(false);
         exportPepLayout.addComponent(expBtnPepPepTable);
-        expBtnPepPepTable.setDescription("Export CSF-PR Peptides for ( "+accession+" ) from "+expName);
+      //  expBtnPepPepTable.setDescription("Export CSF-PR Peptides for ( "+accession+" ) from "+expName);
         exportPepLayout.setComponentAlignment(expBtnPepPepTable, Alignment.MIDDLE_LEFT);
 
     }
