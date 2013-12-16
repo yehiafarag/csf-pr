@@ -75,11 +75,11 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         t.setWidth("100%");
         t1 = t.addTab(homeLayout, "Home", null);
         t2 = t.addTab(proteinsLayout, "Proteins", null);
-        t2.setDescription("Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. ");
+       // t2.setDescription("Select an experiment to view all proteins identified in the given experiment. Select a protein to see all peptides identified for the protein and, if the experiment was based on SDS-PAGE, the protein’s distribution in the gel is displayed. ");
 //        ThemeResource icon = new ThemeResource("img/search25x25.png");
         // ThemeResource icon = new ThemeResource("img/search_icon.png");
         t3 = t.addTab(l3, "Search");//, icon);        
-        t3.setDescription("Search Proteins");
+     //   t3.setDescription("Search Proteins");
         t4 = t.addTab(l4, "Dataset Editor (Require Sign In)", null);
         t.addListener(this);
         t.setSelectedTab(t1);
