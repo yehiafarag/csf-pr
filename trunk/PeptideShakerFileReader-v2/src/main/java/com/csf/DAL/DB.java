@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Yehia Farag
@@ -20,11 +22,11 @@ public class DB implements Serializable {
     private Connection conn_ii = null;
     private Connection conn = null;
     private Connection conn_i = null;
-    private String url;
-    private String dbName;
-    private String driver;
-    private String userName;
-    private String password;
+    private final String url;
+    private final String dbName;
+    private final String driver;
+    private final String userName;
+    private final String password;
 
     public DB(String url, String dbName, String driver, String userName, String password) {
         this.url = url;
@@ -48,6 +50,12 @@ public class DB implements Serializable {
                 conn_i.close();
             } catch (SQLException e) {
                 System.err.println(e.getLocalizedMessage());
+            } catch (InstantiationException ex) {
+                Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (conn_ii == null || conn_ii.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -166,9 +174,9 @@ public class DB implements Serializable {
                 st.executeUpdate(proteins_peptides_table);
                 
                 
-                //TEMPRARLY ADD WILL REMOVE NEXT TIME 
-                String alterPeptideTable = "ALTER TABLE  `proteins_peptides_table` ADD  `likelyNotGlycosite` VARCHAR( 5 ) NOT NULL DEFAULT  'FALSE';";
-                st.executeUpdate(alterPeptideTable);
+//                //TEMPRARLY ADD WILL REMOVE NEXT TIME 
+//                String alterPeptideTable = "ALTER TABLE  `proteins_peptides_table` ADD  `likelyNotGlycosite` VARCHAR( 5 ) NOT NULL DEFAULT  'FALSE';";
+//                st.executeUpdate(alterPeptideTable);
                 //CREATE TABLE fractions_table
                 String fractions_table = "CREATE TABLE IF NOT EXISTS `fractions_table` (  `fraction_id` int(11) NOT NULL,`prot_accession` varchar(500) NOT NULL,"
                         + "`number_peptides` int(11) NOT NULL default '0',  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `number_spectra` int(11) NOT NULL default '0',`average_ precursor_intensity` double default NULL," + "KEY `prot_accession` (`prot_accession`), KEY `fraction_id` (`fraction_id`),	FOREIGN KEY (`prot_accession`) REFERENCES proteins_table(`accession`) ON DELETE CASCADE,"
@@ -192,21 +200,26 @@ public class DB implements Serializable {
             } catch (SQLException s) {
                 throw s;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return false;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return true;
     }
 
     public int setupExperiment(ExperimentBean exp) {
-        PreparedStatement insertExpStat = null;
         int id = 0;
         String insertExp = "INSERT INTO  `" + dbName + "`.`experiments_table` (`name`,`ready` ,`uploaded_by`,`species`,`sample_type`,`sample_processing`,`instrument_type`,`frag_mode`,`proteins_number` ,`email` ,`pblication_link`,`description`,`fraction_range`,`peptide_file`,`fractions_number`,`peptides_number`,`exp_type`,`valid_prot`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;";
         try {
             Class.forName(driver).newInstance();
             conn = DriverManager.getConnection(url + dbName, userName, password);
-            insertExpStat = conn.prepareStatement(insertExp, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement insertExpStat = conn.prepareStatement(insertExp, Statement.RETURN_GENERATED_KEYS);
             insertExpStat.setString(1, exp.getName().toUpperCase());
             insertExpStat.setInt(2, 2);
             insertExpStat.setString(3, exp.getUploadedByName().toUpperCase());
@@ -238,14 +251,20 @@ public class DB implements Serializable {
             insertExpStat.close();
             rs.close();
             conn.close();
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getLocalizedMessage());
+        } catch (InstantiationException e) {
+            System.out.println(e.getLocalizedMessage());
+        } catch (IllegalAccessException e) {
+            System.out.println(e.getLocalizedMessage());
+        } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
         return id;
     }
 
     public synchronized int insertProteinExper(int expId, ProteinBean pb, String key) {
-        int test = -1;
+        
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -287,14 +306,24 @@ public class DB implements Serializable {
             insertProtStat.setString(23, (pb.isValidated() + "").toUpperCase());
             insertProtStat.setString(24, pb.getDescription().toUpperCase());
 
-            test = insertProtStat.executeUpdate();
+            int test = insertProtStat.executeUpdate();
             insertProtStat.close();
-        } catch (Exception e) {
+            return test;
+        } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
             return -1;
+        } catch (ClassNotFoundException ex) {
+            System.out.println(ex.getLocalizedMessage());
+            return -1;
         }
-
-        return test;
+         catch (InstantiationException ex) {
+            System.out.println(ex.getLocalizedMessage());
+            return -1;
+        }
+         catch (IllegalAccessException ex) {
+            System.out.println(ex.getLocalizedMessage());
+            return -1;
+        }
     }
 
     public synchronized boolean updatePeptideFile(ExperimentBean exp) {
@@ -308,26 +337,40 @@ public class DB implements Serializable {
                 if (pepb.getDecoy() == 1) {
                     continue;
                 }
-                insertPeptide(-1, pepb, exp.getExpId());
+                insertPeptide(-1, pepb, exp.getExpId(),conn);
                 counter++;
-                if (counter == 10000) {
-                    conn.close();
+                if (counter == 500) {
+                    conn.close();     
+                    System.gc();               
                     Thread.sleep(100);
                     Class.forName(driver).newInstance();
                     conn = DriverManager.getConnection(url + dbName, userName, password);
                     counter = 0;
+                   
                 }
             }
 
 
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getLocalizedMessage());
+            return false;
+        } catch (IllegalAccessException e) {
+            System.out.println(e.getLocalizedMessage());
+            return false;
+        } catch (InstantiationException e) {
+            System.out.println(e.getLocalizedMessage());
+            return false;
+        } catch (InterruptedException e) {
+            System.out.println(e.getLocalizedMessage());
+            return false;
+        } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
             return false;
         }
         return true;
     }
 
-    public synchronized int insertPeptide(int pepId, PeptideBean pepb, int expId) {
+    public synchronized int insertPeptide(int pepId, PeptideBean pepb, int expId,Connection conn) {
         String insertPeptide = "INSERT INTO  `" + dbName + "`.`proteins_peptides_table` (`protein` ,`other_protein(s)` ,`peptide_protein(s)` ,`other_protein_description(s)` ,`peptide_proteins_description(s)` ,`aa_before` ,`sequence` ,"
                 + "`aa_after` ,`peptide_start` ,`peptide_end` ,`variable_modification` ,`location_confidence` ,`precursor_charge(s)` ,`number_of_validated_spectra` ,`score` ,`confidence` ,`peptide_id`,`fixed_modification`,`protein_inference`,`sequence_tagged`,`enzymatic`,`validated`,`starred`,`glycopattern_position(s)`,`deamidation_and_glycopattern`,`likelyNotGlycosite`,`exp_id` )VALUES ("
                 + "?,?,?,?,?,?,?,?,?,?,? , ? , ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
@@ -347,14 +390,23 @@ public class DB implements Serializable {
                     pepId = rs.getInt(1);
                 }
                 rs.close();
+                insertPeptExpStat.clearParameters();
+                insertPeptExpStat.close();
 
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 System.out.println(e.getLocalizedMessage());
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
         int test = -1;
         PreparedStatement insertPeptideStat = null;
+        String pepKey = ",";
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -405,7 +457,8 @@ public class DB implements Serializable {
 
             insertPeptideStat.clearParameters();
             insertPeptideStat.close();
-            String pepKey = ",";
+           
+            
             if (!pepb.getProtein().equalsIgnoreCase("shared peptide")) {
                 pepKey = pepKey + pepb.getProtein().toUpperCase();
             }
@@ -422,20 +475,27 @@ public class DB implements Serializable {
             if (!pepKey.endsWith(",")) {
                 pepKey = pepKey + ",";
             }
-            insertExpProtPept(expId, pepId, pepKey);
-        } catch (Exception e) {
+           
+        } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
             try {
                 insertPeptideStat.close();
             } catch (SQLException e1) {
                 System.out.println(e1.getLocalizedMessage());
             }
-        }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        insertExpProtPept(expId, pepId, pepKey,conn);
 
         return test;
     }
 
-    public int insertExpProtPept(int expId, int pepId, String pepKey) {
+    public int insertExpProtPept(int expId, int pepId, String pepKey,Connection conn) {
         int test = -1;
 
         try {
@@ -453,7 +513,7 @@ public class DB implements Serializable {
             test = insertExpProtPeptQStat.executeUpdate();
             insertExpProtPeptQStat.close();
 
-            conn.close();
+//            conn.close();
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
         }
@@ -468,7 +528,7 @@ public class DB implements Serializable {
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
             String insertFractExp = "INSERT INTO  `" + dbName + "`.`experiment_fractions_table` (`exp_id`,`min_range` ,`max_range`,`index`) VALUES (?,?,?,?) ;";
-            PreparedStatement insertFractExpStat = conn.prepareStatement(insertFractExp, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement insertFractExpStat ;//conn.prepareStatement(insertFractExp, Statement.RETURN_GENERATED_KEYS);
             int fractId = 0;
 
             for (FractionBean fb : exp.getFractionsList().values()) {
@@ -487,9 +547,15 @@ public class DB implements Serializable {
                     this.insertProteinFract(fractId, pb);
                 }
             }
-        } catch (Exception exc) {
+        } catch (SQLException exc) {
             System.out.println(exc.getLocalizedMessage());
             return false;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return true;
     }
@@ -510,7 +576,16 @@ public class DB implements Serializable {
             insertProtFracStat.setDouble(5, fpb.getAveragePrecursorIntensityPerFraction());
             test = insertProtFracStat.executeUpdate();
             insertProtFracStat.close();
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getLocalizedMessage());
+            return -1;
+        } catch (IllegalAccessException e) {
+            System.out.println(e.getLocalizedMessage());
+            return -1;
+        } catch (InstantiationException e) {
+            System.out.println(e.getLocalizedMessage());
+            return -1;
+        } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
             return -1;
         }
@@ -534,9 +609,15 @@ public class DB implements Serializable {
 
             selectNameStat.close();
             rs.close();
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             System.out.println(e.getLocalizedMessage());
             throw new SQLException();
+        } catch (IllegalAccessException e) {
+            System.out.println(e.getLocalizedMessage());
+        } catch (InstantiationException e) {
+            System.out.println(e.getLocalizedMessage());
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
         }
         return true;
     }
