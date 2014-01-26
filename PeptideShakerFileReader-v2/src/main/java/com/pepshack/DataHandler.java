@@ -6,9 +6,11 @@ package com.pepshack;
 
 import com.pepshack.util.FilesReader;
 import com.pepshack.util.beans.ExperimentBean;
+import com.pepshack.util.beans.FractionBean;
 import com.pepshack.util.beans.PeptideBean;
 import com.pepshack.util.beans.ProteinBean;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JLabel;
@@ -21,7 +23,7 @@ public class DataHandler {
 
     private UpdatedOutputGenerator exporter;
 
-    public ExperimentBean handelData(PSFileImporter importer, ExperimentBean exp, JLabel label) {
+    public ExperimentBean handelData(PSFileImporter importer, ExperimentBean exp, JLabel label,boolean handelFraction) {
         label.setText("Start Proteins processing...");
         exporter = new UpdatedOutputGenerator(importer, label);
         exp.setProteinList(this.getProteins());
@@ -36,10 +38,14 @@ public class DataHandler {
         } else {
             exp.setPeptidesInclude(1);
         }
+        if(handelFraction){
         label.setText("Start Fractions processing...");
         exp = this.getFractionList(exp);
-        if (exp.getFractionsList().isEmpty()) {//|| exp.getFractionsList().size() != 1) {
-            exp.setFractionsNumber(0);
+       //
+        }
+        if (exp.getFractionsList() == null || exp.getFractionsList().isEmpty()|| exp.getFractionsList().size() == 1) {
+            exp.setFractionsNumber(0); 
+            exp.setFractionsList(new HashMap<Integer, FractionBean>() );
         } else {
             exp.setFractionsNumber(exp.getFractionsList().size());
         }
@@ -70,8 +76,6 @@ public class DataHandler {
             }
         }
         
-        System.out.println("all pep number "+pepList.size());
-        System.out.println("v pep number "+number);
         return number;
     }
 

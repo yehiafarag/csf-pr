@@ -86,8 +86,8 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jTextField6.setToolTipText("Publication Link");
 
 
-        jTextField7.setText("Admin");
-        jTextField7.setToolTipText("Uploaded By");
+//        jTextField7.setText("Admin");
+//        jTextField7.setToolTipText("Uploaded By");
 
 
         jButton1.setText("Selecet CPS File");
@@ -129,7 +129,6 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jTextField2 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
-        jTextField7 = new javax.swing.JTextField();
         jTextField8 = new javax.swing.JTextField();
         jTextField9 = new javax.swing.JTextField();
         jTextField10 = new javax.swing.JTextField();
@@ -149,6 +148,8 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jSeparator2 = new javax.swing.JSeparator();
         jTextField14 = new javax.swing.JTextField();
         jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -211,7 +212,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
 
         jLabel7.setText("Frag Mode:");
 
-        jLabel8.setText("Uploaded By:");
+        jLabel8.setText("Process  Fractions:");
 
         jLabel9.setText("Email:");
 
@@ -226,8 +227,6 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jTextField5.setText("jTextField5");
 
         jTextField6.setText("jTextField6");
-
-        jTextField7.setText("jTextField7");
 
         jTextField8.setText("jTextField8");
         jTextField8.addActionListener(new java.awt.event.ActionListener() {
@@ -295,7 +294,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                     .addComponent(jButton5)
                     .addComponent(jButton6)
                     .addComponent(jButton4))
-                .addGap(0, 2, Short.MAX_VALUE))
+                .addGap(0, 16, Short.MAX_VALUE))
         );
 
         jLabel13.setText("jLabel13");
@@ -310,6 +309,15 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
+            }
+        });
+
+        jButton8.setBackground(new java.awt.Color(255, 255, 255));
+        jButton8.setText("jButton8");
+
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
             }
         });
 
@@ -373,18 +381,23 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                         .addGap(37, 37, 37)
                         .addComponent(jLabel2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addComponent(jTextField10, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jCheckBox1))
                 .addGap(22, 22, 22))
             .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(223, 223, 223)
+                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -397,7 +410,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14)
                     .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -421,8 +434,8 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8))
+                            .addComponent(jLabel8)
+                            .addComponent(jCheckBox1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -467,7 +480,9 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(64, 64, 64))
+                .addGap(1, 1, 1)
+                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -631,6 +646,10 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         // TODO add your handling code here:
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -675,6 +694,8 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -708,7 +729,6 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
     // End of variables declaration//GEN-END:variables
@@ -729,7 +749,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         String expSampleProcessing = jTextField10.getText();
         String expInstrumentType = jTextField11.getText();
         String expFragMode = jTextField8.getText();
-        String expUploadedByName = jTextField7.getText();
+        String expUploadedByName = "Admin";//jTextField7.getText();
         String expEmail = jTextField12.getText();
         String expPublicationLink = jTextField6.getText();
         String expDescription = jTextArea1.getText();
@@ -763,7 +783,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jTextField5.setForeground(Color.black);
         jTextField5.setText("");
         jTextField6.setText("");
-        jTextField7.setForeground(Color.black);
+//        jTextField7.setForeground(Color.black);
         jTextField8.setForeground(Color.black);
         jTextField8.setText("");
         jTextField11.setForeground(Color.black);
@@ -788,7 +808,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jTextField3.setForeground(Color.black);
         jTextArea1.setForeground(Color.black);
         jTextField5.setForeground(Color.black);
-        jTextField7.setForeground(Color.black);
+//        jTextField7.setForeground(Color.black);
         jTextField8.setForeground(Color.black);
         jTextField11.setForeground(Color.black);
         jTextField9.setForeground(Color.black);
@@ -841,10 +861,10 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
             valid = false;
             jTextField12.setForeground(Color.red);
             jTextField12.setText(errorMessage);
-        } else if (jTextField7.getText() == null || jTextField7.getText().equals("") || jTextField7.getText().equalsIgnoreCase(errorMessage)) {
-            valid = false;
-            jTextField7.setForeground(Color.red);
-            jTextField7.setText(errorMessage);
+//        } else if (jTextField7.getText() == null || jTextField7.getText().equals("") || jTextField7.getText().equalsIgnoreCase(errorMessage)) {
+//            valid = false;
+//            jTextField7.setForeground(Color.red);
+//            jTextField7.setText(errorMessage);
         } else if (jTextField3.getText() == null || jTextField3.getText().equals("") || jTextField3.getText().equalsIgnoreCase(errorMessage)) {
             valid = false;
             jTextField3.setForeground(Color.red);
@@ -900,9 +920,9 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
 
     class RunWorker extends SwingWorker<Boolean, Boolean> {
 
-        private PSFileImporter fileImporter;
-        private File cpsFile;
-        private String resFold;
+        private final PSFileImporter fileImporter;
+        private final File cpsFile;
+        private final String resFold;
 
         public RunWorker(PSFileImporter fileImporter, File cpsFile, String resFold) {
             this.fileImporter = fileImporter;
@@ -915,7 +935,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
             jLabel13.setText("Importing Data....");
             fileImporter.importPeptideShakerFile(cpsFile, resFold);
             DataHandler dataHandler = new DataHandler();
-            exp = dataHandler.handelData(fileImporter, exp, jLabel13);
+            exp = dataHandler.handelData(fileImporter, exp, jLabel13,jCheckBox1.isSelected());
             if (jTextField4.getText() != null && !jTextField4.getText().equalsIgnoreCase("")) {
                 jLabel13.setText("Adding Glycopeptides Data....");
                 File glycopeptide = new File(jTextField4.getText());

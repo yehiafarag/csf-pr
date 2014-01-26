@@ -29,7 +29,7 @@ public class DAL {
     public boolean storeProteinsList(ExperimentBean exp) {
         for (String key : exp.getProteinList().keySet()) {
             ProteinBean pb = exp.getProteinList().get(key);
-            database.insertProteinExper(exp.getExpId(), pb, key);
+            database.insertProteinExper(exp.getExpId(), pb, pb.getAccession() + "," + pb.getOtherProteins());
 //            database.insertProt(pb.getAccession(), pb.getDescription());
         }
 

@@ -25,12 +25,13 @@ import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.preferences.SpectrumCountingPreferences;
 import eu.isas.peptideshaker.scoring.PtmScoring;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JLabel;
-import no.uib.jsparklines.data.XYDataPoint;
 
 /**
  *
@@ -57,7 +58,7 @@ public class UpdatedOutputGenerator {
     /**
      * The sequence factory.
      */
-    private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+    private final SequenceFactory sequenceFactory = SequenceFactory.getInstance();
     /**
      * The spectrum factory.
      */
@@ -65,20 +66,20 @@ public class UpdatedOutputGenerator {
     /**
      * The gene factory.
      */
-    private GeneFactory geneFactory = GeneFactory.getInstance();
-    
+    private final GeneFactory geneFactory = GeneFactory.getInstance();
     private JLabel label;
 
     /**
      *
-     * @param PSFileImporter
+     * @param importer 
+     * @param label 
      *
      */
-    public UpdatedOutputGenerator(PSFileImporter importer,JLabel label) {
+    public UpdatedOutputGenerator(PSFileImporter importer, JLabel label) {
         this.importer = importer;
         this.identification = importer.getIdentification();
         this.progressDialog = new ProgressDialogX(false);
-        this.label =label;
+        this.label = label;
 
     }
 
@@ -108,6 +109,7 @@ public class UpdatedOutputGenerator {
                     ArrayList<String> maximalProteinSet = new ArrayList<String>();
                     ProteinBean pb;
                     for (String proteinKey : proteinKeys) { // @TODO: replace by batch selection!!!
+                        
                         pb = new ProteinBean();
                         proteinPSParameter = (PSParameter) identification.getProteinMatchParameter(proteinKey, proteinPSParameter);
                         if (!ProteinMatch.isDecoy(proteinKey)) {//|| !onlyValidated) {
@@ -149,15 +151,37 @@ public class UpdatedOutputGenerator {
                                         pb.setProteinInferenceClass(proteinPSParameter.getProteinInferenceClassAsString());
                                         try {
                                             pb.setDescription(sequenceFactory.getHeader(proteinMatch.getMainMatch()).getSimpleProteinDescription());
-                                        } catch (Exception e) {
+                                        } catch (IOException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        } catch (ClassNotFoundException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        } catch (InterruptedException e) {
                                             System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
                                         }
                                         try {
                                             pb.setSequenceCoverage(importer.getIdentificationFeaturesGenerator().getSequenceCoverage(proteinKey) * 100);
                                             pb.setObservableCoverage(importer.getIdentificationFeaturesGenerator().getObservableCoverage(proteinKey) * 100);
-                                        } catch (Exception e) {
+                                        } catch (IOException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        } catch (ClassNotFoundException e) {
                                             System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
                                         }
+                                        // gene name and chromosome number
+                                        catch (IllegalArgumentException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        }
+                                        // gene name and chromosome number
+                                        catch (InterruptedException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        }
+                                        // gene name and chromosome number
+                                        catch (SQLException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        }
+                                        // gene name and chromosome number
+                                        
                                         // gene name and chromosome number
 
                                         // gene name and chromosome number
@@ -212,29 +236,69 @@ public class UpdatedOutputGenerator {
                                                 pb.setOtherPtmSites("");
                                                 pb.setNumberOfOther("");
                                             }
-                                        } catch (Exception e) {
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        } catch (SQLException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        } catch (IOException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        } catch (ClassNotFoundException e) {
+                                            System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
+                                        } catch (InterruptedException e) {
                                             System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
                                         }
                                         try {
                                             pb.setNumberValidatedPeptides(importer.getIdentificationFeaturesGenerator().getNValidatedPeptides(proteinKey));
-                                        } catch (Exception e) {
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (SQLException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (IOException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (ClassNotFoundException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (InterruptedException e) {
                                             System.out.println(e.getMessage());
                                         }
                                         try {
                                             pb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
 
-                                        } catch (Exception e) {
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (SQLException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (IOException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (ClassNotFoundException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (InterruptedException e) {
                                             System.out.println(e.getMessage());
                                         }
                                         try {
                                             pb.setEmPai(importer.getIdentificationFeaturesGenerator().getSpectrumCounting(proteinKey, SpectrumCountingPreferences.SpectralCountingMethod.EMPAI));
-                                        } catch (Exception e) {
+                                        } catch (IOException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (SQLException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (ClassNotFoundException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (InterruptedException e) {
                                             System.out.println(e.getMessage());
                                         }
                                         try {
                                             pb.setNsaf(importer.getIdentificationFeaturesGenerator().getSpectrumCounting(proteinKey,
                                                     SpectrumCountingPreferences.SpectralCountingMethod.NSAF));
-                                        } catch (Exception e) {
+                                        } catch (IOException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (SQLException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (ClassNotFoundException e) {
+                                            System.out.println(e.getMessage());
+                                        } catch (InterruptedException e) {
                                             System.out.println(e.getMessage());
                                         }
                                         Double proteinMW = sequenceFactory.computeMolecularWeight(proteinMatch.getMainMatch());
@@ -248,35 +312,52 @@ public class UpdatedOutputGenerator {
 
                                         }
                                         pb.setStarred(proteinPSParameter.isStarred());
-                                        proteinList.put(pb.getAccession() + "," + pb.getOtherProteins(), pb);
+//                                        proteinList.put(pb.getAccession() + "," + pb.getOtherProteins(), pb);
+                                        
+                                         proteinList.put(proteinKey, pb);
+                                         System.out.println("prot key : "+proteinKey);
+                                         System.out.println("prot old key : "+pb.getAccession() + "," + pb.getOtherProteins());
+                                       
+                                        if(proteinList.size() == 500)
+                                            break;
                                     }
 
                                 }
                             }
                         }
                     }
-                } catch (Exception e) {
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e.getMessage());
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
                 }
             }
         };
         t.setPriority(Thread.MAX_PRIORITY);
         t.start();
-        int index = 0;
+        int protIndexer = 0;
+        label.setText("Proteins processing... " + ((proteinList.size() * 100) / proteinKeys.size()) + " %");
+
         while (t.isAlive()) {
-            if (index >= 10000) {
-                label.setText("Proteins processing... "+((proteinList.size()*100)/ proteinKeys.size())+" %"); 
-                            
+            if (protIndexer >= 12) {
+                label.setText("Proteins processing... " + ((proteinList.size() * 100) / proteinKeys.size()) + " %");
+
                 System.gc();
-                index = 0;
+                protIndexer = 0;
             }
             try {
 
                 Thread.currentThread().sleep(5000);
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
-            index = index + 3000;
+            protIndexer++;
         }
         return proteinList;
     }
@@ -284,30 +365,7 @@ public class UpdatedOutputGenerator {
     /**
      * Sends the desired peptide output (based on the elements needed as
      * provided in arguments) to a user chosen file.
-     *
-     * @param parentDialog the parent dialog, can be null.
-     * @param aPeptideKeys
-     * @param aPeptidePdbArray
-     * @param aIndexes
-     * @param aOnlyValidated
-     * @param aAccession
-     * @param aProteinDescription
-     * @param aProteinInferenceType
-     * @param aLocation
-     * @param aSurroundings
-     * @param aSequence
-     * @param aModifications
-     * @param aPtmLocations
-     * @param aCharges
-     * @param aNSpectra
-     * @param aScore
-     * @param aConfidence
-     * @param aIncludeHeader
-     * @param aOnlyStarred
-     * @param aIncludeHidden
-     * @param aUniqueOnly
-     * @param aProteinKey
-     * @param aEnzymatic
+     * @return peptideList
      */
     public Map<Integer, PeptideBean> getPeptidesOutput() {
         // create final versions of all variables use inside the export thread
@@ -330,7 +388,8 @@ public class UpdatedOutputGenerator {
                     identification.loadPeptideMatchParameters(peptidePSParameter, progressDialog);
                     PeptideBean pb = null;
                     int index = 0;
-                    for (String peptideKey : peptideKeys) { // @TODO: replace by batch selection!!!                                             
+                    for (String peptideKey : peptideKeys) { // @TODO: replace by batch selection!!!    
+                        System.out.println("peptide keys is "+peptideKey);
                         boolean shared = false;
                         PeptideMatch peptideMatch = identification.getPeptideMatch(peptideKey);
                         peptidePSParameter = (PSParameter) identification.getPeptideMatchParameter(peptideKey, peptidePSParameter);
@@ -353,10 +412,19 @@ public class UpdatedOutputGenerator {
                                                             if (proteinMatch.getPeptideMatches().contains(peptideKey)) {
                                                                 possibleProteins.add(proteinKey);
                                                             }
-                                                        } catch (Exception e) {
+                                                        } catch (IllegalArgumentException e) {
                                                             // protein deleted due to protein inference issue and not deleted from the map in versions earlier than 0.14.6
                                                             System.out.println("Non-existing protein key in protein map: " + proteinKey + "  error " + e.getMessage());
 
+                                                        } catch (SQLException e) {
+                                                            // protein deleted due to protein inference issue and not deleted from the map in versions earlier than 0.14.6
+                                                            System.out.println("Non-existing protein key in protein map: " + proteinKey + "  error " + e.getMessage());
+                                                        } catch (IOException e) {
+                                                            // protein deleted due to protein inference issue and not deleted from the map in versions earlier than 0.14.6
+                                                            System.out.println("Non-existing protein key in protein map: " + proteinKey + "  error " + e.getMessage());
+                                                        } catch (ClassNotFoundException e) {
+                                                            // protein deleted due to protein inference issue and not deleted from the map in versions earlier than 0.14.6
+                                                            System.out.println("Non-existing protein key in protein map: " + proteinKey + "  error " + e.getMessage());
                                                         }
                                                     }
                                                 }
@@ -534,53 +602,76 @@ public class UpdatedOutputGenerator {
                                             pb.setStarred(peptidePSParameter.isStarred());
                                         }
                                         peptideList.put(index, pb);
+                                        
+                                        
+                                        if(peptideList.size() == 1000)
+                                            break;
+                                        
                                         index++;
+                                        
 
                                     }
                                 }
                             }
                         }
                     }
-                } catch (Exception e) {
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e.getMessage());
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
                 }
             }
         };
         t.setPriority(Thread.MAX_PRIORITY);
         t.start();
+
+        int pepIndex = 0;
+        label.setText("Peptides processing... " + ((peptideList.size() * 100) / peptideKeys.size()) + " %");
+
         while (t.isAlive()) {
-            try {                
-                label.setText("Peptides processing... "+((peptideList.size()*100)/ peptideKeys.size())+" %"); 
-                Thread.sleep(5000);             
-               
-            } catch (InterruptedException iexp) {
-                System.out.println(iexp.getMessage());
+            if (pepIndex== 12) {
+                label.setText("Peptides processing... " + ((peptideList.size() * 100) / peptideKeys.size()) + " %");
+                System.gc();
+                pepIndex = 0;
             }
-            System.gc();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+            pepIndex++;
         }
         return peptideList;
 
     }
+    private int index;
+    private int protIndex;
 
-    private int index ;
     @SuppressWarnings("static-access")
     public ExperimentBean getFractionsOutput(final ExperimentBean exp) {
         // @TODO: add the non enzymatic peptides detected information!!
         // create final versions of all variables use inside the export thread
-        final ArrayList<String> proteinKeys;
-        proteinKeys = identification.getProteinIdentification();
+//        final ArrayList<String> proteinKeys;
+//        proteinKeys = identification.getProteinIdentification();
         final Map<Integer, FractionBean> fractionsList = new HashMap<Integer, FractionBean>();
         try {
             final ArrayList<String> fractionFileNames = new ArrayList<String>();
 
             for (String fileName : importer.getIdentification().getOrderedSpectrumFileNames()) {
-
                 fractionFileNames.add(fileName);
+                System.out.println("fractions file names "+ fileName);
             }
-            if (fractionFileNames.isEmpty() ){//|| fractionFileNames.size() == 1) {
+            if (fractionFileNames.isEmpty()|| fractionFileNames.size()==1) {
                 exp.setFractionsList(fractionsList);
                 return exp;
             }
+            else{
             Thread t = new Thread("ExportThread") {
                 @Override
                 public void run() {
@@ -595,210 +686,159 @@ public class UpdatedOutputGenerator {
                             fb.setFractionIndex(z);
                             fractionsList.put((z), fb);
                         }
-                        for (String proteinKey : proteinKeys) {
+                        protIndex = 0;
+//                        for (String proteinKey : proteinKeys) {
+                          for (String proteinKey : exp.getProteinList().keySet()) {
                             proteinPSParameter = (PSParameter) identification.getProteinMatchParameter(proteinKey, proteinPSParameter);
                             ProteinMatch proteinMatch = identification.getProteinMatch(proteinKey);
-                            
-                            
-                              ArrayList<String> maximalProteinSet = new ArrayList<String>();
+
+
+                            ArrayList<String> maximalProteinSet = new ArrayList<String>();
                             String accession = proteinMatch.getMainMatch();
-                            String otherProteins ="";
-                                       maximalProteinSet.add(proteinMatch.getMainMatch());
+                            String otherProteins = "";
+                            maximalProteinSet.add(proteinMatch.getMainMatch());
 //                                                                             
-                                        if (true ) {
-                                            boolean first = true;
-                                            // sort so that the protein accessions always come in the same order
-                                            ArrayList<String> allProteins = proteinMatch.getTheoreticProteinsAccessions();
-                                            Collections.sort(allProteins);
-                                            StringBuilder completeProteinGroup = new StringBuilder();
+                            if (true) {
+                                boolean first = true;
+                                // sort so that the protein accessions always come in the same order
+                                ArrayList<String> allProteins = proteinMatch.getTheoreticProteinsAccessions();
+                                Collections.sort(allProteins);
+                                StringBuilder completeProteinGroup = new StringBuilder();
 //
-                                            for (String otherProtein : allProteins) {
-                                                if (otherProtein.equalsIgnoreCase(proteinMatch.getMainMatch())) {
-                                                    continue;
-                                                }
-                                                if (true && !maximalProteinSet.contains(otherProtein)) {
-                                                    maximalProteinSet.add(otherProtein);
-                                                }
-                                                if (completeProteinGroup.length() > 0) {
-                                                    completeProteinGroup.append(",");
-                                                }
-                                                completeProteinGroup.append(otherProtein);
-                                            }
+                                for (String otherProtein : allProteins) {
+                                    if (otherProtein.equalsIgnoreCase(proteinMatch.getMainMatch())) {
+                                        continue;
+                                    }
+                                    if (true && !maximalProteinSet.contains(otherProtein)) {
+                                        maximalProteinSet.add(otherProtein);
+                                    }
+                                    if (completeProteinGroup.length() > 0) {
+                                        completeProteinGroup.append(",");
+                                    }
+                                    completeProteinGroup.append(otherProtein);
+                                }
 //
 //                                            
-                                               otherProteins = completeProteinGroup.toString();
+                                otherProteins = completeProteinGroup.toString();
 //                                          
-                                        }
-                            
+                            }
+
                             ProteinBean pb = null;
                             if (exp.getProteinList() != null) {
-                               // pb = exp.getProteinList().get(accession+ "," + otherProteins);
+//                                 pb = exp.getProteinList().get(accession+ "," + otherProteins);
 //                            }
-                            if (pb == null) {
-                                System.out.println("its null protiens");
-                                pb = new ProteinBean();
-                                pb.setAccession(accession);
-                                pb.setOtherProteins(otherProteins);
-//                                String str = "";
-//                                boolean first = true;
-//                                for (String otherProtein : proteinMatch.getTheoreticProteinsAccessions()) {
-//                                    if (!otherProtein.equals(proteinMatch.getMainMatch())) {
-//                                        if (first) {
-//                                            first = false;
-//                                        } else {
-//                                            str = str + (",");
-//                                        }
-//                                        str = str + otherProtein;
-//                                    }
-//                                }
-//                                pb.setOtherProteins(str);
-//                                pb.setProteinInferenceClass(proteinPSParameter.getProteinInferenceClassAsString());
-//                                try {
-//                                    pb.setDescription(sequenceFactory.getHeader(proteinMatch.getMainMatch()).getDescription());
-//                                } catch (Exception e) {
-//                                    System.out.println(e.getLocalizedMessage());
-////                                    e.printStackTrace();
-//                                }
-                                Double proteinMW = sequenceFactory.computeMolecularWeight(proteinMatch.getMainMatch());
-                                pb.setMw_kDa(proteinMW);
-                                try {
-                                    pb.setNumberValidatedPeptides(importer.getIdentificationFeaturesGenerator().getNValidatedPeptides(proteinKey));
-                                } catch (Exception e) {
-                                    String d = "" + Double.NaN;
-                                    pb.setNumberValidatedPeptides(Integer.valueOf(d));
-                                    System.out.println(e.getLocalizedMessage());
+                                pb = exp.getProteinList().get(proteinKey);
+                                if (pb == null) {
+                                    System.out.println("its null protiens");
+                                    pb = new ProteinBean();
+                                    pb.setAccession(accession);
+                                    pb.setOtherProteins(otherProteins);//                              
+                                    Double proteinMW = sequenceFactory.computeMolecularWeight(proteinMatch.getMainMatch());
+                                    pb.setMw_kDa(proteinMW);
+                                    try {
+                                        pb.setNumberValidatedPeptides(importer.getIdentificationFeaturesGenerator().getNValidatedPeptides(proteinKey));
+                                    } catch (IllegalArgumentException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedPeptides(Integer.valueOf(d));
+                                        System.out.println(e.getLocalizedMessage());
 //                                    e.printStackTrace();
-                                }
-                                try {
-                                    pb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
-                                } catch (Exception e) {
-                                    String d = "" + Double.NaN;
-                                    pb.setNumberValidatedSpectra(Integer.valueOf(d));
-                                }
-//                                try {
-//                                    pb.setSequenceCoverage(importer.getIdentificationFeaturesGenerator().getSequenceCoverage(proteinKey) * 100);
-//                                    pb.setObservableCoverage(importer.getIdentificationFeaturesGenerator().getObservableCoverage(proteinKey) * 100);
-//                                } catch (Exception e) {
-////                                    e.printStackTrace();
-//                                    System.out.println(e.getLocalizedMessage());
-//                                }
-//                                pb.setStarred(proteinPSParameter.isStarred());
-
-//                                ArrayList<String> peptideKeys = proteinMatch.getPeptideMatches();
-//                                Protein currentProtein = sequenceFactory.getProtein(proteinMatch.getMainMatch());
-//                                boolean allPeptidesEnzymatic = true;
-
-//                                identification.loadPeptideMatches(peptideKeys, null);
-//                                identification.loadPeptideMatchParameters(peptideKeys, peptidePSParameter, null);
-
-                                // see if we have non-tryptic peptides
-//                                for (String peptideKey : peptideKeys) {
+                                    } catch (SQLException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedPeptides(Integer.valueOf(d));
+                                        System.out.println(e.getLocalizedMessage());
+//                                    e.printStackTrace();
+                                    } catch (IOException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedPeptides(Integer.valueOf(d));
+                                        System.out.println(e.getLocalizedMessage());
+//                                    e.printStackTrace();
+                                    } catch (ClassNotFoundException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedPeptides(Integer.valueOf(d));
+                                        System.out.println(e.getLocalizedMessage());
+//                                    e.printStackTrace();
+                                    } catch (InterruptedException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedPeptides(Integer.valueOf(d));
+                                        System.out.println(e.getLocalizedMessage());
+//                                    e.printStackTrace();
+                                    }
+                                    try {
+                                        pb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
+                                    } catch (IllegalArgumentException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedSpectra(Integer.valueOf(d));
+                                    } catch (SQLException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedSpectra(Integer.valueOf(d));
+                                    }
 //
-//                                    String peptideSequence = identification.getPeptideMatch(peptideKey).getTheoreticPeptide().getSequence();
-//                                    peptidePSParameter = (PSParameter) identification.getPeptideMatchParameter(peptideKey, peptidePSParameter);
+                                    catch (IOException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedSpectra(Integer.valueOf(d));
+                                    }
 //
-//                                    if (peptidePSParameter.isValidated()) {
-//                                        boolean isEnzymatic = currentProtein.isEnzymaticPeptide(peptideSequence,
-//                                                importer.getSearchParameters().getEnzyme());
-//                                        if (!isEnzymatic) {
-//                                            allPeptidesEnzymatic = false;
-//                                            break;
-//                                        }
-//                                    }
-//                                }
-//                                pb.setNonEnzymaticPeptides(!allPeptidesEnzymatic);
+                                    catch (ClassNotFoundException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedSpectra(Integer.valueOf(d));
+                                    }
+//
+                                    catch (InterruptedException e) {
+                                        String d = "" + Double.NaN;
+                                        pb.setNumberValidatedSpectra(Integer.valueOf(d));
+                                    }
+//
+                                    
+//                                
+                                }
+//                          
+                                index = 1;
+                                for (String fraction : fractionFileNames) {
+                                    ProteinBean tempPb = new ProteinBean(pb);
+                                    FractionBean fb = fractionsList.get(index);
+                                    Map<String, ProteinBean> temProteinList = fb.getProteinList();
+                                    if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
+                                            && proteinPSParameter.getFractionValidatedPeptides(fraction) != null) {
+                                        tempPb.setNumberOfPeptidePerFraction(proteinPSParameter.getFractionValidatedPeptides(fraction));
+                                    } else {
+
+                                        tempPb.setNumberOfPeptidePerFraction(0);
+                                    }
+
+                                    if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
+                                            && proteinPSParameter.getFractionValidatedSpectra(fraction) != null) {
+                                        tempPb.setNumberOfSpectraPerFraction(proteinPSParameter.getFractionValidatedSpectra(fraction));
+                                    } else {
+                                        tempPb.setNumberOfSpectraPerFraction(0);
+                                    }
+
+                                    if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
+                                            && proteinPSParameter.getPrecursorIntensityAveragePerFraction(fraction) != null) {
+                                        tempPb.setAveragePrecursorIntensityPerFraction(proteinPSParameter.getPrecursorIntensityAveragePerFraction(fraction));
+                                    } else {
+                                        tempPb.setAveragePrecursorIntensityPerFraction(0.0);
+                                    }
+                                    temProteinList.put(tempPb.getAccession() + "," + tempPb.getOtherProteins(), tempPb);
+                                    fb.setProteinList(temProteinList);
+                                    fractionsList.put((index), fb);
+                                    index++;
+                                }
                             }
-//                            else{
-//                            double maxMwRangePeptides = Double.MIN_VALUE;
-//                            double minMwRangePeptides = Double.MAX_VALUE;
-//                            for (String fraction : fractionFileNames) {
-//                                if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
-//                                        && proteinPSParameter.getFractionValidatedPeptides(fraction) != null
-//                                        && proteinPSParameter.getFractionValidatedPeptides(fraction) > 0) {
-//                                    HashMap<String, XYDataPoint> expectedMolecularWeightRanges = importer.getSearchParameters().getFractionMolecularWeightRanges();
-//                                    if (expectedMolecularWeightRanges != null && expectedMolecularWeightRanges.get(fraction) != null) {
-//                                        double lower = expectedMolecularWeightRanges.get(fraction).getX();
-//                                        double upper = expectedMolecularWeightRanges.get(fraction).getY();
-//                                        if (lower < minMwRangePeptides) {
-//                                            minMwRangePeptides = lower;
-//                                        }
-//                                        if (upper > maxMwRangePeptides) {
-//                                            maxMwRangePeptides = upper;
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                            if (maxMwRangePeptides != Double.MIN_VALUE && minMwRangePeptides != Double.MAX_VALUE) {
-//                                pb.setPeptideFractionSpread_upper_range_kDa("" + maxMwRangePeptides);
-//                                pb.setPeptideFractionSpread_lower_range_kDa("" + minMwRangePeptides);
-//                            } else {
-//                                pb.setPeptideFractionSpread_upper_range_kDa("" + "N/A");
-//                                pb.setPeptideFractionSpread_lower_range_kDa("" + "N/A");
-//
-//                            }
-//                            double maxMwRangeSpectra = Double.MIN_VALUE;
-//                            double minMwRangeSpectra = Double.MAX_VALUE;
-//                            for (String fraction : fractionFileNames) {
-//                                if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
-//                                        && proteinPSParameter.getFractionValidatedSpectra(fraction) != null
-//                                        && proteinPSParameter.getFractionValidatedSpectra(fraction) > 0) {
-//                                    HashMap<String, XYDataPoint> expectedMolecularWeightRanges = importer.getSearchParameters().getFractionMolecularWeightRanges();
-//                                    if (expectedMolecularWeightRanges != null && expectedMolecularWeightRanges.get(fraction) != null) {
-//
-//                                        double lower = expectedMolecularWeightRanges.get(fraction).getX();
-//                                        double upper = expectedMolecularWeightRanges.get(fraction).getY();
-//
-//                                        if (lower < minMwRangeSpectra) {
-//                                            minMwRangeSpectra = lower;
-//                                        }
-//                                        if (upper > maxMwRangeSpectra) {
-//                                            maxMwRangeSpectra = upper;
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                            if (maxMwRangeSpectra != Double.MIN_VALUE && minMwRangeSpectra != Double.MAX_VALUE) {
-//                                pb.setSpectrumFractionSpread_lower_range_kDa("" + minMwRangeSpectra);
-//                                pb.setSpectrumFractionSpread_upper_range_kDa("" + maxMwRangeSpectra);
-//                            } else {
-//                                pb.setSpectrumFractionSpread_lower_range_kDa("" + "N/A");
-//                                pb.setSpectrumFractionSpread_upper_range_kDa("" + "N/A");
-//                            }
-                            index = 1;
-                            for (String fraction : fractionFileNames) {
-                                ProteinBean tempPb = new ProteinBean(pb);
-                                FractionBean fb = fractionsList.get(index);
-                                Map<String, ProteinBean> temProteinList = fb.getProteinList();
-                                if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
-                                        && proteinPSParameter.getFractionValidatedPeptides(fraction) != null) {
-                                    tempPb.setNumberOfPeptidePerFraction(proteinPSParameter.getFractionValidatedPeptides(fraction));
-                                } else {
-
-                                    tempPb.setNumberOfPeptidePerFraction(0);
-                                }
-
-                                if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
-                                        && proteinPSParameter.getFractionValidatedSpectra(fraction) != null) {
-                                    tempPb.setNumberOfSpectraPerFraction(proteinPSParameter.getFractionValidatedSpectra(fraction));
-                                } else {
-                                    tempPb.setNumberOfSpectraPerFraction(0);
-                                }
-
-                                if (proteinPSParameter.getFractions() != null && proteinPSParameter.getFractions().contains(fraction)
-                                        && proteinPSParameter.getPrecursorIntensityAveragePerFraction(fraction) != null) {
-                                    tempPb.setAveragePrecursorIntensityPerFraction(proteinPSParameter.getPrecursorIntensityAveragePerFraction(fraction));
-                                } else {
-                                    tempPb.setAveragePrecursorIntensityPerFraction(0.0);
-                                }
-                                temProteinList.put(tempPb.getAccession()+","+tempPb.getOtherProteins(), tempPb);
-                                fb.setProteinList(temProteinList);
-                                fractionsList.put((index), fb);
-                                index++;
-                            }
-
-//                        }
-                            }}//remove it
-                    } catch (Exception e) {
+                            protIndex++;
+                        }//remove it
+                    } catch (IOException e) {
+                        System.out.println(e.getLocalizedMessage());
+//                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e.getLocalizedMessage());
+//                        e.printStackTrace();
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getLocalizedMessage());
+//                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        System.out.println(e.getLocalizedMessage());
+//                        e.printStackTrace();
+                    } catch (SQLException e) {
                         System.out.println(e.getLocalizedMessage());
 //                        e.printStackTrace();
                     }
@@ -806,10 +846,21 @@ public class UpdatedOutputGenerator {
             };
             t.setPriority(Thread.MAX_PRIORITY);
             t.start();
+            label.setText("Fractions processing... " + ((protIndex * 100) /  exp.getProteinList().size() + " %"));
+            int fractIndex = 0;
             while (t.isAlive()) {
-                label.setText("Fractions processing... "+((index*100)/fractionFileNames.size()+" %"));
-                Thread.currentThread().sleep(5000);
-                System.gc();
+                if (fractIndex == 12) {
+                   label.setText("Fractions processing... " + ((protIndex * 100) /  exp.getProteinList().size() + " %"));
+                    System.gc();
+                    fractIndex = 0;
+                }
+                try {
+                    Thread.currentThread().sleep(5000);
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                }
+                fractIndex++;
+            }
             }
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
@@ -925,7 +976,16 @@ public class UpdatedOutputGenerator {
         // find all unique the charges
         try {
             identification.loadSpectrumMatches(spectrumKeys, null);
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            //ignore caching error
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            //ignore caching error
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            //ignore caching error
+        } catch (InterruptedException e) {
             System.out.println(e.getMessage());
             //ignore caching error
         }
@@ -936,7 +996,16 @@ public class UpdatedOutputGenerator {
                 if (!charges.contains(tempCharge)) {
                     charges.add(tempCharge);
                 }
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                return "Error";
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                return "Error";
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return "Error";
+            } catch (ClassNotFoundException e) {
                 System.out.println(e.getMessage());
                 return "Error";
             }

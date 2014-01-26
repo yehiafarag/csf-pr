@@ -100,16 +100,18 @@
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jButton1" max="32767" attributes="0"/>
-                  <Component id="jTextField12" pref="180" max="32767" attributes="0"/>
-                  <Component id="jTextField9" pref="180" max="32767" attributes="0"/>
-                  <Component id="jTextField10" alignment="0" pref="180" max="32767" attributes="0"/>
-                  <Component id="jTextField6" alignment="0" pref="180" max="32767" attributes="0"/>
-                  <Component id="jTextField7" alignment="0" pref="180" max="32767" attributes="0"/>
-                  <Component id="jButton3" alignment="0" pref="180" max="32767" attributes="0"/>
-                  <Component id="jPasswordField1" alignment="1" min="-2" pref="152" max="-2" attributes="0"/>
-                  <Component id="jButton7" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="jButton1" max="32767" attributes="0"/>
+                      <Component id="jTextField12" pref="180" max="32767" attributes="0"/>
+                      <Component id="jTextField9" pref="180" max="32767" attributes="0"/>
+                      <Component id="jTextField10" alignment="0" pref="180" max="32767" attributes="0"/>
+                      <Component id="jTextField6" alignment="0" pref="180" max="32767" attributes="0"/>
+                      <Component id="jButton3" alignment="0" pref="180" max="32767" attributes="0"/>
+                      <Component id="jPasswordField1" alignment="1" min="-2" pref="152" max="-2" attributes="0"/>
+                      <Component id="jButton7" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
           </Group>
@@ -133,7 +135,7 @@
                   <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextField13" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="71" max="32767" attributes="0"/>
+              <EmptySpace pref="72" max="32767" attributes="0"/>
               <Component id="jSeparator2" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -161,8 +163,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jTextField7" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -323,7 +325,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Uploaded By:"/>
+        <Property name="text" type="java.lang.String" value="Process  Fractions:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel9">
@@ -359,11 +361,6 @@
     <Component class="javax.swing.JTextField" name="jTextField6">
       <Properties>
         <Property name="text" type="java.lang.String" value="jTextField6"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="jTextField7">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jTextField7"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField8">
@@ -438,7 +435,7 @@
                       <Component id="jButton6" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="0" pref="14" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="16" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -510,6 +507,11 @@
         </Property>
         <Property name="text" type="java.lang.String" value="jButton8"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox1ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
