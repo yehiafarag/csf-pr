@@ -117,7 +117,8 @@ public class UpdatedOutputGenerator {
                             if ((onlyValidated && proteinPSParameter.isValidated()) || !onlyValidated) {
                                 if ((!includeHidden && !proteinPSParameter.isHidden()) || includeHidden) {
                                     if ((onlyStarred && proteinPSParameter.isStarred()) || !onlyStarred) {
-
+                                        
+                                        
                                         ProteinMatch proteinMatch = identification.getProteinMatch(proteinKey);
                                         pb.setAccession(proteinMatch.getMainMatch());
 
@@ -161,7 +162,7 @@ public class UpdatedOutputGenerator {
                                             System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
                                         }
                                         try {
-                                            pb.setSequenceCoverage(importer.getIdentificationFeaturesGenerator().getSequenceCoverage(proteinKey) * 100);
+                                        //    pb.setSequenceCoverage(importer.getIdentificationFeaturesGenerator().getSequenceCoverage(proteinKey) * 100);
                                             pb.setObservableCoverage(importer.getIdentificationFeaturesGenerator().getObservableCoverage(proteinKey) * 100);
                                         } catch (IOException e) {
                                             System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
@@ -247,60 +248,60 @@ public class UpdatedOutputGenerator {
                                         } catch (InterruptedException e) {
                                             System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
                                         }
-                                        try {
-                                            pb.setNumberValidatedPeptides(importer.getIdentificationFeaturesGenerator().getNValidatedPeptides(proteinKey));
-                                        } catch (IllegalArgumentException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (SQLException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (IOException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (ClassNotFoundException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (InterruptedException e) {
-                                            System.out.println(e.getMessage());
-                                        }
-                                        try {
-                                            pb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
-
-                                        } catch (IllegalArgumentException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (SQLException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (IOException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (ClassNotFoundException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (InterruptedException e) {
-                                            System.out.println(e.getMessage());
-                                        }
-                                        try {
-                                            pb.setEmPai(importer.getIdentificationFeaturesGenerator().getSpectrumCounting(proteinKey, SpectrumCountingPreferences.SpectralCountingMethod.EMPAI));
-                                        } catch (IOException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (IllegalArgumentException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (SQLException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (ClassNotFoundException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (InterruptedException e) {
-                                            System.out.println(e.getMessage());
-                                        }
-                                        try {
-                                            pb.setNsaf(importer.getIdentificationFeaturesGenerator().getSpectrumCounting(proteinKey,
-                                                    SpectrumCountingPreferences.SpectralCountingMethod.NSAF));
-                                        } catch (IOException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (IllegalArgumentException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (SQLException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (ClassNotFoundException e) {
-                                            System.out.println(e.getMessage());
-                                        } catch (InterruptedException e) {
-                                            System.out.println(e.getMessage());
-                                        }
+//                                        try {
+//                                            pb.setNumberValidatedPeptides(importer.getIdentificationFeaturesGenerator().getNValidatedPeptides(proteinKey));
+//                                        } catch (IllegalArgumentException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (SQLException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (IOException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (ClassNotFoundException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (InterruptedException e) {
+//                                            System.out.println(e.getMessage());
+//                                        }
+//                                        try {
+//                                            pb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
+//
+//                                        } catch (IllegalArgumentException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (SQLException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (IOException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (ClassNotFoundException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (InterruptedException e) {
+//                                            System.out.println(e.getMessage());
+//                                        }
+//                                        try {
+//                                            pb.setEmPai(importer.getIdentificationFeaturesGenerator().getSpectrumCounting(proteinKey, SpectrumCountingPreferences.SpectralCountingMethod.EMPAI));
+//                                        } catch (IOException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (IllegalArgumentException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (SQLException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (ClassNotFoundException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (InterruptedException e) {
+//                                            System.out.println(e.getMessage());
+//                                        }
+//                                        try {
+//                                            pb.setNsaf(importer.getIdentificationFeaturesGenerator().getSpectrumCounting(proteinKey,
+//                                                    SpectrumCountingPreferences.SpectralCountingMethod.NSAF));
+//                                        } catch (IOException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (IllegalArgumentException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (SQLException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (ClassNotFoundException e) {
+//                                            System.out.println(e.getMessage());
+//                                        } catch (InterruptedException e) {
+//                                            System.out.println(e.getMessage());
+//                                        }
                                         Double proteinMW = sequenceFactory.computeMolecularWeight(proteinMatch.getMainMatch());
                                         pb.setMw_kDa(proteinMW);
                                         pb.setScore(proteinPSParameter.getProteinScore());
@@ -313,19 +314,121 @@ public class UpdatedOutputGenerator {
                                         }
                                         pb.setStarred(proteinPSParameter.isStarred());
 //                                        proteinList.put(pb.getAccession() + "," + pb.getOtherProteins(), pb);
-                                        
-                                         proteinList.put(proteinKey, pb);
-                                         System.out.println("prot key : "+proteinKey);
-                                         System.out.println("prot old key : "+pb.getAccession() + "," + pb.getOtherProteins());
-                                       
-                                        if(proteinList.size() == 500)
+                              
+                                        proteinList.put(proteinKey, pb);
+                                        System.out.println("prot key : " + proteinKey);
+                                        System.out.println("prot old key : " + pb.getAccession() + "," + pb.getOtherProteins());
+
+                                        if (proteinList.size() == 500) {
                                             break;
+                                        }
                                     }
 
                                 }
                             }
                         }
                     }
+                    Map<String, ProteinBean> updatedMap = new HashMap<String, ProteinBean>();
+                    for (String proteinKey : proteinList.keySet()) {
+                        ProteinBean tpb = proteinList.get(proteinKey);
+
+                        try {
+                            tpb.setNumberValidatedPeptides(importer.getIdentificationFeaturesGenerator().getNValidatedPeptides(proteinKey));
+                            updatedMap.put(proteinKey, tpb);
+
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        } catch (SQLException e) {
+                            System.out.println(e.getMessage());
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        } catch (ClassNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        } catch (InterruptedException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    proteinList.clear();
+                    proteinList.putAll(updatedMap);
+                    updatedMap.clear();
+
+                    for (String proteinKey : proteinList.keySet()) {
+                        ProteinBean tpb = proteinList.get(proteinKey);
+
+                        try {
+                            tpb.setNumberValidatedSpectra(importer.getIdentificationFeaturesGenerator().getNValidatedSpectra(proteinKey));
+                            updatedMap.put(proteinKey, tpb);
+
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        } catch (SQLException e) {
+                            System.out.println(e.getMessage());
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        } catch (ClassNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        } catch (InterruptedException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    proteinList.clear();
+                    proteinList.putAll(updatedMap);
+                    updatedMap.clear();
+
+                    for (String proteinKey : proteinList.keySet()) {
+                        ProteinBean tpb = proteinList.get(proteinKey);
+
+                        try {
+                            tpb.setEmPai(importer.getIdentificationFeaturesGenerator().getSpectrumCounting(proteinKey, SpectrumCountingPreferences.SpectralCountingMethod.EMPAI));
+                            updatedMap.put(proteinKey, tpb);
+
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        } catch (SQLException e) {
+                            System.out.println(e.getMessage());
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        } catch (ClassNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        } catch (InterruptedException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    proteinList.clear();
+                    proteinList.putAll(updatedMap);
+                    updatedMap.clear();
+
+                    for (String proteinKey : proteinList.keySet()) {
+                        ProteinBean tpb = proteinList.get(proteinKey);
+
+                        try {
+                            tpb.setNsaf(importer.getIdentificationFeaturesGenerator().getSpectrumCounting(proteinKey,
+                                    SpectrumCountingPreferences.SpectralCountingMethod.NSAF));
+                            updatedMap.put(proteinKey, tpb);
+
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        } catch (SQLException e) {
+                            System.out.println(e.getMessage());
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        } catch (ClassNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        } catch (InterruptedException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    proteinList.clear();
+                    proteinList.putAll(updatedMap);
+                    updatedMap.clear();
+
+//                                      
+//                                        
+//                                      
+
+                    
+                    
+                    
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 } catch (IOException e) {
