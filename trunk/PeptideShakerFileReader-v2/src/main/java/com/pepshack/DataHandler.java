@@ -59,7 +59,7 @@ public class DataHandler {
     }
 
     private Map<Integer, PeptideBean> getPeptides() {
-        Map<Integer, PeptideBean> peptideList = exporter.getPeptidesOutput();
+        Map<Integer, PeptideBean> peptideList =  exporter.getPeptidesOutput();
         return peptideList;
     }
 
