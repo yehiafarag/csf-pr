@@ -62,6 +62,11 @@ import eu.isas.peptideshaker.preferences.SpectrumCountingPreferences.SpectralCou
 import eu.isas.peptideshaker.utils.IdentificationFeaturesGenerator;
 import eu.isas.peptideshaker.utils.Metrics;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
@@ -527,17 +532,30 @@ public class PSFileImporter {
             }
         };
         importThread.setPriority(Thread.MAX_PRIORITY);
-        importThread.start();
-        while (importThread.isAlive()) {
-            try {
-                Thread.currentThread().sleep(100);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//        importThread.start();
+//        while (importThread.isAlive()) {
+//            try {
+//                Thread.currentThread().sleep(100);
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+        ExecutorService es = Executors.newCachedThreadPool();
+        es.execute(importThread);
+        es.shutdown();
+        try {
+            boolean finshed = es.awaitTermination(1, TimeUnit.DAYS);
+            System.gc();
+            return;
+            
+//        t.start();
+        } catch (InterruptedException ex) {
+            System.err.println(ex.getMessage());
+            //Logger.getLogger(UpdatedOutputGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.gc();
-        return;
+//        return;
 
 
     }

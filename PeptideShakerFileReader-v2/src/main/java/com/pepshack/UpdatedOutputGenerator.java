@@ -31,6 +31,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.midi.SysexMessage;
 import javax.swing.JLabel;
 
 /**
@@ -85,6 +91,7 @@ public class UpdatedOutputGenerator {
 
     public UpdatedOutputGenerator() {
     }
+    private int gcCounter=0;
 
     @SuppressWarnings("static-access")
     public Map<String, ProteinBean> getProteinsOutput() {
@@ -97,7 +104,7 @@ public class UpdatedOutputGenerator {
         final boolean otherAccessions = true;
         proteinKeys = identification.getProteinIdentification();
         final Map<String, ProteinBean> proteinList = new HashMap<String, ProteinBean>();//use only in case of protein files
-        Thread t = new Thread("ExportThread") {
+        Thread t = new Thread("ExportProtThread") {
             @Override
             public void run() {
                 try {
@@ -162,7 +169,7 @@ public class UpdatedOutputGenerator {
                                             System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
                                         }
                                         try {
-                                        //    pb.setSequenceCoverage(importer.getIdentificationFeaturesGenerator().getSequenceCoverage(proteinKey) * 100);
+                                            pb.setSequenceCoverage(importer.getIdentificationFeaturesGenerator().getSequenceCoverage(proteinKey) * 100);
                                             pb.setObservableCoverage(importer.getIdentificationFeaturesGenerator().getObservableCoverage(proteinKey) * 100);
                                         } catch (IOException e) {
                                             System.out.println("error: " + e.getLocalizedMessage() + SEPARATOR);
@@ -316,11 +323,12 @@ public class UpdatedOutputGenerator {
 //                                        proteinList.put(pb.getAccession() + "," + pb.getOtherProteins(), pb);
                               
                                         proteinList.put(proteinKey, pb);
-                                        System.out.println("prot key : " + proteinKey);
-                                        System.out.println("prot old key : " + pb.getAccession() + "," + pb.getOtherProteins());
-
-                                        if (proteinList.size() == 500) {
-                                            break;
+                                        label.setText("Proteins processing... " + ((proteinList.size() * 100) / (proteinKeys.size()*5)) + " %");
+//
+                                       System.out.println(gcCounter++ +"prot old key : " + pb.getAccession() + "," + pb.getOtherProteins());
+                                     if (gcCounter == 50) {
+                                            System.gc();
+                                            gcCounter=0;
                                         }
                                     }
 
@@ -329,6 +337,7 @@ public class UpdatedOutputGenerator {
                         }
                     }
                     Map<String, ProteinBean> updatedMap = new HashMap<String, ProteinBean>();
+                  
                     for (String proteinKey : proteinList.keySet()) {
                         ProteinBean tpb = proteinList.get(proteinKey);
 
@@ -347,6 +356,8 @@ public class UpdatedOutputGenerator {
                         } catch (InterruptedException e) {
                             System.out.println(e.getMessage());
                         }
+                        label.setText("Proteins processing... " + (((proteinKeys.size()+(updatedMap.size())) * 100) / (proteinKeys.size()*5)) + " %");
+                        
                     }
                     proteinList.clear();
                     proteinList.putAll(updatedMap);
@@ -370,6 +381,13 @@ public class UpdatedOutputGenerator {
                         } catch (InterruptedException e) {
                             System.out.println(e.getMessage());
                         }
+                         label.setText("Proteins processing... " + ((((2*proteinKeys.size())+(updatedMap.size())) * 100) / (proteinKeys.size()*5)) + " %");
+////                         System.out.println("count prot is: " + gcCounter++);
+                         
+                                        if (gcCounter == 50) {
+                                            System.gc();
+                                            gcCounter=0;
+                                        }
                     }
                     proteinList.clear();
                     proteinList.putAll(updatedMap);
@@ -393,11 +411,17 @@ public class UpdatedOutputGenerator {
                         } catch (InterruptedException e) {
                             System.out.println(e.getMessage());
                         }
+                        label.setText("Proteins processing... " + ((((3*proteinKeys.size())+(updatedMap.size() ))* 100) / (proteinKeys.size()*5)) + " %");
+//                        System.out.println("count prot is: " + gcCounter++);
+                        
+                                        if (gcCounter == 50) {
+                                            System.gc();
+                                            gcCounter=0;
+                                        }
                     }
                     proteinList.clear();
                     proteinList.putAll(updatedMap);
                     updatedMap.clear();
-
                     for (String proteinKey : proteinList.keySet()) {
                         ProteinBean tpb = proteinList.get(proteinKey);
 
@@ -417,17 +441,16 @@ public class UpdatedOutputGenerator {
                         } catch (InterruptedException e) {
                             System.out.println(e.getMessage());
                         }
+                        label.setText("Proteins processing... " + (((((4*proteinKeys.size())+updatedMap.size())) * 100) / (proteinKeys.size()*5)) + " %");
+                        gcCounter++;
+                                        if (gcCounter == 50) {
+                                            System.gc();
+                                            gcCounter=0;
+                                        }
                     }
                     proteinList.clear();
                     proteinList.putAll(updatedMap);
                     updatedMap.clear();
-
-//                                      
-//                                        
-//                                      
-
-                    
-                    
                     
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
@@ -443,25 +466,36 @@ public class UpdatedOutputGenerator {
             }
         };
         t.setPriority(Thread.MAX_PRIORITY);
-        t.start();
-        int protIndexer = 0;
-        label.setText("Proteins processing... " + ((proteinList.size() * 100) / proteinKeys.size()) + " %");
-
-        while (t.isAlive()) {
-            if (protIndexer >= 12) {
-                label.setText("Proteins processing... " + ((proteinList.size() * 100) / proteinKeys.size()) + " %");
-
-                System.gc();
-                protIndexer = 0;
-            }
-            try {
-
-                Thread.currentThread().sleep(5000);
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
-            protIndexer++;
+//        t.start();
+        ExecutorService es = Executors.newCachedThreadPool();
+        es.execute(t);
+        es.shutdown();
+        try {
+            boolean finshed = es.awaitTermination(10, TimeUnit.DAYS);
+            System.gc();
+            gcCounter=0;
+//        t.start();
+        } catch (InterruptedException ex) {
+             System.out.println(ex.getMessage());
         }
+//        int protIndexer = 0;
+//        label.setText("Proteins processing... " + ((proteinList.size() * 100) / proteinKeys.size()) + " %");
+//
+//        while (t.isAlive()) {
+//            if (protIndexer >= 12) {
+//                label.setText("Proteins processing... " + ((proteinList.size() * 100) / proteinKeys.size()) + " %");
+//
+//                System.gc();
+//                protIndexer = 0;
+//            }
+//            try {
+//
+//                Thread.currentThread().sleep(5000);
+//            } catch (InterruptedException e) {
+//                System.out.println(e.getMessage());
+//            }
+//            protIndexer++;
+//        }
         return proteinList;
     }
 
@@ -477,8 +511,9 @@ public class UpdatedOutputGenerator {
         final boolean onlyValidated = false;
         final boolean includeHidden = true;
         final boolean onlyStarred = false;
+        
         Thread t;
-        t = new Thread("ExportThread") {
+        t = new Thread("ExportPepThread") {
             @Override
             public void run() {
                 try {
@@ -491,10 +526,16 @@ public class UpdatedOutputGenerator {
                     identification.loadPeptideMatchParameters(peptidePSParameter, progressDialog);
                     PeptideBean pb = null;
                     int index = 0;
-                    for (String peptideKey : peptideKeys) { // @TODO: replace by batch selection!!!    
-                        System.out.println("peptide keys is "+peptideKey);
+                    int indecator=0;
+                    for (String peptideKey : peptideKeys) { // @TODO: replace by batch selection!!! 
                         boolean shared = false;
                         PeptideMatch peptideMatch = identification.getPeptideMatch(peptideKey);
+                        
+                        //for checking
+                        if (peptideMatch.getTheoreticPeptide().isDecoy()) {
+                                               continue;
+                                            } 
+                        
                         peptidePSParameter = (PSParameter) identification.getPeptideMatchParameter(peptideKey, peptidePSParameter);
                         if (!peptideMatch.getTheoreticPeptide().isDecoy() || !onlyValidated) {
                             if ((onlyValidated && peptidePSParameter.isValidated()) || !onlyValidated) {
@@ -505,7 +546,9 @@ public class UpdatedOutputGenerator {
                                         ArrayList<String> orderedProteinsKeys = new ArrayList<String>(); // @TODO: could be merged with one of the other maps perhaps?                                              
                                         for (String parentProtein : peptide.getParentProteins()) {
                                             pb = new PeptideBean();
-//                                            pb.setDecoy(0);
+                                       /////////////////////     
+                                            pb.setDecoy(0);
+                                      //////////////////////////      
                                             ArrayList<String> parentProteins = identification.getProteinMap().get(parentProtein);
                                             if (parentProteins != null) {
                                                 for (String proteinKey : parentProteins) {
@@ -537,7 +580,7 @@ public class UpdatedOutputGenerator {
                                         proteinMatch = identification.getProteinMatch(possibleProteins.get(0));
 
 
-                                        String mainMatch, secondaryProteins = "", peptideProteins = "";
+                                        String mainMatch="", secondaryProteins = "", peptideProteins = "";
                                         String secondaryProteinsDescriptions = "", peptideProteinDescriptions = "";
                                         ArrayList<String> accessions = new ArrayList<String>();
 
@@ -583,7 +626,7 @@ public class UpdatedOutputGenerator {
                                                 orderedProteinsKeys.add(key);
                                             }
                                         }
-
+                                        
                                         pb.setProtein(mainMatch);
                                         pb.setOtherProteins(secondaryProteins);
                                         pb.setPeptideProteins(peptideProteins);
@@ -692,11 +735,11 @@ public class UpdatedOutputGenerator {
                                             } else {
                                                 pb.setValidated(0);
                                             }
-                                            if (peptideMatch.getTheoreticPeptide().isDecoy()) {
-                                                pb.setDecoy(1);
-                                            } else {
-                                                pb.setDecoy(0);
-                                            }
+//                                            if (peptideMatch.getTheoreticPeptide().isDecoy()) {
+//                                                pb.setDecoy(1);
+//                                            } else {
+//                                                pb.setDecoy(0);
+//                                            }
                                         }
 //                                                if (includeHidden) {
 //                                                    writer.write(peptidePSParameter.isHidden() + SEPARATOR);
@@ -707,8 +750,15 @@ public class UpdatedOutputGenerator {
                                         peptideList.put(index, pb);
                                         
                                         
-                                        if(peptideList.size() == 1000)
-                                            break;
+                label.setText("Peptides processing... " + ((peptideList.size() * 100) / peptideKeys.size()) + " %");
+                gcCounter++;
+                                        if (gcCounter == 50) {
+                                            System.gc();
+                                            gcCounter=0;
+                                        }
+                
+//                                        if(peptideList.size() == 500)
+//                                            break;
                                         
                                         index++;
                                         
@@ -731,25 +781,39 @@ public class UpdatedOutputGenerator {
                 }
             }
         };
+        
+                                        
         t.setPriority(Thread.MAX_PRIORITY);
-        t.start();
-
-        int pepIndex = 0;
-        label.setText("Peptides processing... " + ((peptideList.size() * 100) / peptideKeys.size()) + " %");
-
-        while (t.isAlive()) {
-            if (pepIndex== 12) {
-                label.setText("Peptides processing... " + ((peptideList.size() * 100) / peptideKeys.size()) + " %");
-                System.gc();
-                pepIndex = 0;
-            }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
-            pepIndex++;
+        ExecutorService es = Executors.newCachedThreadPool();
+        es.execute(t);
+        es.shutdown();
+        try {
+            boolean finshed = es.awaitTermination(10, TimeUnit.DAYS);
+            System.gc();
+            gcCounter=0;
+//        t.start();
+        } catch (InterruptedException ex) {
+             System.out.println(ex.getMessage());
         }
+
+//        int pepIndex = 0;
+//        label.setText("Peptides processing... " + ((peptideList.size() * 100) / peptideKeys.size()) + " %");
+//
+//        while (t.isAlive()) {
+//            if (pepIndex== 12) {
+//                label.setText("Peptides processing... " + ((peptideList.size() * 100) / peptideKeys.size()) + " %");
+//                System.gc();
+//                pepIndex = 0;
+//            }
+//            try {
+//                
+//                System.out.println(" thread to sleep "+Thread.currentThread().getName());
+//                Thread.currentThread().sleep(10000);
+//            } catch (InterruptedException e) {
+//                System.out.println(e.getMessage());
+//            }
+//            pepIndex++;
+//        }
         return peptideList;
 
     }
@@ -768,14 +832,15 @@ public class UpdatedOutputGenerator {
 
             for (String fileName : importer.getIdentification().getOrderedSpectrumFileNames()) {
                 fractionFileNames.add(fileName);
-                System.out.println("fractions file names "+ fileName);
+//                System.out.println("fractions file names "+ fileName);
             }
             if (fractionFileNames.isEmpty()|| fractionFileNames.size()==1) {
                 exp.setFractionsList(fractionsList);
                 return exp;
             }
             else{
-            Thread t = new Thread("ExportThread") {
+                gcCounter=0;
+            Thread t = new Thread("ExportFractThread") {
                 @Override
                 public void run() {
                     try {
@@ -832,7 +897,7 @@ public class UpdatedOutputGenerator {
 //                            }
                                 pb = exp.getProteinList().get(proteinKey);
                                 if (pb == null) {
-                                    System.out.println("its null protiens");
+//                                    System.out.println("its null protiens");
                                     pb = new ProteinBean();
                                     pb.setAccession(accession);
                                     pb.setOtherProteins(otherProteins);//                              
@@ -921,13 +986,21 @@ public class UpdatedOutputGenerator {
                                     } else {
                                         tempPb.setAveragePrecursorIntensityPerFraction(0.0);
                                     }
-                                    temProteinList.put(tempPb.getAccession() + "," + tempPb.getOtherProteins(), tempPb);
+                                    temProteinList.put(proteinKey, tempPb);
                                     fb.setProteinList(temProteinList);
                                     fractionsList.put((index), fb);
                                     index++;
                                 }
                             }
+                            
+                            label.setText("Fractions processing... " + ((protIndex * 100) /  exp.getProteinList().size() + " %"));
                             protIndex++;
+                            gcCounter++;
+                            if (gcCounter == 50) {
+                                            System.gc();
+                                            gcCounter=0;
+                                        }
+                  
                         }//remove it
                     } catch (IOException e) {
                         System.out.println(e.getLocalizedMessage());
@@ -946,24 +1019,36 @@ public class UpdatedOutputGenerator {
 //                        e.printStackTrace();
                     }
                 }
-            };
-            t.setPriority(Thread.MAX_PRIORITY);
-            t.start();
-            label.setText("Fractions processing... " + ((protIndex * 100) /  exp.getProteinList().size() + " %"));
-            int fractIndex = 0;
-            while (t.isAlive()) {
-                if (fractIndex == 12) {
-                   label.setText("Fractions processing... " + ((protIndex * 100) /  exp.getProteinList().size() + " %"));
-                    System.gc();
-                    fractIndex = 0;
-                }
-                try {
-                    Thread.currentThread().sleep(5000);
-                } catch (InterruptedException e) {
-                    System.out.println(e.getMessage());
-                }
-                fractIndex++;
-            }
+            };          
+        t.setPriority(Thread.MAX_PRIORITY);
+        ExecutorService es = Executors.newCachedThreadPool();
+        es.execute(t);
+        es.shutdown();
+        try {
+            boolean finshed = es.awaitTermination(10, TimeUnit.DAYS);
+            System.gc();
+            gcCounter=0;
+//        t.start();
+        } catch (InterruptedException ex) {
+             System.out.println(ex.getMessage());
+        }
+//            
+//            t.start();
+//            label.setText("Fractions processing... " + ((protIndex * 100) /  exp.getProteinList().size() + " %"));
+//            int fractIndex = 0;
+//            while (t.isAlive()) {
+//                if (fractIndex == 12) {
+//                   label.setText("Fractions processing... " + ((protIndex * 100) /  exp.getProteinList().size() + " %"));
+//                    System.gc();
+//                    fractIndex = 0;
+//                }
+//                try {
+//                    Thread.currentThread().sleep(5000);
+//                } catch (InterruptedException e) {
+//                    System.out.println(e.getMessage());
+//                }
+//                fractIndex++;
+//            }
             }
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());

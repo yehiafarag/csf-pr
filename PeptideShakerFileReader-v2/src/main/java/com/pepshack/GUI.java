@@ -949,6 +949,16 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                         System.exit(0);
             } else {
                 jLabel13.setText("Failed :(");
+                 if (resourcefolder.exists()) {
+                            for (File f : resourcefolder.listFiles()) {
+                                if (f.getName().equalsIgnoreCase("matches")) {
+                                    for (File f2 : f.listFiles()) {
+                                        f2.delete();
+                                    }
+                                }
+                            }
+
+                        }
             }
             System.gc();
             return test;
