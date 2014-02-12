@@ -85,7 +85,7 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
 //        topLayout.setExpandRatio(infoIco, 0.35f);
         
         
-        Label protLabel =  new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Proteins (" + exp.getNumberValidProt() + ")</h4>");
+        Label protLabel =  new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Protein Groups (" + exp.getNumberValidProt() + ")</h4>");
                     //new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Proteins (" + exp.getNumberValidProt() + "/" + exp.getProteinsNumber() + ")</h4>");
         protLabel.setContentMode(Label.CONTENT_XHTML);
         protLabel.setHeight("40px");
@@ -192,7 +192,7 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
                 if (selectionType.isSelected("\t\tShow Validated Proteins Only")) {
                     
                     protLabelLayout.removeAllComponents();
-                    Label protLabel = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Proteins (" + exp.getNumberValidProt() + ")</h4>");
+                    Label protLabel = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Protein Groups (" + exp.getNumberValidProt() + ")</h4>");
                     protLabel.setContentMode(Label.CONTENT_XHTML);
                     protLabel.setHeight("40px");
                     protLabelLayout.addComponent(protLabel);
@@ -209,7 +209,7 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
                     
                 } else {
                     protLabelLayout.removeAllComponents();
-                    Label protLabel = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Proteins (" + exp.getNumberValidProt() + "/" + exp.getProteinsNumber() + ")</h4>");
+                    Label protLabel = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Protein Groups (" + exp.getNumberValidProt() + "/" + exp.getProteinsNumber() + ")</h4>");
                     protLabel.setContentMode(Label.CONTENT_XHTML);
                     protLabel.setHeight("40px");
                     protTable = new ProteinsTable(proteinsList, exp.getFractionsNumber());

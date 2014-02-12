@@ -51,7 +51,7 @@
     <context-param>
         <description>Database Password</description>
         <param-name>password</param-name>
-        <param-value>root</param-value>
+        <param-value>qwe1212qwe1212</param-value>
     </context-param>
     <context-param>
         <description>Database Username</description>

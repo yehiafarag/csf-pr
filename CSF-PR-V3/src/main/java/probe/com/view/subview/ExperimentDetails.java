@@ -168,7 +168,7 @@ public class ExperimentDetails extends VerticalLayout implements Serializable, c
         Label ExpLable2_7 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Fractions</strong><br/>" + exp.getFractionsNumber() + "</h5>");
         ExpLable2_7.setContentMode(Label.CONTENT_XHTML);
         ExpLable2_7.setHeight("45px");
-        Label ExpLable2_8 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Proteins:</strong><br/>" +exp.getNumberValidProt()/* exp.getProteinsNumber()*/ + "</h5>");
+        Label ExpLable2_8 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Protein Groups:</strong><br/>" +exp.getNumberValidProt()/* exp.getProteinsNumber()*/ + "</h5>");
         ExpLable2_8.setContentMode(Label.CONTENT_XHTML);
         ExpLable2_8.setDescription("Number of validated proteins");
         ExpLable2_8.setHeight("45px");
