@@ -7,6 +7,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import javax.servlet.ServletContext;
 import probe.com.view.MainWindow;
 
@@ -70,6 +71,7 @@ public class CSFPR extends UI {
         driver = (scx.getInitParameter("driver"));
         userName = (scx.getInitParameter("userName"));
         password = (scx.getInitParameter("password"));
+       
 
 
         initLayout();
@@ -97,6 +99,11 @@ public class CSFPR extends UI {
         MainWindow mw = new MainWindow(url, dbName, driver, userName, password, image1, image2, image3);
         this.getPage().setTitle("CSF Proteome Resource (CSF-PR)");
         setContent(mw);
+      
+        
 
     }
+
+  
+    
 }

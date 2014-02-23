@@ -31,6 +31,8 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
     private ProteinsLayout proteinsLayout;
     private ExperimentHandler expHandler;
     private Map<Integer, ExperimentBean> expList = null;
+    
+    private final Map<Integer,Integer> datasetIndex = new HashMap<Integer, Integer>();
 
     public Body(ExperimentHandler expHandler) {
         this.expHandler = expHandler;
@@ -38,24 +40,40 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         t = new TabSheet();
         this.setWidth("100%");
         adminIcon = this.getAdminIco();
+        datasetIndex.put(2,1);
+        datasetIndex.put(4,2);
+        datasetIndex.put(1,3);
+        datasetIndex.put(7,4);
+        datasetIndex.put(5, 5);
+        datasetIndex.put(6, 6);
+        datasetIndex.put(3,7);
         initBody();
     }
 
     private void initBody() {
-
         expListStr = new TreeMap<Integer, String>();
         if (expList == null) {
             expList = new HashMap<Integer, ExperimentBean>();
         }
+        
+        
         for (int key2 : expList.keySet()) {
+            if(datasetIndex.containsKey(key2)){
+                 ExperimentBean expB = expList.get(key2);
+                 expListStr.put(datasetIndex.get(key2), "\t" + expB.getName());
+                 
+            }
+            else{            
             ExperimentBean expB = expList.get(key2);
             expListStr.put(key2, "\t" + expB.getName());
+            datasetIndex.put(key2, key2);
+            }
         }
 //        home layout
         homeLayout = new HomeLayout(adminIcon);
         homeLayout.setWidth("100%");
 //        Tab 2 content
-        proteinsLayout = new ProteinsLayout(expHandler, expListStr, expList);
+        proteinsLayout = new ProteinsLayout(expHandler, expListStr, expList,datasetIndex);
 //        Tab 2 content
         l2 = new VerticalLayout();
         l2.setMargin(true);
@@ -63,7 +81,7 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
 //      Tab 3 content
         l3 = new VerticalLayout();
         l3.setMargin(true);
-        SearchLayout searchLayout = new SearchLayout(expHandler, expListStr, expList);
+        SearchLayout searchLayout = new SearchLayout(expHandler, expListStr, expList,datasetIndex);
         l3.addComponent(searchLayout);
 //      Tab 1 login form
         l4 = new VerticalLayout();

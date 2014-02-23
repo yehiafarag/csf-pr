@@ -183,9 +183,8 @@ public class DataAccess implements Serializable {
     public boolean setStandardPlotProt(ExperimentBean exp) {
         boolean test= false;
           List<StandardProteinBean> standardPlotList = db.getStandardProtPlotList(exp.getExpId());
-          if(standardPlotList.isEmpty())
-             ;
-          else{
+          if(!standardPlotList.isEmpty())
+          {
               test = db.removeStandarPlot(exp.getExpId());              
           }
           test = db.setStandardPlotProt(exp);

@@ -187,10 +187,12 @@ public class DataBase implements Serializable {
                 String standard_plot_proteins = " CREATE TABLE IF NOT EXISTS `standard_plot_proteins` (`exp_id` int(11) NOT NULL,	  `mw_(kDa)` double NOT NULL,	  `name` varchar(30) NOT NULL,	  `lower` int(11) NOT NULL,  `upper` int(11) NOT NULL,  `color` varchar(30) NOT NULL  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(standard_plot_proteins);
                 conn.close();
+                System.gc();
 
             } catch (SQLException s) {
                 System.err.println(s.getLocalizedMessage());
                 conn.close();
+                
                 return false;
             }
             // 
@@ -529,6 +531,7 @@ public class DataBase implements Serializable {
 
             }
             rs.close();
+            System.gc();
 
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
@@ -669,6 +672,7 @@ public class DataBase implements Serializable {
 //            e.printStackTrace();
             return null;
         }//error
+        System.gc();
         return ExpList;
 
 
@@ -681,6 +685,7 @@ public class DataBase implements Serializable {
         exp.setFractionsList(this.getFractionsList(exp.getExpId()));
         exp.setProteinList(this.getExpProteinsList(expId));	   	//get protein details	
         exp.setPeptideList(this.getExpPeptides(expId));
+        System.gc();
         return exp;
     }
 
@@ -835,13 +840,13 @@ public class DataBase implements Serializable {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
+        System.gc();
         return fractionsList;
 
 
     }
     
     public synchronized Map<Integer, PeptideBean> getExpPeptides(int expId) {
-        System.out.println("in database to get peplist");
         Map<Integer, PeptideBean> peptidesList = new HashMap<Integer, PeptideBean>();
         try {
             //get fractions id list
@@ -931,7 +936,7 @@ public class DataBase implements Serializable {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
-        System.out.println("size is "+peptidesList.size());
+        System.gc();
         return peptidesList;
     }
 
@@ -990,6 +995,7 @@ public class DataBase implements Serializable {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
+        System.gc();
         return proteinExpList;
     }
 
@@ -1167,6 +1173,7 @@ public class DataBase implements Serializable {
                 protExpList.put(temPb.getProtGroupId(), temPb);
             }
             rs.close();
+            System.gc();
             return protExpList;
 
         } catch (Exception e) {
@@ -1238,12 +1245,14 @@ public class DataBase implements Serializable {
 
                 }
                 rs.close();
+                
             }
 
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
+        System.gc();
         return peptidesList;
     }
 
@@ -1314,6 +1323,7 @@ public class DataBase implements Serializable {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
+        System.gc();
         return fractionsList;
 
 
@@ -1378,12 +1388,14 @@ public class DataBase implements Serializable {
 
             }
             rs.close();
+            System.gc();
             return proteinsList;
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
 
+        System.gc();
         return null;
     }
 
@@ -1437,12 +1449,14 @@ public class DataBase implements Serializable {
                 }
 
             }
+            System.gc();
             return proteinsList;
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
 
+        System.gc();
         return null;
     }
 
@@ -1700,6 +1714,7 @@ public class DataBase implements Serializable {
 //            e.printStackTrace();
             test = false;
         }
+        System.gc();
         return test;
     }
 
@@ -1817,6 +1832,7 @@ public class DataBase implements Serializable {
 
     public boolean setStandardPlotProt(ExperimentBean exp) {
         // TODO Auto-generated method stub
+        System.gc();
         return false;
     }
 
@@ -1917,6 +1933,7 @@ public class DataBase implements Serializable {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
+        System.gc();
         return peptidesList;
     }
 
@@ -1965,6 +1982,7 @@ public class DataBase implements Serializable {
             System.err.println(e.getLocalizedMessage());
 //            e.printStackTrace();
         }
+        System.gc();
         return expProPepIds;
     }
 
@@ -1973,6 +1991,7 @@ public class DataBase implements Serializable {
         for (StandardProteinBean spb : exp.getStanderdPlotProt()) {
             insertStandardPlotProtein(exp.getExpId(), spb);
         }
+        System.gc();
         return true;
     }
 
@@ -2021,6 +2040,7 @@ public class DataBase implements Serializable {
             PreparedStatement remExpStat = conn.prepareStatement(StandarPlot);
             remExpStat.setInt(1, expId);
             x = remExpStat.executeUpdate();
+            System.gc();
         } catch (Exception e) {
             return false;
         }
@@ -2058,9 +2078,7 @@ public class DataBase implements Serializable {
 //            exp.printStackTrace();
             return null;
         }
-
-
-
+        System.gc();
         return standardPlotList;
     }
 
@@ -2092,6 +2110,7 @@ public class DataBase implements Serializable {
             updateExpStat.setInt(13, exp.getPeptidesNumber());
             updateExpStat.setInt(14, exp.getExpId());
             int test = updateExpStat.executeUpdate();
+            System.gc();
             if (test > 0) {
                 return true;
             }
