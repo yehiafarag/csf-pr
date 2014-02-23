@@ -325,7 +325,7 @@ public class UpdatedOutputGenerator {
                                         proteinList.put(proteinKey, pb);
                                         label.setText("Proteins processing... " + ((proteinList.size() * 100) / (proteinKeys.size()*5)) + " %");
 //
-                                       System.out.println(gcCounter++ +"prot old key : " + pb.getAccession() + "," + pb.getOtherProteins());
+//                                       System.out.println(gcCounter++ +"prot old key : " + pb.getAccession() + "," + pb.getOtherProteins());
                                      if (gcCounter == 50) {
                                             System.gc();
                                             gcCounter=0;
