@@ -42,7 +42,7 @@ import probe.com.view.subview.util.Help;
  */
 public final class ProteinsLayout extends VerticalLayout implements Serializable, Property.ValueChangeListener {
 
-    private TreeMap<Integer, String> expListStr;
+    private final TreeMap<Integer, String> expListStr;
     private boolean visability = false;
     private Select selectExp;
     private int key = -1;
@@ -52,9 +52,9 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
     private CustomExternalLink l;
     private VerticalLayout peptideLayout;
     private ExperimentBean exp;
-    private String s = "\t \t \t Please Select Dataset";
+    private final String s = "\t \t \t Please Select Dataset";
     private int starter = 1;
-    private ExperimentHandler expHandler;
+    private final ExperimentHandler expHandler;
     private ProteinsTableLayout protTableLayout;
     private String accession;
     private String otherAccession;
@@ -62,16 +62,18 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
     private PeptidesTableLayout cpeptideLayout;
     private VerticalLayout fractionLayout;
     private Map<String, ProteinBean> proteinsList;
-    private VerticalLayout typeILayout;
-    private GeneralUtil util = new GeneralUtil();
+    private final VerticalLayout typeILayout;
+    private final GeneralUtil util = new GeneralUtil();
     private TreeMap<Integer, Integer> selectionIndexes;
     private int nextIndex;
     private Help help = new Help();
+    private final Map<Integer,Integer> datasetIndex;
 
-    public ProteinsLayout(ExperimentHandler expHandler, TreeMap<Integer, String> expListStr, Map<Integer, ExperimentBean> expList) {
+    public ProteinsLayout(ExperimentHandler expHandler, TreeMap<Integer, String> expListStr, Map<Integer, ExperimentBean> expList,Map<Integer,Integer> datasetIndex) {
         this.expHandler = expHandler;
         this.expListStr = expListStr;
         this.expList = expList;
+        this.datasetIndex = datasetIndex;
         this.setSizeFull();
         setMargin(true);
         typeILayout = new VerticalLayout();
@@ -149,7 +151,7 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
         if (o != null && (!o.toString().equals(s))) {
 
             String str = selectExp.getValue().toString();
-            key = util.getKey(expListStr, str);
+            key = util.getKey(expListStr, str,datasetIndex);
             exp = expList.get(key);
             //layout for dataset type 1
             if (exp != null && exp.getExpType() == 1) {
@@ -285,7 +287,7 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                                         double mw = 0.0;
                                         try {
                                             mw = Double.valueOf(item.getItemProperty("MW").toString());
-                                        } catch (Exception e) {
+                                        } catch (NumberFormatException e) {
                                             String str = item.getItemProperty("MW").toString();
                                             String[] strArr = str.split(",");
                                             if (strArr.length > 1) {

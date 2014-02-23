@@ -21,7 +21,7 @@ public class SessionListener implements HttpSessionListener, Serializable{
 
     @Override
     public void sessionDestroyed(HttpSessionEvent hse) {
-        System.out.println("session distroy");
+       
         System.gc();
     }
 

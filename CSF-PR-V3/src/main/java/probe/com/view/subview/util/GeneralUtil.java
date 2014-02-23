@@ -42,10 +42,18 @@ public class GeneralUtil {
         return count;
     }
 
-    public int getKey(Map<Integer, String> l, String str) {
-        for (int key1 : l.keySet()) {
-            if (str.equalsIgnoreCase(l.get(key1))) {
-                return key1;
+    public int getKey(Map<Integer, String> expListStr, String str,Map<Integer,Integer>datasetIndex) {
+        for (int key1 : expListStr.keySet()) {
+            if (str.equalsIgnoreCase(expListStr.get(key1))) {
+                for(int k:datasetIndex.keySet())
+                {
+                    int value = datasetIndex.get(k);
+                    if(value == key1){ 
+                        System.out.println(" key before indexing  "+key1+"  ---  return value --- "+k);
+                        return k;
+                    }
+                }
+                return datasetIndex.get(key1);
             }
         }
         return 0;

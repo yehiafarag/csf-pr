@@ -79,7 +79,7 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
     private HorizontalLayout searchPropLayout = new HorizontalLayout();
     private boolean validatedOnly =true;
 
-    public SearchLayout(ExperimentHandler handler, TreeMap<Integer, String> expListStr, Map<Integer, ExperimentBean> expList) {
+    public SearchLayout(ExperimentHandler handler, TreeMap<Integer, String> expListStr, Map<Integer, ExperimentBean> expList,Map<Integer,Integer> datasetIndex) {
         this.handler = handler;
         this.expListStr = expListStr;
         this.expList = expList;
