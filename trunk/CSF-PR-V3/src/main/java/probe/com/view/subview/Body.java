@@ -40,13 +40,13 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         t = new TabSheet();
         this.setWidth("100%");
         adminIcon = this.getAdminIco();
-        datasetIndex.put(2,1);
-        datasetIndex.put(4,2);
-        datasetIndex.put(1,3);
-        datasetIndex.put(7,4);
-        datasetIndex.put(5, 5);
-        datasetIndex.put(6, 6);
-        datasetIndex.put(3,7);
+        datasetIndex.put(8,1);
+        datasetIndex.put(14,2);
+        datasetIndex.put(4,3);
+        datasetIndex.put(17,4);
+        datasetIndex.put(15, 5);
+        datasetIndex.put(16, 6);
+        datasetIndex.put(9,7);
         initBody();
     }
 
