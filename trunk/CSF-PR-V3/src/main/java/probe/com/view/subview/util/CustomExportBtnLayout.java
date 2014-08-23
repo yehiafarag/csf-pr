@@ -132,7 +132,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
             } else if (typeGroup.getValue().toString().equalsIgnoreCase("All")) {
                 peptidesList = handler.getPeptidesList(expId, false);
             }
-            PeptideTable pepTable = new PeptideTable(peptidesList, null);
+            PeptideTable pepTable = new PeptideTable(peptidesList, null,true);
             pepTable.setVisible(false);
             this.addComponent(pepTable);
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {
@@ -218,7 +218,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
                 vPeptidesList = new HashMap<Integer, PeptideBean>();
                 vPeptidesList.putAll(peptidesList);
             }
-            PeptideTable pepTable = new PeptideTable(vPeptidesList, null);
+            PeptideTable pepTable = new PeptideTable(vPeptidesList, null,false);
             pepTable.setVisible(false);
             this.addComponent(pepTable);
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {

@@ -10,10 +10,10 @@ import probe.com.view.subview.Header;
 public class MainWindow extends VerticalLayout implements Serializable {
 
     private static final long serialVersionUID = 1490961570483515444L;
-    private Link image1;//logo_1
-    private Link image2;//logo_2
-    private Link image3;//logo_3
-    private ExperimentHandler expHandler;
+    private final Link image1;//logo_1
+    private final Link image2;//logo_2
+    private final Link image3;//logo_3
+    private final ExperimentHandler expHandler;
 
     public MainWindow(String url, String dbName, String driver, String userName, String password, Link image12, Link image22, Link image32) {
 
@@ -25,8 +25,8 @@ public class MainWindow extends VerticalLayout implements Serializable {
 
     }
 
-    @SuppressWarnings("deprecation")
-    private void buildMainLayout() {
+ 
+    private  void buildMainLayout() {
         //header
         Header header = new Header(image1, image2, image3);
         this.addComponent(header);

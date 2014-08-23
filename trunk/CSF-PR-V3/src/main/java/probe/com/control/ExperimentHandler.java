@@ -27,8 +27,8 @@ public class ExperimentHandler implements Serializable {
      * Yehia Farag
      */
     private static final long serialVersionUID = 1L;
-    private ExperimentModel em;
-    private Authenticator authenticator;
+    private final ExperimentModel em;
+    private final Authenticator authenticator;
 
     public ExperimentHandler(String url, String dbName, String driver, String userName, String password) {
         em = new ExperimentModel(url, dbName, driver, userName, password);
@@ -60,7 +60,10 @@ public class ExperimentHandler implements Serializable {
                         }
 
                     } else if (exp.getPeptideList() != null && exp.getPeptideList().size() > 0)
-						; else {
+                    {
+                    //to be removed
+                    }
+                    else {
                         expList.put(key, expList2.get(key));
                     }
                 } else {
@@ -408,15 +411,12 @@ public class ExperimentHandler implements Serializable {
     public Set<Integer> getExpPepProIds(int expId, String accession, String otherAccession) {
         String queryWord = accession;
         Set<Integer> expProPepIds = em.getExpPepProIds(expId, queryWord.trim());
-        System.out.println("-------------------------------------------------------->>>>>>>> accession " + queryWord + "  " + expId);
-        System.out.println(expProPepIds);
-        int cc = 0;
+        
         if (otherAccession != null && !otherAccession.equals("")) {
             String[] otherAccessionArr = otherAccession.split(",");
             for (String str : otherAccessionArr) {
                 expProPepIds.addAll(em.getExpPepProIds(expId, str.trim()));
-                System.out.println("other accession " + (cc++) + "  " + "," + str + ",");
-            }
+              }
         }
 
         return expProPepIds;
@@ -462,12 +462,12 @@ public class ExperimentHandler implements Serializable {
                         }
 
                     }
-                    PeptideTable pepTable = new PeptideTable(vPepProtList, null);
+                    PeptideTable pepTable = new PeptideTable(vPepProtList, null,false);
                     pepTable.setVisible(false);
                     tl.put(temExp.getName(), pepTable);
 
                 } else {
-                    PeptideTable pepTable = new PeptideTable(pepProtList, null);
+                    PeptideTable pepTable = new PeptideTable(pepProtList, null,false);
                     pepTable.setVisible(false);
                     tl.put(temExp.getName(), pepTable);
                 }
