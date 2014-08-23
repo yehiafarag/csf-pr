@@ -3,6 +3,7 @@ package probe.com.view.subview;
 import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -125,18 +126,19 @@ public class ProteinsTable extends Table implements Serializable {
 
 
             if (pb.getProteinInferenceClass().trim().equalsIgnoreCase("SINGLE PROTEIN")) {
-                res2 = new ExternalResource("http://sphotos-d.ak.fbcdn.net/hphotos-ak-snc6/263426_116594491857485_1503571748_n.jpg");
+               res2 = new ThemeResource("img/green.jpg");
             } else if (pb.getProteinInferenceClass().trim().equalsIgnoreCase("UNRELATED PROTEINS")) {
-                res2 = new ExternalResource("http://sphotos-h.ak.fbcdn.net/hphotos-ak-prn1/549354_116594531857481_1813966302_n.jpg");
+               res2 = new  ThemeResource("img/red.jpg");
             } else if (pb.getProteinInferenceClass().equalsIgnoreCase("ISOFORMS")) {
-                res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
+                res2 = new  ThemeResource("img/yellow.jpg");//res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
             } else if (pb.getProteinInferenceClass().trim().equalsIgnoreCase("UNRELATED ISOFORMS") || pb.getProteinInferenceClass().equalsIgnoreCase("ISOFORMS AND UNRELATED PROTEIN(S)")) {
-                res2 = new ExternalResource("http://sphotos-a.ak.fbcdn.net/hphotos-ak-prn1/544345_116594495190818_129866024_n.jpg");
+                res2 = new  ThemeResource("img/orange.jpg");//res2 = new ExternalResource("http://sphotos-a.ak.fbcdn.net/hphotos-ak-prn1/544345_116594495190818_129866024_n.jpg");
             } else if (pb.getProteinInferenceClass().trim().equalsIgnoreCase("Related Proteins")) {
-                res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
-                pi = new CustomPI(pb.getProteinInferenceClass(), res2);
-                pi.setDescription(pb.getProteinInferenceClass());
-
+                res2 = new  ThemeResource("img/yellow.jpg");//res2 = new ExternalResource("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/312343_116594485190819_1629145620_n.jpg");
+//                pi = new CustomPI(pb.getProteinInferenceClass(), res2);
+//                pi.setDescription(pb.getProteinInferenceClass());
+            }else if(pb.getProteinInferenceClass().equalsIgnoreCase("RELATED AND UNRELATED PROTEINS")){
+                res2 = new  ThemeResource("img/red.jpg");
             }
 
             pi = new CustomPI(pb.getProteinInferenceClass(), res2);

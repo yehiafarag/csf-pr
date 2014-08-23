@@ -20,12 +20,12 @@ import probe.com.view.subview.util.ShowLabel;
 @SuppressWarnings("serial")
 public class ExperimentDetails extends VerticalLayout implements Serializable, com.vaadin.event.LayoutEvents.LayoutClickListener {
 
-    private VerticalLayout body;
-    private Label ExpLable;
-    private HorizontalLayout header;
-    private Help help = new Help();
+    private final VerticalLayout body;
+    private final Label ExpLable;
+    private final HorizontalLayout header;
+    private final Help help = new Help();
      
-    private ShowLabel show;
+    private final ShowLabel show;
 
     public ExperimentDetails(ExperimentBean exp, boolean visability,ExperimentHandler expHandler) {
         this.setMargin(new MarginInfo(false,true,false,true));
@@ -101,8 +101,8 @@ public class ExperimentDetails extends VerticalLayout implements Serializable, c
             ExpLable1_5.setHeight("45px");
         } else {
             href = exp.getPublicationLink().toLowerCase();
-            if (href.contains("http://") || href.contains("https://"))
-        		; else {
+            if ((!href.contains("http://")) && (!href.contains("https://")))
+            {
                 href = "http://" + href;
             }
             ExpLable1_5 = new Label("<h5><a href='" + href + "'  target='_blank'>Publication Link</a></h5>");

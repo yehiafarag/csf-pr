@@ -7,7 +7,6 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
 import javax.servlet.ServletContext;
 import probe.com.view.MainWindow;
 

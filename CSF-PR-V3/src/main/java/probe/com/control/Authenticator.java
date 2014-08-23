@@ -11,7 +11,7 @@ public class Authenticator implements Serializable {
 	 */
 	
 	private static final long serialVersionUID = 1L;
-	private probe.com.model.Authenticator auth ;
+	private final probe.com.model.Authenticator auth ;
 	public Authenticator(String url,String dbName,String driver,String userName, String password)
 	{
 		auth = new probe.com.model.Authenticator(url,dbName,driver,userName, password);

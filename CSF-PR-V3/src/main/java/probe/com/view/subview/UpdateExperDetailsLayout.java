@@ -26,15 +26,16 @@ import probe.com.model.beans.User;
  */
 public class UpdateExperDetailsLayout extends VerticalLayout implements Serializable{
     private Select select;
-    private Form existExpForm;
+    private final Form existExpForm;
      private TextField expNameField, speciesField, sampleTypeField, sampleProcessingField, instrumentTypeField, fragModeField, UploadedByNameField, emailField, publicationLinkField;
     private TextArea descriptionField;
-    private VerticalLayout selectLayout = new VerticalLayout();
+    private final VerticalLayout selectLayout = new VerticalLayout();
     private  Map<Integer, ExperimentBean> expList;
     private  ExperimentBean expDet;
-    private ExperimentHandler handler;
-    private User user;
-    private Property.ValueChangeListener listener;
+    private final ExperimentHandler handler;
+    private final User user;
+    private final Property.ValueChangeListener listener;
+    private int id;
    
     public UpdateExperDetailsLayout(final ExperimentHandler handler,User user)
     {
@@ -146,17 +147,17 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
         publicationLinkField.setMaxLength(300);
         publicationLinkField.setEnabled(false);
 
-        existExpForm.addField(Integer.valueOf(1), expNameField);
-        existExpForm.addField(Integer.valueOf(2), descriptionField);
+        existExpForm.addField(1, expNameField);
+        existExpForm.addField(2, descriptionField);
 
-        existExpForm.addField(Integer.valueOf(3), speciesField);
-        existExpForm.addField(Integer.valueOf(4), sampleTypeField);
-        existExpForm.addField(Integer.valueOf(5), sampleProcessingField);
-        existExpForm.addField(Integer.valueOf(6), instrumentTypeField);
-        existExpForm.addField(Integer.valueOf(7), fragModeField);
-        existExpForm.addField(Integer.valueOf(8), UploadedByNameField);
-        existExpForm.addField(Integer.valueOf(9), emailField);
-        existExpForm.addField(Integer.valueOf(10), publicationLinkField);
+        existExpForm.addField(3, speciesField);
+        existExpForm.addField(4, sampleTypeField);
+        existExpForm.addField(5, sampleProcessingField);
+        existExpForm.addField(6, instrumentTypeField);
+        existExpForm.addField(7, fragModeField);
+        existExpForm.addField(8, UploadedByNameField);
+        existExpForm.addField(9, emailField);
+        existExpForm.addField(10, publicationLinkField);
         this.addComponent(updateBtn);
         updateBtn.setEnabled(false);
         listener = new Property.ValueChangeListener() {
@@ -166,7 +167,7 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
                 if (o != null) {
                     String str = select.getValue().toString();
                     String[] strArr = str.split("\t");
-                    final int id = (Integer.valueOf(strArr[0]));
+                    id = (Integer.valueOf(strArr[0]));
                     updateBtn.setEnabled(true);
                    expDet = expList.get(id);
 

@@ -75,7 +75,7 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
 
          Map<Integer, PeptideBean> vPepProtList = getValidatedList(pepProtList);
 
-        vt = new PeptideTable(vPepProtList, null);
+        vt = new PeptideTable(vPepProtList, null,false);
         pepTableLayout.addComponent(vt);
         if (trs != null) {
             PepSize = trs.getCurrentSize();
@@ -178,7 +178,7 @@ public class PeptidesTableLayout extends VerticalLayout implements Serializable,
                     headerLayout.setComponentAlignment(pepLabel, Alignment.TOP_RIGHT);
 
                     pepTableLayout.removeAllComponents();
-                    pepTable = new PeptideTable(pepProtList, null);
+                    pepTable = new PeptideTable(pepProtList, null,false);
                     pepTableLayout.addComponent(pepTable);
                     trs1.setTable(pepTable);
                     pepTable.setHeight(vt.getHeight() + "");
