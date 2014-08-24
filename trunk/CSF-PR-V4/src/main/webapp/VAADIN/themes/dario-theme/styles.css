@@ -1,0 +1,11 @@
+/* 
+    Document   : styles
+    Created on : Aug 30, 2013, 3:39:31 PM
+    Author     : Y.M
+    Description:
+        Purpose of the stylesheet follows.
+*/
+@import "../reindeer/legacy-styles.css";
+@import "custom.css";
+
+

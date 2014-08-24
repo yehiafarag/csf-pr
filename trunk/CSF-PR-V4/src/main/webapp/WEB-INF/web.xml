@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+    <display-name>Vaadin Web Application</display-name>
+    <listener>
+		<listener-class>probe.com.listeners.ContextListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>probe.com.listeners.SessionListener</listener-class>
+    </listener>
+    <!-- Session Configuration -->
+    <session-config>
+        <session-timeout>15</session-timeout>
+    </session-config>
+    <context-param>
+        <description>Vaadin production mode</description>
+        <param-name>productionMode</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <description>Admin Username </description>
+        <param-name>adminName</param-name>
+        <param-value>CSFADMIN</param-value>
+    </context-param>
+    <context-param>
+        <description>Admin email </description>
+        <param-name>adminEmail</param-name>
+        <param-value>admin@csf.no</param-value>
+    </context-param>
+
+    <context-param>
+        <description>Admin Password</description>
+        <param-name>adminPassword</param-name>
+        <param-value>norway</param-value>
+    </context-param>
+
+    <context-param>
+        <description>Database url</description>
+        <param-name>url</param-name>
+        <param-value>jdbc:mysql://localhost:3306/</param-value>
+    </context-param>
+    <context-param>
+        <description>Database name</description>
+        <param-name>dbName</param-name>
+        <param-value>csf_db_v2</param-value>
+    </context-param>
+    <context-param>
+        <description>Database Driver</description>
+        <param-name>driver</param-name>
+        <param-value>com.mysql.jdbc.Driver</param-value>
+    </context-param>
+    <context-param>
+        <description>Database Password</description>
+        <param-name>password</param-name>
+        <param-value>qwe1212qwe1212</param-value>
+    </context-param>
+    <context-param>
+        <description>Database Username</description>
+        <param-name>userName</param-name>
+        <param-value>root</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
+        <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+        <init-param>
+            <description>Vaadin UI to display</description>
+            <param-name>UI</param-name>
+            <param-value>probe.com.AppController</param-value>
+        </init-param>
+        <init-param>
+            <description>Application widgetset</description>
+            <param-name>widgetset</param-name>
+            <param-value>probe.com.AppWidgetSet</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+</web-app>
