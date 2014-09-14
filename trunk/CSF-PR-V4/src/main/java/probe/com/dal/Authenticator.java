@@ -42,7 +42,7 @@ public class Authenticator implements Serializable{
 	public boolean regUser( String username,String password,boolean admin,String email)
 	{
 		
-		boolean test = db.regUser(username, password,admin,email);
+		boolean test = db.storeNewUser(username, password,admin,email);
 		return test;
 	}
 	
@@ -75,7 +75,7 @@ public class Authenticator implements Serializable{
 
 	public boolean removeExp(int expId) {
 		
-		return db.removeExperiment(expId);
+		return db.removeDataset(expId);
 	}
 
 }

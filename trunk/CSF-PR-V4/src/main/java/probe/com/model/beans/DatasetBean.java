@@ -13,9 +13,9 @@ public class DatasetBean implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     private int expFile;//on upload file to get file type
-    private int ready;//Complete experience is ready to show
-    private int expId;
-    private int fractionRange;
+//    private int ready;//Complete experience is ready to show
+    private int datasetId;
+//    private int fractionRange;
     private List<StandardProteinBean> standerdPlotProt;
     private int peptidesInclude;
     private String name, description;
@@ -30,12 +30,12 @@ public class DatasetBean implements Serializable {
     private Set<Integer> peptidesIds;
     private Map<String, PeptideBean> gPeptideList ;
 
-    public void setExpId(int expId) {
-        this.expId = expId;
+    public void setDatasetId(int datasetId) {
+        this.datasetId = datasetId;
     }
 
-    public int getExpId() {
-        return expId;
+    public int getDatasetId() {
+        return datasetId;
     }
 
     public void setName(String name) {
@@ -66,17 +66,17 @@ public class DatasetBean implements Serializable {
         this.expFile = expFile;
     }
 
-    public int getExpFile() {
+    public int getDatasetFile() {
         return expFile;
     }
 
-    public void setReady(int ready) {
-        this.ready = ready;
-    }
-
-    public int getReady() {
-        return ready;
-    }
+//    public void setReady(int ready) {
+//        this.ready = ready;
+//    }
+//
+//    public int getReady() {
+//        return ready;
+//    }
 
     public void setProteinList(Map<String, ProteinBean> proteinList) {
         this.proteinList = proteinList;
@@ -182,13 +182,13 @@ public class DatasetBean implements Serializable {
         this.peptidesNumber = peptidesNumber;
     }
 
-    public int getFractionRange() {
-        return fractionRange;
-    }
+//    public int getFractionRange() {
+//        return fractionRange;
+//    }
 
-    public void setFractionRange(int fractionRange) {
-        this.fractionRange = fractionRange;
-    }
+//    public void setFractionRange(int fractionRange) {
+//        this.fractionRange = fractionRange;
+//    }
 
     public String getDescription() {
         return description;
@@ -214,11 +214,11 @@ public class DatasetBean implements Serializable {
         this.peptidesIds = peptidesIds;
     }
 
-    public int getExpType() {
+    public int getDatasetType() {
         return expType;
     }
 
-    public void setExpType(int expType) {
+    public void setDatasetType(int expType) {
         this.expType = expType;
     }
 

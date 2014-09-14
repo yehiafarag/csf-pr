@@ -19,10 +19,11 @@ public class ContextListener implements ServletContextListener,Serializable {
 	private static final long serialVersionUID = 1L;
 	private  String URL,D_B_NAME ,DRIVER ,USER_NAME , PASSWORD ;
 	private String adminName ,adminPassword,adminEmail;
-	
+	@Override
 	public void contextDestroyed(ServletContextEvent event) {
 		
 	}
+        @Override
 	public void contextInitialized(ServletContextEvent event) {
 		
 		ServletContext scx = event.getServletContext();
@@ -33,8 +34,7 @@ public class ContextListener implements ServletContextListener,Serializable {
 		PASSWORD = scx.getInitParameter("password");
 		adminName = scx.getInitParameter("adminName");
 		adminEmail = scx.getInitParameter("adminEmail");
-		adminPassword = scx.getInitParameter("adminPassword");
-		
+		adminPassword = scx.getInitParameter("adminPassword");		
 		DataAccess da = new DataAccess(URL,D_B_NAME,DRIVER,USER_NAME,PASSWORD);
 		da.createTable();
 		Authenticator auth = new Authenticator(URL,D_B_NAME,DRIVER,USER_NAME,PASSWORD);

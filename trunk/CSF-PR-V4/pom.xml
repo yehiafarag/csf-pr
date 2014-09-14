@@ -186,7 +186,7 @@
                 <artifactId>vaadin-maven-plugin</artifactId>
                 <version>${vaadin.plugin.version}</version>
                 <configuration>
-                    <extraJvmArgs>-Xmx1024M </extraJvmArgs>
+                    <extraJvmArgs>-Xmx5000M</extraJvmArgs>
                     <!-- <runTarget>mobilemail</runTarget> -->
                     <!-- We are doing "inplace" but into subdir VAADIN/widgetsets. This 
                     way compatible with Vaadin eclipse plugin. -->
@@ -202,6 +202,7 @@
                     <style>OBF</style>
                     <strict>true</strict>
                     <runTarget>http://localhost:8080/</runTarget>
+                    <localWorkers>2</localWorkers>
                 </configuration>
                 <executions>
                     <execution>

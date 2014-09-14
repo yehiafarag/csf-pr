@@ -35,6 +35,7 @@ public class PeptideBean implements Serializable {
     private Boolean deamidationAndGlycopattern;
     private String glycopatternPositions;
     private Boolean likelyNotGlycosite;
+    private String mainProtDesc;
 
     public String getProtein() {
         return protein;
@@ -259,5 +260,13 @@ public class PeptideBean implements Serializable {
 
     public void setGlycopatternPositions(String glycopatternPositions) {
         this.glycopatternPositions = glycopatternPositions;
+    }
+
+    public String getMainProtDesc() {
+        return mainProtDesc;
+    }
+
+    public void setMainProtDesc(String mainProtDesc) {
+        this.mainProtDesc = mainProtDesc;
     }
 }
