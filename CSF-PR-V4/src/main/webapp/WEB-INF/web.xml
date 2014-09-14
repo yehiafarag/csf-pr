@@ -58,6 +58,11 @@
         <param-name>userName</param-name>
         <param-value>root</param-value>
     </context-param>
+    <context-param>
+        <description>exported files folder url</description>
+        <param-name>filesURL</param-name>
+        <param-value>C:\\CSF_Files</param-value>
+    </context-param>
     <servlet>
         <servlet-name>Vaadin Application Servlet</servlet-name>
         <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>

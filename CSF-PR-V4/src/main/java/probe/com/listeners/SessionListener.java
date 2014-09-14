@@ -16,12 +16,11 @@ public class SessionListener implements HttpSessionListener, Serializable{
 
     @Override
     public void sessionCreated(HttpSessionEvent hse) {
-        System.out.println("session started");
+       System.gc();
     }
 
     @Override
-    public void sessionDestroyed(HttpSessionEvent hse) {
-       
+    public void sessionDestroyed(HttpSessionEvent hse) {       
         System.gc();
     }
 

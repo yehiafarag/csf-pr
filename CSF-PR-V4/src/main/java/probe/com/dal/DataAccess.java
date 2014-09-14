@@ -18,12 +18,26 @@ public class DataAccess implements Serializable {
      *
      */
     private static final long serialVersionUID = -7011020617952045934L;
-    private DataBase db;
+    private final DataBase db;
 
+     /**
+     * @param url database url
+     * @param dbName database name
+     * @param driver database driver
+     * @param userName database username
+     * @param password database password
+     *
+     */
     public DataAccess(String url, String dbName, String driver, String userName, String password) {
         db = new DataBase(url, dbName, driver, userName, password);
     }
 
+     /**
+     * create database tables if not exist
+     *
+     * @return test boolean (successful creation)
+     *
+     */
     public boolean createTable() {
 
         boolean test = db.createTables();
@@ -32,178 +46,238 @@ public class DataAccess implements Serializable {
 
     }
 
-    public boolean setProteinFile(DatasetBean exp) {
-//        DatasetBean tempExp = db.readyExper(exp.getExpId());//confirm that the experiment is new
-//        if (tempExp.getReady() == 0) {
-//            boolean test = db.setProteinFile(exp);
-//            return test;
-//        } else {
-            return false;
-//        }
-    }
 
-    public boolean updateProteinFile(DatasetBean exp) {
-        boolean test =false;
-//        DatasetBean tempExp = db.readyExper(exp.getExpId());//check the previous uploaded file
-//        if (tempExp.getReady() == 1 && tempExp.getFractionsNumber() > 0)//we need to update ready number to 2 -- previous file was protein fraction file
-//        {
-//            tempExp.setReady(2);
-//
-//
-//        }
-//        tempExp.setProteinsNumber(exp.getProteinsNumber());
-//        db.updateExperiment(null, tempExp);
-//        test = db.checkAndUpdateProt(exp);
-        return test;
-
-
-    }
-
-    public boolean setProteinFractionFile(DatasetBean exp) {
-        
-        DatasetBean tempExp = db.readyExper(exp.getExpId());//confirm that the exp is new
-        if (tempExp.getReady() == 0) {
-            boolean test = db.setProteinFractionFile(exp);
-            return test;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean updateProteinFractionFile(DatasetBean exp) {
-         
-        DatasetBean tempExp = db.readyExper(exp.getExpId());//check the previous uploaded file
-        boolean test = db.updateProtFractionFile(tempExp, exp);
-        return test;
-
-    }
-
-    public boolean removeExperiment(int expId) {
-        boolean test = db.removeExperiment(expId);
+    /**
+     * remove dataset from the database
+     *
+     * @param datasetId
+     * @return boolean successful process
+     */
+    public boolean removeDataset(int datasetId) {
+        boolean test = db.removeDataset(datasetId);
         return test;
     }
 
-    public Map<Integer, DatasetBean> getExperiments()//get experiments list
-        {
-        Map<Integer, DatasetBean> expList = db.getExperiments();
-        return expList;
+    /**
+     * get the available datasets
+     *
+     * @return datasetsList 
+     */
+    public Map<Integer, DatasetBean> getDatasets()//get dataset list
+    {
+        Map<Integer, DatasetBean> datasestList = db.getDatasets();
+        return datasestList;
     }
 
-    public DatasetBean getExperiment(int expId) {
-        DatasetBean exp = db.getExperiment(expId);
-        return exp;
-    }
-
-    public boolean setPeptideFile(DatasetBean exp) {
-        boolean test =false;// db.setPeptideFile(exp);
-        return test;
-    }
-
-    public boolean updatePeptideFile(DatasetBean exp) {
-
-       // DatasetBean tempExp = db.readyExper(exp.getExpId());//check the previous uploaded file
-        boolean test = db.setPeptideFile(exp.getPeptideList());
-        return test;
+    /**
+     * get selected dataset
+     *
+     * @param datasetId
+     * @return dataset
+     */
+    public DatasetBean getDataset(int datasetId) {
+        DatasetBean dataset = db.getStoredDataset(datasetId);
+        return dataset;
     }
 
    
-    public Map<String, ProteinBean> getProteinsList(int expId) {
-        Map<String, ProteinBean> proteinsList = db.getExpProteinsList(expId);
+
+    public boolean updatePeptideFile(DatasetBean dataset) {
+
+        boolean test = db.setPeptideFile(dataset.getPeptideList());
+        return test;
+    }
+
+    /**
+     * get proteins map for especial dataset
+     *
+     * @param datasetId
+     * @return proteinsList
+     */
+    public Map<String, ProteinBean> getProteinsList(int datasetId) {
+        Map<String, ProteinBean> proteinsList = db.getDatasetProteinsList(datasetId);
         return proteinsList;
     }
 
-    public Map<Integer, PeptideBean> getPeptidesList(int expId) {
-        Map<Integer, PeptideBean> peptidesList = db.getExpPeptides(expId);
+    /**
+     * get dataset peptides list
+     *
+     * @param datasetId
+     * @return dataset peptide List
+     */
+    public Map<Integer, PeptideBean> getPeptidesList(int datasetId) {
+        Map<Integer, PeptideBean> peptidesList = db.getDatasetPeptidesList(datasetId);   
+        
         return peptidesList;
     }
     
+   
+    /**
+     * get fraction list for selected dataset
+     *
+     * @param datasetId
+     * @return fractions  list for the selected dataset
+     */
 
-    public Map<Integer, FractionBean> getFractionsList(int expId) {
-        Map<Integer, FractionBean> fractionsList = db.getFractionsList(expId);
+    public Map<Integer, FractionBean> getFractionsList(int datasetId) {
+        Map<Integer, FractionBean> fractionsList = db.getFractionsList(datasetId);
         return fractionsList;
 
     }
 
     ///new v-2
-    public Map<Integer, ProteinBean>  searchProtein(String accession, int expId,boolean validatedOnly) {
+     /**
+     * search for proteins by accession keywords
+     *
+     * @param accession array of query words
+     * @param datasetId  
+     * @param validatedOnly only validated proteins results
+     * @return dataset Proteins Searching List
+     */
+    public Map<Integer, ProteinBean>  searchProteinByAccession(String accession, int datasetId,boolean validatedOnly) {
 
-        Map<Integer, ProteinBean> protExpList  = db.searchProtein(accession, expId,validatedOnly);
-//        if (pb != null && protList != null) {
-//            protList.add(pb);
-//        }
-//        if (protList != null) {
-//            protList = db.searchOtherProteins(accession, expId, protList);
-//        } else {
-//            protList = new ArrayList<ProteinBean>();
-//            protList.add(pb);
-//        }
-        return protExpList ;
+        Map<Integer, ProteinBean> datasetProteinsSearchingList  = db.searchProteinByAccession(accession, datasetId,validatedOnly);
+        return datasetProteinsSearchingList ;
     }
+    
+    
 
-    public Map<Integer, PeptideBean> getPeptidesProtList(Set<Integer> peptideIds) {
+     /**
+     * get peptides list form giving ids
+     *
+     * @param peptideIds peptides IDs
+     * @return peptides list 
+     */
+    public Map<Integer, PeptideBean> getPeptidesList(Set<Integer> peptideIds) {
 
-        Map<Integer, PeptideBean> peptidesProtList = db.getPeptidesProtList(peptideIds);
-        return peptidesProtList;
-    }
-
-    public Map<Integer, FractionBean> getProteinFractionList(String accession, int expId) {
-        Map<Integer, FractionBean> protionFractList = db.getProteinFractionList(accession, expId);
-        return protionFractList;
-    }
-
-    public Map<Integer, ProteinBean> searchProteinByName(String protSearch, int expId,boolean validatedOnly) {
-        Map<Integer, ProteinBean> proteinsList = db.searchProteinByName(protSearch, expId,validatedOnly);
-        return proteinsList;
-    }
-
-    public Map<Integer,ProteinBean> searchProteinByPeptideSequence(String protSearch, int expId,boolean validatedOnly) {
-
-        Map<Integer,ProteinBean> proteinsList = db.searchProteinByPeptideSequence(protSearch, expId, validatedOnly);
-        return proteinsList;
-    }
-
-    public boolean updateFractionRange(DatasetBean exp) {
-        boolean test = db.updateFractionRange(exp);
-        return test;
-    }
-
-    public Map<Integer, PeptideBean> getPeptidesList(List<Integer> peptideIds,
-            String accession) {
         Map<Integer, PeptideBean> peptidesProtList = db.getPeptidesList(peptideIds);
         return peptidesProtList;
     }
 
-    public Set<Integer> getExpPepProIds(int expId, String accession) {
-        Set<Integer> expProPepIds = db.getExpPepProIds(expId, accession);
-
-        return expProPepIds;
+    /**
+     * get proteins fractions average list
+     *
+     * @param accession  
+     * @param datasetId
+     * @return dataset peptide List
+     */ 
+    public Map<Integer, FractionBean> getProteinFractionList(String accession, int datasetId) {
+        Map<Integer, FractionBean> protionFractList = db.getProteinFractionList(accession, datasetId);
+        return protionFractList;
     }
 
-    public boolean setStandardPlotProt(DatasetBean exp) {
+    /**
+     * search for proteins by protein description keywords
+     *
+     * @param protSearchKeyword  array of query words
+     * @param datasetId dataset Id
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+    public Map<Integer, ProteinBean> searchProteinByName(String protSearchKeyword, int datasetId,boolean validatedOnly) {
+        Map<Integer, ProteinBean> proteinsList = db.searchProteinByName(protSearchKeyword, datasetId,validatedOnly);
+        return proteinsList;
+    }
+
+     /**
+     * search for proteins by peptide sequence keywords
+     *
+     * @param peptideSequenceKeyword  array of query words
+     * @param datasetId dataset Id
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+    public Map<Integer,ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, int datasetId,boolean validatedOnly) {
+
+        Map<Integer,ProteinBean> proteinsList = db.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
+        return proteinsList;
+    }
+
+    /**
+     * update fraction range data in the database
+     *
+     * @param dataset
+     *
+     * @return test boolean successful process
+     */
+    public boolean updateFractionRange(DatasetBean dataset) {
+        boolean test = db.updateFractionRange(dataset);
+        return test;
+    }
+
+     /**
+     * get peptides data for a database using peptides ids
+     *
+     * @param peptideIds
+     * @return list of peptides
+     */
+    public Map<Integer, PeptideBean> getPeptidesList(List<Integer> peptideIds) {
+        Map<Integer, PeptideBean> peptidesProtList = db.getPeptidesList(peptideIds);
+        return peptidesProtList;
+    }
+
+    /**
+     * get peptides id list for selected protein in selected dataset
+     *
+     * @param datasetId
+     * @param accession
+     * @return peptides id list for the selected protein group in the selected
+     * dataset
+     */
+    public Set<Integer> getDatasetProteinsPeptidesIds(int datasetId, String accession) {
+        Set<Integer> datasetProPepIds = db.getDatasetPepProIds(datasetId, accession);
+
+        return datasetProPepIds;
+    }
+
+    /**
+     * store standard plot data in the database
+     *
+     * 
+     * @param dataset dataset bean (in case of update existing dataset)
+     * @return test boolean
+     */
+    public boolean setStandardPlotProt(DatasetBean dataset) {
         boolean test= false;
-          List<StandardProteinBean> standardPlotList = db.getStandardProtPlotList(exp.getExpId());
+          List<StandardProteinBean> standardPlotList = db.getStandardProtPlotList(dataset.getDatasetId());
           if(!standardPlotList.isEmpty())
           {
-              test = db.removeStandarPlot(exp.getExpId());              
+              test = db.removeStandarPlot(dataset.getDatasetId());              
           }
-          test = db.setStandardPlotProt(exp);
         return test;
     }
 
-    public boolean updateStandardPlotProt(DatasetBean exp) {
-        boolean test = db.updateStandardPlotProt(exp);
+     /**
+     * read and store standard plot files in the database
+     *
+     * 
+     * @param dataset dataset bean (in case of update existing dataset)
+     * @return test boolean
+     */
+    public boolean updateStandardPlotProt(DatasetBean dataset) {
+        boolean test = db.updateStandardPlotProt(dataset);
         return test;
     }
 
-    public List<StandardProteinBean> getStandardProtPlotList(int expId) {
+     /**
+     * retrieve standard proteins data for fraction plot
+     * @param datasetId
+     * @return standardPlotList
+     */
+    public List<StandardProteinBean> getStandardProtPlotList(int datasetId) {
 
-        List<StandardProteinBean> standardPlotList = db.getStandardProtPlotList(expId);
+        List<StandardProteinBean> standardPlotList = db.getStandardProtPlotList(datasetId);
         return standardPlotList;
     }
     
-     public boolean updateExpData(DatasetBean exp)
+    /**
+     * retrieve standard  proteins data for fraction plot
+     * @param dataset 
+     * @return test boolean
+     */
+     public boolean updateDatasetData(DatasetBean dataset)
      {
-           boolean test = db.updateExpData(exp);
+           boolean test = db.updateDatasetData(dataset);
             return test;
      
      }

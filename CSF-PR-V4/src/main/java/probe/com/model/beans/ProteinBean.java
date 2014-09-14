@@ -36,7 +36,7 @@ public class ProteinBean implements Serializable,Comparable<ProteinBean> {
         this.chromosomeNumber = pb.getChromosomeNumber();
         this.numberPeptides = pb.getNumberPeptides();
         this.numberSpectra = pb.getNumberSpectra();
-        this.expId = pb.getExpId();
+        this.expId = pb.getDatasetId();
         this.decoy = pb.getDecoy();
         this.protGroupId= pb.getProtGroupId();
 
@@ -342,11 +342,11 @@ public class ProteinBean implements Serializable,Comparable<ProteinBean> {
         this.decoy = decoy;
     }
 
-    public int getExpId() {
+    public int getDatasetId() {
         return expId;
     }
 
-    public void setExpId(int expId) {
+    public void setDatasetId(int expId) {
         this.expId = expId;
     }
 
