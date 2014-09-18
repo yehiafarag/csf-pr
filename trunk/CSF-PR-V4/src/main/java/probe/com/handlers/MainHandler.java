@@ -361,5 +361,11 @@ public class MainHandler implements Serializable {
 
         return treeSet;
     }
+    
+    public Map<Integer, ProteinBean> getValidatedProteinsList(Map<Integer, ProteinBean> proteinsList) {
+        Map<Integer, ProteinBean> vProteinsList = computing.getValidatedProteinsList(proteinsList);
+        return vProteinsList;
+
+    }
 
 }

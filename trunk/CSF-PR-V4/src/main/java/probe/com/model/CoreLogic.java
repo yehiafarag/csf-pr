@@ -135,6 +135,10 @@ public class CoreLogic implements Serializable {
         if (datasetList.get(datasetId).getProteinList() == null || datasetList.get(datasetId).getProteinList().isEmpty()) {
             proteinsList = da.getProteinsList(datasetId);
             datasetList.get(datasetId).setProteinList(proteinsList);
+            
+        }
+        else{
+        proteinsList = datasetList.get(datasetId).getProteinList();
         }
 
         return proteinsList;
@@ -603,5 +607,25 @@ public class CoreLogic implements Serializable {
         }
 
         return treeSet;
+    }
+    
+     /**
+     * get validated proteins list
+     *
+     * @param proteinsList
+     *
+     * @return vProteinsList list of valid proteins
+     */
+    public Map<Integer, ProteinBean> getValidatedProteinsList(Map<Integer, ProteinBean> proteinsList) {
+        Map<Integer, ProteinBean> vProteinsList = new HashMap<Integer, ProteinBean>();
+        for (int str : proteinsList.keySet()) {
+            ProteinBean pb = proteinsList.get(str);
+            if (pb.isValidated()) {
+                vProteinsList.put(str, pb);
+            }
+
+        }
+        return vProteinsList;
+
     }
 }
