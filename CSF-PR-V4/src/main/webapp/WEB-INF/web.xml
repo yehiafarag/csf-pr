@@ -59,9 +59,9 @@
         <param-value>root</param-value>
     </context-param>
     <context-param>
-        <description>exported files folder url</description>
+        <description>exported files folder url C:\CSF_Files(/home/probe/user/CSF-PR-FILES)</description>
         <param-name>filesURL</param-name>
-        <param-value>C:\\CSF_Files</param-value>
+        <param-value>/home/probe/user/CSF-PR-FILES</param-value>
     </context-param>
     <servlet>
         <servlet-name>Vaadin Application Servlet</servlet-name>
