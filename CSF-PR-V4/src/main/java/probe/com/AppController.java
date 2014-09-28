@@ -6,7 +6,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 import javax.servlet.ServletContext;
 import probe.com.handlers.MainHandler;
-import probe.com.view.ApplicationLayout;
+import probe.com.view.Application;
 
 /**
  * The Application's "start point" class
@@ -38,7 +38,7 @@ public class AppController extends UI {
         //init experment handler
         handler = new MainHandler(dbURL, dbName, dbDriver, dbUserName, dbPassword,filesURL);
         //init main layout
-        ApplicationLayout application = new ApplicationLayout(handler);
+        Application application = new Application(handler);
         this.getPage().setTitle("CSF Proteome Resource (CSF-PR)");
         setContent(application);
     }

@@ -140,7 +140,7 @@ public class MainHandler implements Serializable {
      * @param datasetId
      * @return dataset peptide List
      */
-    public Map<Integer, PeptideBean> getPeptidesList(int datasetId) {
+    public Map<Integer, PeptideBean> getAllDatasetPeptidesList(int datasetId) {
         return computing.getPeptidesList(datasetId);
     }
 
@@ -175,9 +175,24 @@ public class MainHandler implements Serializable {
      */
     public Map<Integer, PeptideBean> getPeptidesList(int datasetId, boolean validated) {
 
-        return computing.getPeptidesList(datasetId, validated);
+        return computing.getAllDatasetPeptidesList(datasetId, validated);
 
     }
+    
+     /**
+     * get dataset peptides number (valid peptides or all peptides)
+     *
+     * @param datasetId
+     * @param validated validated peptides (true/false)
+     * @return dataset peptide List
+     */
+    public int getPeptidesNumber(int datasetId, boolean validated) {
+
+        return computing.getAllDatasetPeptidesNumber(datasetId, validated);
+
+    }
+    
+    
 
     /**
      * get peptides list for selected protein in selected dataset
