@@ -176,11 +176,11 @@ public class CoreLogic implements Serializable {
      * @return dataset peptide List
      */
     public Map<Integer, PeptideBean> getPeptidesList(int datasetId) {
-        Map<Integer, PeptideBean> peptidesList = datasetList.get(datasetId).getPeptideList();
+//        Map<Integer, PeptideBean> peptidesList = datasetList.get(datasetId).getPeptideList();
         Map<Integer, PeptideBean> updatedPeptidesList = new HashMap<Integer, PeptideBean>();
-        if (peptidesList == null || peptidesList.isEmpty()) {
+//        if (peptidesList == null || peptidesList.isEmpty()) {
 
-            peptidesList = da.getPeptidesList(datasetId);
+           Map<Integer, PeptideBean>   peptidesList = da.getPeptidesList(datasetId);
             Map<String, ProteinBean> protList = retriveProteinsList(datasetId);
 
             for (int key : peptidesList.keySet()) {
@@ -200,9 +200,9 @@ public class CoreLogic implements Serializable {
                 }
                 updatedPeptidesList.put(key, pb);
             }
-        } else {
-            updatedPeptidesList.putAll(peptidesList);
-        }
+//        } else {
+//            updatedPeptidesList.putAll(peptidesList);
+//        }
         return updatedPeptidesList;
     }
 
@@ -213,7 +213,7 @@ public class CoreLogic implements Serializable {
      * @param validated validated peptides (true/false)
      * @return dataset peptide List
      */
-    public Map<Integer, PeptideBean> getPeptidesList(int datasetId, boolean validated) {
+    public Map<Integer, PeptideBean> getAllDatasetPeptidesList(int datasetId, boolean validated) {
 
         Map<Integer, PeptideBean> peptidesList = getPeptidesList(datasetId);
         if (validated) {
@@ -228,6 +228,32 @@ public class CoreLogic implements Serializable {
             return validatedPtidesList;
         } else {
             return peptidesList;
+        }
+    }
+    
+    
+    /**
+     * get dataset peptides number (valid peptides or all peptides)
+     *
+     * @param datasetId
+     * @param validated validated peptides (true/false)
+     * @return dataset peptide List
+     */
+    public int getAllDatasetPeptidesNumber(int datasetId, boolean validated) {
+
+        Map<Integer, PeptideBean> peptidesList =  da.getPeptidesList(datasetId);
+       int index = 0;
+        if (validated) {
+           int x = 0;
+            for (PeptideBean pb : peptidesList.values()) {
+
+                if (pb.getValidated() == 1.0) {
+                   index++;
+                }
+            }
+            return index;
+        } else {
+            return peptidesList.size();
         }
     }
 
