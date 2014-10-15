@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 public class Handler {
 
-    private DAL dal;
+    private final DAL dal;
 
     public Handler(String url, String dbName, String driver, String userName, String password) throws SQLException {
         dal = new DAL(url, dbName, driver, userName, password);
