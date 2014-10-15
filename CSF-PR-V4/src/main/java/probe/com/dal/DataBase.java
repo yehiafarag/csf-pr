@@ -1219,10 +1219,7 @@ public class DataBase implements Serializable {
                 temPb.setDescription(rs.getString("description"));
                 if (temPb.getOtherProteins() == null || temPb.getOtherProteins().equals("")) {
                     proteinDatasetList.put(temPb.getAccession(), temPb);
-                } else {
-                    if (temPb.getAccession().equalsIgnoreCase("Q15155")) {
-                        System.out.println("temPb.getAccession() + \",\" + temPb.getOtherProteins()  " + temPb.getAccession() + "," + temPb.getOtherProteins());
-                    }
+                } else {                  
                     proteinDatasetList.put(temPb.getAccession() + "," + temPb.getOtherProteins(), temPb);
                 }
             }
