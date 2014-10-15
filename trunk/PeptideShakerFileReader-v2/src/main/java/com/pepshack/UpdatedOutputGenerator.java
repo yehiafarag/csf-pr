@@ -19,8 +19,6 @@ import com.pepshack.util.beans.ExperimentBean;
 import com.pepshack.util.beans.FractionBean;
 import com.pepshack.util.beans.PeptideBean;
 import com.pepshack.util.beans.ProteinBean;
-import static eu.isas.peptideshaker.export.OutputGenerator.getPeptideModificationLocations;
-import static eu.isas.peptideshaker.export.OutputGenerator.getPeptideModificationsAsString;
 import eu.isas.peptideshaker.myparameters.PSParameter;
 import eu.isas.peptideshaker.myparameters.PSPtmScores;
 import eu.isas.peptideshaker.preferences.SpectrumCountingPreferences;
@@ -34,9 +32,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.sound.midi.SysexMessage;
 import javax.swing.JLabel;
 
 /**
@@ -834,7 +829,7 @@ public class UpdatedOutputGenerator {
                 fractionFileNames.add(fileName);
 //                System.out.println("fractions file names "+ fileName);
             }
-            if (fractionFileNames.isEmpty()|| fractionFileNames.size()==1) {
+            if (fractionFileNames.isEmpty() ){//|| fractionFileNames.size()==1) {
                 exp.setFractionsList(fractionsList);
                 return exp;
             }
