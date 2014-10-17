@@ -42,6 +42,10 @@ public class PeptideTable extends Table implements Serializable {
         this.addContainerProperty("Peptide Protein(s)", String.class, null);
         this.setColumnCollapsed("Peptide Protein(s)", true);
 
+        
+        this.addContainerProperty("Peptide Prot. Descrip.", String.class, null);
+        this.setColumnCollapsed("Peptide Prot. Descrip.", true);
+        
         final String sequence = "Sequence";
         this.addContainerProperty(sequence, CustomLabel.class, null);
         this.addContainerProperty("AA Before", String.class, null);
@@ -58,9 +62,9 @@ public class PeptideTable extends Table implements Serializable {
         this.addContainerProperty("Other Prot Descrip.", String.class, null);
 
         this.setColumnCollapsed("Other Protein(s)", true);
-
-        this.addContainerProperty("Peptide Prot. Descrip.", String.class, null);
-        this.setColumnCollapsed("Peptide Prot. Descrip.", true);
+//
+//        this.addContainerProperty("Peptide Prot. Descrip.", String.class, null);
+//        this.setColumnCollapsed("Peptide Prot. Descrip.", true);
         this.addContainerProperty("Variable Modification", String.class, null);
         this.addContainerProperty("Location Confidence", String.class, null);
         this.setColumnCollapsed("Variable Modification", true);
@@ -195,8 +199,8 @@ public class PeptideTable extends Table implements Serializable {
                 seq.setDescription("The Peptide Sequence: " + pb.getSequence());
             }
 
-            this.addItem(new Object[]{index, pi, pb.getPeptideProteins(), seq, pb.getAaBefore(), pb.getAaAfter(), pb.getPeptideStart(), pb.getPeptideEnd(), pb.getNumberOfValidatedSpectra(),
-                pb.getOtherProteins(), pb.getOtherProteinDescriptions(), pb.getPeptideProteinsDescriptions(),
+            this.addItem(new Object[]{index, pi, pb.getPeptideProteins(), pb.getPeptideProteinsDescriptions(), seq, pb.getAaBefore(), pb.getAaAfter(), pb.getPeptideStart(), pb.getPeptideEnd(), pb.getNumberOfValidatedSpectra(),
+                pb.getOtherProteins(), pb.getOtherProteinDescriptions(),
                 pb.getVariableModification(), pb.getLocationConfidence(), pb.getPrecursorCharges(), enz, pb.getSequenceTagged(), deamidationAndGlycopattern, pb.getGlycopatternPositions(), Double.valueOf(df.format(pb.getConfidence())), validated}, index);
             index++;
         }

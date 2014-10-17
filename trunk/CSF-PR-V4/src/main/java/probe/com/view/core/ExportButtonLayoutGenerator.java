@@ -123,7 +123,7 @@ public class ExportButtonLayoutGenerator extends VerticalLayout implements Seria
             excelExport.setExportFileName("Fractions for ( " + accession + " ).xls");
 
         }
-        excelExport.setMimeType(excelExport.EXCEL_MIME_TYPE);
+        excelExport.setMimeType(ExcelExport.EXCEL_MIME_TYPE);
         excelExport.setDisplayTotals(false);
         excelExport.export();
 
