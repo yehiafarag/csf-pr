@@ -382,5 +382,22 @@ public class MainHandler implements Serializable {
         return vProteinsList;
 
     }
+    
+    /**
+     * this function to be use for csv peptides exporting with large datasets
+     *
+     * @param datasetId
+     * @param validated boolean the peptides type
+     * @param datasetName
+     * @param dataType validated/all
+     * @param exportFileType csv or xls
+     */
+    public void  exportPeptidesToFile(int datasetId, boolean validated,String datasetName,String dataType,String exportFileType){
+         computing.exportPeptidesToFile(datasetId, validated, datasetName, dataType,exportFileType);
+    
+    
+    }
+    
+    
 
 }

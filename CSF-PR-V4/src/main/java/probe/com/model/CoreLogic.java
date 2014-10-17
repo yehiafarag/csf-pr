@@ -16,6 +16,7 @@ import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
 import probe.com.model.beans.ProteinBean;
 import probe.com.model.beans.StandardProteinBean;
+import probe.com.model.util.FileExporter;
 
 /**
  * @author Yehia Farag
@@ -32,7 +33,7 @@ public class CoreLogic implements Serializable {
     private final TreeMap<Integer, String> datasetNamesList = new TreeMap<Integer, String>();//for dropdown select list
     private Map<Integer, DatasetBean> datasetList;
     private final Map<Integer, Integer> datasetIndex = new HashMap<Integer, Integer>();
-
+    private final FileExporter exporter = new FileExporter();
     public CoreLogic(String url, String dbName, String driver, String userName, String password, String filesURL) {
         da = new DataAccess(url, dbName, driver, userName, password);
 
@@ -654,4 +655,23 @@ public class CoreLogic implements Serializable {
         return vProteinsList;
 
     }
+
+    /**
+     * this function to be use for csv peptides exporting with large datasets
+     *
+     * @param datasetId
+     * @param validated boolean the peptides type
+     * @param datasetName
+     * @param dataType validated/all
+     * @param exportFileType csv or xls
+     */
+    public void exportPeptidesToFile(int datasetId, boolean validated, String datasetName, String dataType,String exportFileType) {
+        Map<Integer, PeptideBean> allPeptides = getAllDatasetPeptidesList(datasetId, validated);
+        if(exportFileType.equalsIgnoreCase("csv"))
+            exporter.expotPeptidesToCSV(allPeptides, datasetName, dataType, filesURL);
+        else            
+            exporter.expotPeptidesToXLS(allPeptides, datasetName, dataType, filesURL);
+    }
+
+    
 }
