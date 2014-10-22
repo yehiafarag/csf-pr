@@ -1036,6 +1036,7 @@ public class DataBase implements Serializable {
                 rs.close();
 
             }
+            conn.close();
 
         } catch (ClassNotFoundException e) {
             System.err.println(e.getLocalizedMessage());
@@ -1053,6 +1054,7 @@ public class DataBase implements Serializable {
             System.err.println(e.getLocalizedMessage());
 
         }
+       
         System.gc();
         return fractionsList;
 
