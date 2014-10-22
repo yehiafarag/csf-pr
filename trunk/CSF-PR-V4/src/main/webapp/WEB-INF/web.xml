@@ -24,7 +24,7 @@
     <context-param>
         <description>Admin email </description>
         <param-name>adminEmail</param-name>
-        <param-value>admin@csf.no</param-value>
+        <param-value>csf-pr@googlegroups.com</param-value>
     </context-param>
 
     <context-param>

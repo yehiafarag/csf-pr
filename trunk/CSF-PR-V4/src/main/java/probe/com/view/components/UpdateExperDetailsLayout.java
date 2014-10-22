@@ -47,7 +47,7 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
         datasetList = handler.getDatasetList();
         List<String> strExpList = new ArrayList<String>();
         for (DatasetBean exp : datasetList.values()) {
-            if (user.getEmail().equalsIgnoreCase("admin@csf.no") || exp.getEmail().equalsIgnoreCase(user.getEmail())) {
+            if (user.getEmail().equalsIgnoreCase("csf-pr@googlegroups.com") || exp.getEmail().equalsIgnoreCase(user.getEmail())) {
                 String str = exp.getDatasetId() + "	" + exp.getName() + "	( " + exp.getUploadedByName() + " )";
                 strExpList.add(str);
             }
@@ -159,6 +159,32 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
         existExpForm.addField(10, publicationLinkField);
         this.addComponent(updateBtn);
         updateBtn.setEnabled(false);
+          updateBtn.addClickListener(new Button.ClickListener() {
+
+                        @Override
+                        public void buttonClick(Button.ClickEvent event) {
+                            dataset = validateForm(dataset, id);
+                            if (dataset != null) {
+                                handler.updatedatasetData(dataset);
+                            }
+                            updateSelect();
+                            clean();
+                        }
+
+                        private void clean() {
+                            expNameField.setValue("");
+                            speciesField.setValue("");
+                            sampleTypeField.setValue("");
+                            sampleProcessingField.setValue("");
+                            instrumentTypeField.setValue("");
+                            fragModeField.setValue("");
+//                            UploadedByNameField.setValue("");
+                            emailField.setValue("");
+                            publicationLinkField.setValue("");
+                            descriptionField.setValue("");
+
+                        }
+                    });
         listener = new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
@@ -188,7 +214,10 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
                     fragModeField.setValue(dataset.getFragMode());
                     fragModeField.setEnabled(true);
 
-                    emailField.setValue(dataset.getEmail());
+                    if(dataset.getEmail().equalsIgnoreCase("ADMIN@CSF.NO"))
+                        emailField.setValue("csf-pr@googlegroups.com");
+                    else
+                        emailField.setValue(dataset.getEmail());
                     // emailField.setEnabled(true);
 
                     descriptionField.setValue(dataset.getDescription());
@@ -197,32 +226,7 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
                     publicationLinkField.setValue(dataset.getPublicationLink());
                     publicationLinkField.setEnabled(true);
 
-                    updateBtn.addClickListener(new Button.ClickListener() {
-
-                        @Override
-                        public void buttonClick(Button.ClickEvent event) {
-                            dataset = validateForm(dataset, id);
-                            if (dataset != null) {
-                                handler.updatedatasetData(dataset);
-                            }
-                            updateSelect();
-                            clean();
-                        }
-
-                        private void clean() {
-                            expNameField.setValue("");
-                            speciesField.setValue("");
-                            sampleTypeField.setValue("");
-                            sampleProcessingField.setValue("");
-                            instrumentTypeField.setValue("");
-                            fragModeField.setValue("");
-//                            UploadedByNameField.setValue("");
-                            emailField.setValue("");
-                            publicationLinkField.setValue("");
-                            descriptionField.setValue("");
-
-                        }
-                    });
+                  
 
                 }
 
@@ -290,7 +294,7 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
         datasetList = handler.getDatasetList();
         List<String> strExpList = new ArrayList<String>();
         for (DatasetBean exp : datasetList.values()) {
-            if (user.getEmail().equalsIgnoreCase("admin@csf.no") || exp.getEmail().equalsIgnoreCase(user.getEmail())) {
+            if (user.getEmail().equalsIgnoreCase("csf-pr@googlegroups.com") || exp.getEmail().equalsIgnoreCase(user.getEmail())) {
                 String str = exp.getDatasetId() + "	" + exp.getName() + "	( " + exp.getUploadedByName() + " )";
                 strExpList.add(str);
             }

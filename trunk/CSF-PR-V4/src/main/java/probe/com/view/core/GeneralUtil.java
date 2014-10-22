@@ -30,7 +30,7 @@ public class GeneralUtil {
     public List<String> getStrExpList(Map<Integer, DatasetBean> expList, String userEmail) {
         List<String> strExpList = new ArrayList<String>();
         for (DatasetBean exp : expList.values()) {
-            if (userEmail.equalsIgnoreCase("admin@csf.no") || exp.getEmail().equalsIgnoreCase(userEmail)) {
+            if (userEmail.equalsIgnoreCase("csf-pr@googlegroups.com") || exp.getEmail().equalsIgnoreCase(userEmail)) {
                 String str = exp.getDatasetId() + "	" + exp.getName() + "	( " + exp.getUploadedByName() + " )";
                 strExpList.add(str);
             }
