@@ -194,17 +194,17 @@ public final class ProteinsLayout extends VerticalLayout implements Serializable
                         String desc = "";
                         //fraction layout
                         if (fractionLayout != null) {
-                            removeComponent(fractionLayout);
+                            typeILayout.removeComponent(fractionLayout);
                         }
                         fractionLayout = new VerticalLayout();
-                        addComponent(fractionLayout);
+                        typeILayout.addComponent(fractionLayout);
                         fractionLayout.setWidth("100%");
                         //peptide layout
                         if (peptideLayout != null) {
-                            removeComponent(peptideLayout);
+                            typeILayout.removeComponent(peptideLayout);
                         }
                         peptideLayout = new VerticalLayout();
-                        addComponent(peptideLayout);
+                        typeILayout.addComponent(peptideLayout);
                         peptideLayout.setWidth("100%");
                         if (protTableLayout.getProteinTableComponent().getValue() != null) {
                             proteinskey = (Integer) protTableLayout.getProteinTableComponent().getValue();
