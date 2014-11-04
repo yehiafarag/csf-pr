@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import probe.com.dal.DataAccess;
+import probe.com.dal.Query;
 import probe.com.model.beans.DatasetBean;
 import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.FractionBean;
@@ -34,6 +35,7 @@ public class CoreLogic implements Serializable {
     private Map<Integer, DatasetBean> datasetList;
     private final Map<Integer, Integer> datasetIndex = new HashMap<Integer, Integer>();
     private final FileExporter exporter = new FileExporter();
+    
     public CoreLogic(String url, String dbName, String driver, String userName, String password, String filesURL) {
         da = new DataAccess(url, dbName, driver, userName, password);
 
@@ -343,6 +345,10 @@ public class CoreLogic implements Serializable {
         datasetList.get(datasetId).setPeptidesIds(peptideIds);
         return peptidesProtList;
     }
+    
+   
+    
+    
 
     /**
      * search for proteins by description keywords
@@ -439,8 +445,8 @@ public class CoreLogic implements Serializable {
      */
     public Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword,
             int datasetId, boolean validatedOnly) {
-        Map<Integer, ProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
-        return proteinsList;
+//        Map<Integer, ProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
+        return null;
     }
 
     /**
@@ -672,6 +678,149 @@ public class CoreLogic implements Serializable {
         else            
             exporter.expotPeptidesToXLS(allPeptides, datasetName, dataType, filesURL);
     }
+    
+    
+    
+    
+    
+    /*             *********************************************************8       */
+     /**
+     * search for proteins by description keywords
+     *
+     * @param query   query words
+     * @return datasetProteinsSearchList
+     */
+    public Map<Integer, ProteinBean> searchProtein(Query query) {
+
+        Map<Integer, ProteinBean> datasetProteinsSearchList = new HashMap<Integer, ProteinBean>();
+
+        if (query.getSearchDataType().equals("Identification")) {
+            if (query.getSearchDataset() == null || query.getSearchDataset().isEmpty())//search in all identification datasets
+            {
+                if (query.getSearchBy().equalsIgnoreCase("Protein Accession"))//"Protein Name" "Peptide Sequence"
+                {
+                    return da.searchProteinAllDatasetsByAccession(query.getSearchKeyWords(), query.isValidatedProteins());
+                } else if (query.getSearchBy().equalsIgnoreCase("Protein Name")) {
+                    return da.searchProteinAllDatasetsByName(query.getSearchKeyWords(), query.isValidatedProteins());
+
+                } else if (query.getSearchBy().equalsIgnoreCase("Peptide Sequence")) {
+
+                    return da.SearchProteinAllDatasetsByPeptideSequence(query.getSearchKeyWords(), query.isValidatedProteins());
+                }
+
+            }
+            else{ //search for identification data in special dataset  "Quantification", "Both"
+             int tempDatasetIndex=-1;
+             for(DatasetBean ds:datasetList.values())
+                    {
+                        if (ds.getName().trim().equalsIgnoreCase(query.getSearchDataset().trim())){
+                            tempDatasetIndex = ds.getDatasetId();
+                            System.out.println("dataset Index "+tempDatasetIndex);
+                            break;
+                        }
+                    }
+             if (query.getSearchBy().equalsIgnoreCase("Protein Accession"))//"Protein Name" "Peptide Sequence"
+                {
+                    return da.searchProteinByAccession(query.getSearchKeyWords(),tempDatasetIndex, query.isValidatedProteins());
+                } else if (query.getSearchBy().equalsIgnoreCase("Protein Name")) {
+                    return da.searchProteinByName(query.getSearchKeyWords(),tempDatasetIndex, query.isValidatedProteins());
+
+                } else if (query.getSearchBy().equalsIgnoreCase("Peptide Sequence")) {
+
+                    return da.SearchProteinByPeptideSequence(query.getSearchKeyWords(),tempDatasetIndex, query.isValidatedProteins());
+                }
+                
+            }
+        
+        
+        }else {
+        //quantification and both
+        
+        }
+
+//        DatasetBean dataset = null;
+//        if (!searchDatasetType.equalsIgnoreCase("Search All Datasets")) {
+//            for (DatasetBean tempDataset : datasetList.values()) {
+//                if (tempDataset.getName().equalsIgnoreCase(searchDatasetType)) {
+//                    dataset = tempDataset;
+//                    break;
+//
+//                }
+//            }
+//            if (dataset != null) {
+//                datasetProteinsSearchList = searchProteinByName(proteinDescriptionKeyword, dataset.getDatasetId(), validatedOnly);
+//            }
+//
+//        } 
+
+        return datasetProteinsSearchList;
+
+    }
+
+    /**
+     * search for proteins by protein description keywords
+     *
+     * @param protSearchKeyword array of query words
+     * @param datasetId dataset Id
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+//    private Map<Integer, ProteinBean> searchProteinByName(String protSearchKeyword, int datasetId, boolean validatedOnly) {
+//        Map<Integer, ProteinBean> proteinsList = da.searchProteinByName(protSearchKeyword, datasetId, validatedOnly);
+//        return proteinsList;
+//    }
+
+    /**
+     * search for proteins by peptide sequence keywords
+     *
+     * @param peptideSequenceKeyword array of query words
+     * @param searchDatasetType type of search
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+////    public Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, String searchDatasetType, boolean validatedOnly) {
+////        Map<Integer, ProteinBean> protDatasetList = new HashMap<Integer, ProteinBean>();
+////        DatasetBean dataset = null;
+////        if (!searchDatasetType.equalsIgnoreCase("Search All Datasets")) {
+////            for (DatasetBean tempDataset : datasetList.values()) {
+////                if (tempDataset.getName().equalsIgnoreCase(searchDatasetType)) {
+////                    dataset = tempDataset;
+////                    break;
+////
+////                }
+////            }
+////            if (dataset != null) {
+////                protDatasetList = searchProteinByPeptideSequence(peptideSequenceKeyword, dataset.getDatasetId(), validatedOnly);
+////            }
+////
+////        } else {
+////            for (DatasetBean tempDataset : datasetList.values()) {
+////                Map<Integer, ProteinBean> protTempList = searchProteinByPeptideSequence(peptideSequenceKeyword, tempDataset.getDatasetId(), validatedOnly);
+////                if (protTempList != null && (!protTempList.isEmpty())) {
+////                    protDatasetList.putAll(protTempList);
+////                }
+////
+////            }
+////        }
+////        return protDatasetList;
+////
+////    }
+
+    /**
+     * search for proteins by peptide sequence keywords
+     *
+     * @param peptideSequenceKeyword array of query words
+     * @param datasetId dataset Id
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+//    public Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword,
+//            int datasetId, boolean validatedOnly) {
+//        Map<Integer, ProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
+//        return proteinsList;
+//    }
+
+    
 
     
 }

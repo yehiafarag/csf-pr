@@ -56,6 +56,17 @@
 .v-select-optiongroup-horizontal .v-select-option {
     display: inline-block;
 }
+.custLabel{
+    font-size:5 ;
+    height: 15px;
+    font-family:verdana;
+    font-weight: bold;
+    color:gray;    
+    margin: 0 0 0 0;
+    
+    
+    
+}
 
 /* Avoid wrapping if the layout is too tight */
 .v-select-optiongroup-horizontal {

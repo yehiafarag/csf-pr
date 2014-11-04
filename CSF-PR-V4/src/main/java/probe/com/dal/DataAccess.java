@@ -1,6 +1,7 @@
 package probe.com.dal;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,8 @@ public class DataAccess implements Serializable {
      */
     private static final long serialVersionUID = -7011020617952045934L;
     private final DataBase db;
+    
+    private final UpdatedDB Testing_DB;
 
      /**
      * @param url database url
@@ -30,6 +33,7 @@ public class DataAccess implements Serializable {
      */
     public DataAccess(String url, String dbName, String driver, String userName, String password) {
         db = new DataBase(url, dbName, driver, userName, password);
+        Testing_DB = new UpdatedDB(url, dbName, driver, userName, password);
     }
 
      /**
@@ -136,7 +140,35 @@ public class DataAccess implements Serializable {
      */
     public Map<Integer, ProteinBean>  searchProteinByAccession(String accession, int datasetId,boolean validatedOnly) {
 
+//        String[] queryWordsArr = accession.split("\n");
+//        StringBuilder sb = new StringBuilder();
+//        for (int x = 0; x < queryWordsArr.length; x++) {
+//            if (x > 0) {
+//                sb.append(" AND ");
+//            }
+//            sb.append("prot_key` LIKE(?) ");
+//
+//        }
         Map<Integer, ProteinBean> datasetProteinsSearchingList  = db.searchProteinByAccession(accession, datasetId,validatedOnly);
+        return datasetProteinsSearchingList ;
+    }
+    
+     /**
+     * search for proteins by accession keywords
+     *
+     * @param accession array of query words
+     * @param validatedOnly only validated proteins results
+     * @return dataset Proteins Searching List
+     */
+    public Map<Integer, ProteinBean>  searchProteinAllDatasetsByAccession(String accession,boolean validatedOnly) {
+
+         String[] queryWordsArr = accession.split("\n");
+        Set<String> searchSet = new HashSet<String>();
+        for (String str : queryWordsArr) {
+            searchSet.add(str.trim());
+        }
+        Map<Integer, ProteinBean> datasetProteinsSearchingList  = db.searchProteinAllDatasetsByAccession(searchSet,validatedOnly);
+  
         return datasetProteinsSearchingList ;
     }
     
@@ -178,6 +210,19 @@ public class DataAccess implements Serializable {
         Map<Integer, ProteinBean> proteinsList = db.searchProteinByName(protSearchKeyword, datasetId,validatedOnly);
         return proteinsList;
     }
+    
+     /**
+     * search for proteins by protein description keywords
+     *
+     * @param protSearchKeyword  array of query words
+     * @param datasetId dataset Id
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+    public Map<Integer, ProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword,boolean validatedOnly) {
+        Map<Integer, ProteinBean> proteinsList = db.searchProteinAllDatasetsByName(protSearchKeyword,validatedOnly);
+        return proteinsList;
+    }
 
      /**
      * search for proteins by peptide sequence keywords
@@ -187,9 +232,34 @@ public class DataAccess implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer,ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, int datasetId,boolean validatedOnly) {
+//    public Map<Integer,ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, int datasetId,boolean validatedOnly) {
+//
+//        Map<Integer,ProteinBean> proteinsList = db.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
+//        return proteinsList;
+//    }
+    /**
+     * search for proteins by peptide sequence keywords
+     *
+     * @param peptideSequenceKeyword  array of query words
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+    public Map<Integer,ProteinBean> SearchProteinAllDatasetsByPeptideSequence(String peptideSequenceKeyword,boolean validatedOnly) {
 
-        Map<Integer,ProteinBean> proteinsList = db.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
+        Map<Integer,ProteinBean> proteinsList = db.SearchProteinAllDatasetsByPeptideSequence(peptideSequenceKeyword, validatedOnly);
+        return proteinsList;
+    }
+    /**
+     * search for proteins by peptide sequence keywords
+     *
+     * @param peptideSequenceKeyword  array of query words
+     * @param datasetId dataset Id
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+    public Map<Integer,ProteinBean> SearchProteinByPeptideSequence(String peptideSequenceKeyword,int datasetId,boolean validatedOnly) {
+
+        Map<Integer,ProteinBean> proteinsList = db.SearchProteinByPeptideSequence(peptideSequenceKeyword,datasetId, validatedOnly);
         return proteinsList;
     }
 

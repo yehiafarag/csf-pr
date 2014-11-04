@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -90,7 +91,7 @@ public class DataBase implements Serializable {
                 st.executeUpdate(users_table);
 
                 //CREATE TABLE `datasets_table`
-                String datasets_table = "CREATE TABLE IF NOT EXISTS `experiments_table` (\n" + "  `exp_id` int(11) NOT NULL auto_increment,\n" + "  `fraction_range` int(2) NOT NULL default '0',\n" + "  `name` varchar(100) NOT NULL,\n" + "  `fractions_number` int(11) NOT NULL default '0',\n" + "  `ready` int(11) NOT NULL default '0',\n" + "  `uploaded_by` varchar(100) NOT NULL,\n" + "  `peptide_file` int(2) NOT NULL default '0',\n"
+                String datasets_table = "CREATE TABLE IF NOT EXISTS `experiments_table` (\n" + "  `exp_id` int(11) NOT NULL auto_increment,\n" + "  `name` varchar(100) NOT NULL,\n" + "  `fractions_number` int(11) NOT NULL default '0',\n" + "  `ready` int(11) NOT NULL default '0',\n" + "  `uploaded_by` varchar(100) NOT NULL,\n" + "  `peptide_file` int(2) NOT NULL default '0',\n"
                         + "  `species` varchar(100) NOT NULL,\n" + "  `sample_type` varchar(100) NOT NULL,\n" + "  `sample_processing` varchar(100) NOT NULL,\n" + "  `instrument_type` varchar(100) NOT NULL,\n" + "  `frag_mode` varchar(100) NOT NULL,\n" + "  `proteins_number` int(11) NOT NULL default '0',\n" + "  `peptides_number` int(11) NOT NULL default '0',\n" + "  `email` varchar(100) NOT NULL,\n" + "  `pblication_link` varchar(300) NOT NULL default 'NOT AVAILABLE',\n"
                         + "  `description` varchar(1000) NOT NULL default 'NO DESCRIPTION AVAILABLE',\n" + "  `exp_type` int(10) NOT NULL default '0',\n" + "  PRIMARY KEY  (`exp_id`)\n" + ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;";
                 st.executeUpdate(datasets_table);
@@ -1382,62 +1383,48 @@ public class DataBase implements Serializable {
     public synchronized Map<Integer, ProteinBean> searchProteinByAccession(String accession, int datasetId, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
         String selectPro = "";
+        
+        String[] queryWordsArr = accession.split("\n");
+        StringBuilder sb = new StringBuilder();
+        
+        Set<String> searchSet = new HashSet<String>();
+        for (String str : queryWordsArr) {
+            searchSet.add(str.trim());
+        }
+        
+        for (int x = 0; x < searchSet.size(); x++) {
+            if (x > 0) {
+                sb.append(" OR ");
+            }
+            sb.append("`prot_key` LIKE(?) ");
+
+        }
+        
         if (validatedOnly) {
-            selectPro = "SELECT * FROM `experiment_protein_table` Where `exp_id`=? AND  `prot_key` LIKE(?) AND `valid`=?;";
+            selectPro = "SELECT * FROM `experiment_protein_table` Where `exp_id` = ? AND  "+(sb.toString())+" AND `valid`=?;";
         } else {
-            selectPro = "SELECT * FROM `experiment_protein_table` Where `exp_id`=? AND `prot_key` LIKE(?);";
+            selectPro = "SELECT * FROM `experiment_protein_table` Where `exp_id` = ? AND  "+(sb.toString());
         }
 
-        Map<Integer, ProteinBean> protDatasetList = new HashMap<Integer, ProteinBean>();
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
             selectProStat = conn.prepareStatement(selectPro);
-            selectProStat.setString(2, "%" + accession + "%");
-            selectProStat.setInt(1, datasetId);
+            int index = 1;
+            selectProStat.setInt(index++, datasetId);
+            for(String str:searchSet)
+                selectProStat.setString(index++, "%" + str + "%");
+            
             if (validatedOnly) {
-                selectProStat.setString(3, "TRUE");
+                selectProStat.setString(index, "TRUE");
             }
             ResultSet rs = selectProStat.executeQuery();
-            while (rs.next()) {
-                ProteinBean temPb = new ProteinBean();
-                temPb.setDatasetId(datasetId);
-                temPb.setAccession(accession);
-                temPb.setDescription(rs.getString("description"));
-                temPb.setOtherProteins(rs.getString("other_protein(s)"));
-                temPb.setProteinInferenceClass(rs.getString("protein_inference_class"));
-                temPb.setSequenceCoverage(rs.getDouble("sequence_coverage(%)"));
-                temPb.setObservableCoverage(rs.getDouble("observable_coverage(%)"));
-                temPb.setConfidentPtmSites(rs.getString("confident_ptm_sites"));
-                temPb.setNumberConfident(rs.getString("number_confident"));
-                temPb.setOtherPtmSites(rs.getString("other_ptm_sites"));
-                temPb.setNumberOfOther(rs.getString("number_other"));
-                temPb.setNumberValidatedPeptides(rs.getInt("number_validated_peptides"));
-                temPb.setNumberValidatedSpectra(rs.getInt("number_validated_spectra"));
-                temPb.setEmPai(rs.getDouble("em_pai"));
-                temPb.setNsaf(rs.getDouble("nsaf"));
-                temPb.setMw_kDa(rs.getDouble("mw_(kDa)"));
-                temPb.setScore(rs.getDouble("score"));
-                temPb.setConfidence(rs.getDouble("confidence"));
-                temPb.setStarred(Boolean.valueOf(rs.getString("starred")));
-                temPb.setNonEnzymaticPeptides(Boolean.valueOf(rs.getString("non_enzymatic_peptides").toUpperCase()));
-
-                temPb.setSpectrumFractionSpread_lower_range_kDa(rs.getString("spectrum_fraction_spread_lower_range_kDa"));
-                temPb.setSpectrumFractionSpread_upper_range_kDa(rs.getString("spectrum_fraction_spread_upper_range_kDa"));
-                temPb.setPeptideFractionSpread_lower_range_kDa(rs.getString("peptide_fraction_spread_lower_range_kDa"));
-                temPb.setPeptideFractionSpread_upper_range_kDa(rs.getString("peptide_fraction_spread_upper_range_kDa"));
-
-                temPb.setGeneName(rs.getString("gene_name"));
-                temPb.setChromosomeNumber(rs.getString("chromosome_number"));
-                temPb.setValidated(Boolean.valueOf(rs.getString("valid")));
-                temPb.setProtGroupId(rs.getInt("prot_group_id"));
-                protDatasetList.put(temPb.getProtGroupId(), temPb);
-            }
-            rs.close();
+           
+          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
             System.gc();
-            return protDatasetList;
+            return proteinsList;
 
         } catch (ClassNotFoundException e) {
             System.err.println(e.getLocalizedMessage());
@@ -1457,6 +1444,73 @@ public class DataBase implements Serializable {
         }
 
     }
+    
+    
+    /**
+     * search for proteins by accession keywords
+     *
+     * @param accession array of query words
+     * @param validatedOnly only validated proteins results
+     * @return dataset Proteins Searching List
+     */
+    public synchronized Map<Integer, ProteinBean> searchProteinAllDatasetsByAccession(Set<String> searchSet, boolean validatedOnly) {
+        PreparedStatement selectProStat = null;
+        String selectPro = "";
+       
+        StringBuilder sb = new StringBuilder();
+        for (int x = 0; x < searchSet.size(); x++) {
+            if (x > 0) {
+                sb.append(" OR ");
+            }
+            sb.append("`prot_key` LIKE(?)");
+
+        }
+
+        if (validatedOnly) {
+            selectPro = "SELECT * FROM `experiment_protein_table` Where  "+(sb.toString()) +" AND `valid`=?;";
+        } else {
+            selectPro = "SELECT * FROM `experiment_protein_table` Where  "+(sb.toString());
+        }
+System.out.println("no erroe till ");
+        try {
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            selectProStat = conn.prepareStatement(selectPro);
+            int index=1;
+            for(String str:searchSet){
+            selectProStat.setString(index++, "%" + str + "%");
+            }
+            if (validatedOnly) {
+                selectProStat.setString(index, "TRUE");
+            }
+            ResultSet rs = selectProStat.executeQuery();
+            
+          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+            System.gc();
+            return proteinsList;
+
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getLocalizedMessage());
+            return null;
+        } catch (IllegalAccessException e) {
+            System.err.println(e.getLocalizedMessage());
+
+            return null;
+        } catch (InstantiationException e) {
+            System.err.println(e.getLocalizedMessage());
+
+            return null;
+        } catch (SQLException e) {
+            System.err.println(e.getLocalizedMessage());
+
+            return null;
+        }
+
+    }
+
+    
 
     /**
      * get peptides list for giving ids
@@ -1644,12 +1698,24 @@ public class DataBase implements Serializable {
     public synchronized Map<Integer, ProteinBean> searchProteinByName(String protSearchKeyword, int datasetId, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
         String selectPro = "";
-        Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
+         String[] queryWordsArr = protSearchKeyword.split("\n");
+        Set<String> searchSet = new HashSet<String>();
+        for (String str : queryWordsArr) {
+            searchSet.add(str.trim());
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int x = 0; x < searchSet.size(); x++) {
+            if (x > 0) {
+                sb.append(" OR ");
+            }
+            sb.append("`description` LIKE(?)");
+
+        }
 
         if (validatedOnly) {
-            selectPro = "SELECT * FROM `experiment_protein_table` WHERE `description` LIKE (?) AND `exp_id`=? AND `valid`=?;";
+            selectPro = "SELECT * FROM `experiment_protein_table` WHERE "+(sb.toString())+" AND `exp_id`=? AND `valid`=?;";
         } else {
-            selectPro = "SELECT * FROM `experiment_protein_table` WHERE `description` LIKE (?) AND `exp_id`=? ";
+            selectPro = "SELECT * FROM `experiment_protein_table` WHERE "+(sb.toString())+" AND `exp_id`=? ";
         }
         try {
             if (conn == null || conn.isClosed()) {
@@ -1657,16 +1723,162 @@ public class DataBase implements Serializable {
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
             selectProStat = conn.prepareStatement(selectPro);
-            selectProStat.setString(1, "%" + protSearchKeyword + "%");
-            selectProStat.setInt(2, datasetId);
+             int index = 1;
+//            selectProStat.setInt(index++, datasetId);
+            for(String str:searchSet)
+                selectProStat.setString(index++, "%" + str + "%");
+//            selectProStat.setString(1, "%" + protSearchKeyword + "%");
+            selectProStat.setInt(index++, datasetId);
             if (validatedOnly) {
-                selectProStat.setString(3, "TRUE");
+                selectProStat.setString(index, "TRUE");
             }
             ResultSet rs = selectProStat.executeQuery();
-            int in = 1;
-            while (rs.next()) {
+          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+            System.gc();
+            return proteinsList;
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        }
+
+        System.gc();
+        return null;
+    }
+    
+      /**
+     * search for proteins by protein description keywords
+     *
+     * @param protSearchKeyword array of query words
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+    public synchronized Map<Integer, ProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword, boolean validatedOnly) {
+        PreparedStatement selectProStat = null;
+        String selectPro = "";
+        String[] queryWordsArr = protSearchKeyword.split("\n");
+        Set<String> searchSet = new HashSet<String>();
+        for (String str : queryWordsArr) {
+            searchSet.add(str.trim());
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int x = 0; x < searchSet.size(); x++) {
+            if (x > 0) {
+                sb.append(" OR ");
+            }
+            sb.append("`description` LIKE(?)");
+
+        }
+        if (validatedOnly) {
+            selectPro = "SELECT * FROM `experiment_protein_table` WHERE "+(sb.toString())+" AND `valid`=?;";
+        } else {
+            selectPro = "SELECT * FROM `experiment_protein_table` WHERE "+(sb.toString());
+        }
+        try {
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            int index = 1;
+            selectProStat = conn.prepareStatement(selectPro);
+              for(String str:searchSet){
+            selectProStat.setString(index++, "%" + str + "%");
+            }
+            if (validatedOnly) {
+                selectProStat.setString(index, "TRUE");
+            }
+            
+//            selectProStat.setString(1, "%" + protSearchKeyword + "%");
+//            selectProStat.setInt(2, datasetId);
+//            if (validatedOnly) {
+//                selectProStat.setString(3, "TRUE");
+//            }
+            ResultSet rs = selectProStat.executeQuery();
+          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+            System.gc();
+            return proteinsList;
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        }
+
+        System.gc();
+        return null;
+    }
+    
+    
+    
+     /**
+     * search for proteins by protein description keywords
+     *
+     * @param protSearchKeyword array of query words
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+//    public synchronized Map<Integer, ProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword, boolean validatedOnly) {
+//        PreparedStatement selectProStat = null;
+//        String selectPro = "";
+//
+//        if (validatedOnly) {
+//            selectPro = "SELECT * FROM `experiment_protein_table` WHERE `description` LIKE (?)  AND `valid`=?;";
+//        } else {
+//            selectPro = "SELECT * FROM `experiment_protein_table` WHERE `description` LIKE (?) ";
+//        }
+//        try {
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            selectProStat = conn.prepareStatement(selectPro);
+//            selectProStat.setString(1, "%" + protSearchKeyword + "%");
+//            if (validatedOnly) {
+//                selectProStat.setString(2, "TRUE");
+//            }
+//            ResultSet rs = selectProStat.executeQuery();
+//          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+//            System.gc();
+//            return proteinsList;
+//        } catch (ClassNotFoundException e) {
+//            System.err.println(e.getLocalizedMessage());
+//
+//        } catch (IllegalAccessException e) {
+//            System.err.println(e.getLocalizedMessage());
+//
+//        } catch (InstantiationException e) {
+//            System.err.println(e.getLocalizedMessage());
+//
+//        } catch (SQLException e) {
+//            System.err.println(e.getLocalizedMessage());
+//
+//        }
+//
+//        System.gc();
+//        return null;
+//    }
+    
+    private Map<Integer, ProteinBean> fillProteinInformation(ResultSet rs){
+    Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
+    try{  
+    while (rs.next()) {
                 ProteinBean temPb = new ProteinBean();
-                temPb.setDatasetId(datasetId);
+                temPb.setDatasetId(rs.getInt("exp_id"));
                 temPb.setAccession(rs.getString("prot_accession"));
                 temPb.setDescription(rs.getString("description"));
                 temPb.setOtherProteins(rs.getString("other_protein(s)"));
@@ -1700,24 +1912,9 @@ public class DataBase implements Serializable {
 
             }
             rs.close();
-            System.gc();
-            return proteinsList;
-        } catch (ClassNotFoundException e) {
-            System.err.println(e.getLocalizedMessage());
-
-        } catch (IllegalAccessException e) {
-            System.err.println(e.getLocalizedMessage());
-
-        } catch (InstantiationException e) {
-            System.err.println(e.getLocalizedMessage());
-
-        } catch (SQLException e) {
-            System.err.println(e.getLocalizedMessage());
-
-        }
-
-        System.gc();
-        return null;
+    }catch(SQLException sqlExcp){System.err.println(sqlExcp.getLocalizedMessage());}
+    return proteinsList;
+    
     }
 
     /**
@@ -1797,6 +1994,256 @@ public class DataBase implements Serializable {
         System.gc();
         return null;
     }
+    
+    /**
+     * search for proteins by peptide sequence keywords
+     *
+     * @param peptideSequenceKeyword array of query words
+     * @param datasetId dataset Id
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+    public synchronized Map<Integer, ProteinBean> SearchProteinAllDatasetsByPeptideSequence(String peptideSequenceKeyword, boolean validatedOnly) {
+//        PreparedStatement selectProStat = null;
+        PreparedStatement selectPepIdStat = null;
+        Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
+        Map<Integer, ProteinBean> filteredProteinsList = new HashMap<Integer, ProteinBean>();
+        
+        String[] queryWordsArr = peptideSequenceKeyword.split("\n");
+        Set<String> searchSet = new HashSet<String>();
+        for (String str : queryWordsArr) {
+            searchSet.add(str.trim());
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int x = 0; x < searchSet.size(); x++) {
+            if (x > 0) {
+                sb.append(" OR ");
+            }
+            sb.append(" `sequence` = ? ");
+
+        }
+        
+        
+        Set<String> protAccessionQuerySet = new HashSet<String>();
+        Set<Integer>expIds = new HashSet<Integer>();
+        String selectProtAccession = "SELECT  `protein` ,  `other_protein(s)` ,  `peptide_protein(s)` , `exp_id` \n"
+                + "FROM  `proteins_peptides_table`  WHERE "+(sb.toString()) +" ;";
+        try {
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+
+//            List<Integer> pepIdList = new ArrayList<Integer>();
+//            String selectPepId = "SELECT `peptide_id`  FROM `proteins_peptides_table` WHERE `exp_id` = ? AND `sequence` = ? ;";
+//        Set<String> accessionList = new HashSet<String>();
+       
+            selectPepIdStat = conn.prepareStatement(selectProtAccession);
+//            selectPepIdStat.setInt(1, datasetId);
+            int index = 1;
+            for(String str:searchSet)
+                selectPepIdStat.setString(index++, str);
+            ResultSet rs = selectPepIdStat.executeQuery();
+            while (rs.next()) {
+//                pepIdList.add(rs.getInt("peptide_id"));
+                String prot = rs.getString("protein");
+                if(prot != null && !prot.equalsIgnoreCase("") && !prot.equalsIgnoreCase("SHARED PEPTIDE"))
+                    protAccessionQuerySet.add(prot);
+                String otherProt = rs.getString("other_protein(s)");
+                if(otherProt != null && !otherProt.equalsIgnoreCase("") ){
+                    protAccessionQuerySet.addAll(Arrays.asList(otherProt.split(",")));
+                }
+                String peptideProt = rs.getString("peptide_protein(s)");
+                if(peptideProt != null && !peptideProt.equalsIgnoreCase("") )
+                    protAccessionQuerySet.addAll(Arrays.asList(peptideProt.split(",")));
+                expIds.add(rs.getInt("exp_id"));
+                
+            }
+            rs.close();
+//            System.out.println("prot acc number are "+protAccessionQuerySet);
+            proteinsList = this.searchProteinAllDatasetsByAccession(protAccessionQuerySet, validatedOnly);
+            for(int key:proteinsList.keySet()){
+                ProteinBean pb = proteinsList.get(key);
+                if(expIds.contains(pb.getDatasetId()))
+                    filteredProteinsList.put(key, pb);
+            }
+            
+//            String selectPro = "SELECT `protein`  FROM `experiment_peptides_proteins_table`  WHERE `exp_id` = ? AND `peptide_id` = ? ;";
+
+//            for (int key : pepIdList) {
+//                if (conn == null || conn.isClosed()) {
+//                    Class.forName(driver).newInstance();
+//                    conn = DriverManager.getConnection(url + dbName, userName, password);
+//                }
+//                selectProStat = conn.prepareStatement(selectPro);
+//                selectProStat.setInt(1, datasetId);
+//                selectProStat.setInt(2, key);
+//                ResultSet rs_ = selectProStat.executeQuery();
+//                while (rs_.next()) {
+//                    accessionList.add(rs_.getString("protein"));
+//                }
+//                rs_.close();
+//
+//                for (String accKey : accessionList) {
+//                    String[] AccArr = accKey.split(",");
+//                    for (String str : AccArr) {
+//                        if (str.length() > 3) {
+//                            Map<Integer, ProteinBean> tempProteinsList = this.searchProteinByAccession(str.trim(), datasetId, validatedOnly);
+//                            if (tempProteinsList != null) {
+//                                proteinsList.putAll(tempProteinsList);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            }
+            System.gc();
+            return filteredProteinsList;
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        }
+
+        System.gc();
+        return null;
+    }
+    
+    /**
+     * search for proteins by peptide sequence keywords
+     *
+     * @param peptideSequenceKeyword array of query words
+     * @param datasetId dataset Id
+     * @param validatedOnly only validated proteins results
+     * @return datasetProteinsSearchList
+     */
+    public synchronized Map<Integer, ProteinBean> SearchProteinByPeptideSequence(String peptideSequenceKeyword,int datasetId, boolean validatedOnly) {
+//        PreparedStatement selectProStat = null;
+        PreparedStatement selectPepIdStat = null;
+        Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
+        Map<Integer, ProteinBean> filteredProteinsList = new HashMap<Integer, ProteinBean>();
+        
+        String[] queryWordsArr = peptideSequenceKeyword.split("\n");
+        StringBuilder sb = new StringBuilder();
+        
+        Set<String> searchSet = new HashSet<String>();
+        for (String str : queryWordsArr) {
+            searchSet.add(str.trim());
+        }
+        
+        for (int x = 0; x < searchSet.size(); x++) {
+            if (x > 0) {
+                sb.append(" OR ");
+            }
+            sb.append("`sequence` = ?");
+
+        }
+        Set<String> protAccessionQuerySet = new HashSet<String>();
+        Set<Integer>expIds = new HashSet<Integer>();
+        String selectProtAccession = "SELECT  `protein` ,  `other_protein(s)` ,  `peptide_protein(s)` , `exp_id` \n"
+                + "FROM  `proteins_peptides_table`  WHERE "+(sb.toString())+" AND `exp_id` = ? ;";
+        try {
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+
+//            List<Integer> pepIdList = new ArrayList<Integer>();
+//            String selectPepId = "SELECT `peptide_id`  FROM `proteins_peptides_table` WHERE `exp_id` = ? AND `sequence` = ? ;";
+//        Set<String> accessionList = new HashSet<String>();
+       
+            selectPepIdStat = conn.prepareStatement(selectProtAccession);
+//            selectPepIdStat.setInt(1, datasetId);
+            int index = 1;
+            for(String str:searchSet)
+                selectPepIdStat.setString(index++, str);
+             selectPepIdStat.setInt(index, datasetId);
+            ResultSet rs = selectPepIdStat.executeQuery();
+            while (rs.next()) {
+//                pepIdList.add(rs.getInt("peptide_id"));
+                String prot = rs.getString("protein");
+                if(prot != null && !prot.equalsIgnoreCase("") && !prot.equalsIgnoreCase("SHARED PEPTIDE"))
+                    protAccessionQuerySet.add(prot);
+                String otherProt = rs.getString("other_protein(s)");
+                if(otherProt != null && !otherProt.equalsIgnoreCase("") ){
+                    protAccessionQuerySet.addAll(Arrays.asList(otherProt.split(",")));
+                }
+                String peptideProt = rs.getString("peptide_protein(s)");
+                if(peptideProt != null && !peptideProt.equalsIgnoreCase("") )
+                    protAccessionQuerySet.addAll(Arrays.asList(peptideProt.split(",")));
+                expIds.add(rs.getInt("exp_id"));
+                
+            }
+            rs.close();
+            System.out.println("prot acc number are "+protAccessionQuerySet);
+            proteinsList = this.searchProteinAllDatasetsByAccession(protAccessionQuerySet, validatedOnly);
+            System.out.println("prot list are  "+proteinsList.size());
+            for(int key:proteinsList.keySet()){
+                ProteinBean pb = proteinsList.get(key);
+                System.err.println("id is "+pb.getDatasetId());
+                if(expIds.contains(pb.getDatasetId())){
+                
+                    filteredProteinsList.put(key, pb);
+                }
+            }
+            
+//            String selectPro = "SELECT `protein`  FROM `experiment_peptides_proteins_table`  WHERE `exp_id` = ? AND `peptide_id` = ? ;";
+
+//            for (int key : pepIdList) {
+//                if (conn == null || conn.isClosed()) {
+//                    Class.forName(driver).newInstance();
+//                    conn = DriverManager.getConnection(url + dbName, userName, password);
+//                }
+//                selectProStat = conn.prepareStatement(selectPro);
+//                selectProStat.setInt(1, datasetId);
+//                selectProStat.setInt(2, key);
+//                ResultSet rs_ = selectProStat.executeQuery();
+//                while (rs_.next()) {
+//                    accessionList.add(rs_.getString("protein"));
+//                }
+//                rs_.close();
+//
+//                for (String accKey : accessionList) {
+//                    String[] AccArr = accKey.split(",");
+//                    for (String str : AccArr) {
+//                        if (str.length() > 3) {
+//                            Map<Integer, ProteinBean> tempProteinsList = this.searchProteinByAccession(str.trim(), datasetId, validatedOnly);
+//                            if (tempProteinsList != null) {
+//                                proteinsList.putAll(tempProteinsList);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            }
+            System.gc();
+            return filteredProteinsList;
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        }
+
+        System.gc();
+        return null;
+    }
+    
 
     //Security Handling 
     /**

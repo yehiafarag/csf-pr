@@ -6,7 +6,6 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 import javax.servlet.ServletContext;
 import probe.com.handlers.MainHandler;
-import probe.com.view.Application;
 
 /**
  * The Application's "start point" class
