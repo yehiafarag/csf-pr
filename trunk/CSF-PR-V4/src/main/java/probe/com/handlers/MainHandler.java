@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import probe.com.dal.Query;
 import probe.com.model.CoreLogic;
 import probe.com.model.beans.DatasetBean;
 import probe.com.model.beans.DatasetDetailsBean;
@@ -245,6 +246,12 @@ public class MainHandler implements Serializable {
         }
         return proteinFractList;
     }
+    
+    /*updated search for proteins*/
+      public Map<Integer, ProteinBean> searchProtein(Query query) {
+      return computing.searchProtein(query);
+      
+      }
 
     /**
      * search for proteins by accession keywords

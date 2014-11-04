@@ -19,7 +19,7 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
     private final TabSheet mainTabSheet;//tab sheet for first menu (Experiments Editor,Proteins, Search)
     private VerticalLayout searchLayout, adminLayout;
     private WelcomeLayout welcomeLayout;
-    private ProteinsLayout proteinsLayout;
+    private ProjectsLayout proteinsLayout;
     private final MainHandler handler;
 /**
  * initialize body layout
@@ -48,7 +48,7 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         welcomeLayout = new WelcomeLayout(adminIcon);
         welcomeLayout.setWidth("100%");
 //        Tab 2 content
-        proteinsLayout = new ProteinsLayout(handler);
+        proteinsLayout = new ProjectsLayout(handler);
 //      Tab 3 content
         searchLayout = new VerticalLayout();
         searchLayout.setMargin(true);
@@ -61,7 +61,7 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         adminLayout.addComponent(new AdminLayout(handler));
 
         homeTab = mainTabSheet.addTab(welcomeLayout, "Home", null);
-        mainTabSheet.addTab(proteinsLayout, "Proteins", null);
+        mainTabSheet.addTab(proteinsLayout, "Projects", null);
         mainTabSheet.addTab(this.searchLayout, "Search");
         adminTab = mainTabSheet.addTab(adminLayout, "Dataset Editor (Require Sign In)", null);
         mainTabSheet.addSelectedTabChangeListener(this);

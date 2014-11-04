@@ -25,9 +25,9 @@ public class SessionListener implements HttpSessionListener, Serializable{
         session = hse.getSession();
         if ( session != null ) {
             timer = new Timer();
-           timer.schedule(new RemindTask(),(5*60*60*1000));
-           
+            timer.schedule(new RemindTask(),(5*60*60*1000));           
         }
+        
     }
 
     @Override
