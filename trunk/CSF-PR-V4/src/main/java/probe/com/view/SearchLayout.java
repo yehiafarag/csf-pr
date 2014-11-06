@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -31,6 +32,7 @@ import probe.com.handlers.MainHandler;
 import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
 import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.StandardProteinBean;
 import probe.com.view.components.FiltersControl;
 import probe.com.view.components.SearchResultsTableLayout;
 import probe.com.view.core.ComboBoxFilter;
@@ -1139,39 +1141,40 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                         desc = item.getItemProperty("Description").toString();
 
                         handler.setMainDataset(datasetName);
-                        if (handler.getMainDataset() != null && handler.getMainDataset().getDatasetType() == 1) {
-                            handler.retriveProteinsList(handler.getMainDataset().getDatasetId());
-                            CustomExportBtnLayout exportAllProteinPeptidesLayout = new CustomExportBtnLayout(handler, "allProtPep", handler.getMainDataset().getDatasetId(), datasetName, accession, otherAccession, null, 0, null, null, null, desc);
+                        if (handler.getMainDatasetId() != 0 && handler.getDataset(handler.getMainDatasetId()).getDatasetType() == 1) {
+//                              Map<String, ProteinBean> protList = handler.retriveProteinsList(handler.getMainDataset());
+                            CustomExportBtnLayout exportAllProteinPeptidesLayout = new CustomExportBtnLayout(handler, "allProtPep", handler.getMainDatasetId(), datasetName, accession, otherAccession, null, 0, null, null, null, desc);
                             PopupView exportAllProteinPeptidesPopup = new PopupView("Export Peptides from All Datasets for (" + accession + " )", exportAllProteinPeptidesLayout);
                             exportAllProteinPeptidesPopup.setDescription("Export CSF-PR Peptides for ( " + accession + " ) for All Available Datasets");
                             searcheResultsTableLayout.setExpBtnProtAllPepTable(exportAllProteinPeptidesPopup);// new PopupView("Export Proteins", (new CustomExportBtnLayout(handler, "prots",datasetId, datasetName, accession, otherAccession, datasetList, proteinsList, dataset.getFractionsNumber(), null,null))));
                             if (key >= 0) {
 
-                                Map<Integer, PeptideBean> pepProtList = handler.getPeptidesProtList(handler.getMainDataset().getDatasetId(), accession, otherAccession);
-                                if (handler.getMainDataset().getPeptideList() == null) {
-                                    handler.getMainDataset().setPeptideList(pepProtList);
-                                } else {
-                                    handler.getMainDataset().getPeptideList().putAll(pepProtList);
-                                }
+                                Map<Integer, PeptideBean> pepProtList = handler.getPeptidesProtList(handler.getMainDatasetId(), accession, otherAccession);
+//                                Map<Integer, PeptideBean> peptideList = handler.getPeptidesList(key, validatedOnly)
+//                                if (handler.getMainDataset().getPeptideList() == null) {
+//                                    handler.getMainDataset().setPeptideList(pepProtList);
+//                                } else {
+//                                    handler.getMainDataset().getPeptideList().putAll(pepProtList);
+//                                }
                                 if (!pepProtList.isEmpty()) {
                                     int validPep = handler.getValidatedPepNumber(pepProtList);
                                     if (peptideTableLayout != null) {
                                         peptidesLayout.removeComponent(peptideTableLayout);
                                     }
-                                    peptideTableLayout = new PeptidesTableLayout(validPep, pepProtList.size(), desc, pepProtList, accession, handler.getMainDataset().getName());
+                                    peptideTableLayout = new PeptidesTableLayout(validPep, pepProtList.size(), desc, pepProtList, accession, handler.getDataset(handler.getMainDatasetId()).getName());
                                     peptidesLayout.setMargin(false);
                                     peptidesLayout.addComponent(peptideTableLayout);
-                                    CustomExportBtnLayout exportAllProteinsPeptidesLayout = new CustomExportBtnLayout(handler, "protPep", handler.getMainDataset().getDatasetId(), handler.getMainDataset().getName(), accession, otherAccession, null, 0, pepProtList, null, null, desc);
+                                    CustomExportBtnLayout exportAllProteinsPeptidesLayout = new CustomExportBtnLayout(handler, "protPep", handler.getMainDatasetId(), handler.getDataset(handler.getMainDatasetId()).getName(), accession, otherAccession, null, 0, pepProtList, null, null, desc);
                                     PopupView exportAllProteinsPeptidesPopup = new PopupView("Export Peptides from Selected Dataset for (" + accession + " )", exportAllProteinsPeptidesLayout);
 
-                                    exportAllProteinsPeptidesPopup.setDescription("Export Peptides from ( " + handler.getMainDataset().getName() + " ) Dataset for ( " + accession + " )");
+                                    exportAllProteinsPeptidesPopup.setDescription("Export Peptides from ( " + handler.getDataset(handler.getMainDatasetId()).getName() + " ) Dataset for ( " + accession + " )");
                                     peptideTableLayout.setExpBtnPepTable(exportAllProteinsPeptidesPopup);
 
                                 }
-                                fractionsList = handler.getFractionsList(handler.getMainDataset().getDatasetId());
-                                handler.retrieveStandardProtPlotList();//                          
+//                                fractionsList = handler.getProtGelFractionsList(handler.getMainDatasetId(),accession, otherAccession);
+                                List<StandardProteinBean> standeredProtList= handler.retrieveStandardProtPlotList(handler.getMainDatasetId());//                          
 
-                                if (handler.getMainDataset() == null || handler.getMainDataset().getStanderdPlotProt() == null || handler.getMainDataset().getStanderdPlotProt().isEmpty() || fractionsList == null || fractionsList.isEmpty()) { //(handler.getMainDataset() != null && handler.getMainDataset().getProteinList() != null) {
+                                if (handler.getMainDatasetId() == 0 || standeredProtList == null || standeredProtList.isEmpty() || fractionsList == null || fractionsList.isEmpty()) { //(handler.getMainDataset() != null && handler.getMainDataset().getProteinList() != null) {
                                     if (searcheResultsTableLayout.getSearchTable() != null) {
                                         searcheResultsTableLayout.getSearchTable().setHeight("267.5px");
                                     }
@@ -1182,9 +1185,9 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                                     }
                                     fractionsLayout.removeAllComponents();
                                 } else {
-                                    if (handler.getMainDataset() != null && handler.getMainDataset().getProteinList() != null) {
-                                        handler.getMainDataset().setFractionsList(fractionsList);
-                                        handler.getDatasetList().put(handler.getMainDataset().getDatasetId(), handler.getMainDataset());
+                                    if (handler.getMainDatasetId() != 0 ) {
+//                                        handler.getMainDataset().setFractionsList(fractionsList);
+//                                        handler.getDatasetList().put(handler.getMainDataset().getDatasetId(), handler.getMainDataset());
                                         double mw = 0.0;
                                         try {
                                             mw = Double.valueOf(item.getItemProperty("MW").toString());
@@ -1196,13 +1199,13 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                                             }
                                             mw = Double.valueOf(str);
                                         }//                                    
-                                        Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, handler.getMainDataset().getDatasetId());
+                                        Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, handler.getMainDatasetId());
                                         if (proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
                                             fractionsLayout.removeAllComponents();
                                         } else {
-                                            FractionsLayout flo = new FractionsLayout(accession, mw, proteinFractionAvgList, handler.getMainDataset().getStanderdPlotProt(), handler.getMainDataset().getName());
-                                            flo.setMargin(new MarginInfo(false, false, false, false));
-                                            fractionsLayout.addComponent(flo);
+//                                            FractionsLayout flo = new FractionsLayout(accession, mw, proteinFractionAvgList, standeredProtList,handler.getDataset(handler.getMainDatasetId()).getName());
+//                                            flo.setMargin(new MarginInfo(false, false, false, false));
+//                                            fractionsLayout.addComponent(flo);
                                         }
                                     }
                                 }

@@ -76,29 +76,29 @@ public class DatasetDetailsComponent extends VerticalLayout implements Serializa
         vlo1.addComponent(buttomSpacer);
         VerticalLayout l1 = new VerticalLayout();
 
-        Label ExpLable1_1 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Dataset  Name:</strong><br/>" + handler.getMainDataset().getName() + "</h5>");
+        Label ExpLable1_1 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Dataset  Name:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getName() + "</h5>");
         ExpLable1_1.setContentMode(ContentMode.HTML);
         ExpLable1_1.setHeight("45px");
 
-        Label ExpLable1_2 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Species:</strong><br/>" + handler.getMainDataset().getSpecies() + "</h5>");
+        Label ExpLable1_2 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Species:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getSpecies() + "</h5>");
         ExpLable1_2.setContentMode(ContentMode.HTML);
         ExpLable1_2.setHeight("45px");
 
-        Label ExpLable1_3 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Sample Type:</strong><br/>" + handler.getMainDataset().getSampleType() + "</h5>");
+        Label ExpLable1_3 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Sample Type:</strong><br/>" +handler.getDataset(handler.getMainDatasetId()).getSampleType() + "</h5>");
         ExpLable1_3.setContentMode(ContentMode.HTML);
         ExpLable1_3.setHeight("45px");
 
-        Label ExpLable1_4 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Sample Processing:</strong><br/>" + handler.getMainDataset().getSampleProcessing() + "</h5>");
+        Label ExpLable1_4 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Sample Processing:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getSampleProcessing() + "</h5>");
         ExpLable1_4.setContentMode(ContentMode.HTML);
         ExpLable1_4.setHeight("45px");
 
         String href = null;
         Label ExpLable1_5 = null;
-        if (handler.getMainDataset().getPublicationLink().equalsIgnoreCase("NOT AVAILABLE") || handler.getMainDataset().getPublicationLink().equalsIgnoreCase("")) {
+        if (handler.getDataset(handler.getMainDatasetId()).getPublicationLink().equalsIgnoreCase("NOT AVAILABLE") || handler.getDataset(handler.getMainDatasetId()).getPublicationLink().equalsIgnoreCase("")) {
             ExpLable1_5 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>No Publication Link Available </strong></h5>");
             ExpLable1_5.setHeight("45px");
         } else {
-            href = handler.getMainDataset().getPublicationLink().toLowerCase();
+            href = handler.getDataset(handler.getMainDatasetId()).getPublicationLink().toLowerCase();
             if ((!href.contains("http://")) && (!href.contains("https://"))) {
                 href = "http://" + href;
             }
@@ -109,8 +109,8 @@ public class DatasetDetailsComponent extends VerticalLayout implements Serializa
 
         ExpLable1_5.setContentMode(ContentMode.HTML);
         l1.addComponent(ExpLable1_1);
-        if (handler.getMainDataset().getDescription().length() <= 100) {
-            Label ExpLable2_1 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Description:</strong><br/>" + handler.getMainDataset().getDescription() + "</h5>");
+        if (handler.getDataset(handler.getMainDatasetId()).getDescription().length() <= 100) {
+            Label ExpLable2_1 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Description:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getDescription() + "</h5>");
             ExpLable2_1.setContentMode(ContentMode.HTML);
             ExpLable2_1.setHeight("45px");
             l1.addComponent(ExpLable2_1);
@@ -119,7 +119,7 @@ public class DatasetDetailsComponent extends VerticalLayout implements Serializa
             ExpLable2_1.setContentMode(ContentMode.HTML);
             ExpLable2_1.setHeight("30px");
 
-            Label ExpLable2_2 = new Label("<h5 style='font-family:verdana;color:gray;'>" + handler.getMainDataset().getDescription() + "</h5>");
+            Label ExpLable2_2 = new Label("<h5 style='font-family:verdana;color:gray;'>" + handler.getDataset(handler.getMainDatasetId()).getDescription() + "</h5>");
             ExpLable2_2.setContentMode(ContentMode.HTML);
 
             VerticalLayout lTemp = new VerticalLayout();
@@ -141,36 +141,36 @@ public class DatasetDetailsComponent extends VerticalLayout implements Serializa
 
         VerticalLayout l2 = new VerticalLayout();
 
-        Label ExpLable2_3 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Instrument Type:</strong><br/>" + handler.getMainDataset().getInstrumentType() + "</h5>");
+        Label ExpLable2_3 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Instrument Type:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getInstrumentType() + "</h5>");
         ExpLable2_3.setContentMode(ContentMode.HTML);
         ExpLable2_3.setHeight("45px");
 
-        Label ExpLable2_4 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Frag Mode:</strong><br/>" + handler.getMainDataset().getFragMode() + "</h5>");
+        Label ExpLable2_4 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Frag Mode:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getFragMode() + "</h5>");
         ExpLable2_4.setContentMode(ContentMode.HTML);
         ExpLable2_4.setHeight("45px");
-        Label ExpLable2_5 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Uploaded By:</strong><br/>" + handler.getMainDataset().getUploadedByName() + "</h5>");
+        Label ExpLable2_5 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Uploaded By:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getUploadedByName() + "</h5>");
         ExpLable2_5.setContentMode(ContentMode.HTML);
         ExpLable2_5.setHeight("45px");
 
-        Label ExpLable2_6 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Email:</strong><br/>" + handler.getMainDataset().getEmail() + "</h5>");
+        Label ExpLable2_6 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'>Email:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getEmail() + "</h5>");
         ExpLable2_6.setContentMode(ContentMode.HTML);
         ExpLable2_6.setHeight("45px");
 
-        Label ExpLable2_7 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Fractions</strong><br/>" + handler.getMainDataset().getFractionsNumber() + "</h5>");
+        Label ExpLable2_7 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Fractions</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getFractionsNumber() + "</h5>");
         ExpLable2_7.setContentMode(ContentMode.HTML);
         ExpLable2_7.setHeight("45px");
-        Label ExpLable2_8 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Protein Groups:</strong><br/>" + handler.getMainDataset().getNumberValidProt()/* handler.getMainDataset().getProteinsNumber()*/ + "</h5>");
+        Label ExpLable2_8 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Protein Groups:</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getNumberValidProt()/* handler.getMainDataset().getProteinsNumber()*/ + "</h5>");
         ExpLable2_8.setContentMode(ContentMode.HTML);
         ExpLable2_8.setDescription("Number of validated proteins");
         ExpLable2_8.setHeight("45px");
 
         HorizontalLayout pepHlo = new HorizontalLayout();
-        Label ExpLable2_9 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Peptides</strong><br/>" + handler.getMainDataset().getPeptidesNumber() + "</h5>");
+        Label ExpLable2_9 = new Label("<h5  style='font-family:verdana;color:gray;'><strong style='font-family:verdana;color:#424242;'># Peptides</strong><br/>" + handler.getDataset(handler.getMainDatasetId()).getPeptidesNumber() + "</h5>");
         ExpLable2_9.setContentMode(ContentMode.HTML);
         ExpLable2_9.setDescription("Number of validated peptides");
         ExpLable2_9.setHeight("45px");
 
-        HorizontalLayout expIcon = excelExporterIconGenerator.getExpIcon(new CustomExportBtnLayout(handler, "allPep", handler.getMainDataset().getDatasetId(), handler.getMainDataset().getName(), null, null, null, 0, null, null, null, null), "Export All Peptides for " + handler.getMainDataset().getName(), "");
+        HorizontalLayout expIcon = excelExporterIconGenerator.getExpIcon(new CustomExportBtnLayout(handler, "allPep", handler.getMainDatasetId(), handler.getDataset(handler.getMainDatasetId()).getName(), null, null, null, 0, null, null, null, null), "Export All Peptides for " + handler.getDataset(handler.getMainDatasetId()).getName(), "");
 
         pepHlo.addComponent(ExpLable2_9);
         pepHlo.addComponent(expIcon);

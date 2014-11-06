@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.ProteinBean;
 import probe.com.model.beans.StandardProteinBean;
-import probe.com.view.components.PlotsLayout;
-/*
+import probe.com.view.components.PlotsComponent;
+/*/*
  * @author Yehia Farag
  */
 
@@ -42,9 +43,9 @@ public class FractionPlotLayout extends VerticalLayout implements Serializable {
         this.setMargin(false);
         this.setWidth("100%");
         this.setStyleName(Reindeer.PANEL_LIGHT);
-        leftSideLayout.addComponent(new PlotsLayout("#Peptides", protienFractionList, standProtGroups, mw));
-        leftSideLayout.addComponent(new PlotsLayout("#Spectra", protienFractionList, standProtGroups, mw));
-        leftSideLayout.addComponent(new PlotsLayout("Avg. Precursor Intensity", protienFractionList, standProtGroups, mw));
+        leftSideLayout.addComponent(new PlotsComponent("#Peptides", protienFractionList, standProtGroups, mw));
+        leftSideLayout.addComponent(new PlotsComponent("#Spectra", protienFractionList, standProtGroups, mw));
+        leftSideLayout.addComponent(new PlotsComponent("Avg. Precursor Intensity", protienFractionList, standProtGroups, mw));
         this.addComponent(leftSideLayout);
         this.addComponent(rightSideLayout);
     }

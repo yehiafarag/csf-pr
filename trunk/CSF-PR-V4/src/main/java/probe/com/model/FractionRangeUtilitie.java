@@ -2,15 +2,11 @@ package probe.com.model;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import com.vaadin.ui.Table;
-import probe.com.model.beans.DatasetBean;
-import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.ProteinBean;
 
 public class FractionRangeUtilitie implements Serializable {
@@ -22,39 +18,39 @@ public class FractionRangeUtilitie implements Serializable {
     private static final long serialVersionUID = 1L;
     private DecimalFormat df = null;
 
-    public ArrayList<String> updateFractionRange(DatasetBean exp) {
-        Map<Integer, FractionBean> fractionList = exp.getFractionsList();
-        ArrayList<String> rangeSet = new ArrayList<String>();
-        int x = 1;
-        Map<Integer, FractionBean> updatedFractionList = new HashMap<Integer, FractionBean>();
-        boolean tag = true;
-        List<Double> RangeList = null;
-        double maxRange = 0.0;
-        double minRange = 0.0;
-        double step = 0.0;
-        for (int key : fractionList.keySet()) {
-            FractionBean fb = fractionList.get(key);
-            if (tag) {
-                RangeList = getRange(fb.getProteinList(), exp.getProteinList());
-                tag = false;
-                minRange = RangeList.get(0);
-                maxRange = RangeList.get(1);
-                step = (maxRange - minRange) / Double.valueOf(exp.getFractionsNumber());
-
-            }
-            fb.setMinRange(minRange);
-            fb.setMaxRange(minRange + step);
-            DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-            otherSymbols.setGroupingSeparator('.');
-            df = new DecimalFormat("#.##", otherSymbols);
-
-            rangeSet.add(x++ + "\t" + df.format(fb.getMinRange()) + "-" + df.format(fb.getMaxRange()));
-            minRange = minRange + step;
-            updatedFractionList.put(key, fb);
-        }
-        exp.setFractionsList(updatedFractionList);
-        return rangeSet;
-    }
+//    public ArrayList<String> updateFractionRange(DatasetBean exp,Map<Integer, FractionBean> fractionList,Map<String, ProteinBean> proteinList) {
+////        Map<Integer, FractionBean> fractionList = exp.getFractionsList();
+//        ArrayList<String> rangeSet = new ArrayList<String>();
+//        int x = 1;
+//        Map<Integer, FractionBean> updatedFractionList = new HashMap<Integer, FractionBean>();
+//        boolean tag = true;
+//        List<Double> RangeList = null;
+//        double maxRange = 0.0;
+//        double minRange = 0.0;
+//        double step = 0.0;
+//        for (int key : fractionList.keySet()) {
+//            FractionBean fb = fractionList.get(key);
+//            if (tag) {
+//                RangeList = getRange(fb.getProteinList(), proteinList);
+//                tag = false;
+//                minRange = RangeList.get(0);
+//                maxRange = RangeList.get(1);
+//                step = (maxRange - minRange) / (double) exp.getFractionsNumber();
+//
+//            }
+////            fb.setMinRange(minRange);
+////            fb.setMaxRange(minRange + step);
+//            DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+//            otherSymbols.setGroupingSeparator('.');
+//            df = new DecimalFormat("#.##", otherSymbols);
+//
+//            rangeSet.add(x++ + "\t" + df.format(fb.getMinRange()) + "-" + df.format(fb.getMaxRange()));
+//            minRange = minRange + step;
+//            updatedFractionList.put(key, fb);
+//        }
+////        exp.setFractionsList(updatedFractionList);
+//        return rangeSet;
+//    }
 
     private List<Double> getRange(Map<String, ProteinBean> proFracMap, Map<String, ProteinBean> proMap) {
         double minRange = 10000000000.0;
@@ -112,41 +108,41 @@ public class FractionRangeUtilitie implements Serializable {
      }
      */
 
-    public ArrayList<String> getFractionRange(DatasetBean exp) {
-
-        Map<Integer, FractionBean> fractionList = exp.getFractionsList();
-
-
-
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-        otherSymbols.setGroupingSeparator('.');
-        df = new DecimalFormat("#.##", otherSymbols);
-        //	Map<Double,FractionBean> rangeMap = new TreeMap<Double, FractionBean>();
-        ArrayList<String> rangeSet = new ArrayList<String>();
-        //	double maxValue =-1;
-        //get the greatest max range
-        //	for(FractionBean fb:fractionList.values()){
-        //		if(maxValue< fb.getMaxRange())
-        //				maxValue = fb.getMaxRange();
-        //rangeMap.put(fb.getMaxRange(), fb);
-        //	}
-        String str = "";
-        for (FractionBean fb : fractionList.values()) {
-            //	if(fb.getMaxRange() == maxValue)
-            //		str = fb.getFractionIndex()+"\t"+df.format(fb.getMinRange())+"->"+df.format(fb.getMinRange());
-            //	else
-            str = fb.getFractionIndex() + "\t" + df.format(fb.getMinRange()) + "\t" + df.format(fb.getMaxRange());
-
-            rangeSet.add(str);
-        }
-        String ko = new String("");
-
-        if (rangeSet.contains(ko)) {
-            rangeSet.remove(ko);
-        }
-
-        return rangeSet;
-    }
+//    public ArrayList<String> getFractionRange(DatasetBean exp,Map<Integer, FractionBean> fractionList) {
+//
+////        Map<Integer, FractionBean> fractionList = exp.getFractionsList();
+//
+//
+//
+//        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+//        otherSymbols.setGroupingSeparator('.');
+//        df = new DecimalFormat("#.##", otherSymbols);
+//        //	Map<Double,FractionBean> rangeMap = new TreeMap<Double, FractionBean>();
+//        ArrayList<String> rangeSet = new ArrayList<String>();
+//        //	double maxValue =-1;
+//        //get the greatest max range
+//        //	for(FractionBean fb:fractionList.values()){
+//        //		if(maxValue< fb.getMaxRange())
+//        //				maxValue = fb.getMaxRange();
+//        //rangeMap.put(fb.getMaxRange(), fb);
+//        //	}
+//        String str = "";
+//        for (FractionBean fb : fractionList.values()) {
+//            //	if(fb.getMaxRange() == maxValue)
+//            //		str = fb.getFractionIndex()+"\t"+df.format(fb.getMinRange())+"->"+df.format(fb.getMinRange());
+//            //	else
+////            str = fb.getFractionIndex() + "\t" + df.format(fb.getMinRange()) + "\t" + df.format(fb.getMaxRange());
+//
+//            rangeSet.add(str);
+//        }
+//        String ko = new String("");
+//
+//        if (rangeSet.contains(ko)) {
+//            rangeSet.remove(ko);
+//        }
+//
+//        return rangeSet;
+//    }
 
     public Table getRangeTable(ArrayList<String> ranges, double mw2) {
 

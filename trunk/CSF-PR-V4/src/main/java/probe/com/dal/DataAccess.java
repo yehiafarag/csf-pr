@@ -21,8 +21,6 @@ public class DataAccess implements Serializable {
     private static final long serialVersionUID = -7011020617952045934L;
     private final DataBase db;
     
-    private final UpdatedDB Testing_DB;
-
      /**
      * @param url database url
      * @param dbName database name
@@ -33,7 +31,6 @@ public class DataAccess implements Serializable {
      */
     public DataAccess(String url, String dbName, String driver, String userName, String password) {
         db = new DataBase(url, dbName, driver, userName, password);
-        Testing_DB = new UpdatedDB(url, dbName, driver, userName, password);
     }
 
      /**
@@ -86,11 +83,11 @@ public class DataAccess implements Serializable {
 
    
 
-    public boolean updatePeptideFile(DatasetBean dataset) {
-
-        boolean test = db.setPeptideFile(dataset.getPeptideList());
-        return test;
-    }
+//    public boolean updatePeptideFile(DatasetBean dataset) {
+//
+//        boolean test = db.setPeptideFile(dataset.getPeptideList());
+//        return test;
+//    }
 
     /**
      * get proteins map for especial dataset
@@ -109,10 +106,15 @@ public class DataAccess implements Serializable {
      * @param datasetId
      * @return dataset peptide List
      */
-    public Map<Integer, PeptideBean> getPeptidesList(int datasetId) {
-        Map<Integer, PeptideBean> peptidesList = db.getDatasetPeptidesList(datasetId);   
+    public Map<Integer, PeptideBean> getPeptidesList(int datasetId,boolean valid) {
+        Map<Integer, PeptideBean> peptidesList = db.getDatasetPeptidesList(datasetId,valid);   
         
         return peptidesList;
+    }
+    
+    public int getAllDatasetPeptidesNumber(int datasetId, boolean validated) {
+
+   return db.getAllDatasetPeptidesNumber(datasetId, validated);
     }
     
    
@@ -123,9 +125,9 @@ public class DataAccess implements Serializable {
      * @return fractions  list for the selected dataset
      */
 
-    public Map<Integer, FractionBean> getFractionsList(int datasetId) {
-        Map<Integer, FractionBean> fractionsList = db.getFractionsList(datasetId);
-        return fractionsList;
+    public Map<Integer, ProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
+        Map<Integer, ProteinBean> fractionsProtList = db.getProtGelFractionsList(datasetId,accession, otherAccession);
+        return fractionsProtList;
 
     }
 
@@ -180,9 +182,8 @@ public class DataAccess implements Serializable {
      * @param peptideIds peptides IDs
      * @return peptides list 
      */
-    public Map<Integer, PeptideBean> getPeptidesList(Set<Integer> peptideIds) {
-
-        Map<Integer, PeptideBean> peptidesProtList = db.getPeptidesList(peptideIds);
+    public Map<Integer, PeptideBean> getPeptidesList(String accession,String otherAcc,int datasetId) {
+        Map<Integer, PeptideBean> peptidesProtList = db.getPeptidesList(accession, otherAcc, datasetId);
         return peptidesProtList;
     }
 
@@ -349,6 +350,10 @@ public class DataAccess implements Serializable {
      {
            boolean test = db.updateDatasetData(dataset);
             return test;
+     
+     }
+     public void runOnceToUpdateDatabase(){
+         db.singleuseUpdateDb();
      
      }
 }

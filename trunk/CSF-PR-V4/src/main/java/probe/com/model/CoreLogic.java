@@ -135,14 +135,14 @@ public class CoreLogic implements Serializable {
      */
     public Map<String, ProteinBean> retriveProteinsList(int datasetId) {
         Map<String, ProteinBean> proteinsList = null;
-        if (datasetList.get(datasetId).getProteinList() == null || datasetList.get(datasetId).getProteinList().isEmpty()) {
+//        if (datasetList.get(datasetId).getProteinList() == null || datasetList.get(datasetId).getProteinList().isEmpty()) {
             proteinsList = da.getProteinsList(datasetId);
-            datasetList.get(datasetId).setProteinList(proteinsList);
+//            datasetList.get(datasetId).setProteinList(proteinsList);
             
-        }
-        else{
-        proteinsList = datasetList.get(datasetId).getProteinList();
-        }
+//        }
+//        else{
+//        proteinsList = datasetList.get(datasetId).getProteinList();
+//        }
 
         return proteinsList;
     }
@@ -178,36 +178,36 @@ public class CoreLogic implements Serializable {
      * @param datasetId
      * @return dataset peptide List
      */
-    public Map<Integer, PeptideBean> getPeptidesList(int datasetId) {
-//        Map<Integer, PeptideBean> peptidesList = datasetList.get(datasetId).getPeptideList();
-        Map<Integer, PeptideBean> updatedPeptidesList = new HashMap<Integer, PeptideBean>();
-//        if (peptidesList == null || peptidesList.isEmpty()) {
-
-           Map<Integer, PeptideBean>   peptidesList = da.getPeptidesList(datasetId);
-            Map<String, ProteinBean> protList = retriveProteinsList(datasetId);
-
-            for (int key : peptidesList.keySet()) {
-                PeptideBean pb = peptidesList.get(key);
-                if (pb.getProteinInference().equalsIgnoreCase("Single Protein")) {
-                    pb.setPeptideProteins(pb.getProtein());
-                    pb.setPeptideProteinsDescriptions(datasetList.get(datasetId).getProteinList().get(pb.getProtein()).getDescription());
-                } else if (pb.getProteinInference().trim().equalsIgnoreCase("Related Proteins") && (!pb.getProtein().equalsIgnoreCase("SHARED PEPTIDE"))) {
-                    String desc = "";
-                    if (pb.getOtherProteins() == null || pb.getOtherProteins().trim().equalsIgnoreCase("")) {
-                        pb.setPeptideProteins(pb.getProtein() + "," + pb.getPeptideProteins());
-                        desc = protList.get(pb.getProtein()).getDescription() + ";" + pb.getPeptideProteinsDescriptions();
-                    } else {
-                        desc = protList.get(pb.getProtein() + "," + pb.getOtherProteins().replaceAll("\\p{Z}", "")).getDescription() + ";" + pb.getOtherProteinDescriptions();
-                    }
-                    pb.setPeptideProteinsDescriptions(desc);
-                }
-                updatedPeptidesList.put(key, pb);
-            }
-//        } else {
-//            updatedPeptidesList.putAll(peptidesList);
-//        }
-        return updatedPeptidesList;
-    }
+//    public Map<Integer, PeptideBean> getPeptidesList(int datasetId) {
+////        Map<Integer, PeptideBean> peptidesList = datasetList.get(datasetId).getPeptideList();
+//        Map<Integer, PeptideBean> updatedPeptidesList = new HashMap<Integer, PeptideBean>();
+////        if (peptidesList == null || peptidesList.isEmpty()) {
+//
+//           Map<Integer, PeptideBean>   peptidesList = da.getPeptidesList(datasetId);
+//            Map<String, ProteinBean> protList = retriveProteinsList(datasetId);
+//
+//            for (int key : peptidesList.keySet()) {
+//                PeptideBean pb = peptidesList.get(key);
+//                if (pb.getProteinInference().equalsIgnoreCase("Single Protein")) {
+//                    pb.setPeptideProteins(pb.getProtein());
+//                    pb.setPeptideProteinsDescriptions(datasetList.get(datasetId).getProteinList().get(pb.getProtein()).getDescription());
+//                } else if (pb.getProteinInference().trim().equalsIgnoreCase("Related Proteins") && (!pb.getProtein().equalsIgnoreCase("SHARED PEPTIDE"))) {
+//                    String desc = "";
+//                    if (pb.getOtherProteins() == null || pb.getOtherProteins().trim().equalsIgnoreCase("")) {
+//                        pb.setPeptideProteins(pb.getProtein() + "," + pb.getPeptideProteins());
+//                        desc = protList.get(pb.getProtein()).getDescription() + ";" + pb.getPeptideProteinsDescriptions();
+//                    } else {
+//                        desc = protList.get(pb.getProtein() + "," + pb.getOtherProteins().replaceAll("\\p{Z}", "")).getDescription() + ";" + pb.getOtherProteinDescriptions();
+//                    }
+//                    pb.setPeptideProteinsDescriptions(desc);
+//                }
+//                updatedPeptidesList.put(key, pb);
+//            }
+////        } else {
+////            updatedPeptidesList.putAll(peptidesList);
+////        }
+//        return updatedPeptidesList;
+//    }
 
     /**
      * get dataset peptides list (valid peptides or all peptides)
@@ -218,20 +218,21 @@ public class CoreLogic implements Serializable {
      */
     public Map<Integer, PeptideBean> getAllDatasetPeptidesList(int datasetId, boolean validated) {
 
-        Map<Integer, PeptideBean> peptidesList = getPeptidesList(datasetId);
-        if (validated) {
-            Map<Integer, PeptideBean> validatedPtidesList = new HashMap<Integer, PeptideBean>();
-            int x = 0;
-            for (PeptideBean pb : peptidesList.values()) {
-
-                if (pb.getValidated() == 1.0) {
-                    validatedPtidesList.put(x++, pb);
-                }
-            }
-            return validatedPtidesList;
-        } else {
-            return peptidesList;
-        }
+         return da.getPeptidesList(datasetId,validated);
+//        Map<Integer, PeptideBean> peptidesList = getPeptidesList(datasetId);
+//        if (validated) {
+//            Map<Integer, PeptideBean> validatedPtidesList = new HashMap<Integer, PeptideBean>();
+//            int x = 0;
+//            for (PeptideBean pb : peptidesList.values()) {
+//
+//                if (pb.getValidated() == 1.0) {
+//                    validatedPtidesList.put(x++, pb);
+//                }
+//            }
+//            return validatedPtidesList;
+//        } else {
+//            return peptidesList;
+//        }
     }
     
     
@@ -244,20 +245,7 @@ public class CoreLogic implements Serializable {
      */
     public int getAllDatasetPeptidesNumber(int datasetId, boolean validated) {
 
-        Map<Integer, PeptideBean> peptidesList =  da.getPeptidesList(datasetId);
-       int index = 0;
-        if (validated) {
-           int x = 0;
-            for (PeptideBean pb : peptidesList.values()) {
-
-                if (pb.getValidated() == 1.0) {
-                   index++;
-                }
-            }
-            return index;
-        } else {
-            return peptidesList.size();
-        }
+   return da.getAllDatasetPeptidesNumber(datasetId, validated);
     }
 
     /**
@@ -266,18 +254,20 @@ public class CoreLogic implements Serializable {
      * @param datasetId
      * @return fractions list for the selected dataset
      */
-    public Map<Integer, FractionBean> getFractionsList(int datasetId) {
-        Map<Integer, FractionBean> fractionsList;
-        if (datasetList.containsKey(datasetId) && datasetList.get(datasetId).getFractionsList() != null && (!datasetList.get(datasetId).getFractionsList().isEmpty())) {
-            //check if dataset updated if not
-            fractionsList = datasetList.get(datasetId).getFractionsList();
-
-        } else {
-            fractionsList = da.getFractionsList(datasetId);
-            datasetList.get(datasetId).setFractionsList(fractionsList);
-        }
-
-        return fractionsList;
+    public Map<Integer, ProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
+//        Map<Integer, FractionBean> fractionsList;
+//        if (datasetList.containsKey(datasetId) && datasetList.get(datasetId).getFractionsList() != null && (!datasetList.get(datasetId).getFractionsList().isEmpty())) {
+//            //check if dataset updated if not
+//            fractionsList = datasetList.get(datasetId).getFractionsList();
+//
+//        } else {
+            return da.getProtGelFractionsList(datasetId,accession, otherAccession);
+            
+            
+//            datasetList.get(datasetId).setFractionsList(fractionsList);
+//        }
+//
+//        return fractionsList;
     }
 
     ///new v-2
@@ -340,9 +330,9 @@ public class CoreLogic implements Serializable {
      * dataset
      */
     public Map<Integer, PeptideBean> getPeptidesProtList(int datasetId, String accession, String otherAccession) {
-        Set<Integer> peptideIds = this.getDatasetProteinPeptidesIds(datasetId, accession, otherAccession);
-        Map<Integer, PeptideBean> peptidesProtList = da.getPeptidesList(peptideIds);
-        datasetList.get(datasetId).setPeptidesIds(peptideIds);
+//        Set<Integer> peptideIds = this.getDatasetProteinPeptidesIds(datasetId, accession, otherAccession);
+        Map<Integer, PeptideBean> peptidesProtList = da.getPeptidesList(accession, otherAccession, datasetId);
+//        datasetList.get(datasetId).setPeptidesIds(peptideIds);
         return peptidesProtList;
     }
     
@@ -468,10 +458,10 @@ public class CoreLogic implements Serializable {
      * @param peptideIds
      * @return list of peptides
      */
-    public Map<Integer, PeptideBean> getPeptidesList(List<Integer> peptideIds) {
-        Map<Integer, PeptideBean> peptidesProtList = da.getPeptidesList(peptideIds);
-        return peptidesProtList;
-    }
+//    public Map<Integer, PeptideBean> getPeptidesList(List<Integer> peptideIds) {
+//        Map<Integer, PeptideBean> peptidesProtList = da.getPeptidesList(peptideIds);
+//        return peptidesProtList;
+//    }
 
     /**
      * get peptides id list for selected protein in selected dataset
@@ -497,19 +487,22 @@ public class CoreLogic implements Serializable {
     /**
      * retrieve standard proteins data for fraction plot
      */
-    public void retriveStandardProtPlotList() {
-        List<StandardProteinBean> standardPlotList = da.getStandardProtPlotList(mainDatasetId);
-        getMainDataset().setStanderdPlotProt(standardPlotList);
-    }
+//    public List<StandardProteinBean> retriveStandardProtPlotList(int datasetId) {
+//        return da.getStandardProtPlotList(datasetId);
+////        getMainDataset().setStanderdPlotProt(standardPlotList);
+//    }
 
     /**
      * retrieve standard proteins data for fraction plot
      *
      * @param datasetId
      */
-    public void retriveStandardProtPlotList(int datasetId) {
-        List<StandardProteinBean> standardPlotList = da.getStandardProtPlotList(datasetId);
-        getMainDataset().setStanderdPlotProt(standardPlotList);
+    public List<StandardProteinBean>  retriveStandardProtPlotList(int datasetId) {
+        if(datasetList.get(datasetId).getStanderdPlotProt() != null )
+            return datasetList.get(datasetId).getStanderdPlotProt();
+        else
+            return da.getStandardProtPlotList(datasetId);
+//        getMainDataset().setStanderdPlotProt(standardPlotList);
     }
 
     /**
@@ -540,8 +533,8 @@ public class CoreLogic implements Serializable {
      *
      * @return mainDataset
      */
-    public DatasetBean getMainDataset() {
-        return datasetList.get(mainDatasetId);
+    public int getMainDataset() {
+        return mainDatasetId;
     }
 
     public int getDatasetKey(String datasetString) {

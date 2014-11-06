@@ -54,6 +54,23 @@ public class ProteinBean implements Serializable,Comparable<ProteinBean> {
     private String geneName;
     private String chromosomeNumber;
     private int protGroupId;
+    private int frcationId;
+
+    public int getExpId() {
+        return expId;
+    }
+
+    public void setExpId(int expId) {
+        this.expId = expId;
+    }
+
+    public int getFrcationId() {
+        return frcationId;
+    }
+
+    public void setFrcationId(int frcationId) {
+        this.frcationId = frcationId;
+    }
 
     public String getGeneName() {
         return geneName;

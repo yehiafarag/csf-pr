@@ -147,15 +147,15 @@ public class FilesReader implements Serializable {
             for (int x = 1; x < lineArr.length; x++) {
                 String str = lineArr[x];
                 FractionBean fb = new FractionBean();
-                fb.setMinRange(Double.valueOf(str.split("\t")[1]));
-                fb.setMaxRange(Double.valueOf(str.split("\t")[2]));
+//                fb.setMinRange(Double.valueOf(str.split("\t")[1]));
+//                fb.setMaxRange(Double.valueOf(str.split("\t")[2]));
 
                 double keyDuble = Double.parseDouble(str.split("\t")[0]);
                 int key = (int) keyDuble;
                 fb.setFractionIndex(key);
                 fractionRanges.put(key, fb);
             }
-            exp.setFractionsList(fractionRanges);
+//            exp.setFractionsList(fractionRanges);
 
 
 
@@ -335,17 +335,17 @@ public class FilesReader implements Serializable {
 
 
         if (peptideList != null && peptideList.size() > 0) {
-            exp.setPeptideList(peptideList);
+//            exp.setPeptideList(peptideList);
             peptideList = this.addSharedPeptides(peptideList);
             exp.setPeptidesNumber(this.getNumValidatedPep(peptideList));
         }
         if (fractionsList.isEmpty() && fractionRanges == null) {
-            exp.setProteinList(proteinList);
+//            exp.setProteinList(proteinList);
             exp.setProteinsNumber(proteinList.size());
 
         } else {
             fractionsList = getFractionRange(fractionsList);//will be updated by dataset
-            exp.setFractionsList(fractionsList);
+//            exp.setFractionsList(fractionsList);
         }
         return exp;
     }
@@ -396,8 +396,8 @@ public class FilesReader implements Serializable {
         Map<Integer, FractionBean> tempFractionsList = new HashMap<Integer, FractionBean>();
         for (int key : fractionsList.keySet()) {
             FractionBean fraction = fractionsList.get(key);
-            fraction.setMaxRange(0.0);
-            fraction.setMaxRange(0.0);
+//            fraction.setMaxRange(0.0);
+//            fraction.setMaxRange(0.0);
             tempFractionsList.put(key, fraction);
 
         }

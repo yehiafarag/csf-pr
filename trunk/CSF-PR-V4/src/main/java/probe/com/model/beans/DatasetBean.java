@@ -1,7 +1,7 @@
 package probe.com.model.beans;
 
 import java.io.Serializable;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,9 +20,9 @@ public class DatasetBean implements Serializable {
     private int peptidesInclude;
     private String name, description;
     private int fractionsNumber;
-    private Map<Integer, FractionBean> fractionsList; //the key is fraction id
-    private Map<String, ProteinBean> proteinList; //the we use it only in case of protein file
-    private Map<Integer, PeptideBean> peptideList = new HashMap<Integer, PeptideBean>();
+//    private Map<Integer, FractionBean> fractionsList; //the key is fraction id
+//    private Map<String, ProteinBean> proteinList; //the we use it only in case of protein file
+//    private Map<Integer, PeptideBean> peptideList = new HashMap<Integer, PeptideBean>();
     private String species, sampleType, sampleProcessing, instrumentType, fragMode, UploadedByName, email, publicationLink;
     private int proteinsNumber, peptidesNumber, expType;
     private int numberValidProt;
@@ -54,13 +54,13 @@ public class DatasetBean implements Serializable {
         return fractionsNumber;
     }
 
-    public void setFractionsList(Map<Integer, FractionBean> fractionsList) {
-        this.fractionsList = fractionsList;
-    }
-
-    public Map<Integer, FractionBean> getFractionsList() {
-        return fractionsList;
-    }
+//    public void setFractionsList(Map<Integer, FractionBean> fractionsList) {
+//        this.fractionsList = fractionsList;
+//    }
+//
+//    public Map<Integer, FractionBean> getFractionsList() {
+//        return fractionsList;
+//    }
 
     public void setExpFile(int expFile) {
         this.expFile = expFile;
@@ -78,21 +78,21 @@ public class DatasetBean implements Serializable {
 //        return ready;
 //    }
 
-    public void setProteinList(Map<String, ProteinBean> proteinList) {
-        this.proteinList = proteinList;
-    }
+//    public void setProteinList(Map<String, ProteinBean> proteinList) {
+//        this.proteinList = proteinList;
+//    }
 
-    public Map<String, ProteinBean> getProteinList() {
-        return proteinList;
-    }
-
-    public Map<Integer, PeptideBean> getPeptideList() {
-        return peptideList;
-    }
-
-    public void setPeptideList(Map<Integer, PeptideBean> peptideList) {
-        this.peptideList = peptideList;
-    }
+//    public Map<String, ProteinBean> getProteinList() {
+//        return proteinList;
+//    }
+//
+//    public Map<Integer, PeptideBean> getPeptideList() {
+//        return peptideList;
+//    }
+//
+//    public void setPeptideList(Map<Integer, PeptideBean> peptideList) {
+//        this.peptideList = peptideList;
+//    }
 
     public int getPeptidesInclude() {
         return peptidesInclude;

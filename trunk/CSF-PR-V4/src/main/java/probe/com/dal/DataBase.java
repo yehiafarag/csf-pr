@@ -70,6 +70,26 @@ public class DataBase implements Serializable {
                 Statement statement = conn_i.createStatement();
                 String csfSQL = "CREATE DATABASE IF NOT exists  " + dbName;
                 statement.executeUpdate(csfSQL);
+                
+                //temp
+                String sqoDataBase = "SHOW DATABASES ;";
+                ResultSet rs = statement.executeQuery(sqoDataBase);
+               Set<String> datasetnames = new HashSet<String>();
+                while(rs.next()){
+                    String db = rs.getString("Database");
+                    datasetnames.add(db);
+                    System.err.println("db is "+db);
+                    
+                }
+                 Statement statement2 = conn_i.createStatement();
+                
+                for(String db:datasetnames)
+                {
+                    if(db.contains("csf")&&!db.equals(dbName))
+                        statement2.executeUpdate("DROP DATABASE "+ db+" ;");
+                
+                }
+                
                 conn_i.close();
             } catch (ClassNotFoundException e) {
                 System.err.println(e.getLocalizedMessage());
@@ -134,9 +154,9 @@ public class DataBase implements Serializable {
                 st.executeUpdate(dataset_protein_table);
 
                 //CREATE TABLE dataset_fractions_table
-                String dataset_fractions_table = "CREATE TABLE IF NOT EXISTS `experiment_fractions_table` (  `exp_id` int(11) NOT NULL,`fraction_id` int(11) NOT NULL auto_increment,  `min_range` double NOT NULL default '0',"
-                        + "  `max_range` double NOT NULL default '0', `index` int(11) NOT NULL default '0',  PRIMARY KEY  (`fraction_id`),  KEY `exp_id` (`exp_id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ";
-                st.executeUpdate(dataset_fractions_table);
+//                String dataset_fractions_table = "CREATE TABLE IF NOT EXISTS `experiment_fractions_table` (  `exp_id` int(11) NOT NULL,`fraction_id` int(11) NOT NULL auto_increment,  `min_range` double NOT NULL default '0',"
+//                        + "  `max_range` double NOT NULL default '0', `index` int(11) NOT NULL default '0',  PRIMARY KEY  (`fraction_id`),  KEY `exp_id` (`exp_id`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ";
+//                st.executeUpdate(dataset_fractions_table);
 
                 //  CREATE TABLE  `experiment_peptides_table`
                 String dataset_peptide_table = "CREATE TABLE IF NOT EXISTS `experiment_peptides_table` (  `exp_id` INT NOT NULL DEFAULT  '0',  `pep_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,FOREIGN KEY (`exp_id`) REFERENCES experiments_table (`exp_id`) ON DELETE CASCADE  ) ENGINE = MYISAM ;";
@@ -176,9 +196,20 @@ public class DataBase implements Serializable {
                 st.executeUpdate(proteins_peptides_table);
 
                 //CREATE TABLE fractions_table
-                String fractions_table = "CREATE TABLE IF NOT EXISTS `fractions_table` (  `fraction_id` int(11) NOT NULL,`prot_accession` varchar(500) NOT NULL,"
-                        + "`number_peptides` int(11) NOT NULL default '0',  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,  `number_spectra` int(11) NOT NULL default '0',`average_ precursor_intensity` double default NULL," + "KEY `prot_accession` (`prot_accession`), KEY `fraction_id` (`fraction_id`),	FOREIGN KEY (`prot_accession`) REFERENCES proteins_table(`accession`) ON DELETE CASCADE,"
-                        + "FOREIGN KEY (`fraction_id`) REFERENCES experiment_fractions_table(`fraction_id`) ON DELETE CASCADE	) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+                String fractions_table = "CREATE TABLE IF NOT EXISTS `fractions_table` (\n"
+                        + "  `fraction_id` int(11) NOT NULL,\n"
+                        + "  `prot_accession` varchar(500) NOT NULL,\n"
+                        + "  `number_peptides` int(11) NOT NULL default '0',\n"
+                        + "  `peptide_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n"
+                        + "  `peptide_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n"
+                        + "  `spectrum_fraction_spread_lower_range_kDa` varchar(10) default NULL,\n"
+                        + "  `spectrum_fraction_spread_upper_range_kDa` varchar(10) default NULL,\n"
+                        + "  `number_spectra` int(11) NOT NULL default '0',\n"
+                        + "  `average_ precursor_intensity` double default NULL,\n"
+                        + "  `exp_id` int(255) NOT NULL default '0',\n"
+                        + "  KEY `prot_accession` (`prot_accession`(333)),\n"
+                        + "  KEY `fraction_id` (`fraction_id`)\n"
+                        + ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(fractions_table);
 
                 //CREATE TABLE dataset_peptides_proteins_table
@@ -188,13 +219,16 @@ public class DataBase implements Serializable {
                 //CREATE TABLEstandard_plot_proteins
                 String standard_plot_proteins = " CREATE TABLE IF NOT EXISTS `standard_plot_proteins` (`exp_id` int(11) NOT NULL,	  `mw_(kDa)` double NOT NULL,	  `name` varchar(30) NOT NULL,	  `lower` int(11) NOT NULL,  `upper` int(11) NOT NULL,  `color` varchar(30) NOT NULL  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                 st.executeUpdate(standard_plot_proteins);
+                
+                
+                
                 conn.close();
                 st.close();
                 System.gc();
             } catch (SQLException s) {
                 System.err.println(s.getLocalizedMessage());
                 conn.close();
-                
+
                 return false;
             }
             // 
@@ -260,22 +294,22 @@ public class DataBase implements Serializable {
                     datasetId = rs.getInt(1);
                 }
                 rs.close();
-                for (FractionBean fb : datasetBean.getFractionsList().values()) {
-                    insertFractDatasetStat = conn.prepareStatement(insertFractDataset, Statement.RETURN_GENERATED_KEYS);
-                    insertFractDatasetStat.setInt(1, datasetId);
-                    insertFractDatasetStat.setDouble(2, fb.getMinRange());
-                    insertFractDatasetStat.setDouble(3, fb.getMaxRange());
-                    insertFractDatasetStat.setInt(4, fb.getFractionIndex());
-                    insertFractDatasetStat.executeUpdate();
-                    rs = insertFractDatasetStat.getGeneratedKeys();
-                    while (rs.next()) {
-                        fractId = rs.getInt(1);
-                    }
-                    rs.close();
-                    for (ProteinBean pb : fb.getProteinList().values()) {
-                        test = this.insertProteinFract(conn, fractId, pb);
-                    }
-                }
+//                for (FractionBean fb : datasetBean.getFractionsList().values()) {
+//                    insertFractDatasetStat = conn.prepareStatement(insertFractDataset, Statement.RETURN_GENERATED_KEYS);
+//                    insertFractDatasetStat.setInt(1, datasetId);
+//                    insertFractDatasetStat.setDouble(2, fb.getMinRange());
+//                    insertFractDatasetStat.setDouble(3, fb.getMaxRange());
+//                    insertFractDatasetStat.setInt(4, fb.getFractionIndex());
+//                    insertFractDatasetStat.executeUpdate();
+//                    rs = insertFractDatasetStat.getGeneratedKeys();
+//                    while (rs.next()) {
+//                        fractId = rs.getInt(1);
+//                    }
+//                    rs.close();
+//                    for (ProteinBean pb : fb.getProteinList().values()) {
+//                        test = this.insertProteinFract(conn, fractId, pb);
+//                    }
+//                }
             } catch (ClassNotFoundException e) {
                 System.err.println(e.getLocalizedMessage());
                 return false;
@@ -839,6 +873,7 @@ public class DataBase implements Serializable {
             return null;
         }
         System.gc();
+//        singleuseUpdateDb();
         return datasetList;
 
     }
@@ -853,9 +888,9 @@ public class DataBase implements Serializable {
         DatasetBean dataset = new DatasetBean();
         dataset.setDatasetId(datasetId);
         dataset = this.getDatasetDetails(dataset);
-        dataset.setFractionsList(this.getFractionsList(dataset.getDatasetId()));
-        dataset.setProteinList(this.getDatasetProteinsList(datasetId));	   	//get protein details	
-        dataset.setPeptideList(this.getDatasetPeptidesList(datasetId));
+//        dataset.setFractionsList(this.getFractionsList(dataset.getDatasetId()));
+//        dataset.setProteinList(this.getDatasetProteinsList(datasetId));	   	//get protein details	
+//        dataset.setPeptideList(this.getDatasetPeptidesList(datasetId));
         System.gc();
         return dataset;
     }
@@ -974,70 +1009,89 @@ public class DataBase implements Serializable {
      * @param datasetId
      * @return fractions list for the selected dataset
      */
-    public synchronized Map<Integer, FractionBean> getFractionsList(int datasetId) {
-        Map<Integer, FractionBean> fractionsList = new HashMap<Integer, FractionBean>();
+    public synchronized Map<Integer, ProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
+//        Map<Integer, FractionBean> fractionsList = new TreeMap<Integer, FractionBean>();
         try {
 
             //get fractions id list
-            PreparedStatement selectFractsListStat = null;
-            double minRange = 0.0;
-            double maxRange = 0.0;
-            String selectFractList = "SELECT `fraction_id`,`min_range` ,`max_range`,`index` FROM `experiment_fractions_table` where `exp_id` = ? ORDER BY `fraction_id`";
-            if (conn == null || conn.isClosed()) {
-                Class.forName(driver).newInstance();
-                conn = DriverManager.getConnection(url + dbName, userName, password);
-            }
-            selectFractsListStat = conn.prepareStatement(selectFractList);
-            selectFractsListStat.setInt(1, datasetId);
-            ResultSet rs = selectFractsListStat.executeQuery();
-            ArrayList<FractionBean> fractionIdList = new ArrayList<FractionBean>();
-            FractionBean fb = null;
-            while (rs.next()) {
-                fb = new FractionBean();
-                int fraction_id = rs.getInt("fraction_id");
-                fb.setFractionId(fraction_id);
-                minRange = rs.getDouble("min_range");
-                fb.setMinRange(minRange);
-                maxRange = rs.getDouble("max_range");
-                fb.setMaxRange(maxRange);
-                int index = rs.getInt("index");
-                fb.setFractionIndex(index);
-                fractionIdList.add(fb);
-
-            }
-            rs.close();
+//            PreparedStatement selectFractsListStat = null;
+//            double minRange = 0.0;
+//            double maxRange = 0.0;
+//            String selectFractList = "SELECT `fraction_id`,`min_range` ,`max_range`,`index` FROM `experiment_fractions_table` where `exp_id` = ? ORDER BY `fraction_id`";
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            selectFractsListStat = conn.prepareStatement(selectFractList);
+//            selectFractsListStat.setInt(1, datasetId);
+//            ResultSet rs = selectFractsListStat.executeQuery();
+//            ArrayList<FractionBean> fractionIdList = new ArrayList<FractionBean>();
+//            FractionBean fb = null;
+//            while (rs.next()) {
+//                fb = new FractionBean();
+//                int fraction_id = rs.getInt("fraction_id");
+//                fb.setFractionId(fraction_id);
+////                minRange = rs.getDouble("min_range");
+////                fb.setMinRange(minRange);
+////                maxRange = rs.getDouble("max_range");
+////                fb.setMaxRange(maxRange);
+//                int index = rs.getInt("index");
+//                fb.setFractionIndex(index);
+//                fractionIdList.add(fb);
+//
+//            }
+//            rs.close();
 
             //get fractions 
             PreparedStatement selectFractsStat = null;
-            String selectFract = "SELECT * FROM `fractions_table` where `fraction_id` = ?";
+            String selectFract = "SELECT * FROM `fractions_table` where `exp_id` = ? AND `prot_accession` = ?  ORDER BY `fraction_id`";
 
-            for (FractionBean fb2 : fractionIdList) {
+//            for (FractionBean fb2 : fractionIdList) {
                 if (conn == null || conn.isClosed()) {
                     Class.forName(driver).newInstance();
                     conn = DriverManager.getConnection(url + dbName, userName, password);
                 }
                 selectFractsStat = conn.prepareStatement(selectFract);
-                selectFractsStat.setInt(1, fb2.getFractionId());
-                rs = selectFractsStat.executeQuery();
-                Map<String, ProteinBean> proteinList = new HashMap<String, ProteinBean>();
+                selectFractsStat.setInt(1,datasetId );
+                selectFractsStat.setString(2, accession.toUpperCase()+","+otherAccession.toUpperCase());
+                ResultSet rs = selectFractsStat.executeQuery();
+                Map<Integer, ProteinBean> proteinList = new HashMap<Integer, ProteinBean>();
                 otherSymbols.setGroupingSeparator('.');
                 df = new DecimalFormat("#.##", otherSymbols);
 
+                int x = 0;
                 while (rs.next()) {
                     ProteinBean pb = new ProteinBean();//fraction_id		  			
                     pb.setAccession(rs.getString("prot_accession"));
                     pb.setNumberOfPeptidePerFraction(rs.getInt("number_peptides"));
                     pb.setNumberOfSpectraPerFraction(rs.getInt("number_spectra"));
                     pb.setAveragePrecursorIntensityPerFraction(Double.valueOf(df.format(rs.getDouble("average_ precursor_intensity"))));
-                    proteinList.put(pb.getAccession(), pb);
+                    pb.setFrcationId(rs.getInt("fraction_id"));
+                    proteinList.put(x++, pb);
                 }
 
-                fb2.setProteinList(proteinList);
-                fractionsList.put(fb2.getFractionId(), fb2);
+//                fb2.setProteinList(proteinList);
+//                fractionsList.put(fb2.getFractionId(), fb2);
                 rs.close();
 
-            }
+//            }
             conn.close();
+            return proteinList;
+            
+//            for(ProteinBean protBean : proteinList.values()){
+//                if(fractionsList.containsKey(protBean.getFrcationId()))
+//                {
+//                    fractionsList.get(protBean.getFrcationId()).getProteinList().put(protBean.getAccession(), protBean);
+//                }else{
+//                    FractionBean fb = new FractionBean();
+//                    fb.setFractionId(protBean.getFrcationId());
+//                    fb.getProteinList().put(protBean.getAccession(), protBean);
+//                    fractionsList.put(fb.getFractionId(), fb);
+//                
+//                }
+//            
+//            
+//            }
 
         } catch (ClassNotFoundException e) {
             System.err.println(e.getLocalizedMessage());
@@ -1057,7 +1111,7 @@ public class DataBase implements Serializable {
         }
        
         System.gc();
-        return fractionsList;
+        return null;
 
     }
 
@@ -1068,12 +1122,16 @@ public class DataBase implements Serializable {
      * @return dataset peptide List
      */
     @SuppressWarnings("SleepWhileInLoop")
-    public synchronized Map<Integer, PeptideBean> getDatasetPeptidesList(int datasetId) {
-        Map<Integer, PeptideBean> peptidesList = new HashMap<Integer, PeptideBean>();
+    public synchronized Map<Integer, PeptideBean> getDatasetPeptidesList(int datasetId,boolean valid) {
+        Map<Integer, PeptideBean> peptidesList = null;
         try {
             //get fractions id list
             PreparedStatement selectPeptideListStat = null;
-            String selectPeptideList = "SELECT `pep_id` FROM `experiment_peptides_table` WHERE `exp_id` = ?;";
+            String selectPeptideList ="";
+            if(valid)
+              selectPeptideList =  "SELECT * FROM `proteins_peptides_table` WHERE `exp_id`= ? AND `validated` =1;";
+                      else 
+                 selectPeptideList = "SELECT * FROM `proteins_peptides_table` WHERE `exp_id`= ?;";
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
@@ -1081,76 +1139,78 @@ public class DataBase implements Serializable {
             selectPeptideListStat = conn.prepareStatement(selectPeptideList);
             selectPeptideListStat.setInt(1, datasetId);
             ResultSet rs = selectPeptideListStat.executeQuery();
-            ArrayList<Integer> peptideIdList = new ArrayList<Integer>();
-            while (rs.next()) {
-                int peptideId = rs.getInt("pep_id");
-                peptideIdList.add(peptideId);
-
-            }
-            rs.close();
+            peptidesList = fillPeptideInformation(rs);
+//            ArrayList<Integer> peptideIdList = new ArrayList<Integer>();
+//            while (rs.next()) {
+//                PeptideBean pb = new PeptideBean();
+//                int peptideId = rs.getInt("pep_id");
+////                peptideIdList.add(peptideId);
+//
+//            }
+//            rs.close();
 
             //get peptides 
-            PreparedStatement selectPeptidesStat = null;
-            String selectPeptide = "SELECT * FROM `proteins_peptides_table` WHERE `peptide_id` = ?;";
-            int counter = 0;
-            for (int pepId : peptideIdList) {
-
-                PeptideBean pepb = new PeptideBean();
-                pepb.setPeptideId(pepId);
-                if (conn == null || conn.isClosed()) {
-                    Class.forName(driver).newInstance();
-                    conn = DriverManager.getConnection(url + dbName, userName, password);
-                }
-                selectPeptidesStat = conn.prepareStatement(selectPeptide);
-                selectPeptidesStat.setInt(1, pepId);
-                rs = selectPeptidesStat.executeQuery();
-
-                while (rs.next()) {
-                    pepb.setAaAfter(rs.getString("aa_after"));
-                    pepb.setAaBefore(rs.getString("aa_before"));
-                    pepb.setConfidence(rs.getDouble("confidence"));
-                    pepb.setLocationConfidence(rs.getString("location_confidence"));
-                    pepb.setNumberOfValidatedSpectra(rs.getInt("number_of_validated_spectra"));
-                    pepb.setOtherProteinDescriptions(rs.getString("other_protein_description(s)"));
-                    pepb.setOtherProteins(rs.getString("other_protein(s)"));
-                    pepb.setPeptideEnd(rs.getString("peptide_end"));
-                    pepb.setPeptideProteins((rs.getString("peptide_protein(s)")));
-                    pepb.setPeptideProteinsDescriptions(rs.getString("peptide_proteins_description(s)"));
-                    pepb.setPeptideStart(rs.getString("peptide_start"));
-                    pepb.setPrecursorCharges(rs.getString("precursor_charge(s)"));
-                    pepb.setProtein(rs.getString("protein"));
-                    pepb.setScore(rs.getDouble("score"));
-                    pepb.setSequence(rs.getString("sequence"));
-                    pepb.setVariableModification(rs.getString("variable_modification"));
-                    pepb.setFixedModification(rs.getString("fixed_modification"));
-                    pepb.setPeptideId(pepId);
-                    pepb.setProteinInference(rs.getString("protein_inference"));
-                    pepb.setSequenceTagged(rs.getString("sequence_tagged"));
-                    pepb.setEnzymatic(Boolean.valueOf(rs.getString("enzymatic")));
-                    pepb.setValidated(rs.getDouble("validated"));
-                    pepb.setStarred(Boolean.valueOf(rs.getString("starred")));
-
-                    pepb.setGlycopatternPositions(rs.getString("glycopattern_position(s)"));
-                    String str = rs.getString("deamidation_and_glycopattern");
-                    if (str != null && !str.equals("")) {
-                        pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
-                    }
-                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
-
-                    peptidesList.put(pepb.getPeptideId(), pepb);
-
-                }
-                rs.close();
-                counter++;
-                if (counter == 10000) {
-                    conn.close();
-                    Thread.sleep(100);
-                    Class.forName(driver).newInstance();
-                    conn = DriverManager.getConnection(url + dbName, userName, password);
-                    counter = 0;
-                }
-
-            }
+//            PreparedStatement selectPeptidesStat = null;
+//            String selectPeptide = "SELECT * FROM `proteins_peptides_table` WHERE `peptide_id` = ?;";
+//            int counter = 0;
+//            for (int pepId : peptideIdList) {
+//
+//                PeptideBean pepb = new PeptideBean();
+//                pepb.setPeptideId(pepId);
+//                if (conn == null || conn.isClosed()) {
+//                    Class.forName(driver).newInstance();
+//                    conn = DriverManager.getConnection(url + dbName, userName, password);
+//                }
+//                selectPeptidesStat = conn.prepareStatement(selectPeptide);
+//                selectPeptidesStat.setInt(1, pepId);
+//                rs = selectPeptidesStat.executeQuery();
+//
+//                while (rs.next()) {
+//                    pepb.setAaAfter(rs.getString("aa_after"));
+//                    pepb.setAaBefore(rs.getString("aa_before"));
+//                    pepb.setConfidence(rs.getDouble("confidence"));
+//                    pepb.setLocationConfidence(rs.getString("location_confidence"));
+//                    pepb.setNumberOfValidatedSpectra(rs.getInt("number_of_validated_spectra"));
+//                    pepb.setOtherProteinDescriptions(rs.getString("other_protein_description(s)"));
+//                    pepb.setOtherProteins(rs.getString("other_protein(s)"));
+//                    pepb.setPeptideEnd(rs.getString("peptide_end"));
+//                    pepb.setPeptideProteins((rs.getString("peptide_protein(s)")));
+//                    pepb.setPeptideProteinsDescriptions(rs.getString("peptide_proteins_description(s)"));
+//                    pepb.setPeptideStart(rs.getString("peptide_start"));
+//                    pepb.setPrecursorCharges(rs.getString("precursor_charge(s)"));
+//                    pepb.setProtein(rs.getString("protein"));
+//                    pepb.setScore(rs.getDouble("score"));
+//                    pepb.setSequence(rs.getString("sequence"));
+//                    pepb.setVariableModification(rs.getString("variable_modification"));
+//                    pepb.setFixedModification(rs.getString("fixed_modification"));
+//                    pepb.setPeptideId(pepId);
+//                    pepb.setProteinInference(rs.getString("protein_inference"));
+//                    pepb.setSequenceTagged(rs.getString("sequence_tagged"));
+//                    pepb.setEnzymatic(Boolean.valueOf(rs.getString("enzymatic")));
+//                    pepb.setValidated(rs.getDouble("validated"));
+//                    pepb.setStarred(Boolean.valueOf(rs.getString("starred")));
+//
+//                    pepb.setGlycopatternPositions(rs.getString("glycopattern_position(s)"));
+//                    String str = rs.getString("deamidation_and_glycopattern");
+//                    if (str != null && !str.equals("")) {
+//                        pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
+//                    }
+//                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
+//
+//                    peptidesList.put(pepb.getPeptideId(), pepb);
+//
+//                }
+//                rs.close();
+//                counter++;
+//                if (counter == 10000) {
+//                    conn.close();
+//                    Thread.sleep(100);
+//                    Class.forName(driver).newInstance();
+//                    conn = DriverManager.getConnection(url + dbName, userName, password);
+//                    counter = 0;
+//                }
+//
+//            }
 
         } catch (ClassNotFoundException e) {
             System.err.println(e.getLocalizedMessage());
@@ -1161,8 +1221,8 @@ public class DataBase implements Serializable {
         } catch (InstantiationException e) {
             System.err.println(e.getLocalizedMessage());
 
-        } catch (InterruptedException e) {
-            System.err.println(e.getLocalizedMessage());
+//        } catch (InterruptedException e) {
+//            System.err.println(e.getLocalizedMessage());
 
         } catch (SQLException e) {
             System.err.println(e.getLocalizedMessage());
@@ -1171,6 +1231,45 @@ public class DataBase implements Serializable {
         System.gc();
         return peptidesList;
     }
+     public int getAllDatasetPeptidesNumber(int datasetId, boolean validated) {
+
+         try {
+            //get fractions id list
+            PreparedStatement selectPeptideListStat = null;
+            String selectPeptideList ="";
+            if(validated)
+              selectPeptideList =  "SELECT * FROM `proteins_peptides_table` WHERE `exp_id`= ? AND `validated` =1;";
+                      else 
+                 selectPeptideList = "SELECT * FROM `proteins_peptides_table` WHERE `exp_id`= ?;";
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            selectPeptideListStat = conn.prepareStatement(selectPeptideList);
+            selectPeptideListStat.setInt(1, datasetId);
+            ResultSet rs = selectPeptideListStat.executeQuery();
+            return rs.getRow();
+
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println(e.getLocalizedMessage());
+
+//        } catch (InterruptedException e) {
+//            System.err.println(e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println(e.getLocalizedMessage());
+
+        }
+        System.gc();
+        return 0;
+    }
+    
 
     /**
      * get proteins map for especial dataset
@@ -1471,7 +1570,6 @@ public class DataBase implements Serializable {
         } else {
             selectPro = "SELECT * FROM `experiment_protein_table` Where  "+(sb.toString());
         }
-System.out.println("no erroe till ");
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -1518,66 +1616,78 @@ System.out.println("no erroe till ");
      * @param peptideIds peptides IDs
      * @return peptides list
      */
-    public synchronized Map<Integer, PeptideBean> getPeptidesList(Set<Integer> peptideIds) {
+    public synchronized Map<Integer, PeptideBean> getPeptidesList(String accession,String otherAcc,int datasetId) {
 
         ResultSet rs = null;
-        // peptideIds.add(5741);
-        Map<Integer, PeptideBean> peptidesList = new HashMap<Integer, PeptideBean>();
+        StringBuilder sb = new StringBuilder();
+        sb.append("`protein` = ?");
+        if(otherAcc != null && !otherAcc.equalsIgnoreCase("")){
+            sb.append(" AND ");
+            sb.append("`other_protein(s)` = ?");
+        }
+        
+//        Map<Integer, PeptideBean> peptidesList = new HashMap<Integer, PeptideBean>();
         try {
 
             PreparedStatement selectPeptidesStat = null;
-            String selectPeptide = "SELECT * FROM `proteins_peptides_table` WHERE  `peptide_id`=? ;";
+            String selectPeptide = "SELECT * FROM `proteins_peptides_table` WHERE  `exp_id` = ? AND "+(sb.toString())+ ";";
 
-            for (int pepId : peptideIds) {
+//            for (int pepId : peptideIds) {
 
-                PeptideBean pepb = new PeptideBean();
-                pepb.setPeptideId(pepId);
+          
+//                pepb.setPeptideId(pepId);
                 if (conn == null || conn.isClosed()) {
                     Class.forName(driver).newInstance();
                     conn = DriverManager.getConnection(url + dbName, userName, password);
                 }
                 selectPeptidesStat = conn.prepareStatement(selectPeptide);
-                selectPeptidesStat.setInt(1, pepId);
+                selectPeptidesStat.setInt(1, datasetId);
+                selectPeptidesStat.setString(2, accession);
+                 if(otherAcc != null && !otherAcc.equalsIgnoreCase("")){    
+                selectPeptidesStat.setString(3, otherAcc);
+        }
                 rs = selectPeptidesStat.executeQuery();
 
-                while (rs.next()) {
-                    pepb.setAaAfter(rs.getString("aa_after"));
-                    pepb.setAaBefore(rs.getString("aa_before"));
-                    pepb.setConfidence(rs.getDouble("confidence"));
-                    pepb.setLocationConfidence(rs.getString("location_confidence"));
-                    pepb.setNumberOfValidatedSpectra(rs.getInt("number_of_validated_spectra"));
-                    pepb.setOtherProteinDescriptions(rs.getString("other_protein_description(s)"));
-                    pepb.setOtherProteins(rs.getString("other_protein(s)"));
-                    pepb.setPeptideEnd(rs.getString("peptide_end"));
-                    pepb.setPeptideProteins((rs.getString("peptide_protein(s)")));
-                    pepb.setPeptideProteinsDescriptions(rs.getString("peptide_proteins_description(s)"));
-                    pepb.setPeptideStart(rs.getString("peptide_start"));
-                    pepb.setPrecursorCharges(rs.getString("precursor_charge(s)"));
-                    pepb.setProtein(rs.getString("protein"));
-                    pepb.setScore(rs.getDouble("score"));
-                    pepb.setSequence(rs.getString("sequence"));
-                    pepb.setFixedModification(rs.getString("fixed_modification"));
-                    pepb.setVariableModification(rs.getString("variable_modification"));
-                    pepb.setProteinInference(rs.getString("protein_inference"));
-                    pepb.setSequenceTagged(rs.getString("sequence_tagged"));
-                    pepb.setEnzymatic(Boolean.valueOf(rs.getString("enzymatic")));
-                    pepb.setValidated(rs.getDouble("validated"));
-                    pepb.setStarred(Boolean.valueOf(rs.getString("starred")));
-                    pepb.setPeptideId(pepId);
-                    pepb.setGlycopatternPositions(rs.getString("glycopattern_position(s)"));
-                    String str = rs.getString("deamidation_and_glycopattern");
-                    if (str != null && !str.equals("")) {
-                        pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
-                    }
+                return fillPeptideInformation(rs);
+//                while (rs.next()) {      
+//                    PeptideBean pepb = new PeptideBean();
+//                    pepb.setAaAfter(rs.getString("aa_after"));
+//                    pepb.setAaBefore(rs.getString("aa_before"));
+//                    pepb.setConfidence(rs.getDouble("confidence"));
+//                    pepb.setLocationConfidence(rs.getString("location_confidence"));
+//                    pepb.setNumberOfValidatedSpectra(rs.getInt("number_of_validated_spectra"));
+//                    pepb.setOtherProteinDescriptions(rs.getString("other_protein_description(s)"));
+//                    pepb.setOtherProteins(rs.getString("other_protein(s)"));
+//                    pepb.setPeptideEnd(rs.getString("peptide_end"));
+//                    pepb.setPeptideProteins((rs.getString("peptide_protein(s)")));
+//                    pepb.setPeptideProteinsDescriptions(rs.getString("peptide_proteins_description(s)"));
+//                    pepb.setPeptideStart(rs.getString("peptide_start"));
+//                    pepb.setPrecursorCharges(rs.getString("precursor_charge(s)"));
+//                    pepb.setProtein(rs.getString("protein"));
+//                    pepb.setScore(rs.getDouble("score"));
+//                    pepb.setSequence(rs.getString("sequence"));
+//                    pepb.setFixedModification(rs.getString("fixed_modification"));
+//                    pepb.setVariableModification(rs.getString("variable_modification"));
+//                    pepb.setProteinInference(rs.getString("protein_inference"));
+//                    pepb.setSequenceTagged(rs.getString("sequence_tagged"));
+//                    pepb.setEnzymatic(Boolean.valueOf(rs.getString("enzymatic")));
+//                    pepb.setValidated(rs.getDouble("validated"));
+//                    pepb.setStarred(Boolean.valueOf(rs.getString("starred")));
+//                    pepb.setPeptideId(rs.getInt("peptide_id"));
+//                    pepb.setGlycopatternPositions(rs.getString("glycopattern_position(s)"));
+//                    String str = rs.getString("deamidation_and_glycopattern");
+//                    if (str != null && !str.equals("")) {
+//                        pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
+//                    }
+//
+//                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
+//
+//                    peptidesList.put(pepb.getPeptideId(), pepb);
+//
+//                }
+//                rs.close();
 
-                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
-
-                    peptidesList.put(pepb.getPeptideId(), pepb);
-
-                }
-                rs.close();
-
-            }
+//            }
 
         } catch (ClassNotFoundException e) {
             System.err.println(e.getLocalizedMessage());
@@ -1593,7 +1703,7 @@ System.out.println("no erroe till ");
 
         }
         System.gc();
-        return peptidesList;
+        return null;
     }
 
     /**
@@ -1636,8 +1746,8 @@ System.out.println("no erroe till ");
             for (int fractId : fractionIdList) {
 
                 FractionBean fb = new FractionBean();
-                fb.setMinRange(minRange);
-                fb.setMaxRange(maxRange);
+//                fb.setMinRange(minRange);
+//                fb.setMaxRange(maxRange);
                 fb.setFractionId(fractId);
                 fb.setFractionIndex(index);
                 if (conn == null || conn.isClosed()) {
@@ -1873,6 +1983,54 @@ System.out.println("no erroe till ");
 //        return null;
 //    }
     
+    private Map<Integer, PeptideBean> fillPeptideInformation(ResultSet rs){
+      Map<Integer, PeptideBean> peptidesList = new HashMap<Integer, PeptideBean>();
+      try{ 
+          while (rs.next()) {
+              PeptideBean pepb = new PeptideBean();
+              pepb.setProtein(rs.getString("protein"));
+              pepb.setOtherProteins(rs.getString("other_protein(s)"));
+              pepb.setPeptideProteins((rs.getString("peptide_protein(s)")));
+              pepb.setOtherProteinDescriptions(rs.getString("other_protein_description(s)"));
+              pepb.setPeptideProteinsDescriptions(rs.getString("peptide_proteins_description(s)"));
+              pepb.setAaBefore(rs.getString("aa_before"));
+              pepb.setAaAfter(rs.getString("aa_after"));
+              pepb.setSequence(rs.getString("sequence"));
+              
+              pepb.setPeptideEnd(rs.getString("peptide_end"));
+              pepb.setPeptideStart(rs.getString("peptide_start"));
+              
+                    pepb.setVariableModification(rs.getString("variable_modification"));
+              
+              pepb.setLocationConfidence(rs.getString("location_confidence"));
+              pepb.setPrecursorCharges(rs.getString("precursor_charge(s)"));
+              pepb.setNumberOfValidatedSpectra(rs.getInt("number_of_validated_spectra"));
+              pepb.setScore(rs.getDouble("score"));
+              pepb.setConfidence(rs.getDouble("confidence"));
+              pepb.setPeptideId(rs.getInt("peptide_id"));
+              
+                    pepb.setFixedModification(rs.getString("fixed_modification"));
+
+                    pepb.setProteinInference(rs.getString("protein_inference"));
+              pepb.setSequenceTagged(rs.getString("sequence_tagged"));
+               pepb.setEnzymatic(Boolean.valueOf(rs.getString("enzymatic")));                        
+pepb.setValidated(rs.getDouble("validated"));
+                    pepb.setStarred(Boolean.valueOf(rs.getString("starred")));
+                    pepb.setGlycopatternPositions(rs.getString("glycopattern_position(s)"));
+                    String str = rs.getString("deamidation_and_glycopattern");
+                    if (str != null && !str.equals("")) {
+                        pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
+                    }
+                     pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
+
+                    peptidesList.put(pepb.getPeptideId(), pepb);                  
+                }
+                rs.close();
+                
+      }catch(Exception exp){exp.printStackTrace();}
+    return peptidesList;
+    } 
+    
     private Map<Integer, ProteinBean> fillProteinInformation(ResultSet rs){
     Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
     try{  
@@ -1999,7 +2157,6 @@ System.out.println("no erroe till ");
      * search for proteins by peptide sequence keywords
      *
      * @param peptideSequenceKeyword array of query words
-     * @param datasetId dataset Id
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
@@ -2012,7 +2169,8 @@ System.out.println("no erroe till ");
         String[] queryWordsArr = peptideSequenceKeyword.split("\n");
         Set<String> searchSet = new HashSet<String>();
         for (String str : queryWordsArr) {
-            searchSet.add(str.trim());
+            if(str.trim().equalsIgnoreCase(""))
+                searchSet.add(str.trim());
         }
         StringBuilder sb = new StringBuilder();
         for (int x = 0; x < searchSet.size(); x++) {
@@ -2062,6 +2220,8 @@ System.out.println("no erroe till ");
             rs.close();
 //            System.out.println("prot acc number are "+protAccessionQuerySet);
             proteinsList = this.searchProteinAllDatasetsByAccession(protAccessionQuerySet, validatedOnly);
+            if(proteinsList == null)
+                return null;
             for(int key:proteinsList.keySet()){
                 ProteinBean pb = proteinsList.get(key);
                 if(expIds.contains(pb.getDatasetId()))
@@ -2131,7 +2291,8 @@ System.out.println("no erroe till ");
         Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
         Map<Integer, ProteinBean> filteredProteinsList = new HashMap<Integer, ProteinBean>();
         
-        String[] queryWordsArr = peptideSequenceKeyword.split("\n");
+        
+        String[] queryWordsArr = peptideSequenceKeyword.split("\n");        
         StringBuilder sb = new StringBuilder();
         
         Set<String> searchSet = new HashSet<String>();
@@ -2183,12 +2344,11 @@ System.out.println("no erroe till ");
                 
             }
             rs.close();
-            System.out.println("prot acc number are "+protAccessionQuerySet);
             proteinsList = this.searchProteinAllDatasetsByAccession(protAccessionQuerySet, validatedOnly);
-            System.out.println("prot list are  "+proteinsList.size());
+            if(proteinsList == null || proteinsList.isEmpty())
+                return null;
             for(int key:proteinsList.keySet()){
                 ProteinBean pb = proteinsList.get(key);
-                System.err.println("id is "+pb.getDatasetId());
                 if(expIds.contains(pb.getDatasetId())){
                 
                     filteredProteinsList.put(key, pb);
@@ -2520,7 +2680,7 @@ System.out.println("no erroe till ");
     public boolean updateFractionRange(DatasetBean dataset) {
         List<Integer> fractionIDs = this.getFractionIdsList(dataset.getDatasetId());
         java.util.Collections.sort(fractionIDs);
-        Map<Integer, FractionBean> fractionRangeList = dataset.getFractionsList();
+//        Map<Integer, FractionBean> fractionRangeList = dataset.getFractionsList();
         int x = 1;
         String updateFraction = "UPDATE  `" + dbName + "`.`experiment_fractions_table` SET `min_range`=? ,`max_range`=?,`index`=? WHERE `fraction_id`=?;";
         PreparedStatement updateFractionStat = null;
@@ -2532,10 +2692,10 @@ System.out.println("no erroe till ");
                     Class.forName(driver).newInstance();
                     conn = DriverManager.getConnection(url + dbName, userName, password);
                 }
-                fb = fractionRangeList.get(x);
+                fb = null;//fractionRangeList.get(x);
                 updateFractionStat = conn.prepareStatement(updateFraction);
-                updateFractionStat.setDouble(1, fb.getMinRange());
-                updateFractionStat.setDouble(2, fb.getMaxRange());
+//                updateFractionStat.setDouble(1, fb.getMinRange());
+//                updateFractionStat.setDouble(2, fb.getMaxRange());
                 updateFractionStat.setInt(3, fb.getFractionIndex());
                 updateFractionStat.setInt(4, fractId);
                 updateFractionStat.executeUpdate();
@@ -2663,22 +2823,22 @@ System.out.println("no erroe till ");
             PreparedStatement insertFractDatasetStat = conn.prepareStatement(insertFractDataset, Statement.RETURN_GENERATED_KEYS);
             int fractId = 0;
 
-            for (FractionBean fb : dataset.getFractionsList().values()) {
-                insertFractDatasetStat = connection.prepareStatement(insertFractDataset, Statement.RETURN_GENERATED_KEYS);
-                insertFractDatasetStat.setInt(1, dataset.getDatasetId());
-                insertFractDatasetStat.setDouble(2, fb.getMinRange());
-                insertFractDatasetStat.setDouble(3, fb.getMaxRange());
-                insertFractDatasetStat.setInt(4, fb.getFractionIndex());
-                insertFractDatasetStat.executeUpdate();
-                ResultSet rs = insertFractDatasetStat.getGeneratedKeys();
-                while (rs.next()) {
-                    fractId = rs.getInt(1);
-                }
-                for (ProteinBean pb : fb.getProteinList().values()) {
-                    this.insertProteinFract(connection, fractId, pb);
-                }
-                rs.close();
-            }
+//            for (FractionBean fb : dataset.getFractionsList().values()) {
+//                insertFractDatasetStat = connection.prepareStatement(insertFractDataset, Statement.RETURN_GENERATED_KEYS);
+//                insertFractDatasetStat.setInt(1, dataset.getDatasetId());
+//                insertFractDatasetStat.setDouble(2, fb.getMinRange());
+//                insertFractDatasetStat.setDouble(3, fb.getMaxRange());
+//                insertFractDatasetStat.setInt(4, fb.getFractionIndex());
+//                insertFractDatasetStat.executeUpdate();
+//                ResultSet rs = insertFractDatasetStat.getGeneratedKeys();
+//                while (rs.next()) {
+//                    fractId = rs.getInt(1);
+//                }
+//                for (ProteinBean pb : fb.getProteinList().values()) {
+//                    this.insertProteinFract(connection, fractId, pb);
+//                }
+//                rs.close();
+//            }
 
         } catch (ClassNotFoundException exc) {
             System.err.println(exc.getLocalizedMessage());
@@ -2871,7 +3031,7 @@ System.out.println("no erroe till ");
      *
      * @return integer
      */
-    public int insertDatasetProteinPeptide(int datasetId, int peptideId, String accession, Connection connection) {
+    private  int insertDatasetProteinPeptide(int datasetId, int peptideId, String accession, Connection connection,int z) {
         int test = -1;
         try {
 
@@ -3196,6 +3356,134 @@ System.out.println("no erroe till ");
         } catch (SQLException exp) {
         }
         return test;
+    }
+    
+    public void singleuseUpdateDb()
+    {
+        String stat = "ALTER TABLE  `fractions_table` ADD  `exp_id` INT( 255 ) NOT NULL DEFAULT  '0';";
+        Map<Integer,Integer> fractionIdToExp = new HashMap<Integer, Integer>();
+         PreparedStatement getFractDatasetStat = null;//done
+
+        try {
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+             Statement st = conn.createStatement();
+                //CREATE TABLE  `users_table`
+               st.executeUpdate(stat);
+               
+                System.out.println(" success 1");
+                
+                
+           String selectFractList = "SELECT * FROM `experiment_fractions_table`";
+
+            getFractDatasetStat = conn.prepareStatement(selectFractList);
+            ResultSet rs = getFractDatasetStat.executeQuery();
+            while (rs.next()) {
+                int fraction_id = rs.getInt("fraction_id");
+                int expId = rs.getInt("exp_id");
+               fractionIdToExp.put(fraction_id, expId);
+
+            }
+            rs.close();
+            
+                System.out.println(" success 2");
+            for (int fb : fractionIdToExp.keySet()) {
+                int expId = fractionIdToExp.get(fb);
+                 String updateFraction = "UPDATE  `" + dbName + "`.`fractions_table` SET `exp_id`=?   WHERE `fraction_id` = ?";                
+                       PreparedStatement updateFractionStat = conn.prepareStatement(updateFraction);
+                        updateFractionStat.setInt(1, expId);
+                        updateFractionStat.setInt(2, fb);  
+                        updateFractionStat.executeUpdate();
+//                        updateFractionStat.clearParameters();              
+                
+            }
+//            
+//                System.out.println(" success 3");
+//            String dropFractionExpTable = "DROP TABLE `experiment_fractions_table`";
+//            PreparedStatement updateFractionStat = conn.prepareStatement(dropFractionExpTable);  
+//            updateFractionStat.executeUpdate();
+            
+            
+            //update peptide table
+             String peptideTab = "ALTER TABLE  `proteins_peptides_table` ADD  `main_prot_desc` VARCHAR( 500 ) NOT NULL ";
+       
+
+      
+             Statement stst = conn.createStatement();
+                //update peptable`
+               stst.executeUpdate(peptideTab);
+               
+               
+                System.out.println(" success 4");
+                
+//                String selectPro = "SELECT * FROM `experiment_protein_table` ;";
+//                  if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            PreparedStatement selectProStat = conn.prepareStatement(selectPro);
+//          
+//            ResultSet rs2 = selectProStat.executeQuery();
+//          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs2);
+//            System.gc();
+//            rs2.close();
+//            conn.close();
+//                    Thread.sleep(100);
+//                    Class.forName(driver).newInstance();
+//                    conn = DriverManager.getConnection(url + dbName, userName, password);
+
+//            System.out.println("start updating process");
+//            PreparedStatement updatePepStat = null;
+//            int index = 0;
+//            System.out.println(" - " + proteinsList.size());
+//
+//            for (ProteinBean pb : proteinsList.values()) {
+//////                System.out.print(" - " + index);
+//                String updatePep = "UPDATE  `" + dbName + "`.`proteins_peptides_table` SET `main_prot_desc`=?   WHERE `protein` = ? AND `other_protein(s)` = ? AND `exp_id` = ?";
+//                updatePepStat = conn.prepareStatement(updatePep);
+//                updatePepStat.setString(1, pb.getDescription());
+//                updatePepStat.setString(2, pb.getAccession());
+//                updatePepStat.setString(3, pb.getOtherProteins());
+//                updatePepStat.setInt(4, pb.getDatasetId());
+//                updatePepStat.executeUpdate();
+//                updatePepStat.close();                
+//                index++;
+//                if (index == 10000) {
+//                    System.out.println("need break :-( ");
+//                    index = 0;
+//                     Thread.sleep(100);
+//                    Class.forName(driver).newInstance();
+//                    conn = DriverManager.getConnection(url + dbName, userName, password);
+//                    System.out.println("back :-D ");
+//                }
+//
+//            }
+//            
+//                System.out.println(" success 5");
+//            
+
+            
+
+           
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+           
+        } catch (IllegalAccessException e) {
+           e.printStackTrace();
+        } catch (InstantiationException e) {
+            System.err.println(e.getLocalizedMessage());
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println(e.getLocalizedMessage());
+           
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        
     }
 
 }
