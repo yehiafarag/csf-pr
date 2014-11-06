@@ -50,9 +50,9 @@ public class ProteinsTableComponent extends Table implements Serializable {
         this.setWidth("100%");
         this.setHeight("160px");
 
-        this.addContainerProperty("Index", Integer.class, null, "", null, Align.RIGHT);
+        this.addContainerProperty("Index", Integer.class, null, "", null, Table.Align.RIGHT);
         String Protein_Inference = "Protein Inference";
-        this.addContainerProperty(Protein_Inference, CustomPI.class, null, "PI", null, Align.CENTER);
+        this.addContainerProperty(Protein_Inference, CustomPI.class, null, "PI", null, Table.Align.CENTER);
 
         this.addContainerProperty("Accession", CustomExternalLink.class, null);
 
@@ -60,31 +60,32 @@ public class ProteinsTableComponent extends Table implements Serializable {
         this.setColumnCollapsed("Other Protein(s)", true);
 
         this.addContainerProperty("Description", String.class, null);
-        this.addContainerProperty("Chr", String.class, null, "CHROMOSOME", null, Align.RIGHT);
+        this.addContainerProperty("Chr", String.class, null, "CHROMOSOME", null, Table.Align.RIGHT);
 
         this.addContainerProperty("Gene Name", String.class, null);
 
-        this.addContainerProperty("Sequence Coverage(%)", Double.class, null, "Coverage(%)", null, Align.RIGHT);
-        this.addContainerProperty("Non Enzymatic Peptides", CustomEmbedded.class, null, "Non Enzymatic Peptides", null, Align.CENTER);
-        this.addContainerProperty("# Validated Peptides", Integer.class, null, "#Peptides", null, Align.RIGHT);
-        this.addContainerProperty("# Validated Spectra", Integer.class, null, "#Spectra", null, Align.RIGHT);
-        this.addContainerProperty("NSAF", Double.class, null, "NSAF", null, Align.RIGHT);
-        this.addContainerProperty("RANK", Integer.class, null, "RANK (NSAF)", null, Align.RIGHT);
-        this.addContainerProperty("MW", Double.class, null, "MW", null, Align.RIGHT);
+        this.addContainerProperty("Sequence Coverage(%)", Double.class, null, "Coverage(%)", null, Table.Align.RIGHT);
+        this.addContainerProperty("Non Enzymatic Peptides", CustomEmbedded.class, null, "Non Enzymatic Peptides", null, Table.Align.CENTER);
+        String validatedPeptide  = "# Validated Peptides";
+        this.addContainerProperty(validatedPeptide, Integer.class, null, "#Peptides", null, Table.Align.RIGHT);
+        this.addContainerProperty("# Validated Spectra", Integer.class, null, "#Spectra", null, Table.Align.RIGHT);
+        this.addContainerProperty("NSAF", Double.class, null, "NSAF", null, Table.Align.RIGHT);
+        this.addContainerProperty("RANK", Integer.class, null, "RANK (NSAF)", null, Table.Align.RIGHT);
+        this.addContainerProperty("MW", Double.class, null, "MW", null, Table.Align.RIGHT);
         String Confidence = "Confidence";
-        this.addContainerProperty(Confidence, Double.class, null, Confidence, null, Align.RIGHT);
+        this.addContainerProperty(Confidence, Double.class, null, Confidence, null, Table.Align.RIGHT);
         if (fractionNumber > 0) {
-            this.addContainerProperty("SpectrumFractionSpread lower range_kDa", Double.class, null, "Spectrum Lower Range", null, Align.RIGHT);
-            this.addContainerProperty("SpectrumFractionSpread upper range kDa", Double.class, null, "Spectrum Upper Range", null, Align.RIGHT);
-            this.addContainerProperty("PeptideFractionSpread lower range kDa", Double.class, null, "Peptide Lower Range", null, Align.RIGHT);
-            this.addContainerProperty("PeptideFractionSpread upper range kDa", Double.class, null, "Peptide Upper Range", null, Align.RIGHT);
+            this.addContainerProperty("SpectrumFractionSpread lower range_kDa", Double.class, null, "Spectrum Lower Range", null, Table.Align.RIGHT);
+            this.addContainerProperty("SpectrumFractionSpread upper range kDa", Double.class, null, "Spectrum Upper Range", null, Table.Align.RIGHT);
+            this.addContainerProperty("PeptideFractionSpread lower range kDa", Double.class, null, "Peptide Lower Range", null, Table.Align.RIGHT);
+            this.addContainerProperty("PeptideFractionSpread upper range kDa", Double.class, null, "Peptide Upper Range", null, Table.Align.RIGHT);
             this.setColumnCollapsed("SpectrumFractionSpread lower range_kDa", true);
             this.setColumnCollapsed("SpectrumFractionSpread upper range kDa", true);
             this.setColumnCollapsed("PeptideFractionSpread lower range kDa", true);
             this.setColumnCollapsed("PeptideFractionSpread upper range kDa", true);
 
         }
-        this.addContainerProperty("Validated", CustomEmbedded.class, null, "Validated", null, Align.CENTER);
+        this.addContainerProperty("Validated", CustomEmbedded.class, null, "Validated", null, Table.Align.CENTER);
         int index = 1;
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
         otherSymbols.setGroupingSeparator('.');
@@ -173,9 +174,9 @@ public class ProteinsTableComponent extends Table implements Serializable {
             index++;
 
         }
-        this.sort(new String[]{Confidence, "# Validated Peptides"}, new boolean[]{false, false});
+        this.sort(new Object[]{Confidence, validatedPeptide}, new boolean[]{false, false});
 
-        this.setSortAscending(false);
+//        this.setSortAscending(false);
 
         setColumnWidth("Index", 33);
         setColumnWidth("Protein_Inference", 33);
@@ -207,7 +208,10 @@ public class ProteinsTableComponent extends Table implements Serializable {
             if (indexing == 1) {
                 firstIndex = (Integer) id;
             }
-            sortMap.put(indexing, item.getItemProperty("Accession").getValue().toString().toUpperCase().trim() + "," + item.getItemProperty("Other Protein(s)").getValue().toString().toUpperCase().trim() + "," + item.getItemProperty("Description").getValue().toString().toUpperCase().trim() + "," + (Integer) id);
+            Object accObject = item.getItemProperty("Accession").getValue();
+            Object otherAccObject = item.getItemProperty("Other Protein(s)").getValue();
+            Object descObject = item.getItemProperty("Description").getValue();
+            sortMap.put(indexing, accObject.toString().toUpperCase().trim() + "," + otherAccObject.toString().toUpperCase().trim() + "," + descObject.toString().toUpperCase().trim() + "," + (Integer) id);
             indexing++;
         }
         tableSearchMap.clear();

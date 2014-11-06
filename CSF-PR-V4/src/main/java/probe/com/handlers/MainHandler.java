@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import probe.com.dal.Query;
@@ -15,6 +16,7 @@ import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
 import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.StandardProteinBean;
 import probe.com.view.components.PeptideTable;
 
 /**
@@ -120,7 +122,7 @@ public class MainHandler implements Serializable {
      *
      * @return mainDataset
      */
-    public DatasetBean getMainDataset() {
+    public int getMainDatasetId() {
         return computing.getMainDataset();
     }
 
@@ -141,8 +143,8 @@ public class MainHandler implements Serializable {
      * @param datasetId
      * @return dataset peptide List
      */
-    public Map<Integer, PeptideBean> getAllDatasetPeptidesList(int datasetId) {
-        return computing.getPeptidesList(datasetId);
+    public Map<Integer, PeptideBean> getAllDatasetPeptidesList(int datasetId,boolean validated) {
+        return computing.getAllDatasetPeptidesList(datasetId,validated);
     }
 
     /**
@@ -179,6 +181,7 @@ public class MainHandler implements Serializable {
         return computing.getAllDatasetPeptidesList(datasetId, validated);
 
     }
+  
     
      /**
      * get dataset peptides number (valid peptides or all peptides)
@@ -217,9 +220,9 @@ public class MainHandler implements Serializable {
      * @param datasetId
      * @return fractions list for the selected dataset
      */
-    public Map<Integer, FractionBean> getFractionsList(int datasetId) {
+    public Map<Integer, ProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
 
-        return computing.getFractionsList(datasetId);
+        return computing.getProtGelFractionsList(datasetId,accession, otherAccession);
 
     }
 
@@ -298,8 +301,8 @@ public class MainHandler implements Serializable {
     /**
      * retrieve standard proteins data for fraction plot
      */
-    public void retrieveStandardProtPlotList() {
-        computing.retriveStandardProtPlotList();
+    public List<StandardProteinBean> retrieveStandardProtPlotList(int datasetId) {
+        return computing.retriveStandardProtPlotList(datasetId);
     }
 
     /**

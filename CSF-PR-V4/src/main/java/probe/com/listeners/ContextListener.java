@@ -41,9 +41,10 @@ public class ContextListener implements ServletContextListener,Serializable {
 		if(adminName != null && adminPassword != null){
 			adminName = adminName.toUpperCase();
 			auth.regUser(adminName, adminPassword, true,adminEmail.toUpperCase());
+                        auth.changePassword(adminName, "norway", adminPassword);
 			
 		}
-		
+		da.runOnceToUpdateDatabase();
 	}
 
 }

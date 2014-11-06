@@ -58,6 +58,7 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
     private Property.ValueChangeListener listener;
     private ProteinsTableComponent validProteinsTable;
     private Button nextSearchBtn;
+    private int lastSelectedIndex;
 
     /**
      * get protein table search field
@@ -186,7 +187,7 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
 
                 if (selectionType.isSelected("\t\tShow Validated Proteins Only")) {
                     protLabelLayout.removeAllComponents();
-                    Label protLabel = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Protein Groups (" + datasetProteinsNumber + ")</h4>");
+                    Label protLabel = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Protein Groups (" + validProtNumber + ")</h4>");
                     protLabel.setContentMode(ContentMode.HTML);
                     protLabel.setHeight("40px");
                     protLabelLayout.addComponent(protLabel);
@@ -196,7 +197,9 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
                     validProteinsTable.setHeight(protTable.getHeight() + "");
                     protTable.removeValueChangeListener(listener);
                     validProteinsTable.addValueChangeListener(listener);
-                    currentVisibleTable = validProteinsTable;
+                    validProteinsTable.select(lastSelectedIndex);
+//                    validProteinsTable.commit();
+//                    currentVisibleTable = validProteinsTable;
 
                 } else {
                     protLabelLayout.removeAllComponents();
@@ -211,6 +214,8 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
                     currentVisibleTable = protTable;
                     validProteinsTable.removeValueChangeListener(listener);
                     protTable.addValueChangeListener(listener);
+//                    protTable.select(protTable.get);
+//                    protTable.commit();
                 }
             }
         });
@@ -298,5 +303,9 @@ public class ProteinsTableLayout extends VerticalLayout implements Serializable 
             }
         }
         return validProteinsList;
+    }
+
+    public void setLastSelectedIndex(int lastSelectedIndex) {
+        this.lastSelectedIndex = lastSelectedIndex;
     }
 }
