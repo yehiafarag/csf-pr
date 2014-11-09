@@ -4,7 +4,6 @@
  */
 package probe.com.view.core;
 
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Label;
 import java.io.Serializable;

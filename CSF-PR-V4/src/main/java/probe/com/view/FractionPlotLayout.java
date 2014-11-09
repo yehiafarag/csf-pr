@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.ProteinBean;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.view.components.PlotsComponent;

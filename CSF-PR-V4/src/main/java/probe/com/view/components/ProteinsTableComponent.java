@@ -33,6 +33,7 @@ public class ProteinsTableComponent extends Table implements Serializable {
     private DecimalFormat df = null;
     private Map<String, Integer> tableSearchMap = new HashMap<String, Integer>();
     private Map<String, Integer> tableSearchMapIndex = new HashMap<String, Integer>();
+    private Map<Integer, Integer> tableSearchMapIndexToId = new HashMap<Integer, Integer>();
 
     private int firstIndex;
 
@@ -66,14 +67,14 @@ public class ProteinsTableComponent extends Table implements Serializable {
 
         this.addContainerProperty("Sequence Coverage(%)", Double.class, null, "Coverage(%)", null, Table.Align.RIGHT);
         this.addContainerProperty("Non Enzymatic Peptides", CustomEmbedded.class, null, "Non Enzymatic Peptides", null, Table.Align.CENTER);
-        String validatedPeptide  = "# Validated Peptides";
+        Object validatedPeptide  = "# Validated Peptides";
         this.addContainerProperty(validatedPeptide, Integer.class, null, "#Peptides", null, Table.Align.RIGHT);
         this.addContainerProperty("# Validated Spectra", Integer.class, null, "#Spectra", null, Table.Align.RIGHT);
         this.addContainerProperty("NSAF", Double.class, null, "NSAF", null, Table.Align.RIGHT);
         this.addContainerProperty("RANK", Integer.class, null, "RANK (NSAF)", null, Table.Align.RIGHT);
         this.addContainerProperty("MW", Double.class, null, "MW", null, Table.Align.RIGHT);
-        String Confidence = "Confidence";
-        this.addContainerProperty(Confidence, Double.class, null, Confidence, null, Table.Align.RIGHT);
+        Object Confidence = "Confidence";
+        this.addContainerProperty(Confidence, Double.class, null, Confidence.toString(), null, Table.Align.RIGHT);
         if (fractionNumber > 0) {
             this.addContainerProperty("SpectrumFractionSpread lower range_kDa", Double.class, null, "Spectrum Lower Range", null, Table.Align.RIGHT);
             this.addContainerProperty("SpectrumFractionSpread upper range kDa", Double.class, null, "Spectrum Upper Range", null, Table.Align.RIGHT);
@@ -174,7 +175,11 @@ public class ProteinsTableComponent extends Table implements Serializable {
             index++;
 
         }
+        try{
         this.sort(new Object[]{Confidence, validatedPeptide}, new boolean[]{false, false});
+        }catch(Exception exp){exp.printStackTrace();}
+        
+//        this.commit();
 
 //        this.setSortAscending(false);
 
@@ -214,13 +219,17 @@ public class ProteinsTableComponent extends Table implements Serializable {
             sortMap.put(indexing, accObject.toString().toUpperCase().trim() + "," + otherAccObject.toString().toUpperCase().trim() + "," + descObject.toString().toUpperCase().trim() + "," + (Integer) id);
             indexing++;
         }
+//        this.setSortAscending(true);
+//        this.setSortContainerPropertyId("Index");
+       
+
         tableSearchMap.clear();
         tableSearchMapIndex.clear();
-        for (int key = 1; key <= sortMap.size(); key++) {
-            String str = sortMap.get(key);
-            int itemIndex = Integer.valueOf(str.split(",")[str.split(",").length - 1]);
-            tableSearchMap.put(str, itemIndex);
-            tableSearchMapIndex.put(str, key);
+        for (int indexValue = 1; indexValue <= sortMap.size(); indexValue++) {
+            String str = sortMap.get(indexValue); 
+            int itemId = Integer.valueOf(str.split(",")[str.split(",").length - 1]);
+            tableSearchMap.put(str, itemId);
+            tableSearchMapIndex.put(str, indexValue);
         }
 
     }
@@ -265,6 +274,28 @@ public class ProteinsTableComponent extends Table implements Serializable {
         return rankMap;
 
     }
+    
+    @Override
+    public void select(Object itemId){
+        super.select(itemId);
+        System.out.println("selection is done "+itemId);
+        
+    }
+//    
+    @Override
+    public void setCurrentPageFirstItemIndex(int itemId)
+    {
+        super.setCurrentPageFirstItemId(itemId);
+        System.out.println("item id "+itemId);
+    }
+    
+//    @Override
+//    public void sort(){
+//    super.sort();
+//            System.err.println("its  auto sorting ");
+//    }
+    
+    
 
     public int getFirstIndex() {
         return firstIndex;

@@ -18,7 +18,7 @@ import probe.com.view.components.FiltersControl;
  */
 public class ComboBoxFilter extends ComboBox implements Property.ValueChangeListener,Button.ClickListener{
     private final FiltersControl control;
-    private final  Map<String,ClosableBtn> localBtns = new HashMap<String, ClosableBtn>();
+    private final  Map<String,ClosableFilterLabel> localBtns = new HashMap<String, ClosableFilterLabel>();
     private final String defaultLabel;
     private final int filterId;  
    
@@ -36,7 +36,7 @@ public class ComboBoxFilter extends ComboBox implements Property.ValueChangeList
         }
         this.setImmediate(true);       
         this.addValueChangeListener(this);      
-//         ClosableBtn btn = new ClosableBtn(defaultLabel, true);
+//         ClosableFilterLabel btn = new ClosableFilterLabel(defaultLabel, true);
 //                localBtns.put(btn.getCaption(), btn);
 //                control.addFilterLable(localBtns.get(defaultLabel), true);
     }
@@ -52,8 +52,8 @@ public class ComboBoxFilter extends ComboBox implements Property.ValueChangeList
             if (localBtns.containsKey(event.getProperty().toString())) {
                 control.addFilterLable(localBtns.get(event.getProperty().toString()));
             } else {
-                ClosableBtn btn = new ClosableBtn(event.getProperty().toString(),filterId, true);
-                btn.addClickListener(this);
+                ClosableFilterLabel btn = new ClosableFilterLabel("Tiltle:",event.getProperty().toString(),filterId, true);
+                btn.getCloseBtn().addClickListener(this);
                 localBtns.put(btn.getCaption(), btn);
                 control.addFilterLable(localBtns.get(event.getProperty().toString()));
             }

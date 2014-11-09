@@ -113,7 +113,7 @@ public class MainHandler implements Serializable {
      * @param datasetString
      * @return datasetId
      */
-    public int setMainDataset(String datasetString) {
+    public int setMainDatasetId(String datasetString) {
         return computing.setMainDataset(datasetString);
     }
 
@@ -381,8 +381,8 @@ public class MainHandler implements Serializable {
         return count;
     }
 
-    public TreeMap<Integer, Integer> getSearchIndexesSet(Map<String, Integer> searchMap, Map<String, Integer> searchMapIndex, String keySearch) {
-        TreeMap<Integer, Integer> treeSet = computing.getSearchIndexesSet(searchMap, searchMapIndex, keySearch);
+    public TreeMap<Integer, Object> getSearchIndexesSet(Map<String, Integer> searchMap, Map<String, Integer> searchMapIndex, String keySearch) {
+        TreeMap<Integer, Object> treeSet = computing.getSearchIndexesSet(searchMap, searchMapIndex, keySearch);
 
         return treeSet;
     }

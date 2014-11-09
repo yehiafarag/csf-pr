@@ -44,7 +44,7 @@ public class ContextListener implements ServletContextListener,Serializable {
                         auth.changePassword(adminName, "norway", adminPassword);
 			
 		}
-		da.runOnceToUpdateDatabase();
+//		da.runOnceToUpdateDatabase();
 	}
 
 }

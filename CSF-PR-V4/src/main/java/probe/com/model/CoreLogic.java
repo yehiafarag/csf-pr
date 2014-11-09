@@ -624,8 +624,8 @@ public class CoreLogic implements Serializable {
         return count;
     }
 
-    public TreeMap<Integer, Integer> getSearchIndexesSet(Map<String, Integer> searchMap, Map<String, Integer> searchMapIndex, String keySearch) {
-        TreeMap<Integer, Integer> treeSet = new TreeMap<Integer, Integer>();
+    public TreeMap<Integer, Object> getSearchIndexesSet(Map<String, Integer> searchMap, Map<String, Integer> searchMapIndex, String keySearch) {
+        TreeMap<Integer, Object> treeSet = new TreeMap<Integer, Object>();
         for (String key : searchMap.keySet()) {
             if (key.contains(keySearch)) {
                 treeSet.put(searchMapIndex.get(key), searchMap.get(key));

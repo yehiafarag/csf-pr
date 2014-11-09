@@ -1,5 +1,6 @@
 package probe.com.view.core;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import java.io.Serializable;
 
 import com.vaadin.ui.Alignment;
@@ -17,7 +18,7 @@ public class CustomLabel extends VerticalLayout implements Serializable, Compara
 	public CustomLabel(String str ,String color)
 	{
 		Label l = new Label("<label style='font-family:verdana; color:"+color+";'>"+str+"</label>");		
-		l.setContentMode(Label.CONTENT_XHTML);
+		l.setContentMode(ContentMode.HTML);
 		this.str = str;
 		l.setHeight("17px");		
 		this.setHeight("18px");
@@ -28,7 +29,7 @@ public class CustomLabel extends VerticalLayout implements Serializable, Compara
 		
 		
 	}
-	
+	@Override
 	public int compareTo(Object myLabel) {
 		 
 		String compareString =  myLabel.toString(); 
@@ -38,6 +39,7 @@ public class CustomLabel extends VerticalLayout implements Serializable, Compara
 		
  
 	}	
+        @Override
 	public String toString()
 	{
 		return str;

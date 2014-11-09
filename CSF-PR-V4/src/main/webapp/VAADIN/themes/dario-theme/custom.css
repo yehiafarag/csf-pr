@@ -57,8 +57,8 @@
     display: inline-block;
 }
 .custLabel{
-    font-size:5 ;
-    height: 15px;
+    font-size:6 ;
+    height: 20px;
     font-family:verdana;
     font-weight: bold;
     color:gray;    
@@ -78,5 +78,60 @@
   .v-select-option.v-radiobutton {
     padding-right: 10px;
 }
+
+.filterLabel{
+	background:url(img/filterlabel3.png) no-repeat;
+	width:190px;
+	height:18px;
+	float:left;
+	text-align:left;
+	font-size:10px;
+	color:#fff;
+	padding:1px 0 0 1px;
+	font-weight:bold;        
+        cursor: pointer;
+}
+.filterLabel:hover {	
+	color:red;	     
+}
+.doneFilterBtn{
+    clear: both;
+	display: block;
+	width: 70px;
+	height: 25px;
+	
+    padding: 0 0 0 5px;
+	font-size: 12px;
+	text-align: center;
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+	border: none; 
+	background: url(img/done.jpg) no-repeat;
+        cursor: pointer;
+    
+}
+.doneFilterBtn:hover{
+    color: red;
+}
+
+.filterBtnLabel{
+    clear: both;
+	display: block;
+	height: 20px;
+	
+    padding: 0 0 0 5px;
+	font-size: 12px;
+	text-align: center;
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+	border: none; 
+    
+}
+.filterBtnLabel:hover{
+    color: red;
+}
+
 
 
