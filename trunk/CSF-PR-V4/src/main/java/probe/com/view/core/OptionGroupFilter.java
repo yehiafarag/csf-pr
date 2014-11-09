@@ -8,8 +8,6 @@ package probe.com.view.core;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.OptionGroup;
-import java.util.HashMap;
-import java.util.Map;
 import probe.com.view.components.FiltersControl;
 
 /**
@@ -19,26 +17,39 @@ import probe.com.view.components.FiltersControl;
 public class OptionGroupFilter extends OptionGroup implements Property.ValueChangeListener, Button.ClickListener {
 
     private final FiltersControl control;
-    private final Map<String, ClosableBtn> localBtns = new HashMap<String, ClosableBtn>();
+    private final ClosableFilterLabel filterBtn ;//= new HashMap<String, ClosableFilterLabel>();
     private final boolean closable;
     private final int filterId;
+    private final String filterLabel;
+    private String fieldValue;
+
+    public String getFieldValue() {
+        return fieldValue;
+    }
+
+    public void setFieldValue(String value) {
+        this.fieldValue = value;
+    }
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public OptionGroupFilter(FiltersControl control,int filterId, boolean closable) {
+    public OptionGroupFilter(FiltersControl control,String filterLabel,int filterId, boolean closable) {
         this.control = control;
+        this.filterLabel = filterLabel;
+        this.fieldValue = filterLabel;
         this.filterId = filterId;
         this.setNullSelectionAllowed(false); // user can not 'unselect'
         this.setMultiSelect(false);
         this.addValueChangeListener(this);
         this.closable = closable;
-
+         filterBtn = new ClosableFilterLabel(filterLabel,"",filterId, closable);
+         filterBtn.getCloseBtn().addClickListener(this);
     }
 
     @Override
     public void buttonClick(Button.ClickEvent event) {
         if (isNullSelectionAllowed()) {
             select(null);
-            unselect(event.getButton().getCaption());
+            unselect(event.getButton().getParent().toString());
         } else {
             event.getButton().setIcon(null);
         }
@@ -47,14 +58,16 @@ public class OptionGroupFilter extends OptionGroup implements Property.ValueChan
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
 
+       
         for (Object id : this.getItemIds().toArray()) {
-            control.removeFilterLabel(id.toString());
+            control.removeFilterLabel(filterLabel+","+id.toString());
         }
+      
         if (event.getProperty().getValue() instanceof String) {
             if (this.getItemIds().contains(event.getProperty().toString())) {
                 handelFilter(event.getProperty().toString());
             }
-        } else {
+        } else { 
             for (Object id : this.getItemIds().toArray()) {
                 if (this.isSelected(id.toString())) {
                     handelFilter(id.toString());
@@ -65,20 +78,37 @@ public class OptionGroupFilter extends OptionGroup implements Property.ValueChan
 
     }
 
-    private void handelFilter(String lable) {
+    private void handelFilter(String valueKey) {
 
-        if (localBtns.containsKey(lable)) {
-            control.addFilterLable(localBtns.get(lable));
-        } else {
-
-            ClosableBtn btn = new ClosableBtn(lable,filterId, closable);
-            if (closable) {
-                btn.addClickListener(this);
-            }
-            localBtns.put(btn.getCaption(), btn);
-            control.addFilterLable(localBtns.get(lable));
-
+        control.removeFilterLabel(filterBtn.getCaption());
+        if(valueKey!= null && !valueKey.trim().equalsIgnoreCase(""))
+        {
+            filterBtn.setValue(valueKey);
+            control.addFilterLable(filterBtn);
+        
         }
     }
+//        });
+//        textField.addFocusListener(this);
+        
+//        if (closable..containsKey(valueKey)) {
+//            control.addFilterLable(localBtns.get(filterLabel+","+valueKey));
+//        } else {
+//
+//            ClosableFilterLabel btn = new ClosableFilterLabel(filterLabel,valueKey,filterId, closable);
+//            if (closable) {
+//                btn.getCloseBtn().addClickListener(this);
+//            }
+//            localBtns.put(btn.getCaption(), btn);
+//            control.addFilterLable(localBtns.get(filterLabel+","+valueKey));
+//
+//        }
+
+    public ClosableFilterLabel getFilterBtn() {
+        return filterBtn;
+    }
+    
+
+    
 
 }

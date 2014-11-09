@@ -1,0 +1,78 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package probe.com.view.core;
+
+import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.Reindeer;
+import java.io.Serializable;
+import probe.com.view.components.FiltersControl;
+
+/**
+ *
+ * @author y-mok_000
+ */
+public class IntegerTextFieldFilter  extends HorizontalLayout implements Serializable,Button.ClickListener,Property.ValueChangeListener{
+      private final TextField textField;
+    private final ClosableFilterLabel filterBtn;
+    private final FiltersControl control;
+    private final int filterId;
+    private final Button okBtn;
+    public IntegerTextFieldFilter(FiltersControl controller ,int filterId,String label){
+    this.control = controller;
+        this.filterId=filterId;
+        this.setSpacing(true);
+        okBtn = new Button("ok");
+        okBtn.setStyleName(Reindeer.BUTTON_SMALL);
+        textField = new TextField();
+        textField.setStyleName(Reindeer.TEXTFIELD_SMALL);
+        textField.setHeight("20px");
+        textField.setWidth("60px"); 
+        textField.setNullRepresentation(" ");
+        textField.setConverter(new StringToIntegerConverter());
+        textField.setDescription(label);
+        
+       
+        this.addComponent(textField);
+        this.addComponent(okBtn);
+        filterBtn = new ClosableFilterLabel("Tiltle:",label,filterId, true);
+        filterBtn.getCloseBtn().addClickListener(this);
+        okBtn.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                control.removeFilterLabel(filterBtn.getCaption());
+//                textField.validate();
+        if (textField.isValid() && textField.getValue()!= null) {
+            textField.setComponentError(null);
+             filterBtn.setCaption(textField.getValue().trim());
+            control.addFilterLable(filterBtn);
+        }
+      
+            }
+        });
+        textField.addValueChangeListener(this);
+    }
+
+    @Override
+    public void valueChange(Property.ValueChangeEvent event) {
+        textField.validate();
+        if (textField.isValid()) {
+            textField.setComponentError(null);
+           
+        }
+    }
+
+
+    @Override
+    public void buttonClick(Button.ClickEvent event) {
+     textField.setValue(" ");    
+    }
+    
+}

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import probe.com.dal.Query;
-import probe.com.view.core.ClosableBtn;
+import probe.com.view.core.ClosableFilterLabel;
 
 /**
  *
@@ -18,7 +18,7 @@ import probe.com.view.core.ClosableBtn;
  */
 public class FiltersControl extends HorizontalLayout {
 
-    private final Map<String, ClosableBtn> lableMap = new HashMap<String, ClosableBtn>();
+    private final Map<String, ClosableFilterLabel> lableMap = new HashMap<String, ClosableFilterLabel>();
     private Query query ;
     
 
@@ -27,7 +27,7 @@ public class FiltersControl extends HorizontalLayout {
     }
     private String searchKeyWords;
     
-    public void addFilterLable(ClosableBtn filterBtn) {
+    public void addFilterLable(ClosableFilterLabel filterBtn) {
         if (!lableMap.containsKey(filterBtn.getCaption())) {
             this.addComponent(filterBtn);
             lableMap.put(filterBtn.getCaption(), filterBtn);
@@ -53,7 +53,7 @@ public class FiltersControl extends HorizontalLayout {
         query.setSearchDataset("");
         if(searchKeyWords != null && !searchKeyWords.equalsIgnoreCase(""))
             query.setSearchKeyWords(searchKeyWords);
-        for(ClosableBtn filter:lableMap.values()){
+        for(ClosableFilterLabel filter:lableMap.values()){
         switch (filter.getFilterId()){
             case 2:
          query.setSearchDataType(filter.getCaption());
@@ -82,14 +82,14 @@ public class FiltersControl extends HorizontalLayout {
 //        
 //        
 //        
-//        for(ClosableBtn filter:lableMap.values()){
+//        for(ClosableFilterLabel filter:lableMap.values()){
 //            if(filter.getFilterId() == 2) {//start the query
 //               
 //            }
 //        }
 //        lableMap.remove(query.getSearchDataType());
 //        if (query.getSearchDataType().equalsIgnoreCase("Identification")) {//id data
-//            for (ClosableBtn filter : lableMap.values()) {
+//            for (ClosableFilterLabel filter : lableMap.values()) {
 //                if (filter.getFilterId() == 3) {//start the query
 //                    query.setSearchDataType(filter.getCaption());
 //                }

@@ -58,7 +58,7 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
     private Map<String, ProteinBean> proteinsList;
     private final VerticalLayout typeILayout;
 //    private final GeneralUtil util = new GeneralUtil();
-    private TreeMap<Integer, Integer> selectionIndexes;
+    private TreeMap<Integer, Object> selectionIndexes;
     private int nextIndex;
     private IconGenerator iconGenerator = new IconGenerator();
     private HorizontalLayout selectDatasetLayout;
@@ -219,7 +219,7 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
         if (selectedDatasetKey != null && (!selectedDatasetKey.toString().equals(defaultSelectString))) {
             String datasetString = selectDataset.getValue().toString();
             //set the main dataset on logic layer
-            handler.setMainDataset(datasetString);
+            handler.setMainDatasetId(datasetString);
             fractionNumber = handler.getDataset(handler.getMainDatasetId()).getFractionsNumber();
             //layout for dataset type 1 Identification dataset
             if (handler.getMainDatasetId() != 0 &&  handler.getDataset(handler.getMainDatasetId()).getDatasetType() == 1) {
@@ -332,8 +332,10 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                                 ExportDatasetProtenPeptidesLayout.setDescription("Export Peptides from ( " + handler.getDataset(handler.getMainDatasetId()).getName() + " ) Dataset for ( " + accession + " )");
                                 peptideTableLayout.setExpBtnPepTable(ExportDatasetProtenPeptidesLayout);
 
-                            } 
-                            if(fractionNumber == 0){
+                            }  
+                            List<StandardProteinBean>  standerdProtList = handler.retrieveStandardProtPlotList(handler.getMainDatasetId());
+                            
+                            if(fractionNumber == 0 || handler.getMainDatasetId() == 0 || standerdProtList == null || standerdProtList.isEmpty() ){
                                 fractionLayout.removeAllComponents();
                                 if (protTableLayout.getProteinTableComponent() != null) {
                                     protTableLayout.getProteinTableComponent().setHeight("267.5px");
@@ -348,10 +350,8 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                             fractionsList = handler.getProtGelFractionsList(handler.getMainDatasetId(),accession, otherAccession);
                              
                                  
-                                 List<StandardProteinBean>  standerdProtList = handler.retrieveStandardProtPlotList(handler.getMainDatasetId());
-                            if (handler.getMainDatasetId() == 0 || standerdProtList == null || standerdProtList.isEmpty() || fractionsList == null || fractionsList.isEmpty()) {
-                                 
-                            } else {
+                                if (fractionsList != null && !fractionsList.isEmpty()) {
+                             
 //                                if (handler.getMainDatasetId() != 0 ){//&& handler.getMainDataset().getProteinList() != null) {
 //                                    handler.getMainDataset().setFractionsList(fractionsList);
 //                                    handler.getDatasetList().put(handler.getMainDataset().getDatasetId(), handler.getMainDataset());
@@ -432,7 +432,7 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         nextIndex = selectionIndexes.higherKey(nextIndex);
-                        protTableLayout.getProteinTableComponent().setCurrentPageFirstItemId(selectionIndexes.get(nextIndex));
+                            protTableLayout.getProteinTableComponent().setCurrentPageFirstItemId(selectionIndexes.get(nextIndex));
                         protTableLayout.getProteinTableComponent().select(selectionIndexes.get(nextIndex));
                         protTableLayout.getProteinTableComponent().commit();
                         protTableLayout.getProtCounter().setValue("( " + (protIndex++) + " of " + selectionIndexes.size() + " )");
@@ -456,207 +456,209 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
         return new DatasetDetailsComponent(visibility, handler);
     }
     
-    private void initProteinsTableListeners()
-    {
-        if(protTableListener != null)
-            return;
-        this.protTableListener = new Property.ValueChangeListener() {
-                    /*
-                     *change listener for protein selection
-                     */
-
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-//                    @SuppressWarnings("SleepWhileHoldingLock")
-                    public synchronized void valueChange(Property.ValueChangeEvent event) {
-                        if (proteinLabel != null) {
-                            proteinLabel.rePaintLable("black");
-                        }
-                        if (starter != 1) {
-                            datasetDetailsLayout.hideDetails();
-                        }
-                        starter++;
-                        String desc = "";
-                        //fraction layout
-                        if (fractionLayout != null) {
-                            typeILayout.removeComponent(fractionLayout);
-                        }
-                        fractionLayout = new VerticalLayout();
-                        typeILayout.addComponent(fractionLayout);
-                        fractionLayout.setWidth("100%");
-                        //peptide layout
-                        if (peptideLayout != null) {
-                            typeILayout.removeComponent(peptideLayout);
-                        }
-                        peptideLayout = new VerticalLayout();
-                        typeILayout.addComponent(peptideLayout);
-                        peptideLayout.setWidth("100%");
-                        if (protTableLayout.getProteinTableComponent().getValue() != null) {
-                            proteinskey = (Integer) protTableLayout.getProteinTableComponent().getValue();
-                        }
-                        final Item item = protTableLayout.getProteinTableComponent().getItem(proteinskey);
-                        proteinLabel = (CustomExternalLink) item.getItemProperty("Accession").getValue();
-                        proteinLabel.rePaintLable("white");
-//                        try {
-//                            Thread.sleep(10);
-//                        } catch (InterruptedException iexp) {
-//                            System.out.println(iexp.getLocalizedMessage());
+//    private void initProteinsTableListeners()
+//    {
+//        if(protTableListener != null)
+//            return;
+//        this.protTableListener = new Property.ValueChangeListener() {
+//                    /*
+//                     *change listener for protein selection
+//                     */
+//
+//                    private static final long serialVersionUID = 1L;
+//
+//                    @Override
+////                    @SuppressWarnings("SleepWhileHoldingLock")
+//                    public synchronized void valueChange(Property.ValueChangeEvent event) {
+//                        if (proteinLabel != null) {
+//                            proteinLabel.rePaintLable("black");
 //                        }
-                        desc = item.getItemProperty("Description").toString();
-                        accession = item.getItemProperty("Accession").toString();
-                        otherAccession = item.getItemProperty("Other Protein(s)").toString();
-
-                        CustomExportBtnLayout exportAllProteinPeptidesLayout = new CustomExportBtnLayout(handler, "allProtPep", handler.getMainDatasetId(), handler.getDataset(handler.getMainDatasetId()).getName(), accession, otherAccession, null, 0, null, null, null, desc);
-                        CustomExportBtnLayout exportAllDatasetProteinsLayout = (new CustomExportBtnLayout(handler, "prots", handler.getMainDatasetId(), handler.getDataset(handler.getMainDatasetId()).getName(), accession, otherAccession, proteinsList,handler.getDataset(handler.getMainDatasetId()).getFractionsNumber(), null, null, null, desc));
-
-                        PopupView exportAllProteinPeptidePopup = new PopupView("Export Peptides from All Datasets for ( " + accession + " )", exportAllProteinPeptidesLayout);
-                        exportAllProteinPeptidePopup.setDescription("Export CSF-PR Peptides for ( " + accession + " ) from All Datasets");
-                        PopupView exportAllDatasetProteinPeptidesPopup = new PopupView("Export All Proteins from Selected Dataset", exportAllDatasetProteinsLayout);
-                        exportAllDatasetProteinPeptidesPopup.setDescription("Export All Proteins from ( " + handler.getDataset(handler.getMainDatasetId()).getName() + " ) Dataset");
-                        protTableLayout.setExpBtnProtAllPepTable(exportAllProteinPeptidePopup, exportAllDatasetProteinPeptidesPopup);
-                        if (proteinskey >= 0) {
-                           
-                            
-                            
-                            //testing 
-                            if(true){
-                            Map<Integer, PeptideBean> peptideProteintList = handler.getPeptidesProtList(handler.getMainDatasetId(), accession, otherAccession);
-//                            if (handler.getMainDataset().getPeptideList() == null) {
-//                                handler.getMainDataset().setPeptideList(peptideProteintList);
-//                            } else {
-//                                handler.getMainDataset().getPeptideList().putAll(peptideProteintList);
-//                            }
-                           
-                            
-                            
-                            if (!peptideProteintList.isEmpty()) {
-                                int validPep = handler.getValidatedPepNumber(peptideProteintList);
-                                if (peptideTableLayout != null) {
-                                    peptideLayout.removeComponent(peptideTableLayout);
-                                }
-                                peptideTableLayout = new PeptidesTableLayout(validPep, peptideProteintList.size(), desc, peptideProteintList, accession, handler.getDataset(handler.getMainDatasetId()).getName());
-                                peptideLayout.setMargin(true);
-                                peptideTableLayout.setHeight("" + protTableLayout.getHeight());
-                                peptideLayout.setHeight("" + protTableLayout.getHeight());
-                                peptideLayout.addComponent(peptideTableLayout);
-                                CustomExportBtnLayout ce3 = new CustomExportBtnLayout(handler, "protPep", handler.getMainDatasetId(), handler.getDataset(handler.getMainDatasetId()).getName(), accession, otherAccession, null, 0, peptideProteintList, null, null, desc);
-                                PopupView ExportDatasetProtenPeptidesLayout = new PopupView("Export Peptides from Selected Dataset for ( " + accession + " )", ce3);
-                                ExportDatasetProtenPeptidesLayout.setDescription("Export Peptides from ( " + handler.getDataset(handler.getMainDatasetId()).getName() + " ) Dataset for ( " + accession + " )");
-                                peptideTableLayout.setExpBtnPepTable(ExportDatasetProtenPeptidesLayout);
-
-                            } 
-                            
-                           
-                            fractionsList = handler.getProtGelFractionsList(handler.getMainDatasetId(),accession, otherAccession);
-                             
-                                 
-                                 List<StandardProteinBean>  standerdProtList = handler.retrieveStandardProtPlotList(handler.getMainDatasetId());
-                            if (handler.getMainDatasetId() == 0 || standerdProtList == null || standerdProtList.isEmpty() || fractionsList == null || fractionsList.isEmpty()) {
-                                 fractionLayout.removeAllComponents();
-                                if (protTableLayout.getProteinTableComponent() != null) {
-                                    protTableLayout.getProteinTableComponent().setHeight("267.5px");
-                                    protTableLayout.setProtTableHeight("267.5px");
-                                }
-                                if (peptideTableLayout.getPepTable() != null) {
-                                    peptideTableLayout.getPepTable().setHeight("267.5px");
-                                    peptideTableLayout.setPeptideTableHeight("267.5px");
-                                }
-                            } else {
-//                                if (handler.getMainDatasetId() != 0 ){//&& handler.getMainDataset().getProteinList() != null) {
-//                                    handler.getMainDataset().setFractionsList(fractionsList);
-//                                    handler.getDatasetList().put(handler.getMainDataset().getDatasetId(), handler.getMainDataset());
-                                    double mw = 0.0;
-                                    try {
-                                        mw = Double.valueOf(item.getItemProperty("MW").toString());
-                                    } catch (NumberFormatException e) {
-                                        String str = item.getItemProperty("MW").toString();
-                                        String[] strArr = str.split(",");
-                                        if (strArr.length > 1) {
-                                            str = strArr[0] + "." + strArr[1];
-                                        }
-                                        mw = Double.valueOf(str);
-                                    }
-
-//                                    Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, handler.getMainDatasetId());
-//                                    if (fractionsList==null || fractionsList.isEmpty()){//(proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
-//                                        fractionLayout.removeAllComponents();
-//                                    } else {
-                                        fractionLayout.addComponent(new GelFractionsLayout(accession, mw,fractionsList, standerdProtList, handler.getDataset(handler.getMainDatasetId()).getName()));
-//                                    }
+//                        if (starter != 1) {
+//                            datasetDetailsLayout.hideDetails();
+//                        }
+//                        starter++;
+//                        String desc = "";
+//                        //fraction layout
+//                        if (fractionLayout != null) {
+//                            typeILayout.removeComponent(fractionLayout);
+//                        }
+//                        fractionLayout = new VerticalLayout();
+//                        typeILayout.addComponent(fractionLayout);
+//                        fractionLayout.setWidth("100%");
+//                        //peptide layout
+//                        if (peptideLayout != null) {
+//                            typeILayout.removeComponent(peptideLayout);
+//                        }
+//                        peptideLayout = new VerticalLayout();
+//                        typeILayout.addComponent(peptideLayout);
+//                        peptideLayout.setWidth("100%");
+//                        if (protTableLayout.getProteinTableComponent().getValue() != null) {
+//                            proteinskey = (Integer) protTableLayout.getProteinTableComponent().getValue();
+//                        }
+//                        final Item item = protTableLayout.getProteinTableComponent().getItem(proteinskey);
+//                        proteinLabel = (CustomExternalLink) item.getItemProperty("Accession").getValue();
+//                        proteinLabel.rePaintLable("white");
+////                        try {
+////                            Thread.sleep(10);
+////                        } catch (InterruptedException iexp) {
+////                            System.out.println(iexp.getLocalizedMessage());
+////                        }
+//                        desc = item.getItemProperty("Description").toString();
+//                        accession = item.getItemProperty("Accession").toString();
+//                        otherAccession = item.getItemProperty("Other Protein(s)").toString();
+//
+//                        CustomExportBtnLayout exportAllProteinPeptidesLayout = new CustomExportBtnLayout(handler, "allProtPep", handler.getMainDatasetId(), handler.getDataset(handler.getMainDatasetId()).getName(), accession, otherAccession, null, 0, null, null, null, desc);
+//                        CustomExportBtnLayout exportAllDatasetProteinsLayout = (new CustomExportBtnLayout(handler, "prots", handler.getMainDatasetId(), handler.getDataset(handler.getMainDatasetId()).getName(), accession, otherAccession, proteinsList,handler.getDataset(handler.getMainDatasetId()).getFractionsNumber(), null, null, null, desc));
+//
+//                        PopupView exportAllProteinPeptidePopup = new PopupView("Export Peptides from All Datasets for ( " + accession + " )", exportAllProteinPeptidesLayout);
+//                        exportAllProteinPeptidePopup.setDescription("Export CSF-PR Peptides for ( " + accession + " ) from All Datasets");
+//                        PopupView exportAllDatasetProteinPeptidesPopup = new PopupView("Export All Proteins from Selected Dataset", exportAllDatasetProteinsLayout);
+//                        exportAllDatasetProteinPeptidesPopup.setDescription("Export All Proteins from ( " + handler.getDataset(handler.getMainDatasetId()).getName() + " ) Dataset");
+//                        protTableLayout.setExpBtnProtAllPepTable(exportAllProteinPeptidePopup, exportAllDatasetProteinPeptidesPopup);
+//                        if (proteinskey >= 0) {
+//                           
+//                            
+//                            
+//                            //testing 
+//                            if(true){
+//                            Map<Integer, PeptideBean> peptideProteintList = handler.getPeptidesProtList(handler.getMainDatasetId(), accession, otherAccession);
+////                            if (handler.getMainDataset().getPeptideList() == null) {
+////                                handler.getMainDataset().setPeptideList(peptideProteintList);
+////                            } else {
+////                                handler.getMainDataset().getPeptideList().putAll(peptideProteintList);
+////                            }
+//                           
+//                            
+//                            
+//                            if (!peptideProteintList.isEmpty()) {
+//                                int validPep = handler.getValidatedPepNumber(peptideProteintList);
+//                                if (peptideTableLayout != null) {
+//                                    peptideLayout.removeComponent(peptideTableLayout);
 //                                }
-                            }
-                            
-                        }//end if testing
-                        }
-                    }
-                };
-                
-                selectionIndexes = handler.getSearchIndexesSet(protTableLayout.getProteinTableComponent().getTableSearchMap(), protTableLayout.getProteinTableComponent().getTableSearchMapIndex(), protTableLayout.getSearchField().getValue().toUpperCase().trim());
-                protTableLayout.getProteinTableComponent().setCurrentPageFirstItemId(protTableLayout.getProteinTableComponent().getFirstIndex());
-                protTableLayout.getProteinTableComponent().select(protTableLayout.getProteinTableComponent().getFirstIndex());
-                protTableLayout.getProteinTableComponent().commit();
-                final ActionButtonTextField searchButtonTextField = ActionButtonTextField.extend(protTableLayout.getSearchField());
-                searchButtonTextField.getState().type = ActionButtonType.ACTION_SEARCH;
-                if(searchTableListener == null ){
-                searchTableListener =new ActionButtonTextField.ClickListener() {
-                    @Override
-                    public void buttonClick(ActionButtonTextField.ClickEvent clickEvent) {
-                        selectionIndexes = handler.getSearchIndexesSet(protTableLayout.getProteinTableComponent().getTableSearchMap(), protTableLayout.getProteinTableComponent().getTableSearchMapIndex(), protTableLayout.getSearchField().getValue().toUpperCase().trim());
-                        System.err.println("clicked -- "+selectionIndexes);
-                        if (!selectionIndexes.isEmpty()) {
-                            if (selectionIndexes.size() > 1) {
-                                protTableLayout.getNextSearch().setEnabled(true);
-                                protTableLayout.getNextSearch().focus();
-                            } else {
-                                protTableLayout.getNextSearch().setEnabled(false);
-                            }
-                            protIndex = 1;
-                            nextIndex = selectionIndexes.firstKey();
-                            protTableLayout.getProtCounter().setValue("( " + (protIndex++) + " of " + selectionIndexes.size() + " )");
-                            System.out.println(" selected now "+selectionIndexes.get(nextIndex));
-                            protTableLayout.getProteinTableComponent().setCurrentPageFirstItemId(selectionIndexes.get(nextIndex));
-                            protTableLayout.getProteinTableComponent().select(selectionIndexes.get(nextIndex));
-                            protTableLayout.getProteinTableComponent().commit();
-//                            protTableLayout.getProteinTableComponent().refreshRowCache();
+//                                peptideTableLayout = new PeptidesTableLayout(validPep, peptideProteintList.size(), desc, peptideProteintList, accession, handler.getDataset(handler.getMainDatasetId()).getName());
+//                                peptideLayout.setMargin(true);
+//                                peptideTableLayout.setHeight("" + protTableLayout.getHeight());
+//                                peptideLayout.setHeight("" + protTableLayout.getHeight());
+//                                peptideLayout.addComponent(peptideTableLayout);
+//                                CustomExportBtnLayout ce3 = new CustomExportBtnLayout(handler, "protPep", handler.getMainDatasetId(), handler.getDataset(handler.getMainDatasetId()).getName(), accession, otherAccession, null, 0, peptideProteintList, null, null, desc);
+//                                PopupView ExportDatasetProtenPeptidesLayout = new PopupView("Export Peptides from Selected Dataset for ( " + accession + " )", ce3);
+//                                ExportDatasetProtenPeptidesLayout.setDescription("Export Peptides from ( " + handler.getDataset(handler.getMainDatasetId()).getName() + " ) Dataset for ( " + accession + " )");
+//                                peptideTableLayout.setExpBtnPepTable(ExportDatasetProtenPeptidesLayout);
+//
+//                            } 
+//                            
+//                           
+//                            fractionsList = handler.getProtGelFractionsList(handler.getMainDatasetId(),accession, otherAccession);
+//                             
+//                                 
+//                                 List<StandardProteinBean>  standerdProtList = handler.retrieveStandardProtPlotList(handler.getMainDatasetId());
+//                            if (handler.getMainDatasetId() == 0 || standerdProtList == null || standerdProtList.isEmpty() || fractionsList == null || fractionsList.isEmpty()) {
+//                                 fractionLayout.removeAllComponents();
+//                                if (protTableLayout.getProteinTableComponent() != null) {
+//                                    protTableLayout.getProteinTableComponent().setHeight("267.5px");
+//                                    protTableLayout.setProtTableHeight("267.5px");
+//                                }
+//                                if (peptideTableLayout.getPepTable() != null) {
+//                                    peptideTableLayout.getPepTable().setHeight("267.5px");
+//                                    peptideTableLayout.setPeptideTableHeight("267.5px");
+//                                }
+//                            } else {
+////                                if (handler.getMainDatasetId() != 0 ){//&& handler.getMainDataset().getProteinList() != null) {
+////                                    handler.getMainDataset().setFractionsList(fractionsList);
+////                                    handler.getDatasetList().put(handler.getMainDataset().getDatasetId(), handler.getMainDataset());
+//                                    double mw = 0.0;
+//                                    try {
+//                                        mw = Double.valueOf(item.getItemProperty("MW").toString());
+//                                    } catch (NumberFormatException e) {
+//                                        String str = item.getItemProperty("MW").toString();
+//                                        String[] strArr = str.split(",");
+//                                        if (strArr.length > 1) {
+//                                            str = strArr[0] + "." + strArr[1];
+//                                        }
+//                                        mw = Double.valueOf(str);
+//                                    }
+//
+////                                    Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, handler.getMainDatasetId());
+////                                    if (fractionsList==null || fractionsList.isEmpty()){//(proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
+////                                        fractionLayout.removeAllComponents();
+////                                    } else {
+//                                        fractionLayout.addComponent(new GelFractionsLayout(accession, mw,fractionsList, standerdProtList, handler.getDataset(handler.getMainDatasetId()).getName()));
+////                                    }
+////                                }
+//                            }
+//                            
+//                        }//end if testing
+//                        }
+//                    }
+//                };
+//                
+//                selectionIndexes = handler.getSearchIndexesSet(protTableLayout.getProteinTableComponent().getTableSearchMap(), protTableLayout.getProteinTableComponent().getTableSearchMapIndex(), protTableLayout.getSearchField().getValue().toUpperCase().trim());
+//                protTableLayout.getProteinTableComponent().setCurrentPageFirstItemIndex(protTableLayout.getProteinTableComponent().getFirstIndex());
+//                protTableLayout.getProteinTableComponent().select(protTableLayout.getProteinTableComponent().getFirstIndex());
+//                protTableLayout.getProteinTableComponent().commit();
+//                final ActionButtonTextField searchButtonTextField = ActionButtonTextField.extend(protTableLayout.getSearchField());
+//                searchButtonTextField.getState().type = ActionButtonType.ACTION_SEARCH;
+//                if(searchTableListener == null ){
+//                searchTableListener =new ActionButtonTextField.ClickListener() {
+//                    @Override
+//                    public void buttonClick(ActionButtonTextField.ClickEvent clickEvent) {
+//                        selectionIndexes = handler.getSearchIndexesSet(protTableLayout.getProteinTableComponent().getTableSearchMap(), protTableLayout.getProteinTableComponent().getTableSearchMapIndex(), protTableLayout.getSearchField().getValue().toUpperCase().trim());
+//                        System.err.println("clicked -- "+selectionIndexes);
+//                        if (!selectionIndexes.isEmpty()) {
+//                            if (selectionIndexes.size() > 1) {
+//                                protTableLayout.getNextSearch().setEnabled(true);
+//                                protTableLayout.getNextSearch().focus();
+//                            } else {
+//                                protTableLayout.getNextSearch().setEnabled(false);
+//                            }
+//                            protIndex = 1;
+//                            nextIndex = selectionIndexes.firstKey();
+//                            protTableLayout.getProtCounter().setValue("( " + (protIndex++) + " of " + selectionIndexes.size() + " )");
+//                            System.out.println(" selected now "+selectionIndexes.get(nextIndex));
+//                            protTableLayout.getProteinTableComponent().setCurrentPageFirstItemIndex(selectionIndexes.get(nextIndex));
+//                            protTableLayout.getProteinTableComponent().select(selectionIndexes.get(nextIndex));
+//                            protTableLayout.getProteinTableComponent().commit();
+////                            protTableLayout.getProteinTableComponent().refreshRowCache();
+//
+//                        } else {
+//                            Notification.show("Not Exist");
+//                            protIndex = 1;
+//                        }
+//
+//                    }
+//                };
+//                }
+//        searchButtonTextField.addClickListener(searchTableListener);
+//                protTableLayout.getSearchField().addFocusListener(new FieldEvents.FocusListener() {
+//                    @Override
+//                    public void focus(FieldEvents.FocusEvent event) {
+//                        protTableLayout.getNextSearch().setEnabled(false);
+//                        protTableLayout.getProtCounter().setValue("");
+//
+//                        protIndex = 1;
+//
+//                    }
+//                });
+//                if(searchBtnLabelListener == null){
+//
+//                searchBtnLabelListener = new Button.ClickListener() {
+//                    @Override
+//                    public void buttonClick(Button.ClickEvent event) {
+//                        nextIndex = selectionIndexes.higherKey(nextIndex);
+//                        protTableLayout.getProteinTableComponent().setCurrentPageFirstItemIndex(selectionIndexes.get(nextIndex));
+//                        protTableLayout.getProteinTableComponent().select(selectionIndexes.get(nextIndex));
+//                        protTableLayout.getProteinTableComponent().commit();
+//                        protTableLayout.getProtCounter().setValue("( " + (protIndex++) + " of " + selectionIndexes.size() + " )");
+//                        if (nextIndex == selectionIndexes.lastKey()) {
+//                            nextIndex = selectionIndexes.firstKey() - 1;
+//                            protIndex = 1;
+//                        }
+//                    }
+//                };
+//                }
+//                protTableLayout.getNextSearch().addClickListener(searchBtnLabelListener);
+//    
+//    }
 
-                        } else {
-                            Notification.show("Not Exist");
-                            protIndex = 1;
-                        }
 
-                    }
-                };
-                }
-        searchButtonTextField.addClickListener(searchTableListener);
-                protTableLayout.getSearchField().addFocusListener(new FieldEvents.FocusListener() {
-                    @Override
-                    public void focus(FieldEvents.FocusEvent event) {
-                        protTableLayout.getNextSearch().setEnabled(false);
-                        protTableLayout.getProtCounter().setValue("");
-
-                        protIndex = 1;
-
-                    }
-                });
-                if(searchBtnLabelListener == null){
-
-                searchBtnLabelListener = new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        nextIndex = selectionIndexes.higherKey(nextIndex);
-                        protTableLayout.getProteinTableComponent().setCurrentPageFirstItemId(selectionIndexes.get(nextIndex));
-                        protTableLayout.getProteinTableComponent().select(selectionIndexes.get(nextIndex));
-                        protTableLayout.getProteinTableComponent().commit();
-                        protTableLayout.getProtCounter().setValue("( " + (protIndex++) + " of " + selectionIndexes.size() + " )");
-                        if (nextIndex == selectionIndexes.lastKey()) {
-                            nextIndex = selectionIndexes.firstKey() - 1;
-                            protIndex = 1;
-                        }
-                    }
-                };
-                }
-                protTableLayout.getNextSearch().addClickListener(searchBtnLabelListener);
-    
-    }
 }
