@@ -1,0 +1,19 @@
+----------------------------------------------------------------
+Mon Oct 20 10:13:11 CEST 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance a816c00e-0149-2c9d-facd-0000046a15f8 
+on database directory C:\work-testing\svn\csf-pr\PeptideShakerFileReader-v2\target\PeptideShakerFileReader-0.1\resources\matches\Tutorial_Tutorial Sample_0_id with class loader sun.misc.Launcher$AppClassLoader@1497b7b1 
+Loaded from file:/C:/Users/y-mok_000/.m2/repository/org/apache/derby/derby/10.10.1.1/derby-10.10.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_45-b18
+user.dir=C:\work-testing\svn\csf-pr\PeptideShakerFileReader-v2
+os.name=Windows 8
+os.arch=amd64
+os.version=6.2
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Mon Oct 20 10:13:12 CEST 2014: Shutting down Derby engine
+----------------------------------------------------------------
+Mon Oct 20 10:13:12 CEST 2014:
+Shutting down instance a816c00e-0149-2c9d-facd-0000046a15f8 on database directory C:\work-testing\svn\csf-pr\PeptideShakerFileReader-v2\target\PeptideShakerFileReader-0.1\resources\matches\Tutorial_Tutorial Sample_0_id with class loader sun.misc.Launcher$AppClassLoader@1497b7b1 
+----------------------------------------------------------------
