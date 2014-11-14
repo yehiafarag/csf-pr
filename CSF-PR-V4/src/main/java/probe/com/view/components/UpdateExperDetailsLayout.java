@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import probe.com.handlers.MainHandler;
-import probe.com.model.beans.DatasetBean;
+import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.User;
 
 /**
@@ -31,8 +31,8 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
     private TextField expNameField, speciesField, sampleTypeField, sampleProcessingField, instrumentTypeField, fragModeField, UploadedByNameField, emailField, publicationLinkField;
     private TextArea descriptionField;
     private final VerticalLayout selectLayout = new VerticalLayout();
-    private Map<Integer, DatasetBean> datasetList;
-    private DatasetBean dataset;
+    private Map<Integer, IdentificationDataset> datasetList;
+    private IdentificationDataset dataset;
     private final MainHandler handler;
     private final User user;
     private final Property.ValueChangeListener listener;
@@ -46,7 +46,7 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
 
         datasetList = handler.getDatasetList();
         List<String> strExpList = new ArrayList<String>();
-        for (DatasetBean exp : datasetList.values()) {
+        for (IdentificationDataset exp : datasetList.values()) {
             if (user.getEmail().equalsIgnoreCase("csf-pr@googlegroups.com") || exp.getEmail().equalsIgnoreCase(user.getEmail())) {
                 String str = exp.getDatasetId() + "	" + exp.getName() + "	( " + exp.getUploadedByName() + " )";
                 strExpList.add(str);
@@ -235,7 +235,7 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
         select.addValueChangeListener(listener);
     }
 
-    private DatasetBean validateForm(DatasetBean newExp, int id) {
+    private IdentificationDataset validateForm(IdentificationDataset newExp, int id) {
 
         String expName = (String) expNameField.getValue();
         String expSpecies = (String) speciesField.getValue();
@@ -259,7 +259,7 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
 
             if (expName.equals(expName)) {
             } else {
-                for (DatasetBean exp : datasetList.values()) {
+                for (IdentificationDataset exp : datasetList.values()) {
                     if (exp.getName().equalsIgnoreCase(expName)) {
                         checkName = true;
                         break;
@@ -293,7 +293,7 @@ public class UpdateExperDetailsLayout extends VerticalLayout implements Serializ
         selectLayout.removeAllComponents();
         datasetList = handler.getDatasetList();
         List<String> strExpList = new ArrayList<String>();
-        for (DatasetBean exp : datasetList.values()) {
+        for (IdentificationDataset exp : datasetList.values()) {
             if (user.getEmail().equalsIgnoreCase("csf-pr@googlegroups.com") || exp.getEmail().equalsIgnoreCase(user.getEmail())) {
                 String str = exp.getDatasetId() + "	" + exp.getName() + "	( " + exp.getUploadedByName() + " )";
                 strExpList.add(str);

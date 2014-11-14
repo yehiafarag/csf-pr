@@ -31,7 +31,7 @@ import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.Series;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.renderers.tick.CanvasAxisTickRenderer;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
 import probe.com.model.beans.StandardProteinBean;
 /*
  * @author Yehia Farag
@@ -40,7 +40,7 @@ import probe.com.model.beans.StandardProteinBean;
 public class PlotsComponent extends VerticalLayout implements Serializable {
 
 
-    public PlotsComponent(String lable, Map<Integer, ProteinBean> protienFractionList, Map<String, List<StandardProteinBean>> standProtList, double mw) {
+    public PlotsComponent(String lable, Map<Integer, IdentificationProteinBean> protienFractionList, Map<String, List<StandardProteinBean>> standProtList, double mw) {
         if (!protienFractionList.isEmpty()) {
 
 //            TreeSet<String> alfabet = util.getAlphabetSet();
@@ -108,7 +108,7 @@ public class PlotsComponent extends VerticalLayout implements Serializable {
             if (lable.equalsIgnoreCase("#Peptides")) {
               
                 for (int index : protienFractionList.keySet()) {
-                    ProteinBean pb = protienFractionList.get(index);
+                    IdentificationProteinBean pb = protienFractionList.get(index);
                     initRealValue[x] = (double) pb.getNumberOfPeptidePerFraction();
                     strArr[x] = f + "";
                      for (StandardProteinBean spb : standardValuesList.keySet()) {
@@ -169,7 +169,7 @@ public class PlotsComponent extends VerticalLayout implements Serializable {
                  //formater="%.0f     ";
 
                 for (int index : protienFractionList.keySet()) {
-                    ProteinBean pb = protienFractionList.get(index);
+                    IdentificationProteinBean pb = protienFractionList.get(index);
                     initRealValue[x] = (double) pb.getNumberOfSpectraPerFraction();
                     strArr[x] = f + "";
                     
@@ -228,7 +228,7 @@ public class PlotsComponent extends VerticalLayout implements Serializable {
                 ang=0;//-75;
                 formater="%d";
                 for (int index : protienFractionList.keySet()) {
-                    ProteinBean pb = protienFractionList.get(index);
+                    IdentificationProteinBean pb = protienFractionList.get(index);
                     double avg =( pb.getAveragePrecursorIntensityPerFraction());
                     initRealValue[x] = avg;
                     strArr[x] = f + "";

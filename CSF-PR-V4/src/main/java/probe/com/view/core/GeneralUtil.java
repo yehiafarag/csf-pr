@@ -7,7 +7,7 @@ package probe.com.view.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import probe.com.model.beans.DatasetBean;
+import probe.com.model.beans.IdentificationDataset;
 
 /**
  *
@@ -18,8 +18,8 @@ public class GeneralUtil {
    
     
 
-    public int getExpId(String expName, Map<Integer, DatasetBean> expList) {
-        for (DatasetBean exp : expList.values()) {
+    public int getExpId(String expName, Map<Integer, IdentificationDataset> expList) {
+        for (IdentificationDataset exp : expList.values()) {
             if (exp.getName().equalsIgnoreCase(expName)) {
                 return exp.getDatasetId();
             }
@@ -27,9 +27,9 @@ public class GeneralUtil {
         return 0;
     }
 
-    public List<String> getStrExpList(Map<Integer, DatasetBean> expList, String userEmail) {
+    public List<String> getStrExpList(Map<Integer, IdentificationDataset> expList, String userEmail) {
         List<String> strExpList = new ArrayList<String>();
-        for (DatasetBean exp : expList.values()) {
+        for (IdentificationDataset exp : expList.values()) {
             if (userEmail.equalsIgnoreCase("csf-pr@googlegroups.com") || exp.getEmail().equalsIgnoreCase(userEmail)) {
                 String str = exp.getDatasetId() + "	" + exp.getName() + "	( " + exp.getUploadedByName() + " )";
                 strExpList.add(str);

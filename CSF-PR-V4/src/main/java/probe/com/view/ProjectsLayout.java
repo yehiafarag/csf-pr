@@ -1,9 +1,13 @@
 
 package probe.com.view;
 
+import probe.com.view.components.ProteinsTableLayout;
+import probe.com.view.components.PeptidesTableLayout;
+import probe.com.view.components.GelFractionsLayout;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -25,7 +29,7 @@ import org.vaadin.actionbuttontextfield.ActionButtonTextField;
 import org.vaadin.actionbuttontextfield.widgetset.client.ActionButtonType;
 import probe.com.handlers.MainHandler;
 import probe.com.model.beans.PeptideBean;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.view.components.DatasetDetailsComponent;
 import probe.com.view.core.CustomExportBtnLayout;
@@ -52,10 +56,10 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
     private ProteinsTableLayout protTableLayout;
     private String accession;
     private String otherAccession;
-    private Map<Integer, ProteinBean> fractionsList = null;
+    private Map<Integer, IdentificationProteinBean> fractionsList = null;
     private PeptidesTableLayout peptideTableLayout;
     private VerticalLayout fractionLayout;
-    private Map<String, ProteinBean> proteinsList;
+    private Map<String, IdentificationProteinBean> proteinsList;
     private final VerticalLayout typeILayout;
 //    private final GeneralUtil util = new GeneralUtil();
     private TreeMap<Integer, Object> selectionIndexes;
@@ -256,9 +260,7 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                     @Override
                     @SuppressWarnings("SleepWhileHoldingLock")
                     public synchronized void valueChange(Property.ValueChangeEvent event) {
-                        if (proteinLabel != null) {
-                            proteinLabel.rePaintLable("black");
-                        }
+                        
                         if (starter != 1) {
                             datasetDetailsLayout.hideDetails();
                         }
@@ -277,10 +279,17 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                         }
                         peptideLayout = new VerticalLayout();
                         typeILayout.addComponent(peptideLayout);
-                        peptideLayout.setWidth("100%");
+                        peptideLayout.setWidth("100%");  
+                        if (proteinLabel != null) {
+                            proteinLabel.rePaintLable("black");
+                        }
                         if (protTableLayout.getProteinTableComponent().getValue() != null) {
                             proteinskey = (Integer) protTableLayout.getProteinTableComponent().getValue();
+                            System.out.println("prot key "+proteinskey);
                         }
+                        else
+                            return;
+                      
                         protTableLayout.setLastSelectedIndex(proteinskey);
                         final Item item = protTableLayout.getProteinTableComponent().getItem(proteinskey);
                         proteinLabel = (CustomExternalLink) item.getItemProperty("Accession").getValue();
@@ -367,11 +376,13 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                                         mw = Double.valueOf(str);
                                     }
 
-//                                    Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, handler.getMainDatasetId());
+//                                    Map<Integer, IdentificationProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, handler.getMainDatasetId());
 //                                    if (fractionsList==null || fractionsList.isEmpty()){//(proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
 //                                        fractionLayout.removeAllComponents();
 //                                    } else {
-                                        fractionLayout.addComponent(new GelFractionsLayout(accession, mw,fractionsList, standerdProtList, handler.getDataset(handler.getMainDatasetId()).getName()));
+                                        GelFractionsLayout gelFractionLayout = new GelFractionsLayout(accession, mw,fractionsList, standerdProtList, handler.getDataset(handler.getMainDatasetId()).getName());
+                                        gelFractionLayout.setMargin(new MarginInfo(false, false, false, true));
+                                        fractionLayout.addComponent(gelFractionLayout);
 //                                    }
 //                                }
                             }
@@ -578,7 +589,7 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
 //                                        mw = Double.valueOf(str);
 //                                    }
 //
-////                                    Map<Integer, ProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, handler.getMainDatasetId());
+////                                    Map<Integer, IdentificationProteinBean> proteinFractionAvgList = handler.getProteinFractionAvgList(accession + "," + otherAccession, fractionsList, handler.getMainDatasetId());
 ////                                    if (fractionsList==null || fractionsList.isEmpty()){//(proteinFractionAvgList == null || proteinFractionAvgList.isEmpty()) {
 ////                                        fractionLayout.removeAllComponents();
 ////                                    } else {

@@ -7,7 +7,6 @@ package probe.com.view.core;
 
 import com.vaadin.data.Property;
 import com.vaadin.server.ErrorMessage;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
@@ -41,6 +40,11 @@ public class DoubleTextField extends TextField implements Serializable,Property.
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
    this.setComponentError(null);
+   if(this.getValue()== null || this.getValue().trim().equalsIgnoreCase("")){
+       value = 0;
+       return;
+   }
+   
         try{
          value = Double.valueOf(this.getValue());
          valid=true;

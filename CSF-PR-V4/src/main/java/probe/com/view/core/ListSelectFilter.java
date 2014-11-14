@@ -7,6 +7,7 @@ package probe.com.view.core;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.VerticalLayout;
@@ -14,7 +15,6 @@ import com.vaadin.ui.themes.Reindeer;
 import java.util.HashMap;
 import java.util.Map;
 import probe.com.view.components.FiltersControl;
-import sun.reflect.generics.visitor.Reifier;
 
 /**
  *
@@ -28,6 +28,7 @@ public class ListSelectFilter extends VerticalLayout implements Button.ClickList
     private final int filterId;
     private final ListSelect list;
     private final Button clearBtn;
+    private final FilterConfirmLabel filterConfirmLabel ;
 
     @SuppressWarnings("LeakingThisInConstructor")
     public ListSelectFilter(FiltersControl control,int filterId, String defaultLabel, String[] datasetNamesList) {
@@ -57,10 +58,15 @@ public class ListSelectFilter extends VerticalLayout implements Button.ClickList
         }
         list.setImmediate(true);
         list.addValueChangeListener(this);
-        this.addComponent(list);
+        HorizontalLayout hlo = new HorizontalLayout();
+        hlo.setSpacing(true);
+        hlo.addComponent(list);
+         filterConfirmLabel = new FilterConfirmLabel();       
+        hlo.addComponent(filterConfirmLabel);
+        this.addComponent(hlo);
 //         ClosableFilterLabel btn = new ClosableFilterLabel(defaultLabel, true);
 //                localBtns.put(btn.getCaption(), btn);
-//                control.addFilterLable(localBtns.get(defaultLabel), true);
+//                control.addFilter(localBtns.get(defaultLabel), true);
         clearBtn = new Button("Clear Selection");
         clearBtn.setStyleName(Reindeer.BUTTON_SMALL);
         clearBtn.addClickListener(this);
@@ -69,8 +75,9 @@ public class ListSelectFilter extends VerticalLayout implements Button.ClickList
 
     @Override
     public final void valueChange(Property.ValueChangeEvent event) {
+        filterConfirmLabel.setVisible(false);
         for (Object id : list.getItemIds().toArray()) {
-            control.removeFilterLabel(id.toString());
+            control.removeFilter(defaultLabel+","+id.toString());
         }
         for (Object id : list.getItemIds().toArray()) {
             if (list.isSelected(id.toString())) {
@@ -80,23 +87,23 @@ public class ListSelectFilter extends VerticalLayout implements Button.ClickList
 
     }
 
-    private void handelFilter(String lable) {
+    private void handelFilter(String value) {
 
-        if (localBtns.containsKey(lable)) {
-            control.addFilterLable(localBtns.get(lable));
+        if (localBtns.containsKey(defaultLabel+","+value)) {
+            control.addFilter(localBtns.get(defaultLabel+","+value));
         } else {
 
-            ClosableFilterLabel btn = new ClosableFilterLabel("Tiltle:",lable,filterId, true);
+            ClosableFilterLabel btn = new ClosableFilterLabel(defaultLabel,value,filterId, true);
             btn.getCloseBtn().addClickListener(this);
             localBtns.put(btn.getCaption(), btn);
-            control.addFilterLable(localBtns.get(lable));
+            control.addFilter(btn);
 
         }
+        filterConfirmLabel.setVisible(true);
     }
 
     @Override
     public void buttonClick(Button.ClickEvent event) {
-        System.err.println("listner is working");
         if (event.getButton().getCaption().equalsIgnoreCase("Clear Selection")) {
             for (Object id : list.getItemIds().toArray()) {
                 list.unselect(id);
@@ -107,8 +114,8 @@ public class ListSelectFilter extends VerticalLayout implements Button.ClickList
             }
         }
         else{
-        list.select(null);
         list.unselect(event.getButton().getCaption());
+        list.select(null);
         }
     }
     

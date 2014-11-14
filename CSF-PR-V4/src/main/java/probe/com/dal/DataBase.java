@@ -1,5 +1,6 @@
 package probe.com.dal;
 
+import com.google.gwt.thirdparty.guava.common.collect.HashBiMap;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,10 +19,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import probe.com.model.beans.DatasetBean;
+import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
+import probe.com.model.beans.QuantificationProteinsBean;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.model.beans.User;
 
@@ -256,7 +258,7 @@ public class DataBase implements Serializable {
      * @param datasetBean
      * @return test boolean (successful creation)
      */
-    public synchronized boolean setProteinFractionFile(DatasetBean datasetBean) {
+    public synchronized boolean setProteinFractionFile(IdentificationDataset datasetBean) {
         if (datasetBean.getDatasetId() == -1)//new Experiment
         {
             PreparedStatement insertDatasetStat = null;
@@ -306,7 +308,7 @@ public class DataBase implements Serializable {
 //                        fractId = rs.getInt(1);
 //                    }
 //                    rs.close();
-//                    for (ProteinBean pb : fb.getProteinList().values()) {
+//                    for (IdentificationProteinBean pb : fb.getProteinList().values()) {
 //                        test = this.insertProteinFract(conn, fractId, pb);
 //                    }
 //                }
@@ -358,7 +360,7 @@ public class DataBase implements Serializable {
                 fractId = rs.getInt(1);
             }
             rs.close();
-            for (ProteinBean pb : fraction.getProteinList().values()) {
+            for (IdentificationProteinBean pb : fraction.getProteinList().values()) {
                 this.insertProteinFract(databaseConnection, fractId, pb);
                 this.updateDatasetProteinFraction(pb, datasetId);
             }
@@ -383,7 +385,7 @@ public class DataBase implements Serializable {
      * @param proteinFraction
      * @return integer return value
      */
-    private synchronized int insertProteinFract(Connection databaseConnection, int fractionId, ProteinBean proteinFraction) {
+    private synchronized int insertProteinFract(Connection databaseConnection, int fractionId, IdentificationProteinBean proteinFraction) {
         int test = -1;
         try {
             if (databaseConnection == null || databaseConnection.isClosed()) {
@@ -463,7 +465,7 @@ public class DataBase implements Serializable {
      * @param dataset
      * @return test boolean value
      */
-    public synchronized boolean updateDatasetInformation(Connection databaseConnection, DatasetBean dataset) {
+    public synchronized boolean updateDatasetInformation(Connection databaseConnection, IdentificationDataset dataset) {
         PreparedStatement updateDatasetStat = null;
         try {
             if (databaseConnection == null || databaseConnection.isClosed()) {
@@ -525,7 +527,7 @@ public class DataBase implements Serializable {
                 String updateFraction = "UPDATE  `" + dbName + "`.`fractions_table` SET `number_peptides`=? ,`number_spectra`=? ,`average_ precursor_intensity`=?  WHERE `fraction_id` = ? AND `prot_accession`=?;";
 
                 PreparedStatement updateFractionStat = null;
-                for (ProteinBean fpb : fractionBean.getProteinList().values()) {
+                for (IdentificationProteinBean fpb : fractionBean.getProteinList().values()) {
                     boolean test = this.checkDatasetFractionProtein(fractId, fpb.getAccession());
                     if (test) {
                         updateFractionStat = databaseConnection.prepareStatement(updateFraction);
@@ -656,12 +658,12 @@ public class DataBase implements Serializable {
      * @param datasetId
      * @return dataset if available and null if not
      */
-    public synchronized DatasetBean readyToRetrieveDataset(int datasetId) {
+    public synchronized IdentificationDataset readyToRetrieveDataset(int datasetId) {
         PreparedStatement selectDatasetStat = null;
 
         String selectDatasetProt = "SELECT * FROM `experiments_table` WHERE `exp_id` = ?";
 
-        DatasetBean dataset = new DatasetBean();
+        IdentificationDataset dataset = new IdentificationDataset();
 
         try {
             if (conn == null || conn.isClosed()) {
@@ -797,11 +799,11 @@ public class DataBase implements Serializable {
      *
      * @return datasetsList
      */
-    public synchronized Map<Integer, DatasetBean> getDatasets()//get experiments list
+    public synchronized Map<Integer, IdentificationDataset> getDatasets()//get experiments list
     {
         PreparedStatement selectDatasetListStat = null;
-        Map<Integer, DatasetBean> datasetList = new HashMap<Integer, DatasetBean>();
-        Map<Integer, DatasetBean> tempDatasetList = new HashMap<Integer, DatasetBean>();
+        Map<Integer, IdentificationDataset> datasetList = new HashMap<Integer, IdentificationDataset>();
+        Map<Integer, IdentificationDataset> tempDatasetList = new HashMap<Integer, IdentificationDataset>();
         String selectselectDatasetList = "SELECT * FROM `experiments_table` ;";
         try {
             if (conn == null || conn.isClosed()) {
@@ -811,7 +813,7 @@ public class DataBase implements Serializable {
             selectDatasetListStat = conn.prepareStatement(selectselectDatasetList);
             ResultSet rs = selectDatasetListStat.executeQuery();
             while (rs.next()) {
-                DatasetBean dataset = new DatasetBean();
+                IdentificationDataset dataset = new IdentificationDataset();
                 int fractionsNumber = rs.getInt("fractions_number");
                 dataset.setFractionsNumber(fractionsNumber);
                 String uploadedBy = rs.getString("uploaded_by");
@@ -849,7 +851,7 @@ public class DataBase implements Serializable {
             }
             rs.close();
             for (int datasetId : datasetList.keySet()) {
-                DatasetBean dataset = datasetList.get(datasetId);
+                IdentificationDataset dataset = datasetList.get(datasetId);
                 List<Integer> fractionIds = this.getFractionIdsList(datasetId);
                 dataset.setFractionIds(fractionIds);
                 tempDatasetList.put(datasetId, dataset);
@@ -884,8 +886,8 @@ public class DataBase implements Serializable {
      * @param datasetId
      * @return dataset
      */
-    public synchronized DatasetBean getStoredDataset(int datasetId) {
-        DatasetBean dataset = new DatasetBean();
+    public synchronized IdentificationDataset getStoredDataset(int datasetId) {
+        IdentificationDataset dataset = new IdentificationDataset();
         dataset.setDatasetId(datasetId);
         dataset = this.getDatasetDetails(dataset);
 //        dataset.setFractionsList(this.getFractionsList(dataset.getDatasetId()));
@@ -940,7 +942,7 @@ public class DataBase implements Serializable {
      * @param dataset
      * @return list of fraction Id's list
      */
-    private synchronized DatasetBean getDatasetDetails(DatasetBean dataset) {
+    private synchronized IdentificationDataset getDatasetDetails(IdentificationDataset dataset) {
         PreparedStatement selectDatasetStat = null;
         String selectDataset = "SELECT * FROM `experiments_table` WHERE `exp_id`=? ;";
         try {
@@ -1009,7 +1011,7 @@ public class DataBase implements Serializable {
      * @param datasetId
      * @return fractions list for the selected dataset
      */
-    public synchronized Map<Integer, ProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
+    public synchronized Map<Integer, IdentificationProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
 //        Map<Integer, FractionBean> fractionsList = new TreeMap<Integer, FractionBean>();
         try {
 
@@ -1055,13 +1057,13 @@ public class DataBase implements Serializable {
                 selectFractsStat.setInt(1,datasetId );
                 selectFractsStat.setString(2, accession.toUpperCase()+","+otherAccession.toUpperCase());
                 ResultSet rs = selectFractsStat.executeQuery();
-                Map<Integer, ProteinBean> proteinList = new HashMap<Integer, ProteinBean>();
+                Map<Integer, IdentificationProteinBean> proteinList = new HashMap<Integer, IdentificationProteinBean>();
                 otherSymbols.setGroupingSeparator('.');
                 df = new DecimalFormat("#.##", otherSymbols);
 
                 int x = 0;
                 while (rs.next()) {
-                    ProteinBean pb = new ProteinBean();//fraction_id		  			
+                    IdentificationProteinBean pb = new IdentificationProteinBean();//fraction_id		  			
                     pb.setAccession(rs.getString("prot_accession"));
                     pb.setNumberOfPeptidePerFraction(rs.getInt("number_peptides"));
                     pb.setNumberOfSpectraPerFraction(rs.getInt("number_spectra"));
@@ -1078,7 +1080,7 @@ public class DataBase implements Serializable {
             conn.close();
             return proteinList;
             
-//            for(ProteinBean protBean : proteinList.values()){
+//            for(IdentificationProteinBean protBean : proteinList.values()){
 //                if(fractionsList.containsKey(protBean.getFrcationId()))
 //                {
 //                    fractionsList.get(protBean.getFrcationId()).getProteinList().put(protBean.getAccession(), protBean);
@@ -1277,8 +1279,8 @@ public class DataBase implements Serializable {
      * @param datasetId
      * @return proteinsList
      */
-    public synchronized Map<String, ProteinBean> getDatasetProteinsList(int datasetId) {
-        Map<String, ProteinBean> proteinDatasetList = new HashMap<String, ProteinBean>();
+    public synchronized Map<String, IdentificationProteinBean> getDatasetProteinsList(int datasetId) {
+        Map<String, IdentificationProteinBean> proteinDatasetList = new HashMap<String, IdentificationProteinBean>();
         try {
             PreparedStatement selectProtDatasetStat = null;
             String selectProtDataset = "SELECT * FROM `experiment_protein_table` WHERE `exp_id`=? ;";
@@ -1290,7 +1292,7 @@ public class DataBase implements Serializable {
             selectProtDatasetStat.setInt(1, datasetId);
             ResultSet rs = selectProtDatasetStat.executeQuery();
             while (rs.next()) {
-                ProteinBean temPb = new ProteinBean();
+                IdentificationProteinBean temPb = new IdentificationProteinBean();
                 temPb.setAccession(rs.getString("prot_accession"));
                 temPb.setOtherProteins(rs.getString("other_protein(s)"));
                 temPb.setProteinInferenceClass(rs.getString("protein_inference_class"));
@@ -1479,11 +1481,11 @@ public class DataBase implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return dataset Proteins Searching List
      */
-    public synchronized Map<Integer, ProteinBean> searchProteinByAccession(String accession, int datasetId, boolean validatedOnly) {
+    public synchronized Map<Integer, IdentificationProteinBean> searchProteinByAccession(String accession, int datasetId, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
         String selectPro = "";
         
-        String[] queryWordsArr = accession.split("\n");
+        String[] queryWordsArr = accession.split(",");
         StringBuilder sb = new StringBuilder();
         
         Set<String> searchSet = new HashSet<String>();
@@ -1521,7 +1523,7 @@ public class DataBase implements Serializable {
             }
             ResultSet rs = selectProStat.executeQuery();
            
-          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs);
             System.gc();
             return proteinsList;
 
@@ -1552,7 +1554,7 @@ public class DataBase implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return dataset Proteins Searching List
      */
-    public synchronized Map<Integer, ProteinBean> searchProteinAllDatasetsByAccession(Set<String> searchSet, boolean validatedOnly) {
+    public synchronized Map<Integer, IdentificationProteinBean> searchIdentificationProteinAllDatasetsByAccession(Set<String> searchSet, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
         String selectPro = "";
        
@@ -1585,7 +1587,7 @@ public class DataBase implements Serializable {
             }
             ResultSet rs = selectProStat.executeQuery();
             
-          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs);
             System.gc();
             return proteinsList;
 
@@ -1605,6 +1607,113 @@ public class DataBase implements Serializable {
 
             return null;
         }
+
+    }
+
+    
+    /**
+     * search for proteins by accession keywords
+     *
+     * @param accession array of query words
+     * @param validatedOnly only validated proteins results
+     * @return dataset Proteins Searching List
+     */
+    public synchronized Map<Integer, QuantificationProteinsBean> searchQuantificationProteins(Query query) {
+Map<Integer, QuantificationProteinsBean> qpm = new HashMap<Integer, QuantificationProteinsBean>();
+        for (int z = 1; z < 50; z++) {
+            QuantificationProteinsBean qpb = new QuantificationProteinsBean();
+            qpb.setUniprotAccession("Q9P0K"+z);
+            qpb.setAdditionalComments("Not available");
+            qpb.setAnalyticalApproachI("Not available");
+            qpb.setAnalyticalMethod("Not available");
+            qpb.setEnzyme("Not available");
+            qpb.setFcPatientGroupIonPatientGroupII(-1.79);
+            qpb.setModificationComment("Not available");
+            qpb.setNormalizationStrategy("Not available");
+            qpb.setPatientGrIComment("Not available");
+            qpb.setPatientGrIIComment("Not available");
+            qpb.setPatientGroupI("Not available");
+            qpb.setPatientGroupII("Not available");
+            qpb.setPatientSubGroupI("Not available");
+            qpb.setPatientSubGroupII("Not available");
+            qpb.setPatientsGroupIINumber(51);
+            qpb.setPatientsGroupINumber(70);
+            qpb.setPeptideModification("Not available");
+            qpb.setPublicationAccNumber("NP_068368.2");
+            qpb.setPublicationProteinName("ADAM metallopeptidase domain 22 isoform 2 preproprotein");
+            qpb.setPumedID("22473675");
+            qpb.setQuantBasisComment("Not available");
+            qpb.setQuantificationBasis("Not available");
+            qpb.setQuantifiedProteinsNumber(1000+z);
+            qpb.setRawDataAvailable("www.google.com");
+            qpb.setRocAuc(22.23);
+            qpb.setSampleMatching("Not available");
+            qpb.setSampleType("Not Available");
+            qpb.setShotgunOrTargetedQquant("Shotgun");
+            qpb.setTechnology("Notavailable");
+            qpb.setTypeOfStudy("Discovery");
+            qpb.setUniprotProteinName("Not available");
+            qpb.setpValue(0.22);
+            
+            qpm.put(z, qpb);
+
+        }
+
+
+
+
+//        PreparedStatement selectProStat = null;
+//        String selectPro = "";
+//       
+//        StringBuilder sb = new StringBuilder();
+//        for (int x = 0; x < searchSet.size(); x++) {
+//            if (x > 0) {
+//                sb.append(" OR ");
+//            }
+//            sb.append("`prot_key` LIKE(?)");
+//
+//        }
+//
+//        if (validatedOnly) {
+//            selectPro = "SELECT * FROM `experiment_protein_table` Where  "+(sb.toString()) +" AND `valid`=?;";
+//        } else {
+//            selectPro = "SELECT * FROM `experiment_protein_table` Where  "+(sb.toString());
+//        }
+//        try {
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//            selectProStat = conn.prepareStatement(selectPro);
+//            int index=1;
+//            for(String str:searchSet){
+//            selectProStat.setString(index++, "%" + str + "%");
+//            }
+//            if (validatedOnly) {
+//                selectProStat.setString(index, "TRUE");
+//            }
+//            ResultSet rs = selectProStat.executeQuery();
+//            
+//          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs);
+//            System.gc();
+//            return proteinsList;
+//
+//        } catch (ClassNotFoundException e) {
+//            System.err.println(e.getLocalizedMessage());
+//            return null;
+//        } catch (IllegalAccessException e) {
+//            System.err.println(e.getLocalizedMessage());
+//
+//            return null;
+//        } catch (InstantiationException e) {
+//            System.err.println(e.getLocalizedMessage());
+//
+//            return null;
+//        } catch (SQLException e) {
+//            System.err.println(e.getLocalizedMessage());
+
+            return qpm;
+//        }
 
     }
 
@@ -1758,11 +1867,11 @@ public class DataBase implements Serializable {
                 selectFractsStat.setInt(1, fractId);
                 selectFractsStat.setString(2, accession);
                 rs = selectFractsStat.executeQuery();
-                Map<String, ProteinBean> proteinList = new HashMap<String, ProteinBean>();
+                Map<String, IdentificationProteinBean> proteinList = new HashMap<String, IdentificationProteinBean>();
                 otherSymbols.setGroupingSeparator('.');
                 df = new DecimalFormat("#.##", otherSymbols);
                 while (rs.next()) {
-                    ProteinBean pb = new ProteinBean();//fraction_id		  			
+                    IdentificationProteinBean pb = new IdentificationProteinBean();//fraction_id		  			
                     pb.setAccession(rs.getString("prot_accession"));
                     pb.setNumberOfPeptidePerFraction(rs.getInt("number_peptides"));
                     pb.setNumberOfSpectraPerFraction(rs.getInt("number_spectra"));
@@ -1805,10 +1914,10 @@ public class DataBase implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public synchronized Map<Integer, ProteinBean> searchProteinByName(String protSearchKeyword, int datasetId, boolean validatedOnly) {
+    public synchronized Map<Integer, IdentificationProteinBean> searchProteinByName(String protSearchKeyword, int datasetId, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
         String selectPro = "";
-         String[] queryWordsArr = protSearchKeyword.split("\n");
+         String[] queryWordsArr = protSearchKeyword.split(",");
         Set<String> searchSet = new HashSet<String>();
         for (String str : queryWordsArr) {
             searchSet.add(str.trim());
@@ -1843,7 +1952,7 @@ public class DataBase implements Serializable {
                 selectProStat.setString(index, "TRUE");
             }
             ResultSet rs = selectProStat.executeQuery();
-          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs);
             System.gc();
             return proteinsList;
         } catch (ClassNotFoundException e) {
@@ -1871,13 +1980,14 @@ public class DataBase implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public synchronized Map<Integer, ProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword, boolean validatedOnly) {
+    public synchronized Map<Integer, IdentificationProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
         String selectPro = "";
-        String[] queryWordsArr = protSearchKeyword.split("\n");
+        String[] queryWordsArr = protSearchKeyword.split(",");
         Set<String> searchSet = new HashSet<String>();
         for (String str : queryWordsArr) {
             searchSet.add(str.trim());
+            System.out.println("key is "+str);
         }
         StringBuilder sb = new StringBuilder();
         for (int x = 0; x < searchSet.size(); x++) {
@@ -1912,7 +2022,7 @@ public class DataBase implements Serializable {
 //                selectProStat.setString(3, "TRUE");
 //            }
             ResultSet rs = selectProStat.executeQuery();
-          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs);
             System.gc();
             return proteinsList;
         } catch (ClassNotFoundException e) {
@@ -1942,7 +2052,7 @@ public class DataBase implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-//    public synchronized Map<Integer, ProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword, boolean validatedOnly) {
+//    public synchronized Map<Integer, IdentificationProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword, boolean validatedOnly) {
 //        PreparedStatement selectProStat = null;
 //        String selectPro = "";
 //
@@ -1962,7 +2072,7 @@ public class DataBase implements Serializable {
 //                selectProStat.setString(2, "TRUE");
 //            }
 //            ResultSet rs = selectProStat.executeQuery();
-//          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs);
+//          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs);
 //            System.gc();
 //            return proteinsList;
 //        } catch (ClassNotFoundException e) {
@@ -2031,11 +2141,11 @@ pepb.setValidated(rs.getDouble("validated"));
     return peptidesList;
     } 
     
-    private Map<Integer, ProteinBean> fillProteinInformation(ResultSet rs){
-    Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
+    private Map<Integer, IdentificationProteinBean> fillProteinInformation(ResultSet rs){
+    Map<Integer, IdentificationProteinBean> proteinsList = new HashMap<Integer, IdentificationProteinBean>();
     try{  
     while (rs.next()) {
-                ProteinBean temPb = new ProteinBean();
+                IdentificationProteinBean temPb = new IdentificationProteinBean();
                 temPb.setDatasetId(rs.getInt("exp_id"));
                 temPb.setAccession(rs.getString("prot_accession"));
                 temPb.setDescription(rs.getString("description"));
@@ -2083,10 +2193,10 @@ pepb.setValidated(rs.getDouble("validated"));
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public synchronized Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, int datasetId, boolean validatedOnly) {
+    public synchronized Map<Integer, IdentificationProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, int datasetId, boolean validatedOnly) {
         PreparedStatement selectProStat = null;
         PreparedStatement selectPepIdStat = null;
-        Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
+        Map<Integer, IdentificationProteinBean> proteinsList = new HashMap<Integer, IdentificationProteinBean>();
         List<Integer> pepIdList = new ArrayList<Integer>();
         String selectPepId = "SELECT `peptide_id`  FROM `proteins_peptides_table` WHERE `exp_id` = ? AND `sequence` = ? ;";
         Set<String> accessionList = new HashSet<String>();
@@ -2124,7 +2234,7 @@ pepb.setValidated(rs.getDouble("validated"));
                     String[] AccArr = accKey.split(",");
                     for (String str : AccArr) {
                         if (str.length() > 3) {
-                            Map<Integer, ProteinBean> tempProteinsList = this.searchProteinByAccession(str.trim(), datasetId, validatedOnly);
+                            Map<Integer, IdentificationProteinBean> tempProteinsList = this.searchProteinByAccession(str.trim(), datasetId, validatedOnly);
                             if (tempProteinsList != null) {
                                 proteinsList.putAll(tempProteinsList);
                             }
@@ -2160,13 +2270,13 @@ pepb.setValidated(rs.getDouble("validated"));
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public synchronized Map<Integer, ProteinBean> SearchProteinAllDatasetsByPeptideSequence(String peptideSequenceKeyword, boolean validatedOnly) {
+    public synchronized Map<Integer, IdentificationProteinBean> SearchProteinAllDatasetsByPeptideSequence(String peptideSequenceKeyword, boolean validatedOnly) {
 //        PreparedStatement selectProStat = null;
         PreparedStatement selectPepIdStat = null;
-        Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
-        Map<Integer, ProteinBean> filteredProteinsList = new HashMap<Integer, ProteinBean>();
+        Map<Integer, IdentificationProteinBean> proteinsList = new HashMap<Integer, IdentificationProteinBean>();
+        Map<Integer, IdentificationProteinBean> filteredProteinsList = new HashMap<Integer, IdentificationProteinBean>();
         
-        String[] queryWordsArr = peptideSequenceKeyword.split("\n");
+        String[] queryWordsArr = peptideSequenceKeyword.split(",");
         Set<String> searchSet = new HashSet<String>();
         for (String str : queryWordsArr) {
             if(str.trim().equalsIgnoreCase(""))
@@ -2219,11 +2329,11 @@ pepb.setValidated(rs.getDouble("validated"));
             }
             rs.close();
 //            System.out.println("prot acc number are "+protAccessionQuerySet);
-            proteinsList = this.searchProteinAllDatasetsByAccession(protAccessionQuerySet, validatedOnly);
+            proteinsList = this.searchIdentificationProteinAllDatasetsByAccession(protAccessionQuerySet, validatedOnly);
             if(proteinsList == null)
                 return null;
             for(int key:proteinsList.keySet()){
-                ProteinBean pb = proteinsList.get(key);
+                IdentificationProteinBean pb = proteinsList.get(key);
                 if(expIds.contains(pb.getDatasetId()))
                     filteredProteinsList.put(key, pb);
             }
@@ -2248,7 +2358,7 @@ pepb.setValidated(rs.getDouble("validated"));
 //                    String[] AccArr = accKey.split(",");
 //                    for (String str : AccArr) {
 //                        if (str.length() > 3) {
-//                            Map<Integer, ProteinBean> tempProteinsList = this.searchProteinByAccession(str.trim(), datasetId, validatedOnly);
+//                            Map<Integer, IdentificationProteinBean> tempProteinsList = this.searchProteinByAccession(str.trim(), datasetId, validatedOnly);
 //                            if (tempProteinsList != null) {
 //                                proteinsList.putAll(tempProteinsList);
 //                            }
@@ -2285,11 +2395,11 @@ pepb.setValidated(rs.getDouble("validated"));
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public synchronized Map<Integer, ProteinBean> SearchProteinByPeptideSequence(String peptideSequenceKeyword,int datasetId, boolean validatedOnly) {
+    public synchronized Map<Integer, IdentificationProteinBean> SearchProteinByPeptideSequence(String peptideSequenceKeyword,int datasetId, boolean validatedOnly) {
 //        PreparedStatement selectProStat = null;
         PreparedStatement selectPepIdStat = null;
-        Map<Integer, ProteinBean> proteinsList = new HashMap<Integer, ProteinBean>();
-        Map<Integer, ProteinBean> filteredProteinsList = new HashMap<Integer, ProteinBean>();
+        Map<Integer, IdentificationProteinBean> proteinsList = new HashMap<Integer, IdentificationProteinBean>();
+        Map<Integer, IdentificationProteinBean> filteredProteinsList = new HashMap<Integer, IdentificationProteinBean>();
         
         
         String[] queryWordsArr = peptideSequenceKeyword.split("\n");        
@@ -2344,11 +2454,11 @@ pepb.setValidated(rs.getDouble("validated"));
                 
             }
             rs.close();
-            proteinsList = this.searchProteinAllDatasetsByAccession(protAccessionQuerySet, validatedOnly);
+            proteinsList = this.searchIdentificationProteinAllDatasetsByAccession(protAccessionQuerySet, validatedOnly);
             if(proteinsList == null || proteinsList.isEmpty())
                 return null;
             for(int key:proteinsList.keySet()){
-                ProteinBean pb = proteinsList.get(key);
+                IdentificationProteinBean pb = proteinsList.get(key);
                 if(expIds.contains(pb.getDatasetId())){
                 
                     filteredProteinsList.put(key, pb);
@@ -2375,7 +2485,7 @@ pepb.setValidated(rs.getDouble("validated"));
 //                    String[] AccArr = accKey.split(",");
 //                    for (String str : AccArr) {
 //                        if (str.length() > 3) {
-//                            Map<Integer, ProteinBean> tempProteinsList = this.searchProteinByAccession(str.trim(), datasetId, validatedOnly);
+//                            Map<Integer, IdentificationProteinBean> tempProteinsList = this.searchProteinByAccession(str.trim(), datasetId, validatedOnly);
 //                            if (tempProteinsList != null) {
 //                                proteinsList.putAll(tempProteinsList);
 //                            }
@@ -2677,7 +2787,7 @@ pepb.setValidated(rs.getDouble("validated"));
      *
      * @return test boolean successful process
      */
-    public boolean updateFractionRange(DatasetBean dataset) {
+    public boolean updateFractionRange(IdentificationDataset dataset) {
         List<Integer> fractionIDs = this.getFractionIdsList(dataset.getDatasetId());
         java.util.Collections.sort(fractionIDs);
 //        Map<Integer, FractionBean> fractionRangeList = dataset.getFractionsList();
@@ -2812,7 +2922,7 @@ pepb.setValidated(rs.getDouble("validated"));
      *
      * @return test boolean successful process
      */
-    public synchronized boolean insertFractions(Connection connection, DatasetBean dataset) {
+    public synchronized boolean insertFractions(Connection connection, IdentificationDataset dataset) {
         try {
             if (connection == null || connection.isClosed()) {
                 Class.forName(driver).newInstance();
@@ -2834,7 +2944,7 @@ pepb.setValidated(rs.getDouble("validated"));
 //                while (rs.next()) {
 //                    fractId = rs.getInt(1);
 //                }
-//                for (ProteinBean pb : fb.getProteinList().values()) {
+//                for (IdentificationProteinBean pb : fb.getProteinList().values()) {
 //                    this.insertProteinFract(connection, fractId, pb);
 //                }
 //                rs.close();
@@ -2864,7 +2974,7 @@ pepb.setValidated(rs.getDouble("validated"));
      *
      * @return test boolean successful process
      */
-    public synchronized boolean updateProtFractionFile(DatasetBean tempDataset, DatasetBean dataset) {
+    public synchronized boolean updateProtFractionFile(IdentificationDataset tempDataset, IdentificationDataset dataset) {
         boolean test = true;
         try {
             if (conn == null || conn.isClosed()) {
@@ -2902,7 +3012,7 @@ pepb.setValidated(rs.getDouble("validated"));
      * @param datasetId
      * @return test boolean
      */
-    public boolean updateDatasetProteinFraction(ProteinBean proteinBean, int datasetId) {
+    public boolean updateDatasetProteinFraction(IdentificationProteinBean proteinBean, int datasetId) {
 
         String updateProtFraction = "UPDATE  `" + dbName + "`.`experiment_protein_table` SET `spectrum_fraction_spread_upper_range_kDa`=? ,`spectrum_fraction_spread_lower_range_kDa`=? ,`peptide_fraction_spread_upper_range_kDa`=? , `peptide_fraction_spread_lower_range_kDa`=?   WHERE `exp_id` = ? AND `prot_accession`=?;";
         boolean test = false;
@@ -3105,7 +3215,7 @@ pepb.setValidated(rs.getDouble("validated"));
      * @param dataset dataset bean (in case of update existing dataset)
      * @return test boolean
      */
-    public boolean updateStandardPlotProt(DatasetBean dataset) {
+    public boolean updateStandardPlotProt(IdentificationDataset dataset) {
         removeStandarPlot(dataset.getDatasetId());
         for (StandardProteinBean spb : dataset.getStanderdPlotProt()) {
             insertStandardPlotProtein(dataset.getDatasetId(), spb);
@@ -3242,7 +3352,7 @@ pepb.setValidated(rs.getDouble("validated"));
      * @return test boolean
      */
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public boolean updateDatasetData(DatasetBean dataset) {
+    public boolean updateDatasetData(IdentificationDataset dataset) {
 
         String updateExp = "UPDATE  `" + dbName + "`.`experiments_table`  SET `name`=?,`ready`=? ,`uploaded_by`=?,`species`=?,`sample_type`=?,`sample_processing`=?,`instrument_type`=?,`frag_mode` =?,`proteins_number` = ? ,	`email` =?,`pblication_link`=?,`description`=?,`peptides_number` =?  WHERE `exp_id` = ? ;";
         try {
@@ -3426,7 +3536,7 @@ pepb.setValidated(rs.getDouble("validated"));
 //            PreparedStatement selectProStat = conn.prepareStatement(selectPro);
 //          
 //            ResultSet rs2 = selectProStat.executeQuery();
-//          Map<Integer, ProteinBean> proteinsList=fillProteinInformation(rs2);
+//          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs2);
 //            System.gc();
 //            rs2.close();
 //            conn.close();
@@ -3439,7 +3549,7 @@ pepb.setValidated(rs.getDouble("validated"));
 //            int index = 0;
 //            System.out.println(" - " + proteinsList.size());
 //
-//            for (ProteinBean pb : proteinsList.values()) {
+//            for (IdentificationProteinBean pb : proteinsList.values()) {
 //////                System.out.print(" - " + index);
 //                String updatePep = "UPDATE  `" + dbName + "`.`proteins_peptides_table` SET `main_prot_desc`=?   WHERE `protein` = ? AND `other_protein(s)` = ? AND `exp_id` = ?";
 //                updatePepStat = conn.prepareStatement(updatePep);

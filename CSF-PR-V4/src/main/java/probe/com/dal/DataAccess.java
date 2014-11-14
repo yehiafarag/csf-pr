@@ -7,10 +7,11 @@ import java.util.Map;
 import java.util.Set;
 
 
-import probe.com.model.beans.DatasetBean;
+import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
+import probe.com.model.beans.QuantificationProteinsBean;
 import probe.com.model.beans.StandardProteinBean;
 
 public class DataAccess implements Serializable {
@@ -64,9 +65,9 @@ public class DataAccess implements Serializable {
      *
      * @return datasetsList 
      */
-    public Map<Integer, DatasetBean> getDatasets()//get dataset list
+    public Map<Integer, IdentificationDataset> getDatasets()//get dataset list
     {
-        Map<Integer, DatasetBean> datasestList = db.getDatasets();
+        Map<Integer, IdentificationDataset> datasestList = db.getDatasets();
         return datasestList;
     }
 
@@ -76,14 +77,14 @@ public class DataAccess implements Serializable {
      * @param datasetId
      * @return dataset
      */
-    public DatasetBean getDataset(int datasetId) {
-        DatasetBean dataset = db.getStoredDataset(datasetId);
+    public IdentificationDataset getDataset(int datasetId) {
+        IdentificationDataset dataset = db.getStoredDataset(datasetId);
         return dataset;
     }
 
    
 
-//    public boolean updatePeptideFile(DatasetBean dataset) {
+//    public boolean updatePeptideFile(IdentificationDataset dataset) {
 //
 //        boolean test = db.setPeptideFile(dataset.getPeptideList());
 //        return test;
@@ -95,8 +96,8 @@ public class DataAccess implements Serializable {
      * @param datasetId
      * @return proteinsList
      */
-    public Map<String, ProteinBean> getProteinsList(int datasetId) {
-        Map<String, ProteinBean> proteinsList = db.getDatasetProteinsList(datasetId);
+    public Map<String, IdentificationProteinBean> getProteinsList(int datasetId) {
+        Map<String, IdentificationProteinBean> proteinsList = db.getDatasetProteinsList(datasetId);
         return proteinsList;
     }
 
@@ -125,8 +126,8 @@ public class DataAccess implements Serializable {
      * @return fractions  list for the selected dataset
      */
 
-    public Map<Integer, ProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
-        Map<Integer, ProteinBean> fractionsProtList = db.getProtGelFractionsList(datasetId,accession, otherAccession);
+    public Map<Integer, IdentificationProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
+        Map<Integer, IdentificationProteinBean> fractionsProtList = db.getProtGelFractionsList(datasetId,accession, otherAccession);
         return fractionsProtList;
 
     }
@@ -140,7 +141,7 @@ public class DataAccess implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return dataset Proteins Searching List
      */
-    public Map<Integer, ProteinBean>  searchProteinByAccession(String accession, int datasetId,boolean validatedOnly) {
+    public Map<Integer, IdentificationProteinBean>  searchProteinByAccession(String accession, int datasetId,boolean validatedOnly) {
 
 //        String[] queryWordsArr = accession.split("\n");
 //        StringBuilder sb = new StringBuilder();
@@ -151,7 +152,7 @@ public class DataAccess implements Serializable {
 //            sb.append("prot_key` LIKE(?) ");
 //
 //        }
-        Map<Integer, ProteinBean> datasetProteinsSearchingList  = db.searchProteinByAccession(accession, datasetId,validatedOnly);
+        Map<Integer, IdentificationProteinBean> datasetProteinsSearchingList  = db.searchProteinByAccession(accession, datasetId,validatedOnly);
         return datasetProteinsSearchingList ;
     }
     
@@ -162,14 +163,28 @@ public class DataAccess implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return dataset Proteins Searching List
      */
-    public Map<Integer, ProteinBean>  searchProteinAllDatasetsByAccession(String accession,boolean validatedOnly) {
+    public Map<Integer, IdentificationProteinBean>  searchIdentificationProteinAllDatasetsByAccession(String accession,boolean validatedOnly) {
 
          String[] queryWordsArr = accession.split("\n");
         Set<String> searchSet = new HashSet<String>();
         for (String str : queryWordsArr) {
             searchSet.add(str.trim());
         }
-        Map<Integer, ProteinBean> datasetProteinsSearchingList  = db.searchProteinAllDatasetsByAccession(searchSet,validatedOnly);
+        Map<Integer, IdentificationProteinBean> datasetProteinsSearchingList  = db.searchIdentificationProteinAllDatasetsByAccession(searchSet,validatedOnly);
+  
+        return datasetProteinsSearchingList ;
+    }
+     /**
+     * search for proteins by accession keywords
+     *
+     * @param accession array of query words
+     * @param validatedOnly only validated proteins results
+     * @return dataset Proteins Searching List
+     */
+    public Map<Integer, QuantificationProteinsBean>  searchQuantificationProteins(Query query) {
+
+         
+        Map<Integer, QuantificationProteinsBean> datasetProteinsSearchingList  = db.searchQuantificationProteins(query);
   
         return datasetProteinsSearchingList ;
     }
@@ -207,8 +222,8 @@ public class DataAccess implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, ProteinBean> searchProteinByName(String protSearchKeyword, int datasetId,boolean validatedOnly) {
-        Map<Integer, ProteinBean> proteinsList = db.searchProteinByName(protSearchKeyword, datasetId,validatedOnly);
+    public Map<Integer, IdentificationProteinBean> searchProteinByName(String protSearchKeyword, int datasetId,boolean validatedOnly) {
+        Map<Integer, IdentificationProteinBean> proteinsList = db.searchProteinByName(protSearchKeyword, datasetId,validatedOnly);
         return proteinsList;
     }
     
@@ -220,8 +235,8 @@ public class DataAccess implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, ProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword,boolean validatedOnly) {
-        Map<Integer, ProteinBean> proteinsList = db.searchProteinAllDatasetsByName(protSearchKeyword,validatedOnly);
+    public Map<Integer, IdentificationProteinBean> searchProteinAllDatasetsByName(String protSearchKeyword,boolean validatedOnly) {
+        Map<Integer, IdentificationProteinBean> proteinsList = db.searchProteinAllDatasetsByName(protSearchKeyword,validatedOnly);
         return proteinsList;
     }
 
@@ -233,9 +248,9 @@ public class DataAccess implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-//    public Map<Integer,ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, int datasetId,boolean validatedOnly) {
+//    public Map<Integer,IdentificationProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, int datasetId,boolean validatedOnly) {
 //
-//        Map<Integer,ProteinBean> proteinsList = db.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
+//        Map<Integer,IdentificationProteinBean> proteinsList = db.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
 //        return proteinsList;
 //    }
     /**
@@ -245,9 +260,9 @@ public class DataAccess implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer,ProteinBean> SearchProteinAllDatasetsByPeptideSequence(String peptideSequenceKeyword,boolean validatedOnly) {
+    public Map<Integer,IdentificationProteinBean> SearchProteinAllDatasetsByPeptideSequence(String peptideSequenceKeyword,boolean validatedOnly) {
 
-        Map<Integer,ProteinBean> proteinsList = db.SearchProteinAllDatasetsByPeptideSequence(peptideSequenceKeyword, validatedOnly);
+        Map<Integer,IdentificationProteinBean> proteinsList = db.SearchProteinAllDatasetsByPeptideSequence(peptideSequenceKeyword, validatedOnly);
         return proteinsList;
     }
     /**
@@ -258,9 +273,9 @@ public class DataAccess implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer,ProteinBean> SearchProteinByPeptideSequence(String peptideSequenceKeyword,int datasetId,boolean validatedOnly) {
+    public Map<Integer,IdentificationProteinBean> SearchProteinByPeptideSequence(String peptideSequenceKeyword,int datasetId,boolean validatedOnly) {
 
-        Map<Integer,ProteinBean> proteinsList = db.SearchProteinByPeptideSequence(peptideSequenceKeyword,datasetId, validatedOnly);
+        Map<Integer,IdentificationProteinBean> proteinsList = db.SearchProteinByPeptideSequence(peptideSequenceKeyword,datasetId, validatedOnly);
         return proteinsList;
     }
 
@@ -271,7 +286,7 @@ public class DataAccess implements Serializable {
      *
      * @return test boolean successful process
      */
-    public boolean updateFractionRange(DatasetBean dataset) {
+    public boolean updateFractionRange(IdentificationDataset dataset) {
         boolean test = db.updateFractionRange(dataset);
         return test;
     }
@@ -308,7 +323,7 @@ public class DataAccess implements Serializable {
      * @param dataset dataset bean (in case of update existing dataset)
      * @return test boolean
      */
-    public boolean setStandardPlotProt(DatasetBean dataset) {
+    public boolean setStandardPlotProt(IdentificationDataset dataset) {
         boolean test= false;
           List<StandardProteinBean> standardPlotList = db.getStandardProtPlotList(dataset.getDatasetId());
           if(!standardPlotList.isEmpty())
@@ -325,7 +340,7 @@ public class DataAccess implements Serializable {
      * @param dataset dataset bean (in case of update existing dataset)
      * @return test boolean
      */
-    public boolean updateStandardPlotProt(DatasetBean dataset) {
+    public boolean updateStandardPlotProt(IdentificationDataset dataset) {
         boolean test = db.updateStandardPlotProt(dataset);
         return test;
     }
@@ -346,7 +361,7 @@ public class DataAccess implements Serializable {
      * @param dataset 
      * @return test boolean
      */
-     public boolean updateDatasetData(DatasetBean dataset)
+     public boolean updateDatasetData(IdentificationDataset dataset)
      {
            boolean test = db.updateDatasetData(dataset);
             return test;

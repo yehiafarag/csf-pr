@@ -47,7 +47,7 @@ public class TextAreaFilter extends TextArea implements Property.ValueChangeList
 ////        {
 //        
 //            filterBtn.setCaption(textField.getValue().trim());
-//            control.addFilterLable(filterBtn);
+//            control.addFilter(filterBtn);
 ////        
 //        }}
 //        }); 
@@ -59,14 +59,15 @@ public class TextAreaFilter extends TextArea implements Property.ValueChangeList
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
         keywordsSet.clear();
-        for (String str : this.getValue().split("\\n")) {
+        for (String str : this.getValue().split("\n")) {
             keywordsSet.add(str.toUpperCase());
         }
-        control.removeFilterLabel(filterBtn.getCaption());
+        control.removeFilter(filterBtn.getCaption());
         if (this.getValue() != null && !this.getValue().trim().equalsIgnoreCase("")) {
-            System.err.println(keywordsSet.toString().trim());
-            filterBtn.setValue(keywordsSet.toString().trim());
-            control.addFilterLable(filterBtn);
+            String key = keywordsSet.toString().trim();
+            key = key.substring(1, key.length()-1);
+            filterBtn.setValue(key);
+            control.addFilter(filterBtn);
 //        
         }
     }

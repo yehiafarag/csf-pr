@@ -24,7 +24,8 @@ public class IntegerTextFieldFilter  extends HorizontalLayout implements Seriali
     private final FiltersControl control;
     private final int filterId;
     private final Button okBtn;
-    public IntegerTextFieldFilter(FiltersControl controller ,int filterId,String label){
+    private final FilterConfirmLabel filterConfirmLabel ;
+    public IntegerTextFieldFilter(FiltersControl controller ,int filterId,final String filterTitle,String label){
     this.control = controller;
         this.filterId=filterId;
         this.setSpacing(true);
@@ -41,18 +42,23 @@ public class IntegerTextFieldFilter  extends HorizontalLayout implements Seriali
        
         this.addComponent(textField);
         this.addComponent(okBtn);
-        filterBtn = new ClosableFilterLabel("Tiltle:",label,filterId, true);
+         filterConfirmLabel = new FilterConfirmLabel();       
+        this.addComponent(filterConfirmLabel);
+        
+        filterBtn = new ClosableFilterLabel(label,label,filterId, true);
         filterBtn.getCloseBtn().addClickListener(this);
         okBtn.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                control.removeFilterLabel(filterBtn.getCaption());
+                filterConfirmLabel.setVisible(false);
+                control.removeFilter(filterBtn.getCaption());
 //                textField.validate();
         if (textField.isValid() && textField.getValue()!= null) {
             textField.setComponentError(null);
-             filterBtn.setCaption(textField.getValue().trim());
-            control.addFilterLable(filterBtn);
+             filterBtn.setValue(textField.getValue().trim());
+            control.addFilter(filterBtn);
+            filterConfirmLabel.setVisible(true);
         }
       
             }
@@ -62,11 +68,13 @@ public class IntegerTextFieldFilter  extends HorizontalLayout implements Seriali
 
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
-        textField.validate();
+        textField.validate();        
         if (textField.isValid()) {
             textField.setComponentError(null);
            
         }
+        if(textField.getValue()== null || textField.getValue().trim().equalsIgnoreCase(""))
+            okBtn.click();
     }
 
 
