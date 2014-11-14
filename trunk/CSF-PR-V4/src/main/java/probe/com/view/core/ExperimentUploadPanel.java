@@ -27,7 +27,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import probe.com.handlers.MainHandler;
-import probe.com.model.beans.DatasetBean;
+import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.User;
 
 /**
@@ -45,7 +45,7 @@ public class ExperimentUploadPanel extends VerticalLayout implements Upload.Rece
     private TextField expNameField, speciesField, sampleTypeField, sampleProcessingField, instrumentTypeField, fragModeField, UploadedByNameField, emailField, publicationLinkField;
     private TextArea descriptionField;
     private final HorizontalLayout bodyLayout = new HorizontalLayout();
-    private Map<Integer, DatasetBean> expList;
+    private Map<Integer, IdentificationDataset> expList;
     private final GeneralUtil util = new GeneralUtil();
     private Select select;
     private final VerticalLayout expDetails = new VerticalLayout();
@@ -210,7 +210,7 @@ public class ExperimentUploadPanel extends VerticalLayout implements Upload.Rece
                     String str = select.getValue().toString();
                     String[] strArr = str.split("\t");
                     int id = (Integer.valueOf(strArr[0]));
-                    DatasetBean expDet = expList.get(id);
+                    IdentificationDataset expDet = expList.get(id);
                     if (expDetails != null) {
                         expDetails.removeAllComponents();
                         if (expDet.getProteinsNumber() == 0) {
@@ -367,7 +367,7 @@ public class ExperimentUploadPanel extends VerticalLayout implements Upload.Rece
     public void uploadSucceeded(Upload.SucceededEvent event) {
         boolean validData = false;
         try {
-            DatasetBean newExp = this.validatDatasetForm();
+            IdentificationDataset newExp = this.validatDatasetForm();
             if (newExp != null) {
                 validData = true;
             }
@@ -390,8 +390,8 @@ public class ExperimentUploadPanel extends VerticalLayout implements Upload.Rece
     /**
      * validate the dataset form before start uploading and processing the files
      */
-    private DatasetBean validatDatasetForm() {
-        DatasetBean newExp;
+    private IdentificationDataset validatDatasetForm() {
+        IdentificationDataset newExp;
         if (select.getValue() == null)//new experiment
         {
 
@@ -415,7 +415,7 @@ public class ExperimentUploadPanel extends VerticalLayout implements Upload.Rece
             } else {
                 boolean checkName = false;
 
-                for (DatasetBean exp : expList.values()) {
+                for (IdentificationDataset exp : expList.values()) {
                     if (exp.getName().equalsIgnoreCase(expName)) {
                         checkName = true;
                         break;
@@ -428,7 +428,7 @@ public class ExperimentUploadPanel extends VerticalLayout implements Upload.Rece
                     return null;
                 } else {
 
-                    newExp = new DatasetBean();
+                    newExp = new IdentificationDataset();
                     newExp.setName(expName);
                     newExp.setSpecies(expSpecies);
                     newExp.setSampleType(expSampleType);
@@ -449,7 +449,7 @@ public class ExperimentUploadPanel extends VerticalLayout implements Upload.Rece
             String str = select.getValue().toString();
             String[] strArr = str.split("\t");
             int id = (Integer.valueOf(strArr[0]));
-            DatasetBean exp = expList.get(id);
+            IdentificationDataset exp = expList.get(id);
             return exp;
 
         }

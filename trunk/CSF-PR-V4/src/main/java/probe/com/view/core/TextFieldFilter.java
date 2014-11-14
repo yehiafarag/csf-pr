@@ -7,11 +7,10 @@ package probe.com.view.core;
 
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.themes.Reindeer;
 import probe.com.view.components.FiltersControl;
 
@@ -21,7 +20,7 @@ import probe.com.view.components.FiltersControl;
  */
 public class TextFieldFilter extends HorizontalLayout implements Button.ClickListener,FieldEvents.FocusListener{
 
-    private final TextField textField;
+    private final TextArea textField;
     private final ClosableFilterLabel filterBtn;
     private final FiltersControl control;
     private final int filterId;
@@ -37,10 +36,11 @@ public class TextFieldFilter extends HorizontalLayout implements Button.ClickLis
         
         okBtn = new Button("ok");
         okBtn.setStyleName(Reindeer.BUTTON_SMALL);
-        textField = new TextField();
+        textField = new TextArea();
         textField.setStyleName(Reindeer.TEXTFIELD_SMALL);
-        textField.setHeight("20px");
-        textField.setWidth("120px");
+        textField.setHeight("60px");
+        textField.setWidth("200px");
+        textField.setInputPrompt("Please use one key-word per line");
         Label captionLabel = new Label(filterTitle);
         captionLabel.setWidth("70px");
         captionLabel.setStyleName("custLabel");
@@ -51,9 +51,7 @@ public class TextFieldFilter extends HorizontalLayout implements Button.ClickLis
         this.addComponent(textField);
         this.addComponent(okBtn);
         
-        filterConfirmLabel = new Label("");
-        filterConfirmLabel.setStyleName("custLabel");
-        filterConfirmLabel.setContentMode(ContentMode.HTML);
+        filterConfirmLabel = new FilterConfirmLabel();       
         this.addComponent(filterConfirmLabel);
         
         filterBtn = new ClosableFilterLabel(filterTitle,"",filterId, true);
@@ -61,14 +59,13 @@ public class TextFieldFilter extends HorizontalLayout implements Button.ClickLis
         okBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                control.removeFilterLabel(filterBtn.getCaption());
-                filterConfirmLabel.setValue("");
+                control.removeFilter(filterBtn.getCaption());
+                filterConfirmLabel.setVisible(false);
         if(textField.getValue()!= null && !textField.getValue().trim().equalsIgnoreCase(""))
         {
             filterBtn.setValue(textField.getValue().trim().toUpperCase());
-            control.addFilterLable(filterBtn);
-            filterConfirmLabel.setValue(textField.getValue().trim().toUpperCase());
-            filterConfirmLabel.setWidth((textField.getValue().length()*7)+"px");
+            control.addFilter(filterBtn);
+            filterConfirmLabel.setVisible(true);
         
         }}
         });

@@ -10,7 +10,7 @@ public class FractionBean implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int fractionId;	
-	private Map<String,ProteinBean> proteinList ; //the key is protein Accession  will be used for insertion only
+	private Map<String,IdentificationProteinBean> proteinList ; //the key is protein Accession  will be used for insertion only
 	private List<String>proteins;
 //	private double minRange;
 //	private double maxRange;
@@ -50,11 +50,11 @@ public class FractionBean implements Serializable{
 
    
 
-    public Map<String,ProteinBean> getProteinList() {
+    public Map<String,IdentificationProteinBean> getProteinList() {
         return proteinList;
     }
 
-    public void setProteinList(Map<String,ProteinBean> proteinList) {
+    public void setProteinList(Map<String,IdentificationProteinBean> proteinList) {
         this.proteinList = proteinList;
     }
 

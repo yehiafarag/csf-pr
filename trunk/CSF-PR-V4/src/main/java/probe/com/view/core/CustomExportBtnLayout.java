@@ -19,10 +19,10 @@ import java.util.Map;
 import probe.com.handlers.MainHandler;
 import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.PeptideBean;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
 import probe.com.view.components.PeptideTable;
 import probe.com.view.components.ProteinsTableComponent;
-import probe.com.view.components.SearchResultsTable;
+import probe.com.view.components.IdentificationSearchResultsTable;
 
 /**
  *
@@ -40,18 +40,18 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
     private final String datasetName;
     private final String accession;
     private final String otherAccession;
-    private final Map<String, ProteinBean> proteinsList;
+    private final Map<String, IdentificationProteinBean> proteinsList;
     private final int fractionNumber;
     private CsvExport csvExport = null;
     private ExcelExport excelExport = null;
     private final Table fractionTable;
-    private final Map<Integer, ProteinBean> fullExpProtList;
+    private final Map<Integer, IdentificationProteinBean> fullExpProtList;
     private String updatedExpName;
 //    private final DatasetBean dataset;
     private final String mainProtDesc;
     private Button exportBtn;
 
-    public CustomExportBtnLayout(MainHandler handler, String type, int datasetId, String datasetName, String accession, String otherAccession, Map<String, ProteinBean> proteinsList, int fractionNumber, Map<Integer, PeptideBean> peptidesList, Table fractionTable, Map<Integer, ProteinBean> fullExpProtList, String mainProtDesc) {
+    public CustomExportBtnLayout(MainHandler handler, String type, int datasetId, String datasetName, String accession, String otherAccession, Map<String, IdentificationProteinBean> proteinsList, int fractionNumber, Map<Integer, PeptideBean> peptidesList, Table fractionTable, Map<Integer, IdentificationProteinBean> fullExpProtList, String mainProtDesc) {
 
         this.type = type;
         this.handler = handler;
@@ -195,14 +195,14 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
                 exportAllPepXls(pepList, accession);
             }
         } else if (type.equalsIgnoreCase("searchResult")) {
-            Map<Integer, ProteinBean> tempFullExpProtList = null;
+            Map<Integer, IdentificationProteinBean> tempFullExpProtList = null;
             if (typeGroup.getValue().toString().equalsIgnoreCase("Validated")) {
                 tempFullExpProtList = this.getVprotList(fullExpProtList);
             } else if (typeGroup.getValue().toString().equalsIgnoreCase("All")) {
                 tempFullExpProtList = fullExpProtList;
             }
             Map<Integer, DatasetDetailsBean> datasetDetailsList = handler.getDatasetDetailsList();
-            SearchResultsTable searcheResultsTable = new SearchResultsTable(datasetDetailsList, tempFullExpProtList);
+            IdentificationSearchResultsTable searcheResultsTable = new IdentificationSearchResultsTable(datasetDetailsList, tempFullExpProtList);
             searcheResultsTable.setVisible(false);
             this.addComponent(searcheResultsTable);
             if (exportGroup.getValue().toString().equalsIgnoreCase("csv")) {
@@ -231,9 +231,9 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
 
             ProteinsTableComponent protTable = null;
             if (typeGroup.getValue().toString().equalsIgnoreCase("Validated")) {
-                Map<String, ProteinBean> vProteinsList = new HashMap<String, ProteinBean>();
+                Map<String, IdentificationProteinBean> vProteinsList = new HashMap<String, IdentificationProteinBean>();
                 for (String key : proteinsList.keySet()) {
-                    ProteinBean pb = proteinsList.get(key);
+                    IdentificationProteinBean pb = proteinsList.get(key);
                     if (pb.isValidated()) {
                         vProteinsList.put(key, pb);
                     }
@@ -403,10 +403,10 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
 
     }
 
-    private Map<Integer, ProteinBean> getVprotList(Map<Integer, ProteinBean> protList) {
-        Map<Integer, ProteinBean> vPeptideList = new HashMap<Integer, ProteinBean>();
+    private Map<Integer, IdentificationProteinBean> getVprotList(Map<Integer, IdentificationProteinBean> protList) {
+        Map<Integer, IdentificationProteinBean> vPeptideList = new HashMap<Integer, IdentificationProteinBean>();
         for (int key : protList.keySet()) {
-            ProteinBean pb = protList.get(key);
+            IdentificationProteinBean pb = protList.get(key);
             if (pb.isValidated()) {
                 vPeptideList.put(key, pb);
             }

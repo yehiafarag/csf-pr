@@ -1,6 +1,7 @@
 package probe.com.view.core;
 
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import java.io.Serializable;
 
@@ -30,9 +31,9 @@ public class TableResizeSet extends HorizontalLayout implements Serializable {
         this.setWidth("90px");
         this.setHeight("21px");
 
-        Button b1 = init("http://sphotos-a.ak.fbcdn.net/hphotos-ak-ash4/483750_123345324515735_2017651328_n.jpg", SMALL_SIZE);
-        Button b2 = init("http://sphotos-d.ak.fbcdn.net/hphotos-ak-ash4/381963_123344494515818_1837730074_n.jpg", MEDIUM_SIZE);
-        Button b3 = init("http://sphotos-f.ak.fbcdn.net/hphotos-ak-snc7/418955_123344261182508_609071937_n.jpg", LARGE_SIZE);
+        Button b1 = init("img/small.jpg", SMALL_SIZE);
+        Button b2 = init("img/med.jpg", MEDIUM_SIZE);
+        Button b3 = init("img/larg.jpg", LARGE_SIZE);
 
         b1.setDescription("Small Table Size");
         b2.setDescription("Medium Table Size");
@@ -53,8 +54,8 @@ public class TableResizeSet extends HorizontalLayout implements Serializable {
     private Button init(String link, final String size) {
         Button b = new Button();
         b.setStyleName(BaseTheme.BUTTON_LINK);
-        b.setIcon(new ExternalResource(link));
-        b.addListener(new ClickListener() {
+        b.setIcon(new ThemeResource(link));
+        b.addClickListener(new ClickListener() {
             /**
              *
              */

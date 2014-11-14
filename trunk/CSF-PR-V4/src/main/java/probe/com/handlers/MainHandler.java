@@ -6,16 +6,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import probe.com.dal.Query;
 import probe.com.model.CoreLogic;
-import probe.com.model.beans.DatasetBean;
+import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
+import probe.com.model.beans.QuantificationProteinsBean;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.view.components.PeptideTable;
 
@@ -60,7 +63,7 @@ public class MainHandler implements Serializable {
      * @exception IOException
      * @exception SQLException
      */
-    public boolean handelDatasetFile(File file, String MIMEType, DatasetBean dataset) throws IOException, SQLException {
+    public boolean handelDatasetFile(File file, String MIMEType, IdentificationDataset dataset) throws IOException, SQLException {
         boolean test = false;
         test = computing.handelDatasetFile(file, MIMEType, dataset);
         return test;
@@ -72,7 +75,7 @@ public class MainHandler implements Serializable {
      *
      * @return datasetsList
      */
-    public Map<Integer, DatasetBean> getDatasetList() {
+    public Map<Integer, IdentificationDataset> getDatasetList() {
         return computing.getDatasetList();
     }
 
@@ -93,8 +96,8 @@ public class MainHandler implements Serializable {
      * @param datasetId
      * @return proteinsList
      */
-    public Map<String, ProteinBean> retriveProteinsList(int datasetId) {
-        Map<String, ProteinBean> protList = computing.retriveProteinsList(datasetId);
+    public Map<String, IdentificationProteinBean> retriveProteinsList(int datasetId) {
+        Map<String, IdentificationProteinBean> protList = computing.retriveProteinsList(datasetId);
         return protList;
     }
 
@@ -132,8 +135,8 @@ public class MainHandler implements Serializable {
      * @param datasetId
      * @return dataset
      */
-    public DatasetBean getDataset(int datasetId) {
-        DatasetBean dataset = computing.getDataset(datasetId);
+    public IdentificationDataset getDataset(int datasetId) {
+        IdentificationDataset dataset = computing.getDataset(datasetId);
         return dataset;
     }
 
@@ -220,7 +223,7 @@ public class MainHandler implements Serializable {
      * @param datasetId
      * @return fractions list for the selected dataset
      */
-    public Map<Integer, ProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
+    public Map<Integer, IdentificationProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
 
         return computing.getProtGelFractionsList(datasetId,accession, otherAccession);
 
@@ -234,8 +237,8 @@ public class MainHandler implements Serializable {
      * @param datasetId
      * @return dataset peptide List
      */
-    public Map<Integer, ProteinBean> getProteinFractionAvgList(String accession, Map<Integer, FractionBean> fractionsList, int datasetId) {
-        Map<Integer, ProteinBean> proteinFractList = new TreeMap<Integer, ProteinBean>();
+    public Map<Integer, IdentificationProteinBean> getProteinFractionAvgList(String accession, Map<Integer, FractionBean> fractionsList, int datasetId) {
+        Map<Integer, IdentificationProteinBean> proteinFractList = new TreeMap<Integer, IdentificationProteinBean>();
         Map<Integer, FractionBean> treeFractList = new TreeMap<Integer, FractionBean>();
         if (fractionsList == null) {
             fractionsList = computing.getProteinFractionList(accession, datasetId);
@@ -250,9 +253,14 @@ public class MainHandler implements Serializable {
         return proteinFractList;
     }
     
-    /*updated search for proteins*/
-      public Map<Integer, ProteinBean> searchProtein(Query query) {
-      return computing.searchProtein(query);
+    /* search for identification proteins*/
+      public Map<Integer, IdentificationProteinBean> searchIdentificationProtein(Query query) {
+      return computing.searchIdentficationProtein(query);
+      
+      }
+      /*search for quantification proteins*/
+      public Map<Integer, QuantificationProteinsBean> searchQuantificationProtein(Query query) {
+        return computing.searchQuantificationProteins(query);
       
       }
 
@@ -264,8 +272,8 @@ public class MainHandler implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return fractions list for the selected dataset
      */
-    public Map<Integer, ProteinBean> searchProteinByAccession(String searchKeywordArray, String searchDatasetType, boolean validatedOnly) {
-        Map<Integer, ProteinBean> protDatasetList = computing.searchProteinByAccession(searchKeywordArray, searchDatasetType, validatedOnly);
+    public Map<Integer, IdentificationProteinBean> searchProteinByAccession(String searchKeywordArray, String searchDatasetType, boolean validatedOnly) {
+        Map<Integer, IdentificationProteinBean> protDatasetList = computing.searchProteinByAccession(searchKeywordArray, searchDatasetType, validatedOnly);
         return protDatasetList;
     }
 
@@ -277,9 +285,9 @@ public class MainHandler implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, ProteinBean> searchProteinByName(String proteinDescriptionKeyword, String searchDatasetType, boolean validatedOnly) {
+    public Map<Integer, IdentificationProteinBean> searchProteinByName(String proteinDescriptionKeyword, String searchDatasetType, boolean validatedOnly) {
 
-        Map<Integer, ProteinBean> protDatasetList = computing.searchProteinByName(proteinDescriptionKeyword, searchDatasetType, validatedOnly);
+        Map<Integer, IdentificationProteinBean> protDatasetList = computing.searchProteinByName(proteinDescriptionKeyword, searchDatasetType, validatedOnly);
 
         return protDatasetList;
 
@@ -293,8 +301,8 @@ public class MainHandler implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, String searchDatasetType, boolean validatedOnly) {
-        Map<Integer, ProteinBean> protDatasetList = computing.searchProteinByPeptideSequence(peptideSequenceKeyword, searchDatasetType, validatedOnly);
+    public Map<Integer, IdentificationProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, String searchDatasetType, boolean validatedOnly) {
+        Map<Integer, IdentificationProteinBean> protDatasetList = computing.searchProteinByPeptideSequence(peptideSequenceKeyword, searchDatasetType, validatedOnly);
         return protDatasetList;
     }
 
@@ -311,7 +319,7 @@ public class MainHandler implements Serializable {
      * @param dataset
      * @return test boolean
      */
-    public boolean updatedatasetData(DatasetBean dataset) {
+    public boolean updatedatasetData(IdentificationDataset dataset) {
         boolean test = computing.updateDatasetData(dataset);
         return test;
 
@@ -327,7 +335,7 @@ public class MainHandler implements Serializable {
      */
     public Map<String, PeptideTable> getProteinPeptidesAllDatasets(String accession, String otherAccession, boolean validated) {
         Map<String, PeptideTable> peptideTableList = new HashMap<String, PeptideTable>();
-        for (DatasetBean tempDataset : computing.getDatasetList().values()) {
+        for (IdentificationDataset tempDataset : computing.getDatasetList().values()) {
 
             Map<Integer, PeptideBean> pepProtList = getPeptidesProtList(tempDataset.getDatasetId(), accession, otherAccession);
 
@@ -387,8 +395,8 @@ public class MainHandler implements Serializable {
         return treeSet;
     }
     
-    public Map<Integer, ProteinBean> getValidatedProteinsList(Map<Integer, ProteinBean> proteinsList) {
-        Map<Integer, ProteinBean> vProteinsList = computing.getValidatedProteinsList(proteinsList);
+    public Map<Integer, IdentificationProteinBean> getValidatedProteinsList(Map<Integer, IdentificationProteinBean> proteinsList) {
+        Map<Integer, IdentificationProteinBean> vProteinsList = computing.getValidatedProteinsList(proteinsList);
         return vProteinsList;
 
     }
@@ -406,6 +414,49 @@ public class MainHandler implements Serializable {
          computing.exportPeptidesToFile(datasetId, validated, datasetName, dataType,exportFileType);
     
     
+    }
+
+    public String filterSearchingKeywords(Map<Integer, IdentificationProteinBean> protList, String SearchingKeys, String searchBy) {
+ if (protList == null || protList.isEmpty()) {
+            return SearchingKeys;
+        }
+        HashSet<String> usedKeys = new HashSet<String>();
+        HashSet<String> tUsedKeys = new HashSet<String>();
+        for(String key: SearchingKeys.split("\n"))
+            usedKeys.add(key);
+        tUsedKeys.addAll(usedKeys);
+       for(IdentificationProteinBean pb:protList.values()){
+       if(searchBy.equals("Protein Accession"))
+       {
+           if(usedKeys.contains(pb.getAccession()))
+               usedKeys.remove(pb.getAccession());
+           if(usedKeys.isEmpty())
+               return "";
+       }
+       else if (searchBy.equals("Protein Name")) {
+               for (String key : tUsedKeys) {
+                   if (pb.getDescription().contains(key)) {
+                       usedKeys.remove(key);
+                   }
+                   if (usedKeys.isEmpty()) {
+                       return "";
+                   }
+               }
+
+           }
+//       else
+//           return "";
+//       else if(searchBy.equals("Peptide Sequence"))
+//       {
+//           if(usedKeys.contains(pb.get))
+//               usedKeys.remove(pb.getAccession());
+//           if(usedKeys.isEmpty())
+//               return null;
+//       }
+//       
+       }
+       return "";
+
     }
     
     

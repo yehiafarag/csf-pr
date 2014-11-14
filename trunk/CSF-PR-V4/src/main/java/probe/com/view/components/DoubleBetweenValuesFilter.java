@@ -12,10 +12,9 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import probe.com.view.core.ClosableFilterLabel;
 import probe.com.view.core.DoubleTextField;
+import probe.com.view.core.FilterConfirmLabel;
 
 /**
  *
@@ -29,9 +28,11 @@ public class DoubleBetweenValuesFilter extends HorizontalLayout implements Seria
     private final int filterId; 
     private final Button okBtn;
     private  DoubleTextField minValueField ,maxValueField;
+    private final FilterConfirmLabel filterConfirmLabel ;
     public DoubleBetweenValuesFilter(FiltersControl control,int filterId,String defaultLabel){
        this.control = control;
        this.filterId=filterId;
+       this.setHeight("20px");
         this.defaultLabel = defaultLabel;
         this.setSpacing(true);
         Label fcPatientsGrI_patGrII = new Label(defaultLabel);
@@ -49,41 +50,52 @@ public class DoubleBetweenValuesFilter extends HorizontalLayout implements Seria
        this.addComponent(maxValueField);
         okBtn = new Button("ok");
         this.addComponent(okBtn);
+        
+        
+         filterConfirmLabel = new FilterConfirmLabel();
+         this.addComponent(filterConfirmLabel);
         okBtn.setStyleName(Reindeer.BUTTON_SMALL);
         okBtn.addClickListener(this);
-         filterBtn = new ClosableFilterLabel("Tiltle:",defaultLabel,filterId, true);
+         filterBtn = new ClosableFilterLabel(defaultLabel,defaultLabel,filterId, true);
         filterBtn.getCloseBtn().addClickListener(new Button.ClickListener() {
 
            @Override
             public void buttonClick(Button.ClickEvent event) {
-                maxValueField.setValue(" ");
-                minValueField.setValue(" ");
+                maxValueField.setValue(null);
+                minValueField.setValue(null);
+                okBtn.click();
             }
        });
     }
 
     @Override
     public void buttonClick(Button.ClickEvent event) {
-        control.removeFilterLabel(filterBtn.getCaption());
+        filterConfirmLabel.setVisible(false);
+        control.removeFilter(filterBtn.getCaption());
+        if (minValueField.getDoubleValue() <= 0 && maxValueField.getDoubleValue() <= 0) {
+            //do nothing...remove the filter
+            return;
+        }
         if (maxValueField.isValid() && minValueField.isValid()) {
-            if(minValueField.getDoubleValue()>maxValueField.getDoubleValue()){
-            okBtn.setComponentError(new ErrorMessage() {
-        @Override
-        public ErrorMessage.ErrorLevel getErrorLevel() {
-            return ErrorMessage.ErrorLevel.ERROR;
-        }
 
-        @Override
-        public String getFormattedHtmlMessage() {
-            return "Min Value > Max Value";
-        }
-    });
-            }
-            else{
+            if (minValueField.getDoubleValue() > maxValueField.getDoubleValue()) {
+                okBtn.setComponentError(new ErrorMessage() {
+                    @Override
+                    public ErrorMessage.ErrorLevel getErrorLevel() {
+                        return ErrorMessage.ErrorLevel.ERROR;
+                    }
+
+                    @Override
+                    public String getFormattedHtmlMessage() {
+                        return "Min Value > Max Value";
+                    }
+                });
+            } else {
                 okBtn.setComponentError(null);
-                filterBtn.setCaption("Between "+minValueField.getDoubleValue()+" AND "+maxValueField.getDoubleValue());
-            control.addFilterLable(filterBtn);
-        }
+                filterBtn.setValue("Between " + minValueField.getDoubleValue() + " AND " + maxValueField.getDoubleValue());
+                control.addFilter(filterBtn);
+                filterConfirmLabel.setVisible(true);
+            }
 //            minValueField.setComponentError(null);
 //            maxValueField.setComponentError(null);
              

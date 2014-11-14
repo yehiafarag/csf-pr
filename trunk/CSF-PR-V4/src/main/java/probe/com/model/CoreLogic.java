@@ -11,11 +11,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import probe.com.dal.DataAccess;
 import probe.com.dal.Query;
-import probe.com.model.beans.DatasetBean;
+import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
+import probe.com.model.beans.QuantificationProteinsBean;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.model.util.FileExporter;
 
@@ -32,7 +33,7 @@ public class CoreLogic implements Serializable {
     private int mainDatasetId;
     private final String filesURL;
     private final TreeMap<Integer, String> datasetNamesList = new TreeMap<Integer, String>();//for dropdown select list
-    private Map<Integer, DatasetBean> datasetList;
+    private Map<Integer, IdentificationDataset> datasetList;
     private final Map<Integer, Integer> datasetIndex = new HashMap<Integer, Integer>();
     private final FileExporter exporter = new FileExporter();
     
@@ -63,11 +64,11 @@ public class CoreLogic implements Serializable {
         for (int datasetkey : datasetList.keySet()) {
             //for re-indexing the stored datasets, to be removed in the future
             if (datasetIndex.containsKey(datasetkey)) {
-                DatasetBean dataset = datasetList.get(datasetkey);
+                IdentificationDataset dataset = datasetList.get(datasetkey);
                 datasetNamesList.put(datasetIndex.get(datasetkey), "\t" + dataset.getName());
 
             } else {
-                DatasetBean dataset = datasetList.get(datasetkey);
+                IdentificationDataset dataset = datasetList.get(datasetkey);
                 datasetNamesList.put(datasetkey, "\t" + dataset.getName());
                 datasetIndex.put(datasetkey, datasetkey);
             }
@@ -86,7 +87,7 @@ public class CoreLogic implements Serializable {
      * @exception IOException
      * @exception SQLException
      */
-    public boolean handelDatasetFile(File file, String MIMEType, DatasetBean dataset) throws IOException, SQLException {
+    public boolean handelDatasetFile(File file, String MIMEType, IdentificationDataset dataset) throws IOException, SQLException {
 
         boolean test = false;
 
@@ -105,7 +106,7 @@ public class CoreLogic implements Serializable {
      *
      * @return datasetsList
      */
-    public Map<Integer, DatasetBean> getDatasetList() {
+    public Map<Integer, IdentificationDataset> getDatasetList() {
         if (datasetList == null || datasetList.isEmpty()) {
             datasetList = da.getDatasets();
         }
@@ -118,8 +119,8 @@ public class CoreLogic implements Serializable {
      * @param datasetId
      * @return dataset
      */
-    public DatasetBean getDataset(int datasetId) {
-        DatasetBean dataset = datasetList.get(datasetId);
+    public IdentificationDataset getDataset(int datasetId) {
+        IdentificationDataset dataset = datasetList.get(datasetId);
         if (dataset == null) {
             dataset = da.getDataset(datasetId);
             datasetList.put(datasetId, dataset);
@@ -133,8 +134,8 @@ public class CoreLogic implements Serializable {
      * @param datasetId
      * @return proteinsList
      */
-    public Map<String, ProteinBean> retriveProteinsList(int datasetId) {
-        Map<String, ProteinBean> proteinsList = null;
+    public Map<String, IdentificationProteinBean> retriveProteinsList(int datasetId) {
+        Map<String, IdentificationProteinBean> proteinsList = null;
 //        if (datasetList.get(datasetId).getProteinList() == null || datasetList.get(datasetId).getProteinList().isEmpty()) {
             proteinsList = da.getProteinsList(datasetId);
 //            datasetList.get(datasetId).setProteinList(proteinsList);
@@ -184,7 +185,7 @@ public class CoreLogic implements Serializable {
 ////        if (peptidesList == null || peptidesList.isEmpty()) {
 //
 //           Map<Integer, PeptideBean>   peptidesList = da.getPeptidesList(datasetId);
-//            Map<String, ProteinBean> protList = retriveProteinsList(datasetId);
+//            Map<String, IdentificationProteinBean> protList = retriveProteinsList(datasetId);
 //
 //            for (int key : peptidesList.keySet()) {
 //                PeptideBean pb = peptidesList.get(key);
@@ -254,7 +255,7 @@ public class CoreLogic implements Serializable {
      * @param datasetId
      * @return fractions list for the selected dataset
      */
-    public Map<Integer, ProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
+    public Map<Integer, IdentificationProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
 //        Map<Integer, FractionBean> fractionsList;
 //        if (datasetList.containsKey(datasetId) && datasetList.get(datasetId).getFractionsList() != null && (!datasetList.get(datasetId).getFractionsList().isEmpty())) {
 //            //check if dataset updated if not
@@ -279,11 +280,11 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProtList
      */
-    public Map<Integer, ProteinBean> searchProteinByAccession(String searchArr, String searchDatasetType, boolean validatedOnly) {
-        Map<Integer, ProteinBean> datasetProtList = new HashMap<Integer, ProteinBean>();
-        DatasetBean dataset = null;
+    public Map<Integer, IdentificationProteinBean> searchProteinByAccession(String searchArr, String searchDatasetType, boolean validatedOnly) {
+        Map<Integer, IdentificationProteinBean> datasetProtList = new HashMap<Integer, IdentificationProteinBean>();
+        IdentificationDataset dataset = null;
         if (!searchDatasetType.equalsIgnoreCase("Search All Datasets")) {
-            for (DatasetBean tempDataset : datasetList.values()) {
+            for (IdentificationDataset tempDataset : datasetList.values()) {
                 if (tempDataset.getName().equalsIgnoreCase(searchDatasetType)) {
                     dataset = tempDataset;
                     break;
@@ -294,8 +295,8 @@ public class CoreLogic implements Serializable {
                 datasetProtList = searchProteinByAccession(searchArr, dataset.getDatasetId(), validatedOnly);
             }
         } else {
-            for (DatasetBean tempDataset : datasetList.values()) {
-                Map<Integer, ProteinBean> protTempList = searchProteinByAccession(searchArr, tempDataset.getDatasetId(), validatedOnly);
+            for (IdentificationDataset tempDataset : datasetList.values()) {
+                Map<Integer, IdentificationProteinBean> protTempList = searchProteinByAccession(searchArr, tempDataset.getDatasetId(), validatedOnly);
                 if (protTempList != null) {
                     datasetProtList.putAll(protTempList);
                 }
@@ -315,8 +316,8 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProtList
      */
-    private Map<Integer, ProteinBean> searchProteinByAccession(String accession, int datasetId, boolean validatedOnly) {
-        Map<Integer, ProteinBean> protDatasetpList = da.searchProteinByAccession(accession, datasetId, validatedOnly);
+    private Map<Integer, IdentificationProteinBean> searchProteinByAccession(String accession, int datasetId, boolean validatedOnly) {
+        Map<Integer, IdentificationProteinBean> protDatasetpList = da.searchProteinByAccession(accession, datasetId, validatedOnly);
         return protDatasetpList;
     }
 
@@ -348,13 +349,13 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, ProteinBean> searchProteinByName(String proteinDescriptionKeyword, String searchDatasetType, boolean validatedOnly) {
+    public Map<Integer, IdentificationProteinBean> searchProteinByName(String proteinDescriptionKeyword, String searchDatasetType, boolean validatedOnly) {
 
-        Map<Integer, ProteinBean> datasetProteinsSearchList = new HashMap<Integer, ProteinBean>();
+        Map<Integer, IdentificationProteinBean> datasetProteinsSearchList = new HashMap<Integer, IdentificationProteinBean>();
 
-        DatasetBean dataset = null;
+        IdentificationDataset dataset = null;
         if (!searchDatasetType.equalsIgnoreCase("Search All Datasets")) {
-            for (DatasetBean tempDataset : datasetList.values()) {
+            for (IdentificationDataset tempDataset : datasetList.values()) {
                 if (tempDataset.getName().equalsIgnoreCase(searchDatasetType)) {
                     dataset = tempDataset;
                     break;
@@ -366,7 +367,7 @@ public class CoreLogic implements Serializable {
             }
 
         } else {
-            for (DatasetBean tempDataset : datasetList.values()) {
+            for (IdentificationDataset tempDataset : datasetList.values()) {
                 datasetProteinsSearchList.putAll(searchProteinByName(proteinDescriptionKeyword, tempDataset.getDatasetId(), validatedOnly));
 
             }
@@ -384,8 +385,8 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    private Map<Integer, ProteinBean> searchProteinByName(String protSearchKeyword, int datasetId, boolean validatedOnly) {
-        Map<Integer, ProteinBean> proteinsList = da.searchProteinByName(protSearchKeyword, datasetId, validatedOnly);
+    private Map<Integer, IdentificationProteinBean> searchProteinByName(String protSearchKeyword, int datasetId, boolean validatedOnly) {
+        Map<Integer, IdentificationProteinBean> proteinsList = da.searchProteinByName(protSearchKeyword, datasetId, validatedOnly);
         return proteinsList;
     }
 
@@ -397,11 +398,11 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, String searchDatasetType, boolean validatedOnly) {
-        Map<Integer, ProteinBean> protDatasetList = new HashMap<Integer, ProteinBean>();
-        DatasetBean dataset = null;
+    public Map<Integer, IdentificationProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, String searchDatasetType, boolean validatedOnly) {
+        Map<Integer, IdentificationProteinBean> protDatasetList = new HashMap<Integer, IdentificationProteinBean>();
+        IdentificationDataset dataset = null;
         if (!searchDatasetType.equalsIgnoreCase("Search All Datasets")) {
-            for (DatasetBean tempDataset : datasetList.values()) {
+            for (IdentificationDataset tempDataset : datasetList.values()) {
                 if (tempDataset.getName().equalsIgnoreCase(searchDatasetType)) {
                     dataset = tempDataset;
                     break;
@@ -413,8 +414,8 @@ public class CoreLogic implements Serializable {
             }
 
         } else {
-            for (DatasetBean tempDataset : datasetList.values()) {
-                Map<Integer, ProteinBean> protTempList = searchProteinByPeptideSequence(peptideSequenceKeyword, tempDataset.getDatasetId(), validatedOnly);
+            for (IdentificationDataset tempDataset : datasetList.values()) {
+                Map<Integer, IdentificationProteinBean> protTempList = searchProteinByPeptideSequence(peptideSequenceKeyword, tempDataset.getDatasetId(), validatedOnly);
                 if (protTempList != null && (!protTempList.isEmpty())) {
                     protDatasetList.putAll(protTempList);
                 }
@@ -433,9 +434,9 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword,
+    public Map<Integer, IdentificationProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword,
             int datasetId, boolean validatedOnly) {
-//        Map<Integer, ProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
+//        Map<Integer, IdentificationProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
         return null;
     }
 
@@ -511,7 +512,7 @@ public class CoreLogic implements Serializable {
      * @param dataset
      * @return test boolean
      */
-    public boolean updateDatasetData(DatasetBean dataset) {
+    public boolean updateDatasetData(IdentificationDataset dataset) {
         boolean test = da.updateDatasetData(dataset);
         return test;
 
@@ -592,7 +593,7 @@ public class CoreLogic implements Serializable {
      */
     public Map<Integer, DatasetDetailsBean> getDatasetDetailsList() {
         Map<Integer, DatasetDetailsBean> datasetDetailsList = new HashMap<Integer, DatasetDetailsBean>();
-        for (DatasetBean dataset : datasetList.values()) {
+        for (IdentificationDataset dataset : datasetList.values()) {
             DatasetDetailsBean datasetDetails = new DatasetDetailsBean();
             datasetDetails.setName(dataset.getName());
             datasetDetails.setFragMode(dataset.getFragMode());
@@ -642,10 +643,10 @@ public class CoreLogic implements Serializable {
      *
      * @return vProteinsList list of valid proteins
      */
-    public Map<Integer, ProteinBean> getValidatedProteinsList(Map<Integer, ProteinBean> proteinsList) {
-        Map<Integer, ProteinBean> vProteinsList = new HashMap<Integer, ProteinBean>();
+    public Map<Integer, IdentificationProteinBean> getValidatedProteinsList(Map<Integer, IdentificationProteinBean> proteinsList) {
+        Map<Integer, IdentificationProteinBean> vProteinsList = new HashMap<Integer, IdentificationProteinBean>();
         for (int str : proteinsList.keySet()) {
-            ProteinBean pb = proteinsList.get(str);
+            IdentificationProteinBean pb = proteinsList.get(str);
             if (pb.isValidated()) {
                 vProteinsList.put(str, pb);
             }
@@ -683,16 +684,17 @@ public class CoreLogic implements Serializable {
      * @param query   query words
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, ProteinBean> searchProtein(Query query) {
+    public Map<Integer, IdentificationProteinBean> searchIdentficationProtein(Query query) {
 
-        Map<Integer, ProteinBean> datasetProteinsSearchList = new HashMap<Integer, ProteinBean>();
+        Map<Integer, IdentificationProteinBean> datasetProteinsSearchList = new HashMap<Integer, IdentificationProteinBean>();
 
-        if (query.getSearchDataType().equals("Identification")) {
+        if (query.getSearchDataType().equals("Identification Data")) {
             if (query.getSearchDataset() == null || query.getSearchDataset().isEmpty())//search in all identification datasets
             {
+                System.out.println("start searcing "+query.getSearchKeyWords());
                 if (query.getSearchBy().equalsIgnoreCase("Protein Accession"))//"Protein Name" "Peptide Sequence"
                 {
-                    return da.searchProteinAllDatasetsByAccession(query.getSearchKeyWords(), query.isValidatedProteins());
+                    return da.searchIdentificationProteinAllDatasetsByAccession(query.getSearchKeyWords(), query.isValidatedProteins());
                 } else if (query.getSearchBy().equalsIgnoreCase("Protein Name")) {
                     return da.searchProteinAllDatasetsByName(query.getSearchKeyWords(), query.isValidatedProteins());
 
@@ -704,7 +706,7 @@ public class CoreLogic implements Serializable {
             }
             else{ //search for identification data in special dataset  "Quantification", "Both"
              int tempDatasetIndex=-1;
-             for(DatasetBean ds:datasetList.values())
+             for(IdentificationDataset ds:datasetList.values())
                     {
                         if (ds.getName().trim().equalsIgnoreCase(query.getSearchDataset().trim())){
                             tempDatasetIndex = ds.getDatasetId();
@@ -731,9 +733,9 @@ public class CoreLogic implements Serializable {
         
         }
 
-//        DatasetBean dataset = null;
+//        IdentificationDataset dataset = null;
 //        if (!searchDatasetType.equalsIgnoreCase("Search All Datasets")) {
-//            for (DatasetBean tempDataset : datasetList.values()) {
+//            for (IdentificationDataset tempDataset : datasetList.values()) {
 //                if (tempDataset.getName().equalsIgnoreCase(searchDatasetType)) {
 //                    dataset = tempDataset;
 //                    break;
@@ -749,6 +751,26 @@ public class CoreLogic implements Serializable {
         return datasetProteinsSearchList;
 
     }
+    
+    
+    
+       /**
+     * search for proteins by description keywords
+     *
+     * @param query   query words
+     * @return datasetProteinsSearchList
+     */
+    public Map<Integer, QuantificationProteinsBean> searchQuantificationProteins(Query query) {
+
+        Map<Integer, QuantificationProteinsBean> datasetQuantificationProteinsSearchList = new HashMap<Integer, QuantificationProteinsBean>();
+
+        if (query.getSearchDataType().equals("Quantification Data")) {
+            datasetQuantificationProteinsSearchList = da.searchQuantificationProteins(query);
+        }
+        return datasetQuantificationProteinsSearchList;
+
+    }
+
 
     /**
      * search for proteins by protein description keywords
@@ -758,8 +780,8 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-//    private Map<Integer, ProteinBean> searchProteinByName(String protSearchKeyword, int datasetId, boolean validatedOnly) {
-//        Map<Integer, ProteinBean> proteinsList = da.searchProteinByName(protSearchKeyword, datasetId, validatedOnly);
+//    private Map<Integer, IdentificationProteinBean> searchProteinByName(String protSearchKeyword, int datasetId, boolean validatedOnly) {
+//        Map<Integer, IdentificationProteinBean> proteinsList = da.searchProteinByName(protSearchKeyword, datasetId, validatedOnly);
 //        return proteinsList;
 //    }
 
@@ -771,11 +793,11 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-////    public Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, String searchDatasetType, boolean validatedOnly) {
-////        Map<Integer, ProteinBean> protDatasetList = new HashMap<Integer, ProteinBean>();
-////        DatasetBean dataset = null;
+////    public Map<Integer, IdentificationProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword, String searchDatasetType, boolean validatedOnly) {
+////        Map<Integer, IdentificationProteinBean> protDatasetList = new HashMap<Integer, IdentificationProteinBean>();
+////        IdentificationDataset dataset = null;
 ////        if (!searchDatasetType.equalsIgnoreCase("Search All Datasets")) {
-////            for (DatasetBean tempDataset : datasetList.values()) {
+////            for (IdentificationDataset tempDataset : datasetList.values()) {
 ////                if (tempDataset.getName().equalsIgnoreCase(searchDatasetType)) {
 ////                    dataset = tempDataset;
 ////                    break;
@@ -787,8 +809,8 @@ public class CoreLogic implements Serializable {
 ////            }
 ////
 ////        } else {
-////            for (DatasetBean tempDataset : datasetList.values()) {
-////                Map<Integer, ProteinBean> protTempList = searchProteinByPeptideSequence(peptideSequenceKeyword, tempDataset.getDatasetId(), validatedOnly);
+////            for (IdentificationDataset tempDataset : datasetList.values()) {
+////                Map<Integer, IdentificationProteinBean> protTempList = searchProteinByPeptideSequence(peptideSequenceKeyword, tempDataset.getDatasetId(), validatedOnly);
 ////                if (protTempList != null && (!protTempList.isEmpty())) {
 ////                    protDatasetList.putAll(protTempList);
 ////                }
@@ -807,9 +829,9 @@ public class CoreLogic implements Serializable {
      * @param validatedOnly only validated proteins results
      * @return datasetProteinsSearchList
      */
-//    public Map<Integer, ProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword,
+//    public Map<Integer, IdentificationProteinBean> searchProteinByPeptideSequence(String peptideSequenceKeyword,
 //            int datasetId, boolean validatedOnly) {
-//        Map<Integer, ProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
+//        Map<Integer, IdentificationProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
 //        return proteinsList;
 //    }
 

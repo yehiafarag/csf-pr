@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
 import probe.com.view.core.CustomEmbedded;
 import probe.com.view.core.CustomExternalLink;
 import probe.com.view.core.CustomPI;
@@ -41,7 +41,7 @@ public class ProteinsTableComponent extends Table implements Serializable {
      * @param proteinsList
      * @param fractionNumber
      */
-    public ProteinsTableComponent(Map<String, ProteinBean> proteinsList, int fractionNumber) {
+    public ProteinsTableComponent(Map<String, IdentificationProteinBean> proteinsList, int fractionNumber) {
 
         Map<String, Integer> rankMap = initRank(proteinsList);
         this.setSelectable(true);
@@ -102,7 +102,7 @@ public class ProteinsTableComponent extends Table implements Serializable {
         CustomPI pi = null;
         Resource res2 = null;
         Resource res3 = null;
-        for (ProteinBean pb : proteinsList.values()) {
+        for (IdentificationProteinBean pb : proteinsList.values()) {
 
             link = new CustomExternalLink(pb.getAccession(), "http://www.uniprot.org/uniprot/" + pb.getAccession());
             link.setDescription("UniProt link for " + pb.getAccession());
@@ -254,15 +254,15 @@ public class ProteinsTableComponent extends Table implements Serializable {
      * @param proteinsList proteins list
      * @return rankMap
      */
-    private Map<String, Integer> initRank(Map<String, ProteinBean> proteinsList) {
-        List<ProteinBean> protList = new ArrayList<ProteinBean>();
+    private Map<String, Integer> initRank(Map<String, IdentificationProteinBean> proteinsList) {
+        List<IdentificationProteinBean> protList = new ArrayList<IdentificationProteinBean>();
         Map<String, Integer> rankMap = new TreeMap<String, Integer>();
         protList.addAll(proteinsList.values());
         Collections.sort(protList);
         double currentNsaf = -1;
         int rank = 0;
         for (int index = (protList.size() - 1); index >= 0; index--) {
-            ProteinBean pb = protList.get(index);
+            IdentificationProteinBean pb = protList.get(index);
             if (currentNsaf != pb.getNsaf()) {
                 rank++;
             }

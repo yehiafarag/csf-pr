@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.vaadin.ui.Table;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
 
 public class FractionRangeUtilitie implements Serializable {
 
@@ -18,7 +18,7 @@ public class FractionRangeUtilitie implements Serializable {
     private static final long serialVersionUID = 1L;
     private DecimalFormat df = null;
 
-//    public ArrayList<String> updateFractionRange(DatasetBean exp,Map<Integer, FractionBean> fractionList,Map<String, ProteinBean> proteinList) {
+//    public ArrayList<String> updateFractionRange(DatasetBean exp,Map<Integer, FractionBean> fractionList,Map<String, IdentificationProteinBean> proteinList) {
 ////        Map<Integer, FractionBean> fractionList = exp.getFractionsList();
 //        ArrayList<String> rangeSet = new ArrayList<String>();
 //        int x = 1;
@@ -52,12 +52,12 @@ public class FractionRangeUtilitie implements Serializable {
 //        return rangeSet;
 //    }
 
-    private List<Double> getRange(Map<String, ProteinBean> proFracMap, Map<String, ProteinBean> proMap) {
+    private List<Double> getRange(Map<String, IdentificationProteinBean> proFracMap, Map<String, IdentificationProteinBean> proMap) {
         double minRange = 10000000000.0;
         double maxRange = 0.0;
         for (String key : proFracMap.keySet()) {
             if (proMap.containsKey(key)) {
-                ProteinBean expPb = proMap.get(key);
+                IdentificationProteinBean expPb = proMap.get(key);
                 if (expPb.getMw_kDa() >= maxRange) {
                     maxRange = expPb.getMw_kDa();
                 } else if (expPb.getMw_kDa() <= minRange) {

@@ -34,10 +34,10 @@ public class PeptideTable extends Table implements Serializable {
         this.setImmediate(true); // react at once when something is selected
         this.setWidth("100%");
         this.setHeight("167px");
-        this.addContainerProperty("Index", Integer.class, null, "", null, com.vaadin.ui.Table.ALIGN_RIGHT);
+        this.addContainerProperty("Index", Integer.class, null, "", null, Align.RIGHT);
 
         String Protein_Inference = "Protein Inference";
-        this.addContainerProperty(Protein_Inference, CustomPI.class, null, "PI", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        this.addContainerProperty(Protein_Inference, CustomPI.class, null, "PI", null, Align.CENTER);
 
         this.addContainerProperty("Peptide Protein(s)", String.class, null);
         this.setColumnCollapsed("Peptide Protein(s)", true);
@@ -52,12 +52,12 @@ public class PeptideTable extends Table implements Serializable {
         this.addContainerProperty("AA After", String.class, null);
         this.setColumnCollapsed("AA Before", true);
         this.setColumnCollapsed("AA After", true);
-        this.addContainerProperty("Peptide Start", String.class, null, "Start", null, com.vaadin.ui.Table.ALIGN_RIGHT);
-        this.addContainerProperty("Peptide End", String.class, null, "End", null, com.vaadin.ui.Table.ALIGN_RIGHT);
+        this.addContainerProperty("Peptide Start", String.class, null, "Start", null, Align.RIGHT);
+        this.addContainerProperty("Peptide End", String.class, null, "End", null, Align.RIGHT);
         this.setColumnCollapsed("Peptide Start", true);
         this.setColumnCollapsed("Peptide End", true);
 
-        this.addContainerProperty("# Validated Spectra", Integer.class, null, "#Spectra", null, com.vaadin.ui.Table.ALIGN_RIGHT);
+        this.addContainerProperty("# Validated Spectra", Integer.class, null, "#Spectra", null, Align.RIGHT);
         this.addContainerProperty("Other Protein(s)", String.class, null);
         this.addContainerProperty("Other Prot Descrip.", String.class, null);
 
@@ -70,17 +70,17 @@ public class PeptideTable extends Table implements Serializable {
         this.setColumnCollapsed("Variable Modification", true);
         this.setColumnCollapsed("Location Confidence", true);
 
-        this.addContainerProperty("Precursor Charge(s)", String.class, null, "Precursor Charge(s)", null, com.vaadin.ui.Table.ALIGN_RIGHT);
+        this.addContainerProperty("Precursor Charge(s)", String.class, null, "Precursor Charge(s)", null, Align.RIGHT);
 
-        this.addContainerProperty("Enzymatic", CustomEmbedded.class, null, "Enzymatic", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        this.addContainerProperty("Enzymatic", CustomEmbedded.class, null, "Enzymatic", null, Align.CENTER);
 
-        this.addContainerProperty("Sequence Tagged", String.class, null, "Sequence Annotated", null, com.vaadin.ui.Table.ALIGN_LEFT);
-        this.addContainerProperty("Deamidation & Glycopattern", CustomEmbedded.class, null, "Glycopeptide", null, com.vaadin.ui.Table.ALIGN_CENTER);
-        this.addContainerProperty("Glycopattern Positions", String.class, null, "Glyco Position(s)", null, com.vaadin.ui.Table.ALIGN_RIGHT);
+        this.addContainerProperty("Sequence Tagged", String.class, null, "Sequence Annotated", null, Align.LEFT);
+        this.addContainerProperty("Deamidation & Glycopattern", CustomEmbedded.class, null, "Glycopeptide", null, Align.CENTER);
+        this.addContainerProperty("Glycopattern Positions", String.class, null, "Glyco Position(s)", null, Align.RIGHT);
 
         String Confidence = "Confidence";
-        this.addContainerProperty(Confidence, Double.class, null, Confidence, null, com.vaadin.ui.Table.ALIGN_RIGHT);
-        this.addContainerProperty("Validated", CustomEmbedded.class, null, "Validated", null, com.vaadin.ui.Table.ALIGN_CENTER);
+        this.addContainerProperty(Confidence, Double.class, null, Confidence, null, Align.RIGHT);
+        this.addContainerProperty("Validated", CustomEmbedded.class, null, "Validated", null, Align.CENTER);
 
         CustomEmbedded enz = null;
         Resource res = null;

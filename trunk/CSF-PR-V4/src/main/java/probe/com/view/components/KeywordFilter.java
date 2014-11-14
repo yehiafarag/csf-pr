@@ -29,8 +29,8 @@ public class KeywordFilter implements Serializable{
             @Override
             public void focus(FieldEvents.FocusEvent event) {
                 getSearchbyGroup().setEnabled(true);
-                getSearchbyGroup().setNullSelectionAllowed(false);
-                if (getSearchbyGroup().getValue() == null) {
+//                getSearchbyGroup().setNullSelectionAllowed(false);
+                if (getSearchbyGroup().getValue() == null && searchbyGroup.isEnabled()) {
                     getSearchbyGroup().select("Protein Accession");
                 }
             }
@@ -41,12 +41,10 @@ public class KeywordFilter implements Serializable{
             public void blur(FieldEvents.BlurEvent event) {
                 if (getSearchField().getValue().trim().equals("")) {
                     getSearchbyGroup().setEnabled(false);
-                    getSearchbyGroup().setNullSelectionAllowed(true);
+//                    getSearchbyGroup().setNullSelectionAllowed(false);
                     getSearchbyGroup().select(null);
                 } else {
                     getSearchbyGroup().setEnabled(true);
-
-                    getSearchbyGroup().setNullSelectionAllowed(false);
                     if (getSearchbyGroup().getValue() == null) {
                         getSearchbyGroup().select("Protein Accession");
                     }
@@ -59,11 +57,9 @@ public class KeywordFilter implements Serializable{
             @Override
             public void buttonClick(Button.ClickEvent event) {
             searchFieldFilter.setValue("");
+            getSearchbyGroup().select(null);
                     getSearchbyGroup().setEnabled(false);
-                    getSearchbyGroup().setNullSelectionAllowed(true);
-                    getSearchbyGroup().select(null);
-    
-            
+                      
             
             }
         
@@ -76,22 +72,21 @@ public class KeywordFilter implements Serializable{
         searchbyGroup = new OptionGroupFilter(filtersController,"Search By:", 4, true);
         searchbyGroup.setWidth("350px");
         searchbyGroup.setDescription("Please Select Search Method");
-        searchbyGroup.setEnabled(false);
-        searchbyGroup.setNullSelectionAllowed(true);
+        searchbyGroup.getOptionGroup().setEnabled(false);
+        searchbyGroup.getOptionGroup().setNullSelectionAllowed(true);
         // Use the single selection mode.
 
-        searchbyGroup.addItem("Protein Accession");
-        searchbyGroup.addItem("Protein Name");
-        searchbyGroup.addItem("Peptide Sequence");
+        searchbyGroup.getOptionGroup().addItem("Protein Accession");
+        searchbyGroup.getOptionGroup().addItem("Protein Name");
+        searchbyGroup.getOptionGroup().addItem("Peptide Sequence");
         
        searchbyGroup.getFilterBtn().getCloseBtn().addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
                  searchFieldFilter.setValue("");
-                    getSearchbyGroup().setEnabled(false);
-                    getSearchbyGroup().setNullSelectionAllowed(true);
                     getSearchbyGroup().select(null);
+                    getSearchbyGroup().setEnabled(false);
             
             }
         });
@@ -107,7 +102,7 @@ public class KeywordFilter implements Serializable{
     }
 
     public OptionGroup getSearchbyGroup() {
-        return searchbyGroup;
+        return searchbyGroup.getOptionGroup();
     }
     
 }

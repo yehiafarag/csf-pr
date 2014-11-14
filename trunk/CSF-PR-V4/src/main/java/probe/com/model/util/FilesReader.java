@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import probe.com.model.beans.DatasetBean;
+import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
-import probe.com.model.beans.ProteinBean;
+import probe.com.model.beans.IdentificationProteinBean;
 import probe.com.model.beans.StandardProteinBean;
 
 public class FilesReader implements Serializable {
@@ -28,7 +28,7 @@ public class FilesReader implements Serializable {
     private FileValidator fv = new FileValidator();
 
     @SuppressWarnings("resource")
-    public DatasetBean readTextFile(File file, String MIMEType, DatasetBean exp) throws IOException, SQLException//method to extract data from proteins files to store them in database
+    public IdentificationDataset readTextFile(File file, String MIMEType, IdentificationDataset exp) throws IOException, SQLException//method to extract data from proteins files to store them in database
     {
         //if excel file
         //else text file
@@ -74,7 +74,7 @@ public class FilesReader implements Serializable {
             
         fileType = fv.validateFile(strArr, MIMEType);//check if the file type and  file format 
         exp.setExpFile(fileType);
-        Map<String, ProteinBean> proteinList = new HashMap<String, ProteinBean>();//use only in case of protein files
+        Map<String, IdentificationProteinBean> proteinList = new HashMap<String, IdentificationProteinBean>();//use only in case of protein files
         if (fileType == -1)//wrong file 
         {
             return null;
@@ -166,7 +166,7 @@ public class FilesReader implements Serializable {
                 //create a number of fractions for the experiment
                 for (int x = 0; x < fileType; x++) {
                     FractionBean fb = new FractionBean();
-                    Map<String, ProteinBean> temProteinList = new HashMap<String, ProteinBean>();
+                    Map<String, IdentificationProteinBean> temProteinList = new HashMap<String, IdentificationProteinBean>();
                     fb.setProteinList(temProteinList);
                     fb.setFractionIndex(x + 1);
                     fractionsList.put((x), fb);
@@ -181,9 +181,9 @@ public class FilesReader implements Serializable {
             strArr = line.split("\t");
 
 
-            ProteinBean prot = null;
+            IdentificationProteinBean prot = null;
             if (fileType != -2) {
-                prot = new ProteinBean();
+                prot = new IdentificationProteinBean();
                 prot.setAccession(strArr[0]);
                 prot.setOtherProteins(strArr[1]);
                 prot.setProteinInferenceClass(strArr[2]);
@@ -277,7 +277,7 @@ public class FilesReader implements Serializable {
                 proteinList.put(prot.getAccession(), prot);
             } else //Protein fraction file
             {
-                ProteinBean tempProt = null;
+                IdentificationProteinBean tempProt = null;
 
                 prot.setStarred(Boolean.valueOf(strArr[strArr.length - 1]));
                 prot.setSpectrumFractionSpread_upper_range_kDa(strArr[strArr.length - 3]);
@@ -286,7 +286,7 @@ public class FilesReader implements Serializable {
                 prot.setPeptideFractionSpread_lower_range_kDa(strArr[strArr.length - 6]);
                 for (int x = 0; x < fileType; x++) {
 
-                    tempProt = new ProteinBean();
+                    tempProt = new IdentificationProteinBean();
                     tempProt.setAccession(prot.getAccession());
                     tempProt.setOtherProteins(prot.getOtherProteins());
                     tempProt.setProteinInferenceClass(prot.getProteinInferenceClass());
@@ -316,7 +316,7 @@ public class FilesReader implements Serializable {
                     }
                     tempProt.setAveragePrecursorIntensityPerFraction(Double.valueOf(strArr[(9 + x + fileType + fileType)]));
                     FractionBean temFb = fractionsList.get(x);
-                    Map<String, ProteinBean> temProteinList = temFb.getProteinList();
+                    Map<String, IdentificationProteinBean> temProteinList = temFb.getProteinList();
                     temProteinList.put(tempProt.getAccession(), tempProt);
                     temFb.setProteinList(temProteinList);
                     fractionsList.put(x, temFb);
