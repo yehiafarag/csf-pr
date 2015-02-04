@@ -4,9 +4,11 @@
  */
 package com.csf.DAL;
 
-import com.pepshack.util.beans.ExperimentBean;
-import com.pepshack.util.beans.ProteinBean;
+import com.pepshaker.util.beans.ExperimentBean;
+import com.pepshaker.util.beans.ProteinBean;
+import com.quantcsf.beans.QuantProtein;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -59,5 +61,13 @@ public class DAL {
     }
      public boolean restoreDB(String source) {
         return database.restoreDB(source);
+     }
+     
+     
+     ///quant data store 
+     public  boolean storeQuantProt(List<QuantProtein> qProtList){
+         return database.storeQuantProt(qProtList);
+     
+     
      }
 }

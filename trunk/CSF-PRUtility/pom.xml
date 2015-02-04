@@ -22,11 +22,11 @@
     <developers>
         <developer>
             <name>Yehia Farag</name>
-            <id>marc</id>
+            <id>Yehia</id>
             <email>y.m.farag AT gmail.com</email>
-            <organization>Probe</organization>
+            <organization>Department of Biomedicine, University of Bergen, Norway</organization>
             <roles>
-                <role>Java Developer</role>
+                <role>Software Developer</role>
             </roles>
         </developer>
         <developer>
@@ -95,7 +95,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>com.pepshack.GUI</mainClass>
+                            <mainClass>com.view.GUI</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>
