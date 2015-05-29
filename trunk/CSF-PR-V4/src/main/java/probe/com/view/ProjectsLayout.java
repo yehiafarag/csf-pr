@@ -68,8 +68,8 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
     private HorizontalLayout selectDatasetLayout;
     private VerticalLayout identificationSelectLayout,quantificationSelectLayout;
     private Property.ValueChangeListener protTableListener;
-    private ActionButtonTextField.ClickListener searchTableListener;
-    private Button.ClickListener searchBtnLabelListener;
+//    private ActionButtonTextField.ClickListener searchTableListener;
+//    private Button.ClickListener searchBtnLabelListener;
     private int fractionNumber=0;
     /**
      *
@@ -82,7 +82,6 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
 //        this.datasetNamesList = handler.getDatasetNamesList();
         this.setWidth("100%");
         this.setHeight("100%");
-        this.removeAllComponents();
         typeILayout = new VerticalLayout();
         typeILayout.setVisible(false);
         buildMainLayout();
@@ -285,7 +284,6 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                         }
                         if (protTableLayout.getProteinTableComponent().getValue() != null) {
                             proteinskey = (Integer) protTableLayout.getProteinTableComponent().getValue();
-                            System.out.println("prot key "+proteinskey);
                         }
                         else
                             return;
@@ -343,7 +341,6 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
 
                             }  
                             List<StandardProteinBean>  standerdProtList = handler.retrieveStandardProtPlotList(handler.getMainDatasetId());
-                            
                             if(fractionNumber == 0 || handler.getMainDatasetId() == 0 || standerdProtList == null || standerdProtList.isEmpty() ){
                                 fractionLayout.removeAllComponents();
                                 if (protTableLayout.getProteinTableComponent() != null) {
@@ -357,9 +354,10 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                             }else{
                            
                             fractionsList = handler.getProtGelFractionsList(handler.getMainDatasetId(),accession, otherAccession);
-                             
+                              System.out.println((fractionsList != null)+" &&"+( !fractionsList.isEmpty()));
                                  
                                 if (fractionsList != null && !fractionsList.isEmpty()) {
+                                   
                              
 //                                if (handler.getMainDatasetId() != 0 ){//&& handler.getMainDataset().getProteinList() != null) {
 //                                    handler.getMainDataset().setFractionsList(fractionsList);
@@ -415,8 +413,10 @@ public final class ProjectsLayout extends VerticalLayout implements Serializable
                             }
                             protIndex = 1;
                             nextIndex = selectionIndexes.firstKey();
+                            protTableLayout.getProteinTableComponent().setPageLength(0);
                             protTableLayout.getProtCounter().setValue("( " + (protIndex++) + " of " + selectionIndexes.size() + " )");
                             protTableLayout.getProteinTableComponent().setCurrentPageFirstItemId(selectionIndexes.get(nextIndex));
+//                             protTableLayout.getProteinTableComponent().setCurrentPageFirstItemIndex(protTableLayout.getProteinTableComponent().getItem(selectionIndexes.get(nextIndex)).);
                             protTableLayout.getProteinTableComponent().select(selectionIndexes.get(nextIndex));
                             protTableLayout.getProteinTableComponent().commit();
 

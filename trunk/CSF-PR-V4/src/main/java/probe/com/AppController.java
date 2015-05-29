@@ -7,6 +7,7 @@ import com.vaadin.ui.UI;
 import javax.servlet.ServletContext;
 import probe.com.handlers.MainHandler;
 
+
 /**
  * The Application's "start point" class
  */
@@ -14,13 +15,14 @@ import probe.com.handlers.MainHandler;
 @Theme("dario-theme")
 public class AppController extends UI {
 
-    private String dbURL, dbName, dbDriver, dbUserName, dbPassword,filesURL;
+  
+    private String dbURL, dbName, dbDriver, dbUserName, dbPassword, filesURL;
     private MainHandler handler;
 
     /**
      * initialize the application context parameters
      *
-     * @param request  vaadinRequest
+     * @param request vaadinRequest
      *
      *
      */
@@ -35,12 +37,13 @@ public class AppController extends UI {
         dbPassword = (scx.getInitParameter("password"));
         filesURL = scx.getInitParameter("filesURL");
         //init experment handler
-        handler = new MainHandler(dbURL, dbName, dbDriver, dbUserName, dbPassword,filesURL);
+        handler = new MainHandler(dbURL, dbName, dbDriver, dbUserName, dbPassword, filesURL);
         //init main layout
         Application application = new Application(handler);
         this.getPage().setTitle("CSF Proteome Resource (CSF-PR)");
         setContent(application);
     }
-
+    
+   
 
 }

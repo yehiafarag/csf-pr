@@ -49,4 +49,6 @@
     <inherits name="org.dussan.vaadin.dcharts.DchartsWidgetset" />
 
     <inherits name="org.vaadin.actionbuttontextfield.widgetset.ActionButtonTextFieldWidgetset" />
+
+    <inherits name="org.vaadin.marcus.WidgetSet" />
 </module>

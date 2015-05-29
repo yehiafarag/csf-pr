@@ -28,7 +28,7 @@ public class DatasetDetailsComponent extends VerticalLayout implements Serializa
     private final ShowLabel show;
     public DatasetDetailsComponent(boolean visability, MainHandler handler) {
         
-        this.setMargin(new MarginInfo(false, true, false, true));
+        this.setMargin(new MarginInfo(true, true, false, true));
         this.setWidth("100%");
         
         titleLayout = new HorizontalLayout();

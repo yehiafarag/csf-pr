@@ -11,16 +11,16 @@ import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import probe.com.view.components.FiltersControl;
+import probe.com.view.components.SearchingFiltersControl;
 
 /**
  *
- * @author y-mok_000
+ * @author Yehia Farag
  */
 public class TextAreaFilter extends TextArea implements Property.ValueChangeListener, Serializable {
 
     private final ClosableFilterLabel filterBtn;
-    private final FiltersControl control;
+    private final SearchingFiltersControl control;
     private final int filterId;    ;
     private final String filterTitle;
 
@@ -28,15 +28,15 @@ public class TextAreaFilter extends TextArea implements Property.ValueChangeList
         return filterBtn;
     }
 
-    public TextAreaFilter(FiltersControl controller, int filterId, String filterTitle, String defaultText) {
+    public TextAreaFilter(SearchingFiltersControl controller, int filterId, String filterTitle, String defaultText) {
         this.control = controller;
         this.filterId = filterId;
         this.filterTitle = filterTitle;
-        this.setWidth("350px");
+        this.setWidth("437px");
         this.setImmediate(true);
         this.setStyleName(Reindeer.TEXTFIELD_SMALL);
         this.setInputPrompt(defaultText);
-        this.addValueChangeListener(this);
+        this.addValueChangeListener(TextAreaFilter.this);
 
 //        filterBtn.getCloseBtn().addClickListener(this);
 //        okBtn.addClickListener(new Button.ClickListener() {

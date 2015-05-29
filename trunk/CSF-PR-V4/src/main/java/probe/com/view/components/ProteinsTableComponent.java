@@ -1,7 +1,6 @@
 package probe.com.view.components;
 
 import com.vaadin.data.Item;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import java.io.Serializable;
@@ -108,15 +107,15 @@ public class ProteinsTableComponent extends Table implements Serializable {
             link.setDescription("UniProt link for " + pb.getAccession());
 
             if (pb.isNonEnzymaticPeptides()) {
-                res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
+                res = new ThemeResource("img/true.jpg");
             } else {
-                res = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
+                res = new ThemeResource("img/false.jpg");
             }
 
             if (pb.isValidated()) {
-                res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-ash3/550027_118467228336878_534577050_n.jpg");
+                res3 = new ThemeResource("img/true.jpg");
             } else {
-                res3 = new ExternalResource("http://sphotos-e.ak.fbcdn.net/hphotos-ak-prn1/66728_108335936016674_28773541_n.jpg");
+                res3 = new ThemeResource("img/false.jpg");
             }
 
             nonEnz = new CustomEmbedded(pb.isNonEnzymaticPeptides(), res);
@@ -219,8 +218,6 @@ public class ProteinsTableComponent extends Table implements Serializable {
             sortMap.put(indexing, accObject.toString().toUpperCase().trim() + "," + otherAccObject.toString().toUpperCase().trim() + "," + descObject.toString().toUpperCase().trim() + "," + (Integer) id);
             indexing++;
         }
-//        this.setSortAscending(true);
-//        this.setSortContainerPropertyId("Index");
        
 
         tableSearchMap.clear();

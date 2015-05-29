@@ -13,13 +13,17 @@ import java.util.Set;
 import java.util.TreeMap;
 import probe.com.dal.Query;
 import probe.com.model.CoreLogic;
+import probe.com.model.beans.ComparisonProtein;
 import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.FractionBean;
+import probe.com.model.beans.GroupsComparison;
 import probe.com.model.beans.PeptideBean;
 import probe.com.model.beans.IdentificationProteinBean;
-import probe.com.model.beans.QuantificationProteinsBean;
+import probe.com.model.beans.QuantDatasetObject;
+import probe.com.model.beans.QuantProtein;
 import probe.com.model.beans.StandardProteinBean;
+import probe.com.model.beans.QuantDatasetListObject;
 import probe.com.view.components.PeptideTable;
 
 /**
@@ -66,6 +70,23 @@ public class MainHandler implements Serializable {
     public boolean handelDatasetFile(File file, String MIMEType, IdentificationDataset dataset) throws IOException, SQLException {
         boolean test = false;
         test = computing.handelDatasetFile(file, MIMEType, dataset);
+        return test;
+
+    }
+    
+    /**
+     * read and store Quant data files in the database
+     *
+     * @param file the dataset file
+     * @param MIMEType the file type (txt or xls)
+     * @param dataset dataset bean (in case of update existing dataset)
+     * @return test boolean
+     * @exception IOException
+     * @exception SQLException
+     */
+    public boolean handelQuantDataFile(File file, String MIMEType) throws IOException, SQLException {
+        boolean test = false;
+        test = computing.handelQuantDataFile(file, MIMEType);
         return test;
 
     }
@@ -259,7 +280,7 @@ public class MainHandler implements Serializable {
       
       }
       /*search for quantification proteins*/
-      public Map<Integer, QuantificationProteinsBean> searchQuantificationProtein(Query query) {
+      public List<QuantProtein> searchQuantificationProtein(Query query) {
         return computing.searchQuantificationProteins(query);
       
       }
@@ -401,6 +422,16 @@ public class MainHandler implements Serializable {
 
     }
     
+    public QuantDatasetListObject getQuantDatasetListObject(){
+    return computing.getQuantDatasetListObject();
+    
+    }
+    
+     public boolean[] getActiveFilters(){
+     return computing.getActiveFilters();
+     
+     }
+    
     /**
      * this function to be use for csv peptides exporting with large datasets
      *
@@ -422,26 +453,81 @@ public class MainHandler implements Serializable {
         }
         HashSet<String> usedKeys = new HashSet<String>();
         HashSet<String> tUsedKeys = new HashSet<String>();
-        for(String key: SearchingKeys.split("\n"))
-            usedKeys.add(key);
+        for (String key : SearchingKeys.split("\n")) {
+            usedKeys.add(key.toUpperCase());
+        }
         tUsedKeys.addAll(usedKeys);
-       for(IdentificationProteinBean pb:protList.values()){
-       if(searchBy.equals("Protein Accession"))
-       {
-           if(usedKeys.contains(pb.getAccession()))
-               usedKeys.remove(pb.getAccession());
-           if(usedKeys.isEmpty())
-               return "";
+        for (IdentificationProteinBean pb : protList.values()) {
+            if (searchBy.equals("Protein Accession")) {
+                if (usedKeys.contains(pb.getAccession())) {
+                    usedKeys.remove(pb.getAccession());
+                }
+                if (usedKeys.isEmpty()) {
+                    return "";
+                }
+            } else if (searchBy.equals("Protein Name")) {
+                for (String key : tUsedKeys) {
+                    if (pb.getDescription().contains(key.toUpperCase())) {
+                        usedKeys.remove(key);
+                    }
+                    if (usedKeys.isEmpty()) {
+                        return "";
+                    }
+                }
+
+            }
+//       else
+//           return "";
+//       else if(searchBy.equals("Peptide Sequence"))
+//       {
+//           if(usedKeys.contains(pb.get))
+//               usedKeys.remove(pb.getAccession());
+//           if(usedKeys.isEmpty())
+//               return null;
+//       }
+//       
        }
-       else if (searchBy.equals("Protein Name")) {
-               for (String key : tUsedKeys) {
-                   if (pb.getDescription().contains(key)) {
-                       usedKeys.remove(key);
-                   }
-                   if (usedKeys.isEmpty()) {
-                       return "";
-                   }
-               }
+       return usedKeys.toString().replace("[", "").replace("]", "");
+
+    }
+    
+    public String filterSearchingKeywords(List<QuantProtein> protList, String SearchingKeys, String searchBy) {
+        if (protList == null || protList.isEmpty()) {
+            return SearchingKeys;
+        }
+        SearchingKeys = SearchingKeys.toUpperCase();
+        HashSet<String> usedKeys = new HashSet<String>();
+        HashSet<String> tUsedKeys = new HashSet<String>();
+        for (String key : SearchingKeys.split(",")) {
+            usedKeys.add(key.toUpperCase().trim());
+            System.out.println("key: "+key);
+        }
+        tUsedKeys.addAll(usedKeys);
+        for (QuantProtein pb : protList) {
+            if (searchBy.equals("Protein Accession")) {
+                System.err.println(usedKeys.contains(pb.getUniprotAccession().trim()) +"  remove keys "+ usedKeys.contains(pb.getPublicationAccNumber().trim())+"  "+pb.getPublicationAccNumber()+"  "+pb.getUniprotAccession());
+                if (usedKeys.contains(pb.getUniprotAccession().trim())) {
+                    usedKeys.remove(pb.getUniprotAccession().trim());
+                }
+                if (usedKeys.contains(pb.getPublicationAccNumber().trim())) {
+                    usedKeys.remove(pb.getPublicationAccNumber().trim());
+                }
+                if (usedKeys.isEmpty()) {
+                    return "";
+                }
+            } else if (searchBy.equals("Protein Name")) {
+                for (String key : tUsedKeys) {
+                    
+                    if (pb.getUniprotProteinName().trim().contains(key.trim())) {
+                        usedKeys.remove(key);
+                    }
+                    if (pb.getPublicationProteinName().trim().contains(key)) {
+                        usedKeys.remove(key);
+                    }
+                    if (usedKeys.isEmpty()) {
+                        return "";
+                    }
+                }
 
            }
 //       else
@@ -455,9 +541,17 @@ public class MainHandler implements Serializable {
 //       }
 //       
        }
-       return "";
+       return usedKeys.toString().replace("[", "").replace("]", "");
 
     }
+    
+    
+    public  Set<GroupsComparison>   getComparisonProtList( Set<GroupsComparison> selectedComparisonList){
+        return computing.getComparisonProtList(selectedComparisonList);
+    
+    
+    } 
+    
     
     
 

@@ -1,9 +1,10 @@
-
 package probe.com.view;
 
+import probe.com.view.datasetsoverview.DatasetsOverviewLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.themes.Runo;
 import java.io.Serializable;
 import probe.com.handlers.MainHandler;
@@ -17,16 +18,21 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
     private final Button adminIcon;
     private TabSheet.Tab homeTab, adminTab;//tabs for Experiments Editor,Proteins, Search
     private final TabSheet mainTabSheet;//tab sheet for first menu (Experiments Editor,Proteins, Search)
-    private VerticalLayout searchLayout, adminLayout;
+    private VerticalLayout searchLayout, adminLayout, updatedProjectsLayout;
     private WelcomeLayout welcomeLayout;
-    private ProjectsLayout proteinsLayout;
+    private ProjectsLayout projectsLayoutComponent;
+    private DatasetsOverviewLayout datasetOverviewTabLayout;
+    private DisaseReltatedProteinDisplay disaseRelatedProteinDisplayComponent;
+    private final VerticalLayout datasetsOverviewLayout;
     private final MainHandler handler;
-/**
- * initialize body layout
- *@param handler main dataset handler
- * 
- *
- */
+
+    /**
+     * initialize body layout
+     *
+     * @param handler main dataset handler
+     *
+     *
+     */
     public Body(MainHandler handler) {
         this.setWidth("100%");
         this.handler = handler;
@@ -37,6 +43,12 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         mainTabSheet.setWidth("100%");
 
         adminIcon = this.initAdminIcoBtn();
+
+//        Tab 3 content
+        datasetsOverviewLayout = new VerticalLayout();
+        datasetsOverviewLayout.setMargin(true);
+        datasetsOverviewLayout.setWidth("100%");
+
         initBodyLayout();
     }
 
@@ -44,26 +56,54 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
      * initialize body components layout
      */
     private void initBodyLayout() {
-//        home layout
+//        Tab 1 content
         welcomeLayout = new WelcomeLayout(adminIcon);
         welcomeLayout.setWidth("100%");
-//        Tab 2 content
-        proteinsLayout = new ProjectsLayout(handler);
-//      Tab 3 content
+//        Tab 2 content        
         searchLayout = new VerticalLayout();
         searchLayout.setMargin(true);
-        SearchLayout searchLayout1 = new SearchLayout(handler);
-        this.searchLayout.addComponent(searchLayout1);
-//      Tab 1 login form
+        SearchLayout searchLayoutComponent = new SearchLayout(handler);
+        this.searchLayout.addComponent(searchLayoutComponent);
+
+//           
+        VerticalLayout studiesLayout2 = new VerticalLayout();
+        studiesLayout2.setMargin(true);
+//         studiesLayoutComponent2 = new StudiesExploringLayout2(handler);
+//        studiesLayout2.addComponent(studiesLayoutComponent2);
+
+//                    Tab 4 content
+        VerticalLayout disaseRelatedProteinDisplayLayout = new VerticalLayout();
+        disaseRelatedProteinDisplayLayout.setMargin(true);
+        disaseRelatedProteinDisplayComponent = new DisaseReltatedProteinDisplay();
+        disaseRelatedProteinDisplayLayout.addComponent(disaseRelatedProteinDisplayComponent);
+
+//        to be removed
+        projectsLayoutComponent = new ProjectsLayout(handler);
+
+//        Tap 5 contetent (updated projects)
+        updatedProjectsLayout = new VerticalLayout();
+        updatedProjectsLayout.setMargin(true);
+        updatedProjectsLayout.setHeight("100%");
+//        updatedProjectsLayout.addComponent(new UpdatedProjectsLayout(handler, mainTabSheet));//(handler));
+
+//      Tab 6 login form
         adminLayout = new VerticalLayout();
         adminLayout.setMargin(true);
         adminLayout.setHeight("100%");
         adminLayout.addComponent(new AdminLayout(handler));
 
         homeTab = mainTabSheet.addTab(welcomeLayout, "Home", null);
-        mainTabSheet.addTab(proteinsLayout, "Projects", null);
+
         mainTabSheet.addTab(this.searchLayout, "Search");
+        mainTabSheet.addTab(datasetsOverviewLayout, "Datasets Overview");
+
+        mainTabSheet.addTab(disaseRelatedProteinDisplayLayout, "Disase Reltated Proteins Display");
         adminTab = mainTabSheet.addTab(adminLayout, "Dataset Editor (Require Sign In)", null);
+
+        //tobe removed 
+//        mainTabSheet.addTab(this.updatedProjectsLayout, "Available Projects");
+//        mainTabSheet.addTab(projectsLayoutComponent, "Projects", null);
+//       mainTabSheet.addTab(studiesLayout2, "Temp Overview of included studies");
         mainTabSheet.addSelectedTabChangeListener(this);
         mainTabSheet.setSelectedTab(homeTab);
         mainTabSheet.markAsDirty();
@@ -80,6 +120,14 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
             adminTab.setVisible(false);
         } else if (c.equals("Search")) {
             adminTab.setVisible(false);
+        } else if (c.equals("Datasets Overview")) {
+            adminTab.setVisible(false);
+            if (datasetOverviewTabLayout == null) //            datasetsOverviewLayout.removeAllComponents();
+            {
+                datasetOverviewTabLayout = new DatasetsOverviewLayout(handler);
+                datasetsOverviewLayout.addComponent(datasetOverviewTabLayout);
+            }
+
         }
     }
 
@@ -106,4 +154,5 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         b.addClickListener(adminClickListener);
         return b;
     }
+
 }
