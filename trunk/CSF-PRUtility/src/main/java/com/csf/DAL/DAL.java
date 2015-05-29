@@ -6,9 +6,12 @@ package com.csf.DAL;
 
 import com.pepshaker.util.beans.ExperimentBean;
 import com.pepshaker.util.beans.ProteinBean;
+import com.quantcsf.beans.QuantDatasetObject;
+import com.quantcsf.beans.QuantPeptide;
 import com.quantcsf.beans.QuantProtein;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -54,8 +57,8 @@ public class DAL {
 
     }
      
-    public void exportDataBase(){
-        database.exportDataBase();
+    public void exportDataBase(String executeCmd){
+        database.exportDataBase(executeCmd);
         
     
     }
@@ -65,9 +68,30 @@ public class DAL {
      
      
      ///quant data store 
-     public  boolean storeQuantProt(List<QuantProtein> qProtList){
-         return database.storeQuantProt(qProtList);
+     public  boolean storeCombinedQuantProtTable(List<QuantProtein> qProtList){
+         return database.storeCombinedQuantProtTable(qProtList);
      
      
      }
+     
+     public void storeQuantDatasets(){
+         database.storeQuantDatasets();
+     }
+     
+     public void storeQuantitiveProteins(List<QuantProtein> qProtList){
+         database.storeQuantitiveProteins(qProtList);
+     }
+     
+      public void storeQuantitivePeptides(List<QuantPeptide> qPeptidestList ){
+         database.storeQuantitivePeptides(qPeptidestList);
+     }
+      public int getCurrentProtIndex() {
+       return database.getCurrentProtIndex();
+       
+       
+       }
+     
+       public Set<QuantDatasetObject> getQuantDatasetListObject() {
+       return database.getQuantDatasetListObject();
+       }
 }

@@ -11,10 +11,33 @@ package com.quantcsf.beans;
  */
 public class QuantProtein {
     private String pumedID,uniprotAccession, uniprotProteinName, publicationAccNumber,publicationProteinName,rawDataAvailable,typeOfStudy,sampleType,patientGroupI,patientSubGroupI,patientGrIComment,patientGroupII,patientSubGroupII,patientGrIIComment,sampleMatching,normalizationStrategy,technology,analyticalApproach,enzyme,shotgunOrTargetedQquant,quantificationBasis,quantBasisComment,additionalComments;		
-    private int quantifiedProteinsNumber,peptideIdNumb,quantifiedPeptidesNumber, patientsGroupINumber,patientsGroupIINumber;
+    private int quantifiedProteinsNumber,peptideIdNumb,quantifiedPeptidesNumber, patientsGroupINumber,patientsGroupIINumber,year,filesNum,IdentifiedProteinsNum, dsKey,protKey;    
+    private String qPeptideKey,    peptideSequance,	peptideModification,modificationComment , stringFCValue,stringPValue,author,diseaseGroups,pvalueComment; 
 
+    public int getDsKey() {
+        return dsKey;
+    }
+
+    public String getPvalueComment() {
+        return pvalueComment;
+    }
+
+    public void setPvalueComment(String pvalueComment) {
+        this.pvalueComment = pvalueComment;
+    }
+
+    public int getProtKey() {
+        return protKey;
+    }
+
+    public void setProtKey(int protKey) {
+        this.protKey = protKey;
+    }
+
+    public void setDsKey(int dsKey) {
+        this.dsKey = dsKey;
+    }
     
-    private String qPeptideKey,    peptideSequance,	peptideModification,modificationComment , stringFCValue,stringPValue; 
 
     public String getStringPValue() {
         return stringPValue;
@@ -26,6 +49,46 @@ public class QuantProtein {
     private double pValue,rocAuc;
     private double fcPatientGroupIonPatientGroupII;
     private boolean peptideProt;
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getFilesNum() {
+        return filesNum;
+    }
+
+    public void setFilesNum(int filesNum) {
+        this.filesNum = filesNum;
+    }
+
+    public int getIdentifiedProteinsNum() {
+        return IdentifiedProteinsNum;
+    }
+
+    public void setIdentifiedProteinsNum(int IdentifiedProteinsNum) {
+        this.IdentifiedProteinsNum = IdentifiedProteinsNum;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getDiseaseGroups() {
+        return diseaseGroups;
+    }
+
+    public void setDiseaseGroups(String diseaseGroups) {
+        this.diseaseGroups = diseaseGroups;
+    }
 
     public String getStringFCValue() {
         return stringFCValue;
@@ -322,6 +385,8 @@ public String getTechnology() {
     public void setqPeptideKey(String qPeptideKey) {
         this.qPeptideKey = qPeptideKey;
     }
+    
+ 
      
    
 

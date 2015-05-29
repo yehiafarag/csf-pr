@@ -4,6 +4,8 @@ import com.pepshaker.util.beans.ExperimentBean;
 import com.pepshaker.util.beans.FractionBean;
 import com.pepshaker.util.beans.PeptideBean;
 import com.pepshaker.util.beans.ProteinBean;
+import com.quantcsf.beans.QuantDatasetObject;
+import com.quantcsf.beans.QuantPeptide;
 import com.quantcsf.beans.QuantProtein;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -12,7 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -198,48 +202,64 @@ public class DB implements Serializable {
                 st.executeUpdate(standard_plot_proteins);
 
                 //  CREATE TABLE  `quant_prot_table`
-                String quant_prot_table = "CREATE TABLE IF NOT EXISTS `quant_prot_table` (\n" +
-"  `pumed_id` varchar(150) NOT NULL,\n" +
-"  `uniprot_accession` varchar(150) NOT NULL,\n" +
-"  `uniprot_protein_name` varchar(700) NOT NULL,\n" +
-"  `publication_acc_number` varchar(150) default 'Not Available',\n" +
-"  `publication_protein_name` varchar(700) default 'Not Available',\n" +
-"  `raw_data_available` varchar(700) default 'Not Available',\n" +
-"  `type_of_study` varchar(150) default 'Not Available',\n" +
-"  `sample_type` varchar(150) default 'Not Available',\n" +
-"  `patient_group_i` varchar(700) default 'Not Available',\n" +
-"  `patient_sub_group_i` varchar(700) default 'Not Available',\n" +
-"  `patient_gr_i_comment` varchar(700) default 'Not Available',\n" +
-"  `patient_group_ii` varchar(700) default 'Not Available',\n" +
-"  `patient_sub_group_ii` varchar(700) default 'Not Available',\n" +
-"  `patient_gr_ii_comment` varchar(700) default 'Not Available',\n" +
-"  `sample_matching` varchar(500) default 'Not Available',\n" +
-"  `normalization_strategy` varchar(500) default 'Not Available',\n" +
-"  `technology` varchar(500) default 'Not Available',\n" +
-"  `analytical_approach` varchar(500) default 'Not Available',\n" +
-"  `enzyme` varchar(500) default 'Not Available',\n" +
-"  `shotgun_targeted` varchar(100) default 'Not Available',\n" +
-"  `quantification_basis` varchar(500) default 'Not Available',\n" +
-"  `quant_basis_comment` varchar(700) default 'Not Available',\n" +
-"  `additional_comments` varchar(700) default 'Not Available',\n" +
-"  `q_peptide_key` varchar(700) default 'Not Available',\n" +
-"  `peptide_sequance` varchar(700) default 'Not Available',\n" +
-"  `peptide_modification` varchar(700) default 'Not Available',\n" +
-"  `modification_comment` varchar(700) default 'Not Available',\n" +
-"  `string_fc_value` varchar(200) default 'Not Available',\n" +
-"  `string_p_value` varchar(200) default 'Not Available',\n" +
-"  `quantified_proteins_number` int(255) default NULL,\n" +
-"  `peptideId_number` int(255) default NULL,\n" +
-"  `quantified_peptides_number` int(255) default NULL,\n" +
-"  `patients_group_i_number` int(255) default NULL,\n" +
-"  `patients_group_ii_number` int(255) default NULL,\n" +
-"  `p_value` double default NULL,\n" +
-"  `roc_auc` double default NULL,\n" +
-"  `fc_value` double default NULL,\n" +
-"  `peptide_prot` varchar(5) NOT NULL default 'False',\n" +
-"  `index` int(255) NOT NULL auto_increment,\n" +
-"  PRIMARY KEY  (`index`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+                String quant_prot_table = "CREATE TABLE IF NOT EXISTS `quant_prot_table` (\n"
+                        + "  `pumed_id` varchar(150) NOT NULL,\n"
+                        + "  `uniprot_accession` varchar(150) NOT NULL,\n"
+                        + "  `uniprot_protein_name` varchar(700) NOT NULL,\n"
+                        + "  `publication_acc_number` varchar(150) default 'Not Available',\n"
+                        + "  `publication_protein_name` varchar(700) default 'Not Available',\n"
+                        + "  `raw_data_available` varchar(700) default 'Not Available',\n"
+                        + "  `type_of_study` varchar(150) default 'Not Available',\n"
+                        + "  `sample_type` varchar(150) default 'Not Available',\n"
+                        + "  `patient_group_i` varchar(700) default 'Not Available',\n"
+                        + "  `patient_sub_group_i` varchar(700) default 'Not Available',\n"
+                        + "  `patient_gr_i_comment` varchar(700) default 'Not Available',\n"
+                        + "  `patient_group_ii` varchar(700) default 'Not Available',\n"
+                        + "  `patient_sub_group_ii` varchar(700) default 'Not Available',\n"
+                        + "  `patient_gr_ii_comment` varchar(700) default 'Not Available',\n"
+                        + "  `sample_matching` varchar(500) default 'Not Available',\n"
+                        + "  `normalization_strategy` varchar(500) default 'Not Available',\n"
+                        + "  `technology` varchar(500) default 'Not Available',\n"
+                        + "  `analytical_approach` varchar(500) default 'Not Available',\n"
+                        + "  `enzyme` varchar(500) default 'Not Available',\n"
+                        + "  `shotgun_targeted` varchar(100) default 'Not Available',\n"
+                        + "  `quantification_basis` varchar(500) default 'Not Available',\n"
+                        + "  `quant_basis_comment` varchar(700) default 'Not Available',\n"
+                        + "  `additional_comments` varchar(700) default 'Not Available',\n"
+                        + "  `q_peptide_key` varchar(700) default 'Not Available',\n"
+                        + "  `peptide_sequance` varchar(700) default 'Not Available',\n"
+                        + "  `peptide_modification` varchar(700) default 'Not Available',\n"
+                        + "  `modification_comment` varchar(700) default 'Not Available',\n"
+                        + "  `string_fc_value` varchar(200) default 'Not Available',\n"
+                        + "  `string_p_value` varchar(200) default 'Not Available',\n"
+                        + "  `quantified_proteins_number` int(255) default NULL,\n"
+                        + "  `peptideId_number` int(255) default NULL,\n"
+                        + "  `quantified_peptides_number` int(255) default NULL,\n"
+                        + "  `patients_group_i_number` int(255) default NULL,\n"
+                        + "  `patients_group_ii_number` int(255) default NULL,\n"
+                        + "  `p_value` double default NULL,\n"
+                        + "  `roc_auc` double default NULL,\n"
+                        + "  `fc_value` double default NULL,\n"
+                        + "  `peptide_prot` varchar(5) NOT NULL default 'False',\n"
+                        + "  `index` int(255) NOT NULL auto_increment,\n"
+                        + "  PRIMARY KEY  (`index`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
                 st.executeUpdate(quant_prot_table);
+
+                //CREATE TABLE  `studies_table`
+                String studies_table = "CREATE TABLE IF NOT EXISTS `studies_table` (\n"
+                        + "  `pumed_id` varchar(30) NOT NULL,\n"
+                        + "  `files_num` int(255) NOT NULL default '0',\n"
+                        + "  `identified _proteins_num` int(255) NOT NULL default '0',\n"
+                        + "  `quantified_protein_num` int(255) NOT NULL default '0',\n"
+                        + "  `disease_group` varchar(300) NOT NULL default 'Not Available',\n"
+                        + "  `raw_data_url` varchar(500) NOT NULL default 'Not Available',\n"
+                        + "  `year` int(4) NOT NULL default '0',\n"
+                        + "  `index` int(255) NOT NULL auto_increment,\n"
+                        + "  PRIMARY KEY  (`pumed_id`),\n"
+                        + "  KEY `index` (`index`)\n"
+                        + ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+
+                st.executeUpdate(studies_table);
 
                 conn_ii.close();
 
@@ -668,10 +688,10 @@ public class DB implements Serializable {
         return true;
     }
     
-         public void exportDataBase() {
+         public void exportDataBase(String executeCmd1) {
 
         try {
-            String executeCmd = "/usr/bin/mysqldump  -u " + userName + " -p" + password + " " + dbName + " -r  /home/probe/user/CSF-PR-FILES/backup.sql";//C:\\AppServ\\MySQL\\bin\\mysqldump.exe           ///usr/bin/mysqldump
+            String executeCmd = "C:\\\\AppServ\\\\MySQL\\\\bin\\\\mysqldump.exe  -u " + userName + " -p" + password + " " + dbName + " -r  C:\\CSF_Files\\backup.sql";//C:\\AppServ\\MySQL\\bin\\mysqldump.exe           ///usr/bin/mysqldump
 
             Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
             int processComplete = runtimeProcess.waitFor();
@@ -735,14 +755,15 @@ public class DB implements Serializable {
     
     //handel quant data
     
-     public  boolean storeQuantProt(List<QuantProtein> qProtList){
+     public  boolean storeCombinedQuantProtTable(List<QuantProtein> qProtList){
+              
          System.out.println("start store data");
-         boolean success =true;
-         String insertQProt = "INSERT INTO  `" + dbName + "`.`quant_prot_table` (`pumed_id` ,`uniprot_accession` ,`uniprot_protein_name` ,`publication_acc_number` ,`publication_protein_name` ,`raw_data_available` ,`type_of_study` ,"
-                + "`sample_type` ,`patient_group_i` ,`patient_sub_group_i` ,`patient_gr_i_comment` ,`patient_group_ii` ,`patient_sub_group_ii` ,`patient_gr_ii_comment` ,`sample_matching` ,`normalization_strategy` ,`technology`,`analytical_approach`,`enzyme`,`shotgun_targeted`,`quantification_basis`,`quant_basis_comment`,`additional_comments`,`q_peptide_key`,`peptide_sequance`,`peptide_modification`,`modification_comment` ,`string_fc_value`,`string_p_value`,`quantified_proteins_number`,`peptideId_number`,`quantified_peptides_number`,`patients_group_i_number`,`patients_group_ii_number`,`p_value`,`roc_auc`,`fc_value`,`peptide_prot`)VALUES ("
-                + "?,?,?,?,?,?,?,?,?,?,? , ? , ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-       
-        PreparedStatement insertQProtStat = null;
+         boolean success = true;
+         String insertQProt = "INSERT INTO  `" + dbName + "`.`combined_quant_table` (`author` ,`year` ,`pumed_id` ,`uniprot_accession` ,`uniprot_protein_name` ,`publication_acc_number` ,`publication_protein_name` ,`raw_data_available` ,`type_of_study` ,"
+                 + "`sample_type` ,`patient_group_i` ,`patient_sub_group_i` ,`patient_gr_i_comment` ,`patient_group_ii` ,`patient_sub_group_ii` ,`patient_gr_ii_comment` ,`sample_matching` ,`normalization_strategy` ,`technology`,`analytical_approach`,`enzyme`,`shotgun_targeted`,`quantification_basis`,`quant_basis_comment`,`additional_comments`,`q_peptide_key`,`peptide_sequance`,`peptide_modification`,`modification_comment` ,`string_fc_value`,`string_p_value`,`quantified_proteins_number`,`peptideId_number`,`quantified_peptides_number`,`patients_group_i_number`,`patients_group_ii_number`,`p_value`,`roc_auc`,`fc_value`,`peptide_prot`,`identified _proteins_num`)VALUES ("
+                 + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+
+         PreparedStatement insertQProtStat = null;
          try {
              if (conn == null || conn.isClosed()) {
                  Class.forName(driver).newInstance();
@@ -751,62 +772,65 @@ public class DB implements Serializable {
 
              for (QuantProtein qprot : qProtList) {
                  insertQProtStat = conn.prepareStatement(insertQProt, Statement.RETURN_GENERATED_KEYS);
-                 insertQProtStat.setString(1, qprot.getPumedID().toUpperCase());
-                 insertQProtStat.setString(2, qprot.getUniprotAccession().toUpperCase());
-                 insertQProtStat.setString(3, qprot.getUniprotProteinName().toUpperCase());
-                 insertQProtStat.setString(4, qprot.getPublicationAccNumber().toUpperCase());
-                 insertQProtStat.setString(5, qprot.getPublicationProteinName().toUpperCase());
-                 insertQProtStat.setString(6, qprot.getRawDataAvailable().toUpperCase());
-                 insertQProtStat.setString(7, qprot.getTypeOfStudy().toUpperCase());
-                 insertQProtStat.setString(8, qprot.getSampleType().toUpperCase());
-                 insertQProtStat.setString(9, qprot.getPatientGroupI().toUpperCase());
-                 insertQProtStat.setString(10, qprot.getPatientSubGroupI().toUpperCase());
-                 insertQProtStat.setString(11, qprot.getPatientGrIComment().toUpperCase());
-                 insertQProtStat.setString(12, qprot.getPatientGroupII().toUpperCase());
-                 insertQProtStat.setString(13, qprot.getPatientSubGroupII().toUpperCase());
-                 insertQProtStat.setString(14, qprot.getPatientGrIIComment().toUpperCase());
-                 insertQProtStat.setString(15, qprot.getSampleMatching().toUpperCase());
-                 insertQProtStat.setString(16, qprot.getNormalizationStrategy().toUpperCase());
-                 insertQProtStat.setString(17, qprot.getTechnology().toUpperCase());
-                 insertQProtStat.setString(18, qprot.getAnalyticalApproach().toUpperCase());
-                 insertQProtStat.setString(19, qprot.getEnzyme().toUpperCase());
-                 insertQProtStat.setString(20, qprot.getShotgunOrTargetedQquant());
-                 insertQProtStat.setString(21, qprot.getQuantificationBasis());
-                 insertQProtStat.setString(22, qprot.getQuantBasisComment());
-                 insertQProtStat.setString(23, qprot.getAdditionalComments());
+                  insertQProtStat.setString(1, updateStringFormat(qprot.getAuthor()));
+                  insertQProtStat.setInt(2, qprot.getYear());
+                 insertQProtStat.setString(3, qprot.getPumedID());
+                 insertQProtStat.setString(4, qprot.getUniprotAccession());
+                 insertQProtStat.setString(5, qprot.getUniprotProteinName());
+                 insertQProtStat.setString(6, qprot.getPublicationAccNumber());
+                 insertQProtStat.setString(7, qprot.getPublicationProteinName());
+                 insertQProtStat.setString(8, qprot.getRawDataAvailable());
+                 insertQProtStat.setString(9, qprot.getTypeOfStudy());
+                 insertQProtStat.setString(10, qprot.getSampleType());
+                 insertQProtStat.setString(11, qprot.getPatientGroupI());
+                 insertQProtStat.setString(12, qprot.getPatientSubGroupI());
+                 insertQProtStat.setString(13, qprot.getPatientGrIComment());
+                 insertQProtStat.setString(14, qprot.getPatientGroupII());
+                 insertQProtStat.setString(15, qprot.getPatientSubGroupII());
+                 insertQProtStat.setString(16, qprot.getPatientGrIIComment());
+                 insertQProtStat.setString(17, qprot.getSampleMatching());
+                 insertQProtStat.setString(18, qprot.getNormalizationStrategy());
+                 insertQProtStat.setString(19, qprot.getTechnology());
+                 insertQProtStat.setString(20, qprot.getAnalyticalApproach());
+                 insertQProtStat.setString(21, qprot.getEnzyme());
+                 insertQProtStat.setString(22, qprot.getShotgunOrTargetedQquant());
+                 insertQProtStat.setString(23, qprot.getQuantificationBasis());
+                 insertQProtStat.setString(24, qprot.getQuantBasisComment());
+                 insertQProtStat.setString(25, qprot.getAdditionalComments());
 
-                 insertQProtStat.setString(24, qprot.getqPeptideKey());
-                 insertQProtStat.setString(25, qprot.getPeptideSequance());
-                 insertQProtStat.setString(26, qprot.getPeptideModification());
-                 insertQProtStat.setString(27, qprot.getModificationComment());
-                 insertQProtStat.setString(28, qprot.getStringFCValue());
-                 insertQProtStat.setString(29, qprot.getStringPValue());
+                 insertQProtStat.setString(26, qprot.getqPeptideKey());
+                 insertQProtStat.setString(27, qprot.getPeptideSequance());
+                 insertQProtStat.setString(28, qprot.getPeptideModification());
+                 insertQProtStat.setString(29, qprot.getModificationComment());
+                 insertQProtStat.setString(30, qprot.getStringFCValue());
+                 insertQProtStat.setString(31, qprot.getStringPValue());
 
                  Integer num = qprot.getQuantifiedProteinsNumber();
 
-                 insertQProtStat.setInt(30, num);
-
-                 num = qprot.getPeptideIdNumb();
-                 insertQProtStat.setInt(31, num);
-
-                 num = qprot.getQuantifiedPeptidesNumber();
                  insertQProtStat.setInt(32, num);
 
-                 num = qprot.getPatientsGroupINumber();
+                 num = qprot.getPeptideIdNumb();
                  insertQProtStat.setInt(33, num);
-                 num = qprot.getPatientsGroupIINumber();
 
+                 num = qprot.getQuantifiedPeptidesNumber();
                  insertQProtStat.setInt(34, num);
 
+                 num = qprot.getPatientsGroupINumber();
+                 insertQProtStat.setInt(35, num);
+                 num = qprot.getPatientsGroupIINumber();
+
+                 insertQProtStat.setInt(36, num);
+
                  Double dnum = qprot.getpValue();
-                 insertQProtStat.setDouble(35, dnum);
+                 insertQProtStat.setDouble(37, dnum);
 
                  dnum = qprot.getRocAuc();
-                 insertQProtStat.setDouble(36, dnum);
+                 insertQProtStat.setDouble(38, dnum);
 
                  dnum = qprot.getFcPatientGroupIonPatientGroupII();
-                 insertQProtStat.setDouble(37, dnum);
-                 insertQProtStat.setString(38, String.valueOf(qprot.isPeptideProt()));
+                 insertQProtStat.setDouble(39, dnum);
+                 insertQProtStat.setString(40, String.valueOf(qprot.isPeptideProt()));
+                 insertQProtStat.setInt(41, qprot.getIdentifiedProteinsNum());
 
                  insertQProtStat.executeUpdate();
 
@@ -831,4 +855,611 @@ public class DB implements Serializable {
      
      
      }
+
+    public void storeQuantDatasets() {
+
+        String selectPro = "SELECT DISTINCT  `author` ,`year` ,`pumed_id` ,  `quantified_proteins_number` , `identified _proteins_num` ,`raw_data_available` ,  `type_of_study` ,  `sample_type` ,  `sample_matching` ,  `normalization_strategy` ,  `technology` ,  `analytical_approach` ,  `enzyme` ,  `shotgun_targeted` ,  `quantification_basis` ,  `quant_basis_comment`  ,  `patients_group_i_number` ,  `patients_group_ii_number` ,  `patient_group_i` ,  `patient_gr_i_comment` ,  `patient_sub_group_i` ,  `patient_group_ii` ,  `patient_sub_group_ii` , `patient_gr_ii_comment`,`additional_comments` \n"
+                + "FROM  `combined_quant_table` ";
+
+        PreparedStatement selectProStat = null;
+//        List<QuantProtein> quantProtResultList = null;
+        Set<QuantDatasetObject> pubmidIds = new HashSet<QuantDatasetObject>();
+        try {
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            selectProStat = conn.prepareStatement(selectPro);
+            ResultSet rs = selectProStat.executeQuery();
+
+            int x = 0;
+            while (rs.next()) {
+                QuantDatasetObject pb = new QuantDatasetObject();
+                pb.setAuthor(rs.getString("author"));
+                pb.setYear(rs.getInt("year"));
+                pb.setPumedID(rs.getString("pumed_id"));
+                pb.setQuantifiedProteinsNumber(rs.getInt("quantified_proteins_number"));
+                pb.setTypeOfStudy(rs.getString("type_of_study"));
+                pb.setSampleType(rs.getString("sample_type"));
+                pb.setSampleMatching(rs.getString("sample_matching"));
+                pb.setTechnology(rs.getString("technology"));
+                pb.setAnalyticalApproach(rs.getString("analytical_approach"));
+                pb.setEnzyme(rs.getString("enzyme"));
+                pb.setShotgunTargeted(rs.getString("shotgun_targeted"));
+                pb.setQuantificationBasis(rs.getString("quantification_basis"));
+                pb.setQuantBasisComment(rs.getString("quant_basis_comment"));
+                pb.setPatientsGroup1Number(rs.getInt("patients_group_i_number"));
+                pb.setPatientsGroup2Number(rs.getInt("patients_group_ii_number"));
+                pb.setIdentifiedProteinsNumber(rs.getInt("identified _proteins_num"));
+
+                pb.setRawDataUrl(rs.getString("raw_data_available"));
+                pb.setNormalizationStrategy(rs.getString("normalization_strategy"));
+                pb.setPatientsGroup1(rs.getString("patient_group_i"));
+                pb.setPatientsGroup1Comm(rs.getString("patient_gr_i_comment"));
+                pb.setPatientsSubGroup1(rs.getString("patient_sub_group_i"));
+                pb.setPatientsGroup2(rs.getString("patient_group_ii"));
+                pb.setPatientsGroup2Comm(rs.getString("patient_gr_ii_comment"));
+                pb.setPatientsSubGroup2(rs.getString("patient_sub_group_ii"));
+                pb.setAdditionalcomments(rs.getString("additional_comments"));
+                pubmidIds.add(pb);
+                x++;
+            }
+
+            System.out.println("start updating publications");
+            String insertQProt = "INSERT INTO  `" + dbName + "`.`combined_dataset_table` (`pumed_id` ,\n"
+                    + "`author` ,\n"
+                    + "`identified _proteins_num` ,\n"
+                    + "`quantified_protein_num` ,\n"
+                    + "`raw_data_url` ,\n"
+                    + "`year` ,\n"
+                    + "`type_of_study` ,\n"
+                    + "`sample_type` ,\n"
+                    + "`sample_matching` ,\n"
+                    + "`technology` ,\n"
+                    + "`analytical_approach` ,\n"
+                    + "`enzyme` ,\n"
+                    + "`shotgun_targeted` ,\n"
+                    + "`quantification_basis` ,\n"
+                    + "`quant_basis_comment` ,\n"
+                    + "`patients_group_i_number` ,\n"
+                    + "`patients_group_ii_number` ,  `normalization_strategy`"
+                    + ",`patient_group_i`,`patient_gr_i_comment`,`patient_sub_group_i`,`patient_group_ii`,`patient_gr_ii_comment`,`patient_sub_group_ii`,`additional_comments`)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+
+            PreparedStatement insertPbublicationStat = null;
+
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+
+            for (QuantDatasetObject pb : pubmidIds) {
+                insertPbublicationStat = conn.prepareStatement(insertQProt, Statement.RETURN_GENERATED_KEYS);
+                insertPbublicationStat.setString(1, pb.getPumedID());
+                insertPbublicationStat.setString(2, pb.getAuthor());
+                insertPbublicationStat.setInt(3, pb.getIdentifiedProteinsNumber());
+                insertPbublicationStat.setInt(4, pb.getQuantifiedProteinsNumber());
+
+                insertPbublicationStat.setString(5, pb.getRawDataUrl());
+                insertPbublicationStat.setInt(6, pb.getYear());
+
+                insertPbublicationStat.setString(7, pb.getTypeOfStudy());
+                insertPbublicationStat.setString(8, pb.getSampleType());
+                insertPbublicationStat.setString(9, pb.getSampleMatching());
+                insertPbublicationStat.setString(10, pb.getTechnology());
+                insertPbublicationStat.setString(11, pb.getAnalyticalApproach());
+                insertPbublicationStat.setString(12, pb.getEnzyme());
+//                if (pb.getShotgunTargeted() == null) {
+//                    pb.setShotgunTargeted("Not Available");
+//                }
+                insertPbublicationStat.setString(13, pb.getShotgunTargeted());
+
+//                if (pb.getQuantificationBasis() == null) {
+//                    pb.setQuantificationBasis("Not Available");
+//                }
+                insertPbublicationStat.setString(14, pb.getQuantificationBasis());
+                if (pb.getQuantBasisComment() == null) {
+                    pb.setQuantBasisComment("Not Available");
+                }
+                insertPbublicationStat.setString(15, pb.getQuantBasisComment());
+                insertPbublicationStat.setInt(16, pb.getPatientsGroup1Number());
+                insertPbublicationStat.setInt(17, pb.getPatientsGroup2Number());
+                insertPbublicationStat.setString(18, pb.getNormalizationStrategy());
+//                if (pb.getPatientsGroup1() == null) {
+//                    pb.setPatientsGroup1("Not Available");
+//                }
+                insertPbublicationStat.setString(19, pb.getPatientsGroup1());
+//                if (pb.getPatientsGroup1Comm()== null) {
+//                    pb.setPatientsGroup1Comm("Not Available");
+//                }
+                insertPbublicationStat.setString(20, pb.getPatientsGroup1Comm());
+
+//                if (pb.getPatientsSubGroup1()== null) {
+//                    pb.setPatientsSubGroup1("Not Available");
+//                }
+                insertPbublicationStat.setString(21, pb.getPatientsSubGroup1());
+
+//               if (pb.getPatientsGroup2() == null) {
+//                    pb.setPatientsGroup2("Not Available");
+//                }
+                insertPbublicationStat.setString(22, pb.getPatientsGroup2());
+//                if (pb.getPatientsGroup2Comm()== null) {
+//                    pb.setPatientsGroup2Comm("Not Available");
+//                }
+                insertPbublicationStat.setString(23, pb.getPatientsGroup2Comm());
+
+//                if (pb.getPatientsSubGroup2()== null) {
+//                    pb.setPatientsSubGroup2("Not Available");
+//                }
+                insertPbublicationStat.setString(24, pb.getPatientsSubGroup2());
+                insertPbublicationStat.setString(25, pb.getAdditionalcomments());
+                insertPbublicationStat.executeUpdate();
+                insertPbublicationStat.clearParameters();
+                insertPbublicationStat.close();
+
+            }
+
+//            String updateDSStat = "UPDATE  `csf_db_v2`.`quant_dataset_table` SET  `patient_group_ii` =  ? AND `patient_sub_group_ii` =? AND `patient_gr_ii_comment` =? WHERE  `quant_dataset_table`.`pumed_id` =? AND `type_of_study` =? AND `sample_type` =? AND `sample_matching` =? AND `technology` =? AND `analytical_approach` =? AND `enzyme` =? AND `shotgun_targeted` =? AND `quantification_basis` =? AND `quant_basis_comment` =? AND `patients_group_i_number` =? AND `patients_group_ii_number` =? AND `normalization_strategy` =?;";
+//
+//              PreparedStatement insertPbublicationStat = null;
+//
+//            if (conn == null || conn.isClosed()) {
+//                Class.forName(driver).newInstance();
+//                conn = DriverManager.getConnection(url + dbName, userName, password);
+//            }
+//
+//            for (QuantDatasetObject pb : pubmidIds) {
+//                insertPbublicationStat = conn.prepareStatement(updateDSStat);
+//                insertPbublicationStat.setString(1, pb.getPatientsGroup2());
+//                insertPbublicationStat.setString(2, pb.getPatientsSubGroup2());
+//                insertPbublicationStat.setString(3, pb.getPatientsGroup2Comm());
+//                
+//                
+//                insertPbublicationStat.setString(4, pb.getPumedID());
+//                insertPbublicationStat.setString(5, pb.getTypeOfStudy().toUpperCase());
+//                insertPbublicationStat.setString(6, pb.getSampleType().toUpperCase());
+//                insertPbublicationStat.setString(7, pb.getSampleMatching());
+//                insertPbublicationStat.setString(8, pb.getTechnology());
+//                insertPbublicationStat.setString(9, pb.getAnalyticalApproach());
+//                insertPbublicationStat.setString(10, pb.getEnzyme().toUpperCase());
+//                if (pb.getShotgunTargeted() == null) {
+//                    pb.setShotgunTargeted("Not Available");
+//                }
+//                insertPbublicationStat.setString(11, pb.getShotgunTargeted());
+//
+//                if (pb.getQuantificationBasis() == null) {
+//                    pb.setQuantificationBasis("Not Available");
+//                }
+//                insertPbublicationStat.setString(12, pb.getQuantificationBasis());
+//                if (pb.getQuantBasisComment() == null) {
+//                    pb.setQuantBasisComment("Not Available");
+//                }
+//                insertPbublicationStat.setString(13, pb.getQuantBasisComment());
+//                insertPbublicationStat.setInt(14, pb.getPatientsGroup1Number());
+//                insertPbublicationStat.setInt(15, pb.getPatientsGroup2Number());
+//                insertPbublicationStat.setString(16, pb.getNormalizationStrategy());
+//                if (pb.getPatientsGroup1() == null) {
+//                    pb.setPatientsGroup1("Not Available");
+//                }
+//                              
+//                int z = insertPbublicationStat.executeUpdate();
+//                insertPbublicationStat.clearParameters();
+//                insertPbublicationStat.close();
+//               
+//                System.out.println("at index " + z);
+//            
+//
+//            }
+        } catch (ClassNotFoundException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+        }
+
+    }
+
+    public void storeQuantitiveProteins(List<QuantProtein> qProtList) {
+        String sqlStat = "INSERT INTO  `csf_db_v2`.`quantitative_proteins_table` (\n"
+                + "`index` ,\n"
+                + "`ds_ID` ,\n"
+                + "`uniprot_accession` ,\n"
+                + "`uniprot_protein_name` ,\n"
+                + "`publication_acc_number` ,\n"
+                + "`publication_protein_name` ,\n"
+                + "`quantified_peptides_number` ,\n"
+                + "`identified_peptides_number`,`fold_change`\n"
+                + ")"
+                + "VALUES (?,?,?,?,?,?,?,?,?);";
+
+        try {
+            PreparedStatement insertQuantProtStat = null;
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            for (QuantProtein quantProt : qProtList) {
+                insertQuantProtStat = conn.prepareStatement(sqlStat, Statement.RETURN_GENERATED_KEYS);
+                insertQuantProtStat.setInt(1, quantProt.getProtKey());
+                insertQuantProtStat.setInt(2, quantProt.getDsKey());
+                insertQuantProtStat.setString(3, quantProt.getUniprotAccession());
+                insertQuantProtStat.setString(4, quantProt.getUniprotProteinName());
+
+                insertQuantProtStat.setString(5, quantProt.getPublicationAccNumber());
+                insertQuantProtStat.setString(6, quantProt.getPublicationProteinName());
+                insertQuantProtStat.setInt(7, quantProt.getQuantifiedPeptidesNumber());
+                insertQuantProtStat.setInt(8, quantProt.getPeptideIdNumb());
+                insertQuantProtStat.setString(9, quantProt.getStringFCValue());
+                insertQuantProtStat.executeUpdate();
+                ResultSet rs = insertQuantProtStat.getGeneratedKeys();
+                rs.close();
+            }
+
+        } catch (ClassNotFoundException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        }
+        System.out.println("done storing prote");
+        System.gc();
+
+     }
+    
+    
+     public void storeQuantitivePeptides(List<QuantPeptide> qPeptidestList) {
+        String sqlStat = "INSERT INTO  `csf_db_v2`.`quantitative_peptides_table` (\n"
+                + "`DsKey` ,\n"
+                + "`prot_index` ,\n"
+                + "`peptide_sequance` ,\n"
+                + "`peptide_modification` ,\n"
+                + "`modification_comment` ,\n"
+                + "`string_fc_value` ,\n"
+                + "`string_p_value` ,\n"
+                + "`p_value` ,\n"
+                + "`roc_auc` ,\n"
+                + "`fc_value`,`p_value_comments`\n"
+                + ")\n"
+                + "VALUES (\n"
+                + "?,?,?,?,?,?,?,?,?,?,?);";
+
+        try {
+            PreparedStatement insertQuantPeptidtStat = null;
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            for (QuantPeptide quantPept : qPeptidestList) {
+                insertQuantPeptidtStat = conn.prepareStatement(sqlStat, Statement.RETURN_GENERATED_KEYS);
+                insertQuantPeptidtStat.setInt(2, quantPept.getProtKey());
+                insertQuantPeptidtStat.setInt(1, quantPept.getDsKey());
+                insertQuantPeptidtStat.setString(3, quantPept.getPeptideSequance());
+                insertQuantPeptidtStat.setString(4, quantPept.getPeptideModification());
+
+                insertQuantPeptidtStat.setString(5, quantPept.getModificationComment());
+                insertQuantPeptidtStat.setString(6, quantPept.getFc());
+                insertQuantPeptidtStat.setString(7, quantPept.getStrPvalue());
+                insertQuantPeptidtStat.setDouble(8, quantPept.getPvalue());
+                insertQuantPeptidtStat.setDouble(9, quantPept.getRoc());
+                insertQuantPeptidtStat.setDouble(10, quantPept.getFcPatientGroupIonPatientGroupII());
+                insertQuantPeptidtStat.setString(11, quantPept.getPvalueComment());
+                insertQuantPeptidtStat.executeUpdate();
+                ResultSet rs = insertQuantPeptidtStat.getGeneratedKeys();
+                rs.close();
+            }
+
+
+        } catch (ClassNotFoundException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        }
+          System.out.println("done storing pep");
+        System.gc();
+
+     }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+     private String updateStringFormat(String str){
+     str = str.toLowerCase();
+     str = str.replaceFirst(str.substring(0, 1), str.substring(0, 1).toUpperCase());
+        return str;
+
+    }
+
+    public int getCurrentProtIndex() {
+        String sqlStat = "SELECT `index` \n"
+                + "FROM  `quantitative_proteins_table` \n"
+                + "ORDER BY  `quantitative_proteins_table`.`index` DESC \n"
+                + "LIMIT 0 , 1";
+
+        try {
+            PreparedStatement selectCurrentQuantProtIndexStat = null;
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            selectCurrentQuantProtIndexStat = conn.prepareStatement(sqlStat);
+            ResultSet rs = selectCurrentQuantProtIndexStat.executeQuery();
+            int index = 0;
+            while (rs.next()) {
+                index = rs.getInt("index");
+                index++;
+
+            }
+            rs.close();
+
+            return index;
+
+        } catch (ClassNotFoundException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        }
+        System.gc();
+
+        return 0;
+
+    }
+     
+      public Set<QuantDatasetObject> getQuantDatasetListObject() {
+
+        Set<QuantDatasetObject> quantDatasetList = new HashSet<QuantDatasetObject>();
+        boolean[] activeHeaders = new boolean[27];
+
+        try {
+            PreparedStatement selectStudiesStat = null;
+            String selectStudies = "SELECT * FROM  `combined_dataset_table` ";
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            selectStudiesStat = conn.prepareStatement(selectStudies);
+            ResultSet rs = selectStudiesStat.executeQuery();
+            while (rs.next()) {
+                QuantDatasetObject pb = new QuantDatasetObject();
+                String author = rs.getString("author");
+                if (!activeHeaders[0] && author != null && !author.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[0] = true;
+                }
+                pb.setAuthor(author);
+                int year = rs.getInt("year");
+                if (!activeHeaders[1] && year != 0) {
+                    activeHeaders[1] = true;
+                }
+                pb.setYear(year);
+                 int identified_proteins_num = rs.getInt("identified _proteins_num");
+                if (!activeHeaders[2] && identified_proteins_num != -1 && identified_proteins_num != 0) {
+                    activeHeaders[2] = true;
+                }
+                pb.setIdentifiedProteinsNumber(identified_proteins_num);
+                
+                int quantified_protein_num = rs.getInt("quantified_protein_num");
+                if (!activeHeaders[3] && quantified_protein_num != -1) {
+                    activeHeaders[3] = true;
+                }
+                pb.setQuantifiedProteinsNumber(quantified_protein_num);
+                
+
+                String disease_group = rs.getString("disease_group");
+                if (!activeHeaders[4] && disease_group != null && !disease_group.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[4] = true;
+                }
+                pb.setDiseaseGroups(disease_group);
+                
+                
+                String raw_data_url = rs.getString("raw_data_url");
+                if (!activeHeaders[5] && raw_data_url != null && !raw_data_url.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[5] = true;
+                }
+                pb.setRawDataUrl(raw_data_url);
+                
+                
+                
+                
+
+                int files_num = rs.getInt("files_num");
+                if (!activeHeaders[6] && files_num != -1) {
+                    activeHeaders[6] = true;
+                }
+                pb.setFilesNumber(files_num);
+
+                String type_of_study = rs.getString("type_of_study");
+                if (!activeHeaders[7] && type_of_study != null && !type_of_study.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[7] = true;
+                }
+                pb.setTypeOfStudy(type_of_study);
+                
+
+                String sample_type = rs.getString("sample_type");
+                if (!activeHeaders[8] && sample_type != null && !sample_type.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[8] = true;
+                }
+                pb.setSampleType(sample_type);
+                
+
+                String sample_matching = rs.getString("sample_matching");
+                if (!activeHeaders[9] && sample_matching != null && !sample_matching.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[9] = true;
+                }
+                pb.setSampleMatching(sample_matching);
+                
+                  String shotgun_targeted = rs.getString("shotgun_targeted");
+                if (!activeHeaders[10] && shotgun_targeted != null && !shotgun_targeted.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[10] = true;
+                }
+                pb.setShotgunTargeted(shotgun_targeted);
+                
+                
+                
+
+                String technology = rs.getString("technology");
+                if (!activeHeaders[11] && technology != null && !technology.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[11] = true;
+                }
+                pb.setTechnology(technology);
+                
+
+                String analytical_approach = rs.getString("analytical_approach");
+                if (!activeHeaders[12] && analytical_approach != null && !analytical_approach.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[12] = true;
+                }
+                pb.setAnalyticalApproach(analytical_approach);
+
+                String enzyme = rs.getString("enzyme");
+                if (!activeHeaders[13] && enzyme != null && !enzyme.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[13] = true;
+                }
+                pb.setEnzyme(enzyme);
+
+              
+
+                String quantification_basis = rs.getString("quantification_basis");
+                if (!activeHeaders[14] && quantification_basis != null && !quantification_basis.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[14] = true;
+                }
+
+                pb.setQuantificationBasis(quantification_basis);
+
+                String quant_basis_comment = rs.getString("quant_basis_comment");
+                if (!activeHeaders[15] && quant_basis_comment != null && !quant_basis_comment.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[15] = true;
+                }
+                pb.setQuantBasisComment(quant_basis_comment);
+
+               
+
+                int id = rs.getInt("index");
+                pb.setUniqId(id);
+
+                String normalization_strategy = rs.getString("normalization_strategy");
+                if (!activeHeaders[16] && normalization_strategy != null && !normalization_strategy.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[16] = true;
+                }
+                pb.setNormalizationStrategy(normalization_strategy);
+
+                
+                String pumed_id = rs.getString("pumed_id");
+                if (!activeHeaders[17] && pumed_id != null && !pumed_id.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[17] = true;
+                }
+                pb.setPumedID(pumed_id);
+                
+                  String patient_group_i = rs.getString("patient_group_i");
+                if (!activeHeaders[18] && patient_group_i != null && !patient_group_i.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[18] = true;
+                }
+                pb.setPatientsGroup1(patient_group_i);
+                
+                
+                 int patients_group_i_number = rs.getInt("patients_group_i_number");
+                if (!activeHeaders[19] && patients_group_i_number != -1) {
+                    activeHeaders[19] = true;
+                }
+                pb.setPatientsGroup1Number(patients_group_i_number);
+                
+                 String patient_gr_i_comment = rs.getString("patient_gr_i_comment");
+                if (!activeHeaders[20] && patient_gr_i_comment != null && !patient_gr_i_comment.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[20] = true;
+                }
+                pb.setPatientsGroup1Comm(patient_gr_i_comment);
+
+                String patient_sub_group_i = rs.getString("patient_sub_group_i");
+                if (!activeHeaders[21] && patient_sub_group_i != null && !patient_sub_group_i.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[21] = true;
+                }
+                pb.setPatientsSubGroup1(patient_sub_group_i);
+
+                String patient_group_ii = rs.getString("patient_group_ii");
+                if (!activeHeaders[22] && patient_group_ii != null && !patient_group_ii.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[22] = true;
+                }
+                pb.setPatientsGroup2(patient_group_ii);
+
+                int patients_group_ii_number = rs.getInt("patients_group_ii_number");
+                if (!activeHeaders[23] && patients_group_ii_number != -1) {
+                    activeHeaders[23] = true;
+                }
+                pb.setPatientsGroup2Number(patients_group_ii_number);
+                
+                 String patient_gr_ii_comment = rs.getString("patient_gr_ii_comment");
+                if (!activeHeaders[24] && patient_gr_ii_comment != null && !patient_gr_ii_comment.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[24]= true;
+                }
+                pb.setPatientsGroup2Comm(patient_gr_ii_comment);
+                
+                 String patient_sub_group_ii = rs.getString("patient_sub_group_ii");
+                if (!activeHeaders[25] && patient_sub_group_ii != null && !patient_sub_group_ii.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[25]= true;
+                }
+                pb.setPatientsSubGroup2(patient_sub_group_ii);
+                
+                 String additional_comments = rs.getString("additional_comments");
+                if (!activeHeaders[26] && additional_comments != null && !additional_comments.equalsIgnoreCase("Not Available")) {
+                    activeHeaders[26]= true;
+                }
+                pb.setAdditionalcomments(additional_comments);
+                
+                
+                quantDatasetList.add(pb);
+                
+            }
+            rs.close();
+            
+            return quantDatasetList;
+
+        } catch (ClassNotFoundException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        }
+        System.gc();
+
+        return null;
+
+    }
 }
