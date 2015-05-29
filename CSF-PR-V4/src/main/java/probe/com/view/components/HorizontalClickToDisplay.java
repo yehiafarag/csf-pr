@@ -24,33 +24,39 @@ public class HorizontalClickToDisplay extends HorizontalLayout implements Layout
     private final Layout mainLayout;
         private PopupView container;
 
-    public HorizontalClickToDisplay(Layout mainLayout,String clickableStyle, Layout clickableComponents){
+    public HorizontalClickToDisplay(Layout mainLayout,String clickableStyle, VerticalLayout clickableComponents){
         this.mainLayout = mainLayout;
-        this.setWidth("100px");
-        this.setHeight("500px");
+        this.setWidth("150px");
+        this.setHeight("100%");
         this.setSpacing(true);
 
-        VerticalLayout clickableLayout = new VerticalLayout();
-        clickableLayout.setHeight("100%");
-        clickableLayout.setWidth("100px");
-
-        VerticalLayout clickable = new VerticalLayout();
-        clickable.setHeight("100%");
-        clickable.setWidth("100px");
-        clickable.setStyleName(clickableStyle);
-
-//        clickableLayout.addComponent(clickable);
-        clickableLayout.addComponent(clickableComponents);
-        clickableLayout.setComponentAlignment(clickableComponents,Alignment.BOTTOM_LEFT);
-        clickable.addLayoutClickListener(HorizontalClickToDisplay.this);
-        this.addComponent(clickableLayout);
-        this.setComponentAlignment(clickableLayout,Alignment.BOTTOM_LEFT);
+        VerticalLayout frameLayout = new VerticalLayout();
+        frameLayout.setHeight("100%");
+        frameLayout.setWidth("150px");       
+        this.addComponent(clickableComponents);
+        this.setComponentAlignment(clickableComponents, Alignment.TOP_CENTER); 
+        frameLayout.setSpacing(true);      
+        
+        
+        
+        VerticalLayout clickableComparisonIcon = new VerticalLayout();
+        clickableComparisonIcon.setHeight("40px");
+        clickableComparisonIcon.setWidth("150px");
+        clickableComparisonIcon.setStyleName(clickableStyle);
+        clickableComparisonIcon.addLayoutClickListener(HorizontalClickToDisplay.this);
+        clickableComponents.addComponent(clickableComparisonIcon,0);
+        clickableComponents.setComponentAlignment(clickableComparisonIcon,Alignment.MIDDLE_CENTER);
+//        frameLayout.addComponent(clickableComparisonIcon);
+//        frameLayout.setComponentAlignment(clickableComparisonIcon,Alignment.MIDDLE_CENTER);
+//        frameLayout.addComponent(clickableComponents);
+//        frameLayout.setComponentAlignment(clickableComponents,Alignment.MIDDLE_CENTER);
+        
+               
 
         VerticalLayout popupLayout = new VerticalLayout();
-         popupLayout.setSpacing(true);
-         popupLayout.setWidth("500px");
-
-      popupLayout.setHeightUndefined();
+        popupLayout.setSpacing(true);
+        popupLayout.setWidth("500px");
+        popupLayout.setHeightUndefined();
 //        popupLayout.setHeight(mainLayout.getWidth(),Sizeable.Unit.PIXELS);
 
         HorizontalLayout titleLayout = new HorizontalLayout();
@@ -81,9 +87,8 @@ public class HorizontalClickToDisplay extends HorizontalLayout implements Layout
         
         
         container = new PopupView("", popupLayout);
-        clickable.addComponent(container);
-        clickable.setComponentAlignment(container, Alignment.MIDDLE_CENTER);
-        
+        clickableComparisonIcon.addComponent(container);
+        clickableComparisonIcon.setComponentAlignment(container, Alignment.MIDDLE_CENTER); 
         
         container.setHideOnMouseOut(false);
 

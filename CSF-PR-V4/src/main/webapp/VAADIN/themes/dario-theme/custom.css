@@ -645,8 +645,8 @@ background-color: lightgray;
     width: 100px;
     height: 40px;
     background-color:  whitesmoke;
-    background-image: url(img/reset.png);
-    background-repeat: no-repeat;
+/*    background-image: url(img/reset.png);
+    background-repeat: no-repeat;*/
     background-position:center;
     border: 1px solid  rgb(169, 169, 169) ;
     border-radius: 3px;
@@ -654,7 +654,16 @@ background-color: lightgray;
 
 
 }
+resetlabelbtn p{
+     margin-top:10px;
+     cursor: pointer;
 
+
+}
+.resetlabelbtn:hover{
+background-color: lightgray;
+    
+}
 .grcompbtn{
     width: 100px;
     height: 40px;
@@ -667,10 +676,17 @@ background-color: lightgray;
 
 
 }
-.resetlabelbtn:hover{
+.grcompbtn p{
+    
+     margin-top:10px;
+     cursor: pointer;
+    
+}
+.grcompbtn:hover{
 background-color: lightgray;
     
 }
+
 .greenlayout div{
     background: #009900;    
 }
