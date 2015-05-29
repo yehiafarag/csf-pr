@@ -10,7 +10,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
 import java.io.Serializable;
-import probe.com.view.components.FiltersControl;
+import probe.com.view.components.SearchingFiltersControl;
 
 /**
  *
@@ -18,7 +18,7 @@ import probe.com.view.components.FiltersControl;
  */
 public class OptionGroupFilter extends HorizontalLayout implements Property.ValueChangeListener, Button.ClickListener,Serializable {
 
-    private final FiltersControl control;
+    private final SearchingFiltersControl control;
     private final ClosableFilterLabel filterBtn ;//= new HashMap<String, ClosableFilterLabel>();
     private final boolean closable;
     private final int filterId;
@@ -35,12 +35,11 @@ public class OptionGroupFilter extends HorizontalLayout implements Property.Valu
         this.fieldValue = value;
     }
 
-    @SuppressWarnings("LeakingThisInConstructor")
-    public OptionGroupFilter(FiltersControl control,String filterTitle,int filterId, boolean closable) {
+    public OptionGroupFilter(SearchingFiltersControl control,String filterTitle,int filterIds, boolean closable) {
         this.control = control;
         this.filterTitle = filterTitle;
         this.fieldValue = filterTitle;
-        this.filterId = filterId;
+        this.filterId = filterIds;
         this.setSpacing(true);  
         
         
@@ -49,7 +48,7 @@ public class OptionGroupFilter extends HorizontalLayout implements Property.Valu
         this.addComponent(optionGroup);
         optionGroup.setNullSelectionAllowed(false); // user can not 'unselect'
         optionGroup.setMultiSelect(false);
-        optionGroup.addValueChangeListener(this);
+        optionGroup.addValueChangeListener(OptionGroupFilter.this);
          filterConfirmLabel = new FilterConfirmLabel();
         
        
@@ -57,7 +56,7 @@ public class OptionGroupFilter extends HorizontalLayout implements Property.Valu
         
         this.closable = closable;
          filterBtn = new ClosableFilterLabel(filterTitle,"",filterId, closable);
-         filterBtn.getCloseBtn().addClickListener(this);
+         filterBtn.getCloseBtn().addClickListener(OptionGroupFilter.this);
          
     }
 

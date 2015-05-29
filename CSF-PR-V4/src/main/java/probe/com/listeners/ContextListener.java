@@ -36,6 +36,7 @@ public class ContextListener implements ServletContextListener,Serializable {
 		adminEmail = scx.getInitParameter("adminEmail");
 		adminPassword = scx.getInitParameter("adminPassword");		
 		DataAccess da = new DataAccess(URL,D_B_NAME,DRIVER,USER_NAME,PASSWORD);
+                
 		da.createTable();
 		Authenticator auth = new Authenticator(URL,D_B_NAME,DRIVER,USER_NAME,PASSWORD);
 		if(adminName != null && adminPassword != null){

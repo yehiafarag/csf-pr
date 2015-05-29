@@ -14,6 +14,7 @@ import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
 import probe.com.handlers.MainHandler;
 import probe.com.model.beans.User;
+import probe.com.view.core.QuantDataUploader;
 
 /**
  *
@@ -27,7 +28,7 @@ public class AdminControlPanel extends VerticalLayout implements Serializable {
     private final VerticalLayout layout1 = new VerticalLayout();
     private final TabSheet t;
     private TabSheet.Tab t1;
-    private VerticalLayout l1, l2, l3, l4;
+    private VerticalLayout l1, l2, l3, l4,l5;
 
     /**
      *
@@ -84,10 +85,16 @@ public class AdminControlPanel extends VerticalLayout implements Serializable {
         l4.setMargin(true);
         l4.setHeight("100%");
         l4.addComponent(new UpdateExperDetailsLayout(handler, user));
+        
+          l5 = new VerticalLayout();
+        l5.setMargin(true);
+        l5.setHeight("100%");
+        l5.addComponent(new QuantDataUploader(handler, user));
 
         t.setStyleName(Reindeer.TABSHEET_MINIMAL);
         t.setHeight("100%");
-        t1 = t.addTab(l1, "Experiment Handler", null);
+        t1 = t.addTab(l1, "Id Data", null);
+        t.addTab(l5, "Quant Data", null);
         t.addTab(l4, "Update Experiment Details");
         t.addTab(l2, "Change Password", null);
         if (user.isAdmin()) //add user form

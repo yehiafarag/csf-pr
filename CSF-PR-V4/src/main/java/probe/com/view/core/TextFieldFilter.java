@@ -12,7 +12,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.themes.Reindeer;
-import probe.com.view.components.FiltersControl;
+import probe.com.view.components.SearchingFiltersControl;
 
 /**
  *
@@ -22,17 +22,17 @@ public class TextFieldFilter extends HorizontalLayout implements Button.ClickLis
 
     private final TextArea textField;
     private final ClosableFilterLabel filterBtn;
-    private final FiltersControl control;
+    private final SearchingFiltersControl control;
     private final int filterId;
     private final Button okBtn;
     private final Label filterConfirmLabel;
 //    private final String filterTitle;
 
-    @SuppressWarnings("LeakingThisInConstructor")
-    public TextFieldFilter(FiltersControl controller ,int filterId,String filterTitle) {
+    public TextFieldFilter(SearchingFiltersControl controller ,int filterId,String filterTitle) {
         this.control = controller;
         this.filterId=filterId;
         this.setSpacing(true);
+ 
         
         okBtn = new Button("ok");
         okBtn.setStyleName(Reindeer.BUTTON_SMALL);
@@ -55,7 +55,7 @@ public class TextFieldFilter extends HorizontalLayout implements Button.ClickLis
         this.addComponent(filterConfirmLabel);
         
         filterBtn = new ClosableFilterLabel(filterTitle,"",filterId, true);
-        filterBtn.getCloseBtn().addClickListener(this);
+        filterBtn.getCloseBtn().addClickListener(TextFieldFilter.this);
         okBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -69,7 +69,9 @@ public class TextFieldFilter extends HorizontalLayout implements Button.ClickLis
         
         }}
         });
-        textField.addFocusListener(this);
+        textField.addFocusListener(TextFieldFilter.this);
+        this.setEnabled(true);
+        this.focus();
         
 
     }

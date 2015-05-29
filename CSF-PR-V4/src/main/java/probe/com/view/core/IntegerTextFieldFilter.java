@@ -12,7 +12,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
-import probe.com.view.components.FiltersControl;
+import probe.com.view.components.SearchingFiltersControl;
 
 /**
  *
@@ -21,11 +21,16 @@ import probe.com.view.components.FiltersControl;
 public class IntegerTextFieldFilter  extends HorizontalLayout implements Serializable,Button.ClickListener,Property.ValueChangeListener{
       private final TextField textField;
     private final ClosableFilterLabel filterBtn;
-    private final FiltersControl control;
+    private final SearchingFiltersControl control;
     private final int filterId;
     private final Button okBtn;
     private final FilterConfirmLabel filterConfirmLabel ;
-    public IntegerTextFieldFilter(FiltersControl controller ,int filterId,final String filterTitle,String label){
+    
+    public void setAddBtnCaption(String title){
+    okBtn.setCaption(title);
+    
+    }
+    public IntegerTextFieldFilter(SearchingFiltersControl controller ,int filterId,final String filterTitle,String label){
     this.control = controller;
         this.filterId=filterId;
         this.setSpacing(true);
@@ -34,7 +39,7 @@ public class IntegerTextFieldFilter  extends HorizontalLayout implements Seriali
         textField = new TextField();
         textField.setStyleName(Reindeer.TEXTFIELD_SMALL);
         textField.setHeight("20px");
-        textField.setWidth("60px"); 
+        textField.setWidth("100px"); 
         textField.setNullRepresentation(" ");
         textField.setConverter(new StringToIntegerConverter());
         textField.setDescription(label);
@@ -46,7 +51,7 @@ public class IntegerTextFieldFilter  extends HorizontalLayout implements Seriali
         this.addComponent(filterConfirmLabel);
         
         filterBtn = new ClosableFilterLabel(label,label,filterId, true);
-        filterBtn.getCloseBtn().addClickListener(this);
+        filterBtn.getCloseBtn().addClickListener(IntegerTextFieldFilter.this);
         okBtn.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -63,7 +68,7 @@ public class IntegerTextFieldFilter  extends HorizontalLayout implements Seriali
       
             }
         });
-        textField.addValueChangeListener(this);
+        textField.addValueChangeListener(IntegerTextFieldFilter.this);
     }
 
     @Override

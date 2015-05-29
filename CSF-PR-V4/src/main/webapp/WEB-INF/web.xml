@@ -30,7 +30,7 @@
     <context-param>
         <description>Admin Password</description>
         <param-name>adminPassword</param-name>
-        <param-value>norway</param-value>
+        <param-value>TRuc2ase</param-value>
     </context-param>
 
     <context-param>
@@ -61,7 +61,7 @@
     <context-param>
         <description>exported files folder url C:\CSF_Files(/home/probe/user/CSF-PR-FILES)</description>
         <param-name>filesURL</param-name>
-        <param-value>/home/probe/user/CSF-PR-FILES</param-value>
+        <param-value>C:\CSF_Files</param-value>
     </context-param>
     <servlet>
         <servlet-name>Vaadin Application Servlet</servlet-name>

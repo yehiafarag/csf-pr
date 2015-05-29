@@ -11,8 +11,11 @@ import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.FractionBean;
 import probe.com.model.beans.PeptideBean;
 import probe.com.model.beans.IdentificationProteinBean;
+import probe.com.model.beans.QuantDatasetObject;
+import probe.com.model.beans.QuantProtein;
 import probe.com.model.beans.QuantificationProteinsBean;
 import probe.com.model.beans.StandardProteinBean;
+import probe.com.model.beans.QuantDatasetListObject;
 
 public class DataAccess implements Serializable {
 
@@ -168,6 +171,7 @@ public class DataAccess implements Serializable {
          String[] queryWordsArr = accession.split("\n");
         Set<String> searchSet = new HashSet<String>();
         for (String str : queryWordsArr) {
+            System.out.println("str: "+str);
             searchSet.add(str.trim());
         }
         Map<Integer, IdentificationProteinBean> datasetProteinsSearchingList  = db.searchIdentificationProteinAllDatasetsByAccession(searchSet,validatedOnly);
@@ -177,18 +181,25 @@ public class DataAccess implements Serializable {
      /**
      * search for proteins by accession keywords
      *
-     * @param accession array of query words
-     * @param validatedOnly only validated proteins results
+     * @param query   query words
      * @return dataset Proteins Searching List
      */
-    public Map<Integer, QuantificationProteinsBean>  searchQuantificationProteins(Query query) {
+    public  List<QuantProtein>   searchQuantificationProteins(Query query) {
 
-         
-        Map<Integer, QuantificationProteinsBean> datasetProteinsSearchingList  = db.searchQuantificationProteins(query);
-  
-        return datasetProteinsSearchingList ;
+        List<QuantProtein> datasetProteinsSearchingList = db.searchQuantificationProteins(query);
+
+        return datasetProteinsSearchingList;
     }
     
+     public QuantDatasetListObject getQuantDatasetListObject(){
+        return db.getQuantDatasetListObject();
+   
+    
+    }
+     public boolean[] getActiveFilters(){
+     return db.getActiveFilters();
+     
+     }
     
 
      /**
@@ -368,7 +379,18 @@ public class DataAccess implements Serializable {
      
      }
      public void runOnceToUpdateDatabase(){
-         db.singleuseUpdateDb();
+//         db.singleuseUpdateDb();
      
      }
+       public  boolean storeQuantProt(List<QuantProtein> qProtList){
+         return db.storeQuantProt(qProtList);
+     
+     
+     }
+       public  Set<QuantProtein>   getQuantificationProteins(int dsUnique) {
+
+        Set<QuantProtein> datasetProteinsSearchingList = db.getQuantificationProteins(dsUnique);
+
+        return datasetProteinsSearchingList;
+    }
 }

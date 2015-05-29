@@ -4,21 +4,28 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import probe.com.dal.DataAccess;
 import probe.com.dal.Query;
+import probe.com.model.beans.ComparisonProtein;
 import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.FractionBean;
+import probe.com.model.beans.GroupsComparison;
 import probe.com.model.beans.PeptideBean;
 import probe.com.model.beans.IdentificationProteinBean;
-import probe.com.model.beans.QuantificationProteinsBean;
+import probe.com.model.beans.QuantProtein;
 import probe.com.model.beans.StandardProteinBean;
+import probe.com.model.beans.QuantDatasetListObject;
 import probe.com.model.util.FileExporter;
+import probe.com.model.util.FilesReader;
 
 /**
  * @author Yehia Farag
@@ -96,6 +103,27 @@ public class CoreLogic implements Serializable {
             test = da.updateStandardPlotProt(dataset);
 
         }
+
+        return test;
+
+    }
+    /**
+     * read and store Quant data files in the database
+     *
+     * @param file the dataset file
+     * @param MIMEType the file type (csv)
+     * @param dataset dataset bean (in case of update existing dataset)
+     * @return test boolean
+     * @exception IOException
+     * @exception SQLException
+     */
+    public boolean handelQuantDataFile(File file, String MIMEType) throws IOException, SQLException {
+        FilesReader fr = new FilesReader();
+        boolean test = false;    
+        List<QuantProtein> quantProtList  = fr.readCSVQuantFile(file);
+        test = da.storeQuantProt(quantProtList);
+
+        
 
         return test;
 
@@ -656,6 +684,16 @@ public class CoreLogic implements Serializable {
 
     }
 
+    public QuantDatasetListObject getQuantDatasetListObject() {
+        return da.getQuantDatasetListObject();
+
+    }
+    
+     public boolean[] getActiveFilters(){
+     return da.getActiveFilters();
+     
+     }
+
     /**
      * this function to be use for csv peptides exporting with large datasets
      *
@@ -687,11 +725,9 @@ public class CoreLogic implements Serializable {
     public Map<Integer, IdentificationProteinBean> searchIdentficationProtein(Query query) {
 
         Map<Integer, IdentificationProteinBean> datasetProteinsSearchList = new HashMap<Integer, IdentificationProteinBean>();
-
         if (query.getSearchDataType().equals("Identification Data")) {
             if (query.getSearchDataset() == null || query.getSearchDataset().isEmpty())//search in all identification datasets
             {
-                System.out.println("start searcing "+query.getSearchKeyWords());
                 if (query.getSearchBy().equalsIgnoreCase("Protein Accession"))//"Protein Name" "Peptide Sequence"
                 {
                     return da.searchIdentificationProteinAllDatasetsByAccession(query.getSearchKeyWords(), query.isValidatedProteins());
@@ -730,7 +766,7 @@ public class CoreLogic implements Serializable {
         
         }else {
         //quantification and both
-        
+
         }
 
 //        IdentificationDataset dataset = null;
@@ -747,30 +783,25 @@ public class CoreLogic implements Serializable {
 //            }
 //
 //        } 
-
         return datasetProteinsSearchList;
 
     }
-    
-    
-    
-       /**
+
+    /**
      * search for proteins by description keywords
      *
-     * @param query   query words
+     * @param query query words
      * @return datasetProteinsSearchList
      */
-    public Map<Integer, QuantificationProteinsBean> searchQuantificationProteins(Query query) {
-
-        Map<Integer, QuantificationProteinsBean> datasetQuantificationProteinsSearchList = new HashMap<Integer, QuantificationProteinsBean>();
+    public List<QuantProtein> searchQuantificationProteins(Query query) {
 
         if (query.getSearchDataType().equals("Quantification Data")) {
-            datasetQuantificationProteinsSearchList = da.searchQuantificationProteins(query);
+            List<QuantProtein> datasetQuantificationProteinsSearchList = da.searchQuantificationProteins(query);
+            return datasetQuantificationProteinsSearchList;
         }
-        return datasetQuantificationProteinsSearchList;
+        return null;
 
     }
-
 
     /**
      * search for proteins by protein description keywords
@@ -784,7 +815,6 @@ public class CoreLogic implements Serializable {
 //        Map<Integer, IdentificationProteinBean> proteinsList = da.searchProteinByName(protSearchKeyword, datasetId, validatedOnly);
 //        return proteinsList;
 //    }
-
     /**
      * search for proteins by peptide sequence keywords
      *
@@ -820,7 +850,6 @@ public class CoreLogic implements Serializable {
 ////        return protDatasetList;
 ////
 ////    }
-
     /**
      * search for proteins by peptide sequence keywords
      *
@@ -834,8 +863,121 @@ public class CoreLogic implements Serializable {
 //        Map<Integer, IdentificationProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
 //        return proteinsList;
 //    }
+    /**
+     * get quant proteins for comparison table
+     *
+     * @param selectedComparisonList selected groups comparison list
+     *
+     * @return updated Selected Comparison List 
+     */
+    public Set<GroupsComparison>  getComparisonProtList(Set<GroupsComparison> selectedComparisonList) {
+        Set<GroupsComparison> updatedSelectedComparisonList = new HashSet<GroupsComparison>();
+        for (GroupsComparison comparison : selectedComparisonList) {
+            Set<QuantProtein> comparisonMap = new HashSet<QuantProtein>();
+            for (int dsID : comparison.getDatasetIndexes()) {
+                comparisonMap.addAll(da.getQuantificationProteins(dsID));
 
+            }
+            Map<String, ComparisonProtein> comparProtList = new HashMap<String, ComparisonProtein>();
+            for (QuantProtein quant : comparisonMap) {
+                if (!comparProtList.containsKey(quant.getUniprotAccession())) {
+                    comparProtList.put(quant.getUniprotAccession(), new ComparisonProtein(comparison.getDatasetIndexes().length));
+                }
+                ComparisonProtein comProt = comparProtList.get(quant.getUniprotAccession());
+
+                if (quant.getStringFCValue().equalsIgnoreCase("Decreased")) {
+                    comProt.addDown(1);
+                } else if (quant.getStringFCValue().equalsIgnoreCase("Increased")) {
+                    comProt.addUp(1);
+                } else if (quant.getStringFCValue().equalsIgnoreCase("Not Provided")) {
+                    comProt.addNotProvided(1);
+                } else if (quant.getStringFCValue().equalsIgnoreCase("Not Regulated")) {
+                    comProt.addNotReg(1);
+                }
+                comProt.setUniProtAccess(quant.getUniprotAccession());
+                String protName = quant.getUniprotProteinName();
+                if (protName == null || protName.equalsIgnoreCase("Not Available")) {
+                    protName = quant.getPublicationProteinName();
+                }
+                comProt.setProtName(protName);
+                comparProtList.put(quant.getUniprotAccession(), comProt);
+            }
+            //sort the protiens map
+             Map<String, ComparisonProtein> sortedcomparProtList = new TreeMap<String, ComparisonProtein>(Collections.reverseOrder());
+             for(String Key:comparProtList.keySet()){
+                 ComparisonProtein temp = comparProtList.get(Key);
+                 sortedcomparProtList.put((temp.getUp()+"_"+Key), temp);
+             }
+            
+            comparison.setComparProtsMap(sortedcomparProtList);
+            updatedSelectedComparisonList.add(comparison);
+
+        }
+
+        return updatedSelectedComparisonList;
+
+        
+//        
+//        Map<String, Map<String, ComparisonProtein>> comProtList = new HashMap<String, Map<String, ComparisonProtein>>();
+//        int compcounter = 0;
+//        int protcounter = 0;
+//        Set<QuantProtein> comparisonMap = new HashSet<QuantProtein>();
+//        for (QuantDatasetObject ds : datasets) {
+//            String key = ds.getPatientsGroup1().toLowerCase() + "-" + ds.getPatientsSubGroup1().toLowerCase() + "-" + ds.getPatientsGroup2().toLowerCase() + "-" + ds.getPatientsSubGroup2().toLowerCase();
+//
+//            comparisonMap = (da.getQuantificationProteins(ds.getUniqId()));
+//            for (QuantProtein quant : comparisonMap) {
+//                if (!comProtList.containsKey(quant.getUniprotAccession())) {
+//                    comProtList.put(quant.getUniprotAccession(), new HashMap<String, ComparisonProtein>());
+//                    compcounter++;
+//                }
+//                Map<String, ComparisonProtein> comProtmap = comProtList.get(quant.getUniprotAccession());
+//                if (!comProtmap.containsKey(key)) {
+//                    comProtmap.put(key, new ComparisonProtein());
+//                    protcounter++;
+//
+//                }
+//
+//                ComparisonProtein comProt = comProtmap.get(key);
+//                if (quant.getStringFCValue().equalsIgnoreCase("Decreased")) {
+//                    comProt.addDown(1);
+//                } else if (quant.getStringFCValue().equalsIgnoreCase("Increased")) {
+//                    comProt.addUp(1);
+//                } else if (quant.getStringFCValue().equalsIgnoreCase("Not Provided")) {
+//                    comProt.addNotProvided(1);
+//                } else if (quant.getStringFCValue().equalsIgnoreCase("Not Regulated")) {
+//                    comProt.addNotReg(1);
+//                }
+//                comProtmap.put(key, comProt);
+//                comProtList.put(quant.getUniprotAccession(), comProtmap);
+//            }
+//
+//        }
+//
+//        
+//          ComparisonProtein[][] compArr = new ComparisonProtein[protcounter][compcounter];
+//          int x = 0;
+//          int y = 0;
+//         for (String key : comProtList.keySet()) {
+//                Map<String, ComparisonProtein> protList = comProtList.get(key);
+//                for (String key2 : protList.keySet()) {                    
+//                    ComparisonProtein prot = protList.get(key2);
+//                    compArr[x][y]=prot;
+//                    y++;
+//                    
+//                    
+//                }
+//                x++;
+//           }
+//
+//          
+//        
+//        return comProtList;
     
+    
+    } 
+    
+   
 
     
 }

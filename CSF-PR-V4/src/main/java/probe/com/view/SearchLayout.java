@@ -20,7 +20,7 @@ import java.util.Map;
 import probe.com.handlers.MainHandler;
 import probe.com.model.beans.PeptideBean;
 import probe.com.model.beans.IdentificationProteinBean;
-import probe.com.model.beans.QuantificationProteinsBean;
+import probe.com.model.beans.QuantProtein;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.view.components.SearchFiltersLayout;
 import probe.com.view.components.IdentificationSearchResultsTableLayout;
@@ -156,37 +156,35 @@ public class SearchLayout extends VerticalLayout implements Serializable, Button
                 searchingUnit.getKeywordFilter().getSearchField().focus();
             } else {
                 Map<Integer, IdentificationProteinBean> searchIdentificationProtList = null;
-                Map<Integer, QuantificationProteinsBean> searchQuantificationProtList = null;
+                List<QuantProtein> searchQuantificationProtList = null;
 
                 String notFound = "";
                 //, "Quantification Data", "Both"
-                if (searchingUnit.getFiltersController().getQuery().getSearchDataType().equalsIgnoreCase("Identification Data")) {            
-          
-                searchingUnit.getFiltersController().getQuery().setSearchKeyWords(searchingUnit.getKeywordFilter().getSearchField().getValue());
-                String defaultText = searchingUnit.getFiltersController().getQuery().getSearchKeyWords();
-                
-                defaultText = defaultText.replace(",", "\n").replace(" ", "").trim();
-                searchingUnit.getKeywordFilter().getSearchField().setValue(defaultText);
-                searchIdentificationProtList = handler.searchIdentificationProtein(searchingUnit.getFiltersController().getQuery());
-                notFound = handler.filterSearchingKeywords(searchIdentificationProtList, searchingUnit.getFiltersController().getQuery().getSearchKeyWords(), searchingUnit.getFiltersController().getQuery().getSearchBy());
-                System.out.println("not found is " + notFound + "   size " + searchIdentificationProtList.size());
-                
-            }
-            
-        else {// start quant searching
-            
-            searchQuantificationProtList = handler.searchQuantificationProtein(searchingUnit.getFiltersController().getQuery());
-            
-        }
+                if (searchingUnit.getFiltersController().getQuery().getSearchDataType().equalsIgnoreCase("Identification Data")) {
 
-        //searching process  end here
-        searchLayout.setVisible(true);
-        if (!notFound.equals("")) {
-            notFind(notFound);
-        }
-        boolean test = true, test2 = true;
-        if (searchIdentificationProtList == null || searchIdentificationProtList.isEmpty()) {
-            identificationSearchLayout.setVisible(false);
+                    searchingUnit.getFiltersController().getQuery().setSearchKeyWords(searchingUnit.getKeywordFilter().getSearchField().getValue());
+                    String defaultText = searchingUnit.getFiltersController().getQuery().getSearchKeyWords();
+
+                    defaultText = defaultText.replace(",", "\n").replace(" ", "").trim();
+                    searchingUnit.getKeywordFilter().getSearchField().setValue(defaultText);
+                    searchIdentificationProtList = handler.searchIdentificationProtein(searchingUnit.getFiltersController().getQuery());
+                    notFound = handler.filterSearchingKeywords(searchIdentificationProtList, searchingUnit.getFiltersController().getQuery().getSearchKeyWords(), searchingUnit.getFiltersController().getQuery().getSearchBy());
+                 
+
+                } else {// start quant searching
+                    searchQuantificationProtList = handler.searchQuantificationProtein(searchingUnit.getFiltersController().getQuery());
+                      notFound = handler.filterSearchingKeywords(searchQuantificationProtList, searchingUnit.getFiltersController().getQuery().getSearchKeyWords(), searchingUnit.getFiltersController().getQuery().getSearchBy());
+                 
+                }
+
+                //searching process  end here
+                searchLayout.setVisible(true);
+                if (!notFound.equals("")) {
+                    notFind(notFound);
+                }
+                boolean test = true, test2 = true;
+                if (searchIdentificationProtList == null || searchIdentificationProtList.isEmpty()) {
+                    identificationSearchLayout.setVisible(false);
             test = false;
         }
         if (searchQuantificationProtList == null || searchQuantificationProtList.isEmpty()) {

@@ -66,10 +66,12 @@ public class IconGenerator implements Serializable {
     public HorizontalLayout getInfoNote(final Label label) {
         PopupView popup = null;
         HorizontalLayout helpLayout = new HorizontalLayout();
+        helpLayout.setWidth("16px");
+        helpLayout.setHeight("16px");
         PopupView.Content content = new PopupView.Content() {
             @Override
             public String getMinimizedValueAsHTML() {//Protein Standards
-                return "<img src='https://fbcdn-sphotos-e-a.akamaihd.net/hphotos-ak-ash3/578459_178345075682426_187244436_n.jpg' alt='Information'>";//https://fbcdn-sphotos-d-a.akamaihd.net/hphotos-ak-prn2/1175716_173022812881319_804705945_n.jpg
+                return "<img src='VAADIN/themes/dario-theme/img/info.jpg' alt='Information'>";//https://fbcdn-sphotos-d-a.akamaihd.net/hphotos-ak-prn2/1175716_173022812881319_804705945_n.jpg
             }
 
             @Override
@@ -82,7 +84,7 @@ public class IconGenerator implements Serializable {
         popup = new PopupView("", label);
         popup.setContent(content);
         popup.setHideOnMouseOut(true);
-        popup.setWidth("40%");
+//        popup.setWidth("40%");
         popup.setStyleName(Reindeer.LAYOUT_BLACK);
         popup.addPopupVisibilityListener(new PopupView.PopupVisibilityListener() {
             /**
@@ -109,7 +111,7 @@ public class IconGenerator implements Serializable {
         PopupView.Content content = new PopupView.Content() {
             @Override
             public String getMinimizedValueAsHTML() {
-                return "<img style='height:16px;margin-top:10px;' src='https://scontent-a.xx.fbcdn.net/hphotos-prn2/1454691_202673623249571_816907722_n.jpg' alt='" + desc + "' title='" + desc + "'> ";//https://fbcdn-sphotos-d-a.akamaihd.net/hphotos-ak-prn2/1175716_173022812881319_804705945_n.jpg
+                return "<img style='height:16px;margin-top:10px;' src='VAADIN/themes/dario-theme/img/excel.jpg' alt='" + desc + "' title='" + desc + "'> ";//https://fbcdn-sphotos-d-a.akamaihd.net/hphotos-ak-prn2/1175716_173022812881319_804705945_n.jpg
             }
 
             @Override
@@ -125,7 +127,7 @@ public class IconGenerator implements Serializable {
         popup.setHideOnMouseOut(true);
         popup.setWidth("40%");
         popup.setStyleName(Reindeer.LAYOUT_BLACK);
-        popup.addListener(new PopupView.PopupVisibilityListener() {
+        popup.addPopupVisibilityListener(new PopupView.PopupVisibilityListener() {
             /**
              *
              */

@@ -94,6 +94,10 @@ public class WelcomeLayout extends VerticalLayout implements Serializable {
         para_3.setContentMode(ContentMode.HTML);
         leftLayout.addComponent(para_3);
 
+        Label para_4 = new Label("<p align='justify' Style='margin-left:40px;color:#585858;'><font size=\"2\">See also: <a Style='color:#585858;' href='http://www.mcponline.org/content/13/11/3152.full.pdf+html' target=\"_blank\">Guldbrandsen et al.: In-depth Characterization of the Cerebrospinal Fluid (CSF) Proteome Displayed Through the CSF Proteome Resource (CSF-PR). Mol Cell Proteomics. 2014.</a></font></p>");
+        para_4.setContentMode(ContentMode.HTML);
+        leftLayout.addComponent(para_4);
+
         bottomLayout.addComponent(adminIcon);
         bottomLayout.setComponentAlignment(adminIcon, Alignment.BOTTOM_RIGHT);
         bottomLayout.setExpandRatio(adminIcon, 0.05f);

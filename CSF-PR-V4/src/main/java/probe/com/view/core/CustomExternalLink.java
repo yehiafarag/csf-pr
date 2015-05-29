@@ -73,4 +73,7 @@ public class CustomExternalLink extends VerticalLayout implements Serializable, 
 //            }
 //        }
     }
+//    public String getStringLabelValue(){
+//        return label.getValue();
+//    }
 }

@@ -21,7 +21,7 @@ import probe.com.view.core.FilterConfirmLabel;
  * @author y-mok_000
  */
 public class DoubleBetweenValuesFilter extends HorizontalLayout implements Serializable,Button.ClickListener{
-    private final FiltersControl control;
+    private final SearchingFiltersControl control;
     
     private final ClosableFilterLabel filterBtn;
     private final String defaultLabel;
@@ -29,7 +29,7 @@ public class DoubleBetweenValuesFilter extends HorizontalLayout implements Seria
     private final Button okBtn;
     private  DoubleTextField minValueField ,maxValueField;
     private final FilterConfirmLabel filterConfirmLabel ;
-    public DoubleBetweenValuesFilter(FiltersControl control,int filterId,String defaultLabel){
+    public DoubleBetweenValuesFilter(SearchingFiltersControl control,int filterId,String defaultLabel){
        this.control = control;
        this.filterId=filterId;
        this.setHeight("20px");

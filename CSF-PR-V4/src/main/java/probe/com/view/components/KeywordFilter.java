@@ -19,8 +19,8 @@ import probe.com.view.core.TextAreaFilter;
 public class KeywordFilter implements Serializable{
     private final TextAreaFilter searchFieldFilter;
     private final OptionGroupFilter searchbyGroup;
-    private final FiltersControl control;
-    public KeywordFilter(FiltersControl filtersController,String defaultText){
+    private final SearchingFiltersControl control;
+    public KeywordFilter(SearchingFiltersControl filtersController,String defaultText){
         this.control = filtersController;
         searchFieldFilter = new TextAreaFilter(control, 1, "Search Keywords", defaultText);
         
@@ -70,10 +70,12 @@ public class KeywordFilter implements Serializable{
         //init search by        
         
         searchbyGroup = new OptionGroupFilter(filtersController,"Search By:", 4, true);
-        searchbyGroup.setWidth("350px");
+        searchbyGroup.setWidth("330px");
         searchbyGroup.setDescription("Please Select Search Method");
         searchbyGroup.getOptionGroup().setEnabled(false);
         searchbyGroup.getOptionGroup().setNullSelectionAllowed(true);
+        
+        
         // Use the single selection mode.
 
         searchbyGroup.getOptionGroup().addItem("Protein Accession");

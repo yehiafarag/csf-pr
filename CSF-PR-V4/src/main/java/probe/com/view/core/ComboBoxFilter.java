@@ -11,14 +11,14 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import java.util.HashMap;
 import java.util.Map;
-import probe.com.view.components.FiltersControl;
+import probe.com.view.components.SearchingFiltersControl;
 
 /**
  *
  * @author Yehia Farag
  */
 public class ComboBoxFilter extends HorizontalLayout implements Property.ValueChangeListener,Button.ClickListener{
-    private final FiltersControl control;
+    private final SearchingFiltersControl control;
     private final  Map<String,ClosableFilterLabel> localBtns = new HashMap<String, ClosableFilterLabel>();
     private final String defaultLabel;
     private final int filterId;  
@@ -26,18 +26,18 @@ public class ComboBoxFilter extends HorizontalLayout implements Property.ValueCh
     private final FilterConfirmLabel filterConfirmLabel ;
    private final String filterTitle;
     
-    @SuppressWarnings("LeakingThisInConstructor")
-      public ComboBoxFilter(FiltersControl control,int filterId,String filterTitle,String defaultLabel,String[] datasetNamesList){
+   
+      public ComboBoxFilter(SearchingFiltersControl control,int filterId,String filterTitle,String defaultLabel,String[] datasetNamesList){
        this.control = control;
        this.filterId=filterId;
        this.filterTitle =filterTitle;
        this.defaultLabel = defaultLabel;
-       
+       this.setWidthUndefined();
        this.setSpacing(true);
        this.setMargin(false);
        comboBox = new ComboBox();
        this.addComponent(comboBox);
-       comboBox.setWidth("150px");
+       comboBox.setWidth("180px");
        comboBox.setNullSelectionAllowed(false);
        comboBox.addItem(defaultLabel);
         comboBox.setValue(defaultLabel);
@@ -45,9 +45,12 @@ public class ComboBoxFilter extends HorizontalLayout implements Property.ValueCh
             comboBox.addItem(str);
         }
         this.setImmediate(true);       
-        comboBox.addValueChangeListener(this);   
-         filterConfirmLabel = new FilterConfirmLabel();       
+        comboBox.addValueChangeListener(ComboBoxFilter.this);   
+         filterConfirmLabel = new FilterConfirmLabel();
+         filterConfirmLabel.setHeight("16px");
         this.addComponent(filterConfirmLabel);
+//        this.setExpandRatio(comboBox,0.8f);
+//        this.setExpandRatio(filterConfirmLabel,0.2f);
 //         ClosableFilterLabel btn = new ClosableFilterLabel(defaultLabel, true);
 //                localBtns.put(btn.getCaption(), btn);
 //                control.addFilter(localBtns.get(defaultLabel), true);

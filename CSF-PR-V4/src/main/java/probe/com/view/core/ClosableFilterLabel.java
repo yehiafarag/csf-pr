@@ -33,7 +33,6 @@ public class ClosableFilterLabel extends HorizontalLayout implements Serializabl
 //    private boolean closable;
     private String space = "&nbsp; &nbsp; ";
 
-    @SuppressWarnings("LeakingThisInConstructor")
     public ClosableFilterLabel(String filterTitle, String value, int filterId, boolean closable) {
         filterValueLabel = new Label();
         if (closable) {
@@ -75,7 +74,7 @@ public class ClosableFilterLabel extends HorizontalLayout implements Serializabl
         this.setComponentAlignment(filterValueLabel, Alignment.TOP_LEFT);
 //        this.setExpandRatio(filterValueLabel, 10);
 //        this.setExpandRatio(closeBtn, 0.1f);
-        this.addLayoutClickListener(this);
+        this.addLayoutClickListener(ClosableFilterLabel.this);
     }
 
     @Override
