@@ -10,21 +10,30 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 /**
  *
  * @author Yehia Farag
  */
-public class PopupInteractiveDSFiltersLayout extends VerticalLayout implements LayoutEvents.LayoutClickListener {
+public class PopupInteractiveDSFiltersLayout extends VerticalLayout implements ClickListener,LayoutEvents.LayoutClickListener {
 
     private PopupView container;
 
     public PopupInteractiveDSFiltersLayout(final PopupInteractiveFilterComponent filtersLayout) {
-        this.setStyleName("filterlabelbtn");
+//        this.setStyleName("filterlabelbtn");
+        Button b = new Button("Expolorer Filters");
+        b.setStyleName(Reindeer.BUTTON_LINK);
+        this.addComponent(b);
+        this.setComponentAlignment(b, Alignment.BOTTOM_CENTER);
+        b.addClickListener(PopupInteractiveDSFiltersLayout.this);
+        
         VerticalLayout filterframeLayout = new VerticalLayout();
 
         filterframeLayout.setSpacing(true);
@@ -75,6 +84,12 @@ public class PopupInteractiveDSFiltersLayout extends VerticalLayout implements L
         });
 
     }
+
+    @Override
+    public void buttonClick(Button.ClickEvent event) {
+        container.setPopupVisible(!container.isPopupVisible());
+    }
+    
 
     @Override
     public void layoutClick(LayoutEvents.LayoutClickEvent event) {

@@ -155,7 +155,6 @@
 }
 .showFilterLabelHeader-no:hover{
     font-size: 14px;
-    background: url(img/close_20_20.png) no-repeat;
     background: url(img/close_10_10.png) no-repeat;
 }
 
@@ -448,8 +447,6 @@
      background: url(img/darkbluesparkline.png)no-repeat;
     
 }
-
-
 .bluebullet img{
     clear: both;
     width: 16px;
@@ -467,8 +464,8 @@
     
 }
 
-.hmcolumnlabel_unselected {
-    border: 1px solid #dce0e0;
+.hmcolumnlabel {
+    border: 1px solid #F6F0F0;
      margin-top: 150px;
      text-align: center;
      line-height: 50px;
@@ -480,26 +477,36 @@
     position: absolute;
     background-color: #ffffff;
     color: #000000;
+    cursor: pointer;
+}
+.hmcolumnlabel:hover{
+     border: 1px solid #006699; 
+    
+}
+
+.hmcolumnlabel_heighlightcell {
+    border: 1px solid #fc690a;
+    margin-top: 150px;
+    text-align: center;
+    line-height: 50px;
+    -ms-transform:rotate(270deg); /* IE 9*/ 
+    -moz-transform:rotate(270deg);  /*Firefox */
+    -webkit-transform:rotate(270deg); /* Safari and Chrome */
+    -o-transform:rotate(270deg); /* Opera */
+    transform-origin: 0%  0%;    
+    position: absolute;
+    /*background-color: #006699;*/
+/*    color: white;*/
+    cursor: pointer; 
 
 }
+.hmcolumnlabel div{
+      cursor: pointer;    
+}
+
+
 .hmcolumnlabel_selected {
-    border: 1px solid  #fc690a;
-     margin-top: 150px;
-     text-align: center;
-     line-height: 50px;
-    -ms-transform:rotate(270deg); /* IE 9 */
-    -moz-transform:rotate(270deg); /* Firefox */
-    -webkit-transform:rotate(270deg); /* Safari and Chrome */
-    -o-transform:rotate(270deg); /* Opera */
-    transform-origin: 0%  0%;    
-    position: absolute;
-    background-color: #ffffff;
-    color: #000000;
-
-}
-
-.hmcolumnlabel_unselected_heighlightcell {
-    border: 1px solid #dce0e0;
+    border: 1px solid  #006699;
      margin-top: 150px;
      text-align: center;
      line-height: 50px;
@@ -511,56 +518,68 @@
     position: absolute;
     background-color: #006699;
     color: white;
+    cursor: pointer; 
 
 }
-
+.hmcolumnlabel_selected div{
+    cursor: pointer;    
+}
 .hmcolumnlabel_selected_heighlightcell {
-    border: 1px solid  #ff8800 ;
-     margin-top: 150px;
-     text-align: center;
-     line-height: 50px;
-    -ms-transform:rotate(270deg); /* IE 9 */
-    -moz-transform:rotate(270deg); /* Firefox */
+    border: 1px solid #fc690a;
+    margin-top: 150px;
+    text-align: center;
+    line-height: 50px;
+    -ms-transform:rotate(270deg); /* IE 9*/ 
+    -moz-transform:rotate(270deg);  /*Firefox */
     -webkit-transform:rotate(270deg); /* Safari and Chrome */
     -o-transform:rotate(270deg); /* Opera */
     transform-origin: 0%  0%;    
     position: absolute;
-    background-color: #ff8800;
+    background-color: #006699;
     color: white;
+    cursor: pointer; 
 
 }
 
 
-
-
-.hmrowlabel_unselected {
+.hmrowlabel {
     border: 1px solid #F6F0F0;
      text-align: center;
      line-height: 50px;
      background-color:    #ffffff;
-    color: #000000;
-  
+    color: #000000; 
+     cursor: pointer;  
 
 }
+.hmrowlabel:hover{
+     border: 1px solid #006699; 
+    
+}
+.hmrowlabel div{
+      cursor: pointer;    
+}
+
+
+.hmrowlabel_heighlightcell {
+    border: 1px solid #fc690a;
+     text-align: center;
+     line-height: 50px; 
+}
+
+
 
 .hmrowlabel_selected {
-    border: 1px solid  #fc690a;
-     text-align: center;
-     line-height: 50px;
-     background-color: #ffffff;
-    color: #000000;
-  
-
-}
-
-.hmrowlabel_unselected_heighlightcell {
-    border: 1px solid #dce0e0;
+    border: 1px solid  #006699;
      text-align: center;
      line-height: 50px;
      background-color: #006699;
     color: white;
+     cursor: pointer;  
   
 
+}
+.hmrowlabel_selected div{
+      cursor: pointer;    
 }
 
 .hmrowlabel_selected_heighlightcell {
@@ -606,8 +625,8 @@
 
 }
 .filterlabelbtn{
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     background-color:  whitesmoke;
     background-image: url(img/filter.png);
     background-position:center;
@@ -643,7 +662,7 @@ background-color: lightgray;
 
 .resetlabelbtn{
     width: 100px;
-    height: 40px;
+    height: 30px;
     background-color:  whitesmoke;
 /*    background-image: url(img/reset.png);
     background-repeat: no-repeat;*/
@@ -655,7 +674,7 @@ background-color: lightgray;
 
 }
 resetlabelbtn p{
-     margin-top:10px;
+     margin-top:5px;
      cursor: pointer;
 
 
@@ -664,9 +683,25 @@ resetlabelbtn p{
 background-color: lightgray;
     
 }
+.matrixbtn{
+    /*width: 23px;*/
+    height: 24px;
+    background-color:  whitesmoke;
+    background-image: url(img/matrix.ico);
+    background-repeat: no-repeat;
+    background-position:center;
+    border: 1px solid  rgb(169, 169, 169) ;
+    border-radius: 3px;
+    cursor:pointer;
+
+
+}
+.matrixbtn:hover{
+    background-color:  lightgray;    
+}
 .grcompbtn{
     width: 100px;
-    height: 40px;
+    height: 30px;
     background-color:  whitesmoke;
     background-repeat: no-repeat;
     background-position:center;
@@ -678,7 +713,7 @@ background-color: lightgray;
 }
 .grcompbtn p{
     
-     margin-top:10px;
+     margin-top:5px;
      cursor: pointer;
     
 }
@@ -700,8 +735,8 @@ background-color: lightgray;
     background: #cc0000;
 }
 .tablesearchingbtn{
-     width: 100px;
-    height: 23px;
+     /*width: 40px;*/
+    height: 24px;
     background-color:  whitesmoke;
     background-image: url(img/icon_find.png);
     background-repeat: no-repeat;
@@ -716,9 +751,9 @@ background-color: lightgray;
 background-color: lightgray;
     
 }
-.tablesearchingnextbtn{
-     width: 100px;
-    height: 23px;
+.smallresetbtn div{
+     width: 70px;
+    height: 24px;
     background-color:  whitesmoke;
     background-image: url(img/reset.png);
     background-repeat: no-repeat;
@@ -729,7 +764,19 @@ background-color: lightgray;
     
 }
 
-.tablesearchingnextbtn:hover{
+.smallresetbtn:hover{
 background-color: lightgray;
     
+}
+
+.closebtn{
+    clear: both;
+    width: 16px;
+    height: 16px;
+    background-color:  whitesmoke;
+    background-image: url(img/close_1.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    cursor:pointer;
+
 }

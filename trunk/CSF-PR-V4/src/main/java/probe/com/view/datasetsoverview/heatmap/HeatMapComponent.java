@@ -33,8 +33,10 @@ public class HeatMapComponent extends VerticalLayout {
 
     private HeaderCell[] columnCells;
     private HeaderCell[] rowCells;
+    private final Map<String,HeatmapCell>comparisonsCellsMap = new HashMap<String, HeatmapCell>();
     private final Set<GroupsComparison> selectedDsList = new HashSet<GroupsComparison>();
-    private boolean singleSelection = false;
+    private boolean singleSelection = true;
+    private boolean selfSelection = false;
 
     public HeatMapComponent() {
         this.setMargin(false);
@@ -49,6 +51,9 @@ public class HeatMapComponent extends VerticalLayout {
         spacer.setWidth("150px");
         spacer.setHeight("50px");
         spacer.setStyleName(Reindeer.LAYOUT_WHITE);
+       
+       
+        
         h1Layout.addComponent(spacer);
         h1Layout.setSpacing(true);
         h1Layout.addComponent(columnHeader);
@@ -56,13 +61,14 @@ public class HeatMapComponent extends VerticalLayout {
         h1Layout.setComponentAlignment(columnHeader, Alignment.TOP_LEFT);
         this.addComponent(h1Layout);
 
-        HorizontalLayout h2Layout = new HorizontalLayout();
+        final HorizontalLayout h2Layout = new HorizontalLayout();
         h2Layout.addComponent(rowHeader);
         h2Layout.addComponent(heatmapBody);
         h2Layout.setSpacing(true);
 //        h2Layout.setWidth("100%");
         h2Layout.setComponentAlignment(heatmapBody, Alignment.MIDDLE_LEFT);
-        this.addComponent(h2Layout);
+        this.addComponent(h2Layout); 
+        
 
     }
 
@@ -78,7 +84,7 @@ public class HeatMapComponent extends VerticalLayout {
 
     }
 
-    private List<HeatmapCell> selectedCells = new ArrayList<HeatmapCell>();
+    private final List<HeatmapCell> selectedCells = new ArrayList<HeatmapCell>();
 
     protected void addSelectedDs(GroupsComparison comparison, HeatmapCell cell) {
         if (singleSelection) {
@@ -88,21 +94,77 @@ public class HeatMapComponent extends VerticalLayout {
             selectedDsList.clear();
             selectedCells.clear();
         }
+        
         this.selectedDsList.add(comparison);
         this.selectedCells.add(cell);
-        
+        String kI = cell.getComparison().getComparisonHeader();
+        String[] k1Arr = kI.split(" vs ");
+        String kII = k1Arr[1] + " vs " + k1Arr[0];
+        HeatmapCell equalCall = comparisonsCellsMap.get(kII);
+        equalCall.select();
+        this.selectedDsList.add(comparison);
+        this.selectedCells.add(cell);
+        this.selectedDsList.add(equalCall.getComparison());
+        this.selectedCells.add(equalCall);
         updateSelectionManagerIndexes();
     }
 
-    protected void removeSelectedDs(GroupsComparison comparison,HeatmapCell cell ) {
+    public void updateDsCellSelection(Set<GroupsComparison> selectedDsList) {
+
+        if (selfSelection) {
+            selfSelection = false;
+            return;
+        }
+        List<HeatmapCell> localSelectedCells = new ArrayList<HeatmapCell>();
+        localSelectedCells.addAll(this.selectedCells);
+        for (GroupsComparison gr : this.selectedDsList) {
+            String kI = gr.getComparisonHeader();
+                String[] k1Arr = kI.split(" vs ");
+                String kII = k1Arr[1] + " vs " + k1Arr[0];
+                Set<String> keymap = new HashSet<String>();
+                keymap.add(kI);
+                keymap.add(kII);
+            if (!selectedDsList.contains(gr) && !selectedDsList.contains(comparisonsCellsMap.get(kII).getComparison())) {
+                
+                for (HeatmapCell cell : selectedCells) {
+                    String kI2 = cell.getComparison().getComparisonHeader();
+                    String[] kI2Arr = kI2.split(" vs ");
+                    String kII2 = kI2Arr[1] + " vs " + kI2Arr[0];
+                    if (keymap.contains(kI2) && keymap.contains(kII2)) {
+                        cell.unselect();
+                        localSelectedCells.remove(cell);
+                        
+                    }
+
+                }
+
+            }
+        }
+        this.selectedCells.clear();
+        this.selectedCells.addAll(localSelectedCells);
+        this.selectedDsList.clear();
+        this.selectedDsList.addAll(selectedDsList);
+
+
+    }
+
+    protected void removeSelectedDs(GroupsComparison comparison, HeatmapCell cell) {
         this.selectedDsList.remove(comparison);
         this.selectedCells.remove(cell);
+        String kI = cell.getComparison().getComparisonHeader();
+        String[] k1Arr = kI.split(" vs ");
+        String kII = k1Arr[1] + " vs " + k1Arr[0];
+        HeatmapCell equalCall = comparisonsCellsMap.get(kII);
+        equalCall.unselect();
+        this.selectedDsList.remove(equalCall.getComparison());
+        this.selectedCells.remove(equalCall);
         updateSelectionManagerIndexes();
 
     }
 
     private void updateSelectionManagerIndexes() {
         //filter datasets
+        selfSelection =true;
         Map<String, GroupsComparison> filteredComp = new HashMap<String, GroupsComparison>();
         for (GroupsComparison comp : selectedDsList) {
             String kI = comp.getComparisonHeader();
@@ -173,10 +235,14 @@ public class HeatMapComponent extends VerticalLayout {
 
         for (int x = 0; x < values.length; x++) {
             for (int y = 0; y < values[x].length; y++) {
-                double value = values[x][y].getValue();
-                String color = hmColorGen.getColor((float)value);
                 String headerTitle = rowheaders.toArray()[x].toString()+" vs "+colheaders.toArray()[y].toString();
+                 double value = values[x][y].getValue();
+                 String color  = "#EFF2FB";
+                if(!rowheaders.toArray()[x].toString().equalsIgnoreCase(colheaders.toArray()[y].toString()))
+                    color = hmColorGen.getColor((float)value);
+                
                 HeatmapCell cell = new HeatmapCell(value, color, values[x][y].getIndexes(), x, y, null, HeatMapComponent.this,headerTitle);
+                comparisonsCellsMap.put(headerTitle, cell);
                 heatmapBody.addComponent(cell, y, x);
             }
 

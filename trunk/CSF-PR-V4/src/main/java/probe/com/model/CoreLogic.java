@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import probe.com.dal.DataAccess;
 import probe.com.dal.Query;
 import probe.com.model.beans.ComparisonProtein;

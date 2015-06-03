@@ -13,7 +13,8 @@ import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -43,21 +44,27 @@ import probe.com.view.core.PatientsGroup;
  *
  * @author Yehia Farag
  */
-public class DatasetExploringHeatMapFilters extends GridLayout implements  CSFFilter {
+public class DatasetExploringHeatMapFilters extends GridLayout implements CSFFilter {
 
     private final DatasetExploringSelectionManagerRes exploringFiltersManager;
 
     private ListSelectDatasetExplorerFilter patientGroupIFilter, patientSubGroupIFilter, patientGroupIIFilter, patientSubGroupIIFilter;
     private String[] patGr1, patGr2;
     private PatientsGroup[] patientsGroupArr;
-    
-    private final OptionGroup    optionGroup;
+
+    private final OptionGroup optionGroup;
     private final VerticalLayout GroupComparisonFiltersPanelLayout;
     private final VerticalLayout heatmapLayout;
     private HeatMapComponent heatMap;
-    private boolean selfselected=false;
+    private boolean selfselected = false;
+    private final HorizontalLayout btnsLayout;
+    private final QuantProteinsComparisonTable compTable;
+    private final int tableWidth,heatmapW;
+    private final float tableRatio;
+    private final float heatmapRatio;
 
-    public DatasetExploringHeatMapFilters(final DatasetExploringSelectionManagerRes exploringFiltersManager, PopupInteractiveFilterComponent filtersLayout, QuantProteinsComparisonTable compTable) {
+
+    public DatasetExploringHeatMapFilters(final DatasetExploringSelectionManagerRes exploringFiltersManager, PopupInteractiveFilterComponent filtersLayout,final QuantProteinsComparisonTable compTable) {
         this.setHeight("100%");
         this.setWidth("100%");
         this.setSpacing(true);
@@ -65,21 +72,225 @@ public class DatasetExploringHeatMapFilters extends GridLayout implements  CSFFi
         this.setRows(2);
         Page page = Page.getCurrent();
         int pageWidth = page.getBrowserWindowWidth();
-     
 
         this.exploringFiltersManager = exploringFiltersManager;
-//        this.setColumnExpandRatio(0, 0.05f);
-
+        this.compTable=compTable;
         // init group comparisons layout 
         this.GroupComparisonFiltersPanelLayout = new VerticalLayout();
         this.GroupComparisonFiltersPanelLayout.setWidth("450px");
         this.updatePatientGroups(exploringFiltersManager.getFilteredDatasetsList());
         String[] pgArr = merge(patGr1, patGr2);
-        
-     
-        
+
         patientGroupIFilter = new ListSelectDatasetExplorerFilter(1, "Patients Group I", pgArr);
-        patientGroupIFilter.getList().setHeight("150px");
+        initGroupsIFilter();
+
+        patientGroupIIFilter = new ListSelectDatasetExplorerFilter(2, "Patients Group II", pgArr);
+        initGroupsIIFilter();
+        Set<String> pgSet = new TreeSet<String>(Arrays.asList(pgArr));
+
+        GroupComparisonFiltersPanelLayout.addComponent(patientGroupIIFilter);
+        GroupComparisonFiltersPanelLayout.setComponentAlignment(patientGroupIIFilter, Alignment.TOP_LEFT);
+
+        btnsLayout = new HorizontalLayout();
+        btnsLayout.setSpacing(true);
+//        btnsLayout.setMargin(new MarginInfo(true, false, false, false));
+
+        PopupInteractiveDSFiltersLayout filtersButn = new PopupInteractiveDSFiltersLayout(filtersLayout);
+        btnsLayout.addComponent(filtersButn);
+        btnsLayout.setComponentAlignment(filtersButn, Alignment.TOP_LEFT);
+        filtersButn.setDescription("Apply more filters");
+
+        Button clickableComparisonIcon = new Button("Table Filter");
+        clickableComparisonIcon.setHeight("30px");
+//        clickableComparisonIcon.setWidth("140px");
+        clickableComparisonIcon.setStyleName(Reindeer.BUTTON_LINK);
+//        Label l = new Label("<center><p style='font-family: Verdana; font-size: 14px;font-weight: bold;'>Table Filter</p><center>");
+//        l.setContentMode(ContentMode.HTML);
+//        clickableComparisonIcon.addComponent(l);
+//        clickableComparisonIcon.setComponentAlignment(l, Alignment.MIDDLE_CENTER);
+        btnsLayout.addComponent(clickableComparisonIcon);
+        btnsLayout.setComponentAlignment(clickableComparisonIcon, Alignment.MIDDLE_CENTER);
+
+        VerticalLayout popupLayout = new VerticalLayout();
+        popupLayout.setSpacing(true);
+        popupLayout.setWidth("500px");
+        popupLayout.setHeightUndefined();
+        final PopupView container = new PopupView("", popupLayout);
+
+        HorizontalLayout titleLayout = new HorizontalLayout();
+        titleLayout.setWidth("100%");
+        titleLayout.setHeight(22, Sizeable.Unit.PIXELS);
+
+        Label title = new Label("&nbsp;&nbsp;Patients Groups Comparisons");
+        title.setContentMode(ContentMode.HTML);
+        title.setStyleName("custLabel");
+        title.setHeight("20px");
+        titleLayout.addComponent(title);
+
+        VerticalLayout minmIcon = new VerticalLayout();
+        minmIcon.setWidth("16px");
+        minmIcon.setHeight("16px");
+        minmIcon.setStyleName("closelabel");
+        minmIcon.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+            
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+               container.setPopupVisible(!container.isPopupVisible());
+            }
+        });
+        
+         clickableComparisonIcon.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                  container.setPopupVisible(!container.isPopupVisible());
+            }
+             
+           
+        });
+         
+        titleLayout.addComponent(minmIcon);
+        titleLayout.setComponentAlignment(minmIcon, Alignment.TOP_RIGHT);
+        popupLayout.addComponent(titleLayout);
+        GroupComparisonFiltersPanelLayout.setHeightUndefined();
+        popupLayout.addComponent(GroupComparisonFiltersPanelLayout);
+        popupLayout.setComponentAlignment(GroupComparisonFiltersPanelLayout,Alignment.BOTTOM_CENTER);
+        
+        
+           
+        
+        btnsLayout.addComponent(container);
+        btnsLayout.setComponentAlignment(container, Alignment.MIDDLE_CENTER); 
+        
+        container.setHideOnMouseOut(false);
+        
+        
+        Button clearFilterBtn = new Button("Reset");
+        clearFilterBtn.setHeight("30px");
+        clearFilterBtn.setStyleName(Reindeer.BUTTON_LINK);
+//        clearFilterBtn.setStyleName("grcompbtn");
+//         Label l2 = new Label("<center><p style='font-family:Verdana; font-size: 14px;font-weight: bold;'>Reset</p><center>");
+//        l2.setContentMode(ContentMode.HTML);
+//       clearFilterBtn.addComponent(l2);
+//       clearFilterBtn.setComponentAlignment(l2,Alignment.MIDDLE_CENTER);
+        btnsLayout.addComponent(clearFilterBtn);
+        btnsLayout.setComponentAlignment(clearFilterBtn, Alignment.TOP_LEFT);
+        clearFilterBtn.setDescription("Reset all applied filters");
+        btnsLayout.setWidthUndefined();
+        btnsLayout.setHeight("100%");
+        clearFilterBtn.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                 exploringFiltersManager.resetFilters();
+            }
+            
+
+        });
+        
+         this.optionGroup = new OptionGroup();
+         btnsLayout.addComponent(optionGroup);
+         btnsLayout.setComponentAlignment(optionGroup, Alignment.TOP_CENTER);
+         optionGroup.setWidth("150px");
+//        optionGroup.setHeight("40px");
+        optionGroup.setNullSelectionAllowed(false); // user can not 'unselect'
+        optionGroup.setMultiSelect(false);
+
+        optionGroup.addItem("Single selection");
+        optionGroup.addItem("Multiple selection");
+        optionGroup.setValue("Single selection");
+        optionGroup.addStyleName("horizontal");
+        optionGroup.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(optionGroup.getValue().toString().equalsIgnoreCase("Single selection"))
+                    heatMap.setSingleSelection(true);
+                else
+                    heatMap.setSingleSelection(false);
+            }
+        });
+//        HorizontalClickToDisplay butnsFramLayout = new HorizontalClickToDisplay(GroupComparisonFiltersPanelLayout, "grcompbtn", btnsLayout);
+//        butnsFramLayout.setWidth("150px");
+//        butnsFramLayout.setHeight("150px");
+       
+        
+        
+        heatMap = new HeatMapComponent() {
+
+            @Override
+            public void updateSelectionManager(Set<GroupsComparison> selectedDsList) {
+                
+                exploringFiltersManager.updatedComparisonSelection(selectedDsList); //To change body of generated methods, choose Tools | Templates.
+            }
+
+
+                
+          
+
+        };
+       
+        this.addComponent(btnsLayout,0,1);
+
+         heatmapW = 156 + (50 * pgSet.size());
+         tableWidth = (pageWidth - heatmapW-150);
+         heatmapRatio = (float) heatmapW / (float) (pageWidth);
+         tableRatio =  (float) (tableWidth) / (float) (pageWidth);
+        
+
+        this.heatmapLayout = new VerticalLayout();
+        this.heatmapLayout.setWidth(heatmapW + "px");
+        
+        this.heatmapLayout.setHeight("100%");        
+        this.heatmapLayout.setStyleName(Reindeer.LAYOUT_WHITE);
+        this.addComponent(heatmapLayout,0,0);
+        this.setComponentAlignment(heatmapLayout, Alignment.TOP_LEFT);
+
+//        setExpandRatio(heatmapLayout, 0.4f);     
+//        heatMap.setSpacing(true);
+//        heatMap.setWidth("100%");
+        heatmapLayout.addComponent(heatMap);
+        heatmapLayout.setComponentAlignment(heatMap, Alignment.MIDDLE_CENTER);
+//        heatmapLayout.setMargin(true);
+
+        QuantDSIndexes[][] values = calcHeatMapMatrix(pgSet, pgSet);
+        heatMap.updateHeatMap(pgSet, pgSet, values, maxDatasetNumber);
+        exploringFiltersManager.registerFilter(DatasetExploringHeatMapFilters.this);
+        
+        this.addComponent(compTable,1,0);
+        this.setComponentAlignment(compTable, Alignment.TOP_CENTER);
+        
+        compTable.setLayoutWidth(tableWidth);
+        this.setColumnExpandRatio(0, heatmapW);
+        this.setColumnExpandRatio(1, tableWidth);
+         this.addComponent(compTable.getBottomLayout(),1,1);
+         this.setComponentAlignment(compTable.getBottomLayout(), Alignment.TOP_CENTER);
+         
+          compTable.getHideCompariosonTableBtn().addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+//                viewComparisonHeatmap(!heatmapLayout.isVisible());
+                heatmapLayout.setVisible(!heatmapLayout.isVisible());
+                btnsLayout.setVisible(!btnsLayout.isVisible());
+                if (!btnsLayout.isVisible()) {
+                    compTable.setLayoutWidth((tableWidth + heatmapW));
+                    setColumnExpandRatio(0, 0f);
+                    setColumnExpandRatio(1, 1f);
+                } else {
+                    compTable.setLayoutWidth(tableWidth );
+                    setColumnExpandRatio(0, heatmapW);
+                    setColumnExpandRatio(1, tableWidth);
+                    
+                }
+
+            }
+        });
+
+    }
+
+    private void initGroupsIFilter(){
+     patientGroupIFilter.getList().setHeight("150px");
         patientGroupIFilter.getList().setWidth("380px");
         patientGroupIFilter.setMargin(new MarginInfo(false, false, true, false));
         GroupComparisonFiltersPanelLayout.addComponent(patientGroupIFilter);
@@ -121,9 +332,13 @@ public class DatasetExploringHeatMapFilters extends GridLayout implements  CSFFi
                 updateSelectionManager(indexes);
             }
         });
-
-        patientGroupIIFilter = new ListSelectDatasetExplorerFilter(2, "Patients Group II", pgArr);
-        patientGroupIIFilter.getList().setHeight("150px");
+    
+    
+    }
+    
+     private void initGroupsIIFilter(){
+     
+       patientGroupIIFilter.getList().setHeight("150px");
         patientGroupIIFilter.getList().setWidth("380px");
         patientGroupIIFilter.setEnabled(false);
         patientGroupIIFilter.setMargin(new MarginInfo(false, false,true,false));
@@ -164,194 +379,7 @@ public class DatasetExploringHeatMapFilters extends GridLayout implements  CSFFi
                 heatMap.updateHeatMap(sel1, sel2, values, maxDatasetNumber);
                 updateSelectionManager(indexes);
             }
-        });
-        Set<String> pgSet = new TreeSet<String>(Arrays.asList(pgArr));
-       
-
-        GroupComparisonFiltersPanelLayout.addComponent(patientGroupIIFilter);
-        GroupComparisonFiltersPanelLayout.setComponentAlignment(patientGroupIIFilter, Alignment.TOP_LEFT);
-
-        HorizontalLayout btnsLayout = new HorizontalLayout();
-        btnsLayout.setSpacing(true);
-//        btnsLayout.setMargin(new MarginInfo(true, false, false, false));
-        
-        PopupInteractiveDSFiltersLayout filtersButn = new PopupInteractiveDSFiltersLayout(filtersLayout);
-        btnsLayout.addComponent(filtersButn);
-        btnsLayout.setComponentAlignment(filtersButn, Alignment.TOP_LEFT);
-        filtersButn.setDescription("Apply more filters");
-
-        
-        
-        
-         VerticalLayout clickableComparisonIcon = new VerticalLayout();
-        clickableComparisonIcon.setHeight("40px");
-        clickableComparisonIcon.setWidth("100px");
-        clickableComparisonIcon.setStyleName("grcompbtn");
-        Label l = new Label("<center><p style='font-family: Verdana; font-size: 14px;font-weight: bold;'>Table Filter</p><center>");
-        l.setContentMode(ContentMode.HTML);
-       clickableComparisonIcon.addComponent(l);
-       clickableComparisonIcon.setComponentAlignment(l,Alignment.MIDDLE_CENTER);
-        btnsLayout.addComponent(clickableComparisonIcon);
-        btnsLayout.setComponentAlignment(clickableComparisonIcon,Alignment.MIDDLE_CENTER);
-        
-         VerticalLayout popupLayout = new VerticalLayout();
-        popupLayout.setSpacing(true);
-        popupLayout.setWidth("500px");
-        popupLayout.setHeightUndefined();
-        final PopupView container = new PopupView("", popupLayout);
-        
-        HorizontalLayout titleLayout = new HorizontalLayout();
-        titleLayout.setWidth("100%");
-        titleLayout.setHeight(22, Sizeable.Unit.PIXELS);
-
-        Label title = new Label("&nbsp;&nbsp;Patients Groups Comparisons");
-        title.setContentMode(ContentMode.HTML);
-        title.setStyleName("custLabel");
-        title.setHeight("20px");
-        titleLayout.addComponent(title);
-
-        VerticalLayout minmIcon = new VerticalLayout();
-        minmIcon.setWidth("16px");
-        minmIcon.setHeight("16px");
-        minmIcon.setStyleName("closelabel");
-        minmIcon.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
-
-            @Override
-            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-               container.setPopupVisible(!container.isPopupVisible());
-            }
-        });
-        
-         clickableComparisonIcon.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
-
-            @Override
-            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-               container.setPopupVisible(!container.isPopupVisible());
-            }
-        });
-         
-        titleLayout.addComponent(minmIcon);
-        titleLayout.setComponentAlignment(minmIcon, Alignment.TOP_RIGHT);
-        popupLayout.addComponent(titleLayout);
-        GroupComparisonFiltersPanelLayout.setHeightUndefined();
-        
-     
-
-        popupLayout.addComponent(GroupComparisonFiltersPanelLayout);
-        popupLayout.setComponentAlignment(GroupComparisonFiltersPanelLayout,Alignment.BOTTOM_CENTER);
-        
-        
-           
-        
-        clickableComparisonIcon.addComponent(container);
-        clickableComparisonIcon.setComponentAlignment(container, Alignment.MIDDLE_CENTER); 
-        
-        container.setHideOnMouseOut(false);
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        VerticalLayout clearFilterBtn = new VerticalLayout();
-        clearFilterBtn.setHeight("40px");
-        clearFilterBtn.setStyleName("grcompbtn");
-         Label l2 = new Label("<center><p style='font-family:Verdana; font-size: 14px;font-weight: bold;'>Reset</p><center>");
-        l2.setContentMode(ContentMode.HTML);
-       clearFilterBtn.addComponent(l2);
-       clearFilterBtn.setComponentAlignment(l2,Alignment.MIDDLE_CENTER);
-        btnsLayout.addComponent(clearFilterBtn);
-        btnsLayout.setComponentAlignment(clearFilterBtn, Alignment.TOP_LEFT);
-        clearFilterBtn.setDescription("Reset all applied filters");
-        btnsLayout.setWidthUndefined();
-        btnsLayout.setHeight("100%");
-        clearFilterBtn.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
-
-            @Override
-            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                exploringFiltersManager.resetFilters();
-            }
-        });
-        
-         this.optionGroup = new OptionGroup();
-         btnsLayout.addComponent(optionGroup);
-         btnsLayout.setComponentAlignment(optionGroup, Alignment.MIDDLE_CENTER);
-         optionGroup.setWidth("150px");
-//        optionGroup.setHeight("40px");
-        optionGroup.setNullSelectionAllowed(false); // user can not 'unselect'
-        optionGroup.setMultiSelect(false);
-
-        optionGroup.addItem("Single selection");
-        optionGroup.addItem("Multiple selection");
-        optionGroup.setValue("Multiple selection");
-        optionGroup.addStyleName("horizontal");
-        optionGroup.addValueChangeListener(new Property.ValueChangeListener() {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if(optionGroup.getValue().toString().equalsIgnoreCase("Single selection"))
-                    heatMap.setSingleSelection(true);
-                else
-                    heatMap.setSingleSelection(false);
-            }
-        });
-//        HorizontalClickToDisplay butnsFramLayout = new HorizontalClickToDisplay(GroupComparisonFiltersPanelLayout, "grcompbtn", btnsLayout);
-//        butnsFramLayout.setWidth("150px");
-//        butnsFramLayout.setHeight("150px");
-        heatMap = new HeatMapComponent() {
-
-            @Override
-            public void updateSelectionManager(Set<GroupsComparison> selectedDsList) {
-                
-                exploringFiltersManager.updatedComparisonSelection(selectedDsList); //To change body of generated methods, choose Tools | Templates.
-            }
-
-
-                
-          
-
-        };
-       
-        this.addComponent(btnsLayout,0,1);
-
-        int heatmapW = 156 + (50 * pgSet.size());
-        float heatmapRatio = (float) heatmapW / (float) pageWidth;
-        float tableRatio = ((float) pageWidth - (float) heatmapW) / (float) pageWidth;
-        
-
-
-        this.heatmapLayout = new VerticalLayout();
-        this.heatmapLayout.setWidth(heatmapW + "px");
-        
-        this.heatmapLayout.setHeight("100%");        
-        this.heatmapLayout.setStyleName(Reindeer.LAYOUT_WHITE);
-        this.addComponent(heatmapLayout,0,0);
-        this.setComponentAlignment(heatmapLayout, Alignment.TOP_LEFT);
-
-//        setExpandRatio(heatmapLayout, 0.4f);     
-//        heatMap.setSpacing(true);
-//        heatMap.setWidth("100%");
-        heatmapLayout.addComponent(heatMap);
-        heatmapLayout.setComponentAlignment(heatMap, Alignment.MIDDLE_CENTER);
-//        heatmapLayout.setMargin(true);
-
-        QuantDSIndexes[][] values = calcHeatMapMatrix(pgSet, pgSet);
-        heatMap.updateHeatMap(pgSet, pgSet, values, maxDatasetNumber);
-        exploringFiltersManager.registerFilter(DatasetExploringHeatMapFilters.this);
-        
-        this.addComponent(compTable,1,0);
-        this.setComponentAlignment(compTable, Alignment.TOP_RIGHT);
-        int tableWidth = (pageWidth - heatmapW-90);
-        compTable.setWidth( tableWidth+"px");
-        this.setColumnExpandRatio(0, heatmapRatio);
-        this.setColumnExpandRatio(1, tableRatio);
-        System.out.println(" heatmap "+heatmapW+"  rat "+heatmapRatio+"    table "+tableRatio+"  width "+tableWidth);
-
-    }
+        });}
 
     /**
      * this method update the labels value for the groups selection list
@@ -409,12 +437,13 @@ public class DatasetExploringHeatMapFilters extends GridLayout implements  CSFFi
 
     @Override
     public void selectionChanged(String type) {
+        if (selfselected) {
+            selfselected = false;
+            return;
+        }
+
         if (type.equalsIgnoreCase("filter")) {
-            if (selfselected) {
-                selfselected = false;
-                return;
-            }
-            
+
             this.updatePatientGroups(exploringFiltersManager.getFilteredDatasetsList());
             String[] pgArr = merge(patGr1, patGr2);
             Set<String> sel1 = new TreeSet<String>();
@@ -439,6 +468,12 @@ public class DatasetExploringHeatMapFilters extends GridLayout implements  CSFFi
             patientGroupIIFilter.setEnabled(false);
             QuantDSIndexes[][] values = calcHeatMapMatrix(sel1, sel2);
             heatMap.updateHeatMap(sel1, sel2, values, maxDatasetNumber);
+
+        } else if (type.equalsIgnoreCase("DSSelection")) {
+            heatMap.updateDsCellSelection(exploringFiltersManager.getSelectedComparisonList());
+            if (exploringFiltersManager.getSelectedComparisonList().isEmpty()) {
+                viewComparisonHeatmap(true);
+            }
 
         }
 
@@ -584,6 +619,23 @@ public class DatasetExploringHeatMapFilters extends GridLayout implements  CSFFi
 //
 //            }
 //        }
+
+    }
+
+    private void viewComparisonHeatmap(boolean view) {
+        heatmapLayout.setVisible(view);
+        btnsLayout.setVisible(view);
+        if (view) {
+            compTable.setLayoutWidth(tableWidth);
+            setColumnExpandRatio(0, heatmapRatio);
+            setColumnExpandRatio(1, tableRatio);
+
+        } else {
+            compTable.setLayoutWidth((tableWidth + heatmapW));
+            setColumnExpandRatio(0, 0f);
+            setColumnExpandRatio(1, 1f);
+
+        }
 
     }
 

@@ -34,6 +34,10 @@ public class HeatmapCell extends VerticalLayout implements LayoutEvents.LayoutCl
     private String defaultStyle = "heatmapcoloredcell";
     private final Label valueLabel;
     private boolean selected =false;
+
+    public GroupsComparison getComparison() {
+        return comparison;
+    }
     
     private final GroupsComparison comparison;
 
@@ -112,6 +116,13 @@ public class HeatmapCell extends VerticalLayout implements LayoutEvents.LayoutCl
 //        selected = false;
 //        parent.resetHeadersStyle(colLabelIndex, rowLabelIndex);
         defaultStyle = "heatmapcoloredcell";
+        valueLabel.setPrimaryStyleName(defaultStyle);
+
+    }
+    public void select() {
+//        selected = false;
+//        parent.resetHeadersStyle(colLabelIndex, rowLabelIndex);
+        defaultStyle = "selectedheatmapcoloredcell";
         valueLabel.setPrimaryStyleName(defaultStyle);
 
     }
