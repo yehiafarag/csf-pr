@@ -80,7 +80,7 @@ public class DatasetsOverviewLayout extends VerticalLayout {
 //        this.addComponent(studiesExplorerTreeLayout);
 //
         ExploreDatasetsTableLayout studiesTable = new ExploreDatasetsTableLayout(exploringFiltersManager,filterUtility.getActiveHeaders());
-        this.addComponent(studiesTable); 
+//        this.addComponent(studiesTable); 
 
 
     }

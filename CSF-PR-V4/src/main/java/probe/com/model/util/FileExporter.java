@@ -5,16 +5,24 @@
  */
 package probe.com.model.util;
 
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Table;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import probe.com.model.beans.ComparisonProtein;
+import probe.com.model.beans.GroupsComparison;
 import probe.com.model.beans.PeptideBean;
+import probe.com.view.core.CustomExternalLink;
+import probe.com.view.datasetsoverview.ComparisonChart;
 
 /**
  *
@@ -226,6 +234,109 @@ public class FileExporter {
             System.err.println(exp.getMessage());
         }
 
+    }
+    
+    
+    public void exportQuantComparisonTable(Set<GroupsComparison> comparisonMap){
+        Map<String, String> accessionMap = new HashMap<String, String>();
+          int compIndex = 0;
+          int t = 0;
+          String[] columnHeaders = new String[comparisonMap.size()+1];
+          
+          columnHeaders[t++] = "Accession";
+          
+        Map<String, ComparisonProtein[]> protSetMap = new HashMap<String, ComparisonProtein[]>();
+ for (GroupsComparison comp : comparisonMap) {
+             columnHeaders[t++] = comp.getComparisonHeader();
+          Map<String, ComparisonProtein> protList = comp.getComparProtsMap();
+            for (String key2 : protList.keySet()) {
+                ComparisonProtein prot = protList.get(key2);
+                accessionMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), prot.getUniProtAccess());
+                if (!protSetMap.containsKey(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim())) {
+                    protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), new ComparisonProtein[comparisonMap.size()]);
+                }
+                ComparisonProtein[] compArr = protSetMap.get(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim());
+                compArr[compIndex] = prot;
+                protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), compArr);
+            }
+            compIndex++;
+        }
+ 
+        String[][] values = new String[protSetMap.size()+1][columnHeaders.length];
+        int b = 0;
+        for(String str:columnHeaders){
+            values[0][b]=str;
+            b++;
+        }
+        
+        
+        int index = 1;
+        for (String protAccName : protSetMap.keySet()) {
+            int i = 0;
+            String protAcc = protAccName.replace("--", "").trim().split(",")[0];
+            Object[] tableRow = new Object[1 + comparisonMap.size()];            
+            tableRow[i++] = protAcc.toUpperCase();
+            for (GroupsComparison cg : comparisonMap) {
+                ComparisonProtein cp = protSetMap.get(protAccName)[i - 1];
+                if (cp == null) {
+                    tableRow[i] = null;
+                } else {
+
+                    cp.updateLabelLayout();
+                    tableRow[i] = cp.getCellValuePercent();
+                }
+                i++;
+            }
+
+            for (int f = 0; f < tableRow.length; f++) {
+                if(tableRow[f]== null)
+                    tableRow[f]="0.0";
+                values[index][f] = tableRow[f].toString();
+
+            }
+
+//            this.groupsComparisonTable.addItem(tableRow, index);
+            index++;
+        }
+
+        ///write data to file
+        File text = new File("C:\\divaFiles", "csf.txt");
+        PrintWriter out1 = null;
+        FileWriter outFile = null;
+        try {
+            if (text.exists()) {
+                text.delete();
+            }
+            text.createNewFile();
+            outFile = new FileWriter(text, true);
+            out1 = new PrintWriter(outFile);
+
+            for (String[] strArr : values) {
+                String line = "";
+                for (String cell : strArr) {
+                    line += cell + "\t";
+                }
+                line = line.substring(0, line.length() - 2);
+                out1.append(line);
+                out1.println();
+
+            }
+
+            out1.flush();
+            out1.close();
+            outFile.flush();
+            outFile.close();
+            
+           
+        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+        } finally {
+            System.gc();
+        }
+        
+
+
+    
     }
 
 }

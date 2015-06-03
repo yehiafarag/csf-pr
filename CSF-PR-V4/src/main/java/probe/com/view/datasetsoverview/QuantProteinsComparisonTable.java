@@ -14,15 +14,20 @@ import com.vaadin.shared.ui.MultiSelectMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,18 +46,30 @@ import probe.com.view.core.CustomExternalLink;
  *
  * @author Yehia Farag
  */
-public class QuantProteinsComparisonTable extends VerticalLayout implements CSFFilter,Property.ValueChangeListener {
+public class QuantProteinsComparisonTable extends VerticalLayout implements CSFFilter, Property.ValueChangeListener {
 
     private final DatasetExploringSelectionManagerRes selectionManager;
     private final Table groupsComparisonTable;
     private final MainHandler handler;
-    private final HorizontalLayout topLayout, chartsLayoutContainer;
+    private final HorizontalLayout topLayout, chartsLayoutContainer, bottomLayout;
     private final GridLayout searchingFieldLayout;
     private final TextField searchField;
     private final VerticalLayout searchingBtn;
     private final VerticalLayout resetSearchBtn;
-    private final VerticalLayout startLayout;
+    private final VerticalLayout startLayout, hideCompariosonMatrixTableBtn;
     private final Label protCounterLabel;
+    private int width = 1754;
+    private final OptionGroup removeUniqueProteinsOption;
+
+    public void setLayoutWidth(int width) {
+        this.width = width;
+        this.setWidth(width + "px");
+        this.bottomLayout.setWidth(width + "px");
+        float ratio = 360f / (float) width;
+        topLayout.setExpandRatio(searchingFieldLayout, ratio);
+        topLayout.setExpandRatio(chartsLayoutContainer, (1f - ratio));
+
+    }
 
     public QuantProteinsComparisonTable(DatasetExploringSelectionManagerRes selectionManager, MainHandler handler) {
         this.selectionManager = selectionManager;
@@ -94,23 +111,26 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
         searchingFieldLayout = new GridLayout();
         searchingFieldLayout.setWidth("100%");
         searchingFieldLayout.setHeight("250px");
-        searchingFieldLayout.setColumns(3);
+        searchingFieldLayout.setColumns(4);
         searchingFieldLayout.setRows(3);
         searchingFieldLayout.setStyleName(Reindeer.LAYOUT_WHITE);
         searchingFieldLayout.setColumnExpandRatio(0, 0.8f);
-        searchingFieldLayout.setColumnExpandRatio(1, 0.1f);
+        searchingFieldLayout.setColumnExpandRatio(1, 0.05f);
         searchingFieldLayout.setColumnExpandRatio(2, 0.1f);
+        searchingFieldLayout.setColumnExpandRatio(3, 0.05f);
 
         chartsLayoutContainer = new HorizontalLayout();
         chartsLayoutContainer.setHeight("250px");
         chartsLayoutContainer.setWidth("100%");
         chartsLayoutContainer.setStyleName(Reindeer.LAYOUT_WHITE);
+//        chartsLayoutContainer.setMargin(new MarginInfo(false, false, false, true));
 
         topLayout.addComponent(searchingFieldLayout);
         topLayout.addComponent(chartsLayoutContainer);
-        topLayout.setExpandRatio(searchingFieldLayout, 0.15f);
-        topLayout.setExpandRatio(chartsLayoutContainer, 0.85f);
+//        topLayout.setComponentAlignment(chartsLayoutContainer, Alignment.TOP_LEFT);
 
+//        topLayout.setExpandRatio(searchingFieldLayout, 0.2f);
+//        topLayout.setExpandRatio(chartsLayoutContainer, 0.80f);
         // add searching field to spacer
         //allow search in 
         VerticalLayout topSpacer = new VerticalLayout();
@@ -124,33 +144,50 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
 //        searchField.setWidthUndefined();
         searchField.setImmediate(true);
         searchField.setWidth("100%");
-        searchField.setHeight("23px");
+        searchField.setHeight("24px");
         searchField.setInputPrompt("Search...");
         searchingFieldLayout.addComponent(searchField, 0, 2);
         searchingFieldLayout.setComponentAlignment(searchField, Alignment.MIDDLE_LEFT);
 
         searchingBtn = new VerticalLayout();
         searchingBtn.setWidth("30px");
-        searchingBtn.setHeight("23px");
+        searchingBtn.setHeight("24px");
         searchingBtn.setStyleName("tablesearchingbtn");
         searchingFieldLayout.addComponent(searchingBtn, 1, 2);
         searchingFieldLayout.setComponentAlignment(searchingBtn, Alignment.MIDDLE_CENTER);
 
         protCounterLabel = new Label("");
         protCounterLabel.setWidth("100%");
-        protCounterLabel.setHeight("23px");
+        protCounterLabel.setHeight("24px");
         protCounterLabel.setContentMode(ContentMode.HTML);
         searchingFieldLayout.addComponent(protCounterLabel, 0, 1);
         searchingFieldLayout.setComponentAlignment(protCounterLabel, Alignment.BOTTOM_LEFT);
 
         resetSearchBtn = new VerticalLayout();
         resetSearchBtn.setDescription("Reset table");
-        resetSearchBtn.setStyleName("tablesearchingnextbtn");
+        resetSearchBtn.setStyleName("smallresetbtn");
         resetSearchBtn.setWidth("70px");
-        resetSearchBtn.setHeight("23px");
+        resetSearchBtn.setHeight("24px");
         searchingFieldLayout.addComponent(resetSearchBtn, 2, 2);
-        searchingFieldLayout.setComponentAlignment(resetSearchBtn, Alignment.MIDDLE_LEFT);
+        searchingFieldLayout.setComponentAlignment(resetSearchBtn, Alignment.MIDDLE_CENTER);
 
+        hideCompariosonMatrixTableBtn = new VerticalLayout();
+        hideCompariosonMatrixTableBtn.setWidth("30px");
+        hideCompariosonMatrixTableBtn.setHeight("24px");
+        hideCompariosonMatrixTableBtn.setStyleName("matrixbtn");
+        hideCompariosonMatrixTableBtn.setDescription("hide/show comparison table");
+        searchingFieldLayout.addComponent(hideCompariosonMatrixTableBtn, 3, 2);
+        searchingFieldLayout.setComponentAlignment(hideCompariosonMatrixTableBtn, Alignment.MIDDLE_CENTER);
+        hideCompariosonMatrixTableBtn.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                for (ComparisonChart chart : chartSet) {
+                    chart.resizeChart();
+                }
+
+            }
+        });
         this.addComponent(topLayout);
         groupsComparisonTable = new Table();
         groupsComparisonTable.setVisible(false);
@@ -171,9 +208,15 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
 
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                removeUniqueProteinsOption.unselect("Hide unique proteins");
                 Set<String> subAccList = searchProteins(searchField.getValue());
-                filterTable(subAccList, comparisonMap);
+                if (subAccList.isEmpty()) {
+                    Notification.show("Not available");
+                } else {
+                    filterTable(subAccList, compArr, -1);
+                }
                 updateProtCountLabel(subAccList.size());
+
             }
         });
 
@@ -182,7 +225,7 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 Set<String> subAccList = searchProteins(searchField.getValue());
-                filterTable(subAccList, comparisonMap);
+                filterTable(subAccList, compArr, -1);
             }
         });
         searchField.addShortcutListener(new Button.ClickShortcut(b, ShortcutListener.KeyCode.ENTER));
@@ -191,25 +234,173 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
 
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                updateProtCountLabel(0);
                 searchField.clear();
-                filterTable(new HashSet<String>(accessionMap.values()), comparisonMap);
+                updateTableData(compArr);
+//                filterTable(new HashSet<String>(accessionMap.values()), compArr, -1,false);
+                updateProtCountLabel(accessionMap.size());
+            }
+        });
+        bottomLayout = new HorizontalLayout();
+//        bottomLayout.setSpacing(true);
+//        bottomLayout.setWidth("100%");
+        bottomLayout.setHeight("100%");
+        bottomLayout.setStyleName(Reindeer.LAYOUT_WHITE);
+        HorizontalLayout leftBottomLayout = new HorizontalLayout();
+        leftBottomLayout.setWidthUndefined();
+        bottomLayout.addComponent(leftBottomLayout);
+        bottomLayout.setComponentAlignment(leftBottomLayout, Alignment.TOP_LEFT);
+
+        removeUniqueProteinsOption = new OptionGroup();
+        leftBottomLayout.addComponent(removeUniqueProteinsOption);
+        leftBottomLayout.setComponentAlignment(removeUniqueProteinsOption, Alignment.TOP_LEFT);
+        removeUniqueProteinsOption.setWidth("150px");
+//        removeUniqueProteinsOption.setHeight("40px");
+        removeUniqueProteinsOption.setNullSelectionAllowed(true); // user can not 'unselect'
+        removeUniqueProteinsOption.setMultiSelect(true);
+
+        removeUniqueProteinsOption.addItem("Hide unique proteins");
+        removeUniqueProteinsOption.addStyleName("horizontal");
+        removeUniqueProteinsOption.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (removeUniqueProteinsOption.getValue().toString().equalsIgnoreCase("[Hide unique proteins]")) {
+                    Set<Object> itemIds = new HashSet<Object>(groupsComparisonTable.getItemIds());
+                    for (Object id : itemIds) {
+                        Item item = groupsComparisonTable.getItem(id);
+                        for (GroupsComparison gc : compArr) {
+                            if (item.getItemProperty(gc.getComparisonHeader()).getValue() == null) {
+                                groupsComparisonTable.removeItem(id);
+                                break;
+                            }
+                        }
+                    }
+
+                    updateProtCountLabel(groupsComparisonTable.getItemIds().size());
+
+                } else {
+                    filterTable(new HashSet<String>(accessionMap.values()), compArr, -1);
+                    updateProtCountLabel(accessionMap.size());
+
+                }
             }
         });
 
+        Button selectAllBtn = new Button("Select all");
+        selectAllBtn.setHeight("30px");
+        selectAllBtn.setWidth("70px");
+//        unSelectAllBtn.setStyleName("grcompbtn");
+
+        selectAllBtn.setStyleName(Reindeer.BUTTON_LINK);
+
+        leftBottomLayout.addComponent(selectAllBtn);
+        leftBottomLayout.setComponentAlignment(selectAllBtn, Alignment.TOP_LEFT);
+        selectAllBtn.setDescription("Select all data");
+
+        selectAllBtn.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                selectAll();
+            }
+        });
+        Button unSelectAllBtn = new Button("Unselect all");
+        unSelectAllBtn.setHeight("30px");
+        unSelectAllBtn.setWidth("70px");
+//        unSelectAllBtn.setStyleName("grcompbtn");
+
+        unSelectAllBtn.setStyleName(Reindeer.BUTTON_LINK);
+
+        leftBottomLayout.addComponent(unSelectAllBtn);
+        leftBottomLayout.setComponentAlignment(unSelectAllBtn, Alignment.TOP_LEFT);
+        unSelectAllBtn.setDescription("Unselect all data");
+
+        unSelectAllBtn.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                unSelectAll();
+            }
+        });
+
+        Button exportTableBtn = new Button("Export Proteins");
+        exportTableBtn.setHeight("30px");
+        exportTableBtn.setWidth("80px");
+        exportTableBtn.setStyleName(Reindeer.BUTTON_LINK);
+        bottomLayout.addComponent(exportTableBtn);
+        bottomLayout.setComponentAlignment(exportTableBtn, Alignment.TOP_RIGHT);
+        exportTableBtn.setDescription("Export table data");
+        bottomLayout.setHeight("100%");
+        bottomLayout.setStyleName(Reindeer.LAYOUT_WHITE);
+        exportTableBtn.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                //export data
+                System.out.println("export table");
+            }
+        });
+        bottomLayout.setVisible(false);
+
     }
-    private Set<GroupsComparison> comparisonMap;
+
+    public HorizontalLayout getBottomLayout() {
+        return bottomLayout;
+    }
+
+    public VerticalLayout getHideCompariosonTableBtn() {
+        return hideCompariosonMatrixTableBtn;
+    }
+
+    private final Set<GroupsComparison> comparisonMap = new HashSet<GroupsComparison>();
     private final Map<String, String> accessionMap = new HashMap<String, String>();
+    private GroupsComparison[] compArr = new GroupsComparison[]{};
 
     @Override
     public void selectionChanged(String type) {
         if (type.equalsIgnoreCase("DSSelection")) {
             Set<GroupsComparison> selectedComparisonList = selectionManager.getSelectedComparisonList();
-            comparisonMap = handler.getComparisonProtList(selectedComparisonList);
+            Set<GroupsComparison> newComparisons = new HashSet<GroupsComparison>();
+            Set<GroupsComparison> removingComparisons = new HashSet<GroupsComparison>();
+            for (GroupsComparison comparison : selectedComparisonList) {
+                if (!comparisonMap.contains(comparison)) {
+                    newComparisons.add(comparison);
+                }
+
+            }
+            for (GroupsComparison comparison : comparisonMap) {
+                if (!selectedComparisonList.contains(comparison)) {
+                    removingComparisons.add(comparison);
+                }
+            }
+            newComparisons = handler.getComparisonProtList(newComparisons);
+
+            for (GroupsComparison comparison : removingComparisons) {
+                comparisonMap.remove(comparison);
+            }
+
+            GroupsComparison[] tcompArr = new GroupsComparison[comparisonMap.size() + newComparisons.size()];
+            int u = 0;
+            for (GroupsComparison comparison : compArr) {
+                if (comparisonMap.contains(comparison)) {
+                    tcompArr[u] = comparison;
+                    u++;
+                }
+
+            }
+            for (GroupsComparison comparison : newComparisons) {
+                tcompArr[u] = comparison;
+                u++;
+
+            }
+            compArr = tcompArr;
+            comparisonMap.clear();
+            comparisonMap.addAll(Arrays.asList(compArr));
             if (comparisonMap.isEmpty()) {
                 startLayout.setVisible(true);
                 topLayout.setVisible(false);
                 groupsComparisonTable.setVisible(false);
+                bottomLayout.setVisible(false);
                 searchField.clear();
 
             } else {
@@ -217,9 +408,9 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
                 startLayout.setVisible(false);
                 topLayout.setVisible(true);
                 groupsComparisonTable.setVisible(true);
-
+                bottomLayout.setVisible(true);
             }
-            updateTableData(comparisonMap);
+            updateTableData(compArr);
             updateProtCountLabel(accessionMap.size());
 
         }
@@ -242,12 +433,23 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
     }
 
 //    private final Set<ComparisonChart> comparisonChartsSet= new HashSet<ComparisonChart>();
-    private void updateTableData(Set<GroupsComparison> comparisonMap) {
+    private void updateTableData(GroupsComparison[] comparisonMap) {
         this.chartsLayoutContainer.removeAllComponents();
         this.groupsComparisonTable.removeAllItems();
-        chartSet.clear();;
-//        comparisonChartsSet.clear();
+        chartSet.clear();
         accessionMap.clear();
+        boolean useRatio = false;
+        if (comparisonMap.length > 1) {
+            if ((comparisonMap.length * 400) > (width - 360)) {
+                useRatio = true;
+                chartsLayoutContainer.setWidth("100%");
+            } else {
+                chartsLayoutContainer.setWidth((comparisonMap.length * 400) + "px");
+                useRatio = false;
+            }
+        } else {
+            chartsLayoutContainer.setWidth((comparisonMap.length * 400) + "px");
+        }
         List<Object> arr = new ArrayList<Object>();
         arr.addAll(groupsComparisonTable.getContainerPropertyIds());
         for (Object col : arr) {
@@ -257,12 +459,12 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
         this.groupsComparisonTable.addContainerProperty("Accession", CustomExternalLink.class, null, "Accession", null, Table.Align.LEFT);
         this.groupsComparisonTable.addContainerProperty("Name", String.class, null, "Name", null, Table.Align.LEFT);
 
-        int compIndex = 0;
         Map<String, ComparisonProtein[]> protSetMap = new HashMap<String, ComparisonProtein[]>();
-        for (GroupsComparison comp : comparisonMap) {
-             ComparisonChart chartPlot = generateColumnBarChart(comp);
+        for (int compIndex = 0; compIndex < comparisonMap.length; compIndex++) {
+            GroupsComparison comp = comparisonMap[compIndex];
+            ComparisonChart chartPlot = generateColumnBarChart(comp, compIndex);
             this.chartsLayoutContainer.addComponent(chartPlot);
-            this.chartsLayoutContainer.setComponentAlignment(chartPlot, Alignment.MIDDLE_CENTER);
+            this.chartsLayoutContainer.setComponentAlignment(chartPlot, Alignment.MIDDLE_RIGHT);
             this.groupsComparisonTable.addContainerProperty(comp.getComparisonHeader(), ComparisonProtein.class, null, comp.getComparisonHeader() + " (#Proteins: " + comp.getComparProtsMap().size() + ")", null, Table.Align.CENTER);
             Map<String, ComparisonProtein> protList = comp.getComparProtsMap();
 
@@ -270,24 +472,22 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
                 ComparisonProtein prot = protList.get(key2);
                 accessionMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), prot.getUniProtAccess());
                 if (!protSetMap.containsKey(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim())) {
-                    protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), new ComparisonProtein[comparisonMap.size()]);
+                    protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), new ComparisonProtein[comparisonMap.length]);
                 }
-                ComparisonProtein[] compArr = protSetMap.get(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim());
-                compArr[compIndex] = prot;
-                protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), compArr);
+                ComparisonProtein[] tCompArr = protSetMap.get(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim());
+                tCompArr[compIndex] = prot;
+                protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), tCompArr);
             }
-            compIndex++;
         }
         int index = 0;
         for (String protAccName : protSetMap.keySet()) {
             int i = 0;
             String protAcc = protAccName.replace("--", "").trim().split(",")[0];
             String protName = protAccName.replace("--", "").trim().split(",")[1];
-            Object[] tableRow = new Object[3 + comparisonMap.size()];
+            Object[] tableRow = new Object[3 + comparisonMap.length];
             CustomExternalLink acc = new CustomExternalLink(protAcc.toUpperCase(), "http://www.uniprot.org/uniprot/" + protAcc.toUpperCase());
             acc.setDescription("UniProt link for " + protAcc.toUpperCase());
 
-            
             tableRow[i++] = index;
             tableRow[i++] = acc;
             tableRow[i++] = protName;
@@ -306,8 +506,8 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
             index++;
         }
 
-        if (!comparisonMap.isEmpty()) {
-            this.groupsComparisonTable.sort(new String[]{((GroupsComparison) comparisonMap.toArray()[0]).getComparisonHeader()}, new boolean[]{false});
+        if (comparisonMap.length > 0) {
+            this.groupsComparisonTable.sort(new String[]{((GroupsComparison) comparisonMap[0]).getComparisonHeader()}, new boolean[]{false});
         }
         this.groupsComparisonTable.setSortAscending(false);
         int indexing = 1;
@@ -318,185 +518,72 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
         }
         indexing = 1;
 
-        groupsComparisonTable.setColumnExpandRatio("Index", 0.01f);
-        groupsComparisonTable.setColumnExpandRatio("Accession", 0.05f);
-        groupsComparisonTable.setColumnExpandRatio("Name", 0.09f);
+        float ratio = 360f / (float) width;
+        topLayout.setExpandRatio(searchingFieldLayout, ratio);
+        topLayout.setExpandRatio(chartsLayoutContainer, (1f - ratio));
+        groupsComparisonTable.setColumnWidth("Index", 47);
+        groupsComparisonTable.setColumnWidth("Accession", 87);
+        groupsComparisonTable.setColumnWidth("Name", 187);
+        if ((groupsComparisonTable.getSortableContainerPropertyIds().size() - 3) > 1 && useRatio) {
+//            groupsComparisonTable.setColumnExpandRatio("Index", 0.01f);
+//            groupsComparisonTable.setColumnExpandRatio("Accession", 0.05f);
+//            groupsComparisonTable.setColumnExpandRatio("Name", 0.14f);            
 
-        float factor = 0.85f / ((float) groupsComparisonTable.getSortableContainerPropertyIds().size() - 3);
-        for (Object propertyId : groupsComparisonTable.getSortableContainerPropertyIds()) {
-            if (propertyId.toString().equalsIgnoreCase("Index") || propertyId.toString().equalsIgnoreCase("Accession") || propertyId.toString().equalsIgnoreCase("Name")) {
-                continue;
+            float factor = (1f - ratio) / ((float) groupsComparisonTable.getSortableContainerPropertyIds().size() - 3);
+            for (Object propertyId : groupsComparisonTable.getSortableContainerPropertyIds()) {
+                if (propertyId.toString().equalsIgnoreCase("Index") || propertyId.toString().equalsIgnoreCase("Accession") || propertyId.toString().equalsIgnoreCase("Name")) {
+                    continue;
+                }
+                groupsComparisonTable.setColumnExpandRatio(propertyId, factor);
+
             }
-            groupsComparisonTable.setColumnExpandRatio(propertyId, factor);
+
+        } else {
+            for (Object propertyId : groupsComparisonTable.getSortableContainerPropertyIds()) {
+                if (propertyId.toString().equalsIgnoreCase("Index") || propertyId.toString().equalsIgnoreCase("Accession") || propertyId.toString().equalsIgnoreCase("Name")) {
+                    continue;
+                }
+                groupsComparisonTable.setColumnWidth(propertyId, 387);
+
+            }
 
         }
 
     }
     private final Set<ComparisonChart> chartSet = new HashSet<ComparisonChart>();
-    private ComparisonChart generateColumnBarChart(final GroupsComparison comparison) {
-//        Map<String, ComparisonProtein> protList = comparison.getComparProtsMap();
-//        final Map<Integer, Set<String>> compProtMap = new HashMap<Integer, Set<String>>();
-//        double[] values = new double[21];
-//        Object[] labels = new String[21];
-//        double maxIndexerValue = 0.0;
-//        //init values 
-//        for (String key2 : protList.keySet()) {
-//            ComparisonProtein prot = protList.get(key2);
-//            prot.updateLabelLayout();
-//            if (maxIndexerValue < Math.abs(prot.getCellValue())) {
-//                maxIndexerValue = Math.abs(prot.getCellValue());
-//            }
-//
-//        }
-//
-//        for (String key2 : protList.keySet()) {
-//            ComparisonProtein prot = protList.get(key2);
-//            int indexer = (int) (prot.getCellValue() / maxIndexerValue * 10.0);
-//            indexer = indexer + 10;
-//            if (!compProtMap.containsKey(indexer)) {
-//                compProtMap.put(indexer, new HashSet<String>());
-//            }
-//            values[indexer] = (Double) values[indexer] + 1.0;
-//            Set<String> protSet = compProtMap.get(indexer);
-//            protSet.add(prot.getUniProtAccess());
-//            compProtMap.put(indexer, protSet);
-//        }
-//
-//        int z = 0;
-//        DataSeries dataSeries = new DataSeries();
-//        int counter = -100;
-//
-//        Object[] upValue = new Double[(values.length)];
-//        Object[] downValues = new Double[(values.length)];
-//        Object[] notRegValues = new Double[(values.length)];
-//        Object[] selectedValues = new Double[(values.length)];
-//        values = scaleValues(values, protList.size());
-//        for (double d : values) {
-//            if (counter < 0) {
-//                upValue[z] = 0.0;
-//                downValues[z] = d;
-//                notRegValues[z] = 0.0;
-//
-//            } else if (counter == 0) {
-//                upValue[z] = 0.0;
-//                downValues[z] = 0.0;
-//                notRegValues[z] = d;
-//            } else {
-//                upValue[z] = d;
-//                downValues[z] = 0.0;
-//                notRegValues[z] = 0.0;
-//
-//            }
-//            selectedValues[z]=0.0;
-//            labels[z] = " ";
-//            z++;
-//            counter = counter + 10;
-//        }
-//        
-//        selectedValues[0] = 5.0;
-//        dataSeries.add(downValues);
-//        dataSeries.add(upValue);
-//
-//        dataSeries.add(notRegValues);
-//        dataSeries.add(selectedValues);
-//
-//        labels[0] = "Down -->";
-//        labels[10] = "<-- Not Regulated -->";
-//        labels[20] = "<-- Up";
-//
-//        SeriesDefaults seriesDefaults = new SeriesDefaults()
-//                .setFillToZero(true)
-//                .setRenderer(SeriesRenderers.BAR)
-//                .setLineWidth(0.2f).setShadow(false)
-//                .setGridBorderWidth(2.5f)
-//                .setYaxis(Yaxes.Y);
-//        Series series = new Series()
-//                .addSeries(new XYseries().setYaxis(Yaxes.Y).setIndex(0).setLabel("").setShowLabel(false).setShadow(false).setDisableStack(false));
-//
-//        Highlighter highlighter = new Highlighter()
-//                .setUseAxesFormatters(true)
-//                .setShow(true)
-//                .setTooltipFadeSpeed(TooltipFadeSpeeds.FAST)
-//                .setDefault(true)
-//                .setTooltipMoveSpeed(TooltipMoveSpeeds.FAST)
-//                .setFadeTooltip(true)
-//                .setShowTooltip(true)
-//                .setKeepTooltipInsideChart(true)
-//                .setBringSeriesToFront(false)
-//                .setTooltipAxes(TooltipAxes.Y_BAR)
-//                .setTooltipLocation(TooltipLocations.NORTH)
-//                .setShowMarker(false);
-//
-//        Axes axes = new Axes()
-//                .addAxis(new XYaxis(XYaxes.X).setDrawMajorTickMarks(false).setAutoscale(false)
-//                        .setBorderColor("#CED8F6").setDrawMajorGridlines(false).setDrawMinorGridlines(false)
-//                        .setRenderer(AxisRenderers.CATEGORY).setTickSpacing(1).setTickInterval(1.5f)
-//                        .setTicks(new Ticks().add(labels)).setTickRenderer(TickRenderers.CANVAS).setTickSpacing(40)
-//                        .setNumberTicks(21)
-//                        .setTickOptions(
-//                                new CanvasAxisTickRenderer()
-//                                .setFontSize("8pt")
-//                                .setShowMark(true)
-//                                .setShowGridline(false)))
-//                .addAxis(
-//                        new XYaxis(XYaxes.Y).setAutoscale(true).setMax(100).setTickOptions(new AxisTickRenderer()
-//                                .setFormatString("%d" + "%")));
-//
-//        Grid grid = new Grid().setDrawBorder(false).setBackground("#FFFFFF").setBorderColor("#CED8F6").setGridLineColor("#CED8F6").setShadow(false);
-//
-//        Options options = new Options()
-//                .setSeriesDefaults(seriesDefaults)
-//                .setSeries(series)
-//                .setAxes(axes)
-//                .setSyncYTicks(false)
-//                .setHighlighter(highlighter)
-//                .setSeriesColors("#50B747", "#cc0000", "#CDE1FF","#466c90")
-//                .setAnimate(false)
-//                .setAnimateReplot(false)
-//                .setStackSeries(true)
-//                .setGrid(grid);
-//
-//        DCharts chart = new DCharts().setDataSeries(dataSeries).setOptions(options);
-//        chart.setWidth("90%");
-//        chart.setHeight("250px");
-//        chart.setMarginRight(30);
-//        chart.setEnableChartDataClickEvent(true);
+
+    private ComparisonChart generateColumnBarChart(final GroupsComparison comparison, final int index) {
         final ComparisonChart chart = new ComparisonChart(comparison);
         ChartDataClickHandler chartDataClickHandler = new ChartDataClickHandler() {
             private final Map<Integer, Set<String>> localCompProtMap = chart.getCompProtMap();
+            private final int compIndex = index;
+
             @Override
             public void onChartDataClick(ChartDataClickEvent event) {
                 Integer i = (int) (long) event.getChartData().getPointIndex();
-                System.out.println("chartLayout clicked");
-                filterTable(localCompProtMap.get(i), comparisonMap);
+                filterTable(localCompProtMap.get(i), compArr, compIndex);
                 updateProtCountLabel(localCompProtMap.get(i).size());
             }
         };
 
+        LayoutEvents.LayoutClickListener closeListener = new LayoutEvents.LayoutClickListener() {
+
+            private final GroupsComparison localComparison = comparison;
+
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                Set<GroupsComparison> selectedComparisonList = selectionManager.getSelectedComparisonList();
+                selectedComparisonList.remove(localComparison);
+                selectionManager.updatedComparisonSelection(selectedComparisonList);
+            }
+        };
+        chart.getCloseCompariosonBtn().addLayoutClickListener(closeListener);
+
         chart.setChartDataClickHandler(chartDataClickHandler);
         chartSet.add(chart);
-
         return chart;
 
     }
-  
-    
-    
-
-//    private double[] scaleValues(double[] vals, double listSize) {
-//        double[] result = new double[vals.length];
-//        double min = 0d;
-//        double max = listSize;
-//        double scaleFactor = max - min;
-//        // scaling between [0..1] for starters. Will generalize later.
-//        for (int x = 0; x < vals.length; x++) {
-//            result[x] = ((vals[x] - min) / scaleFactor) * 100.0;
-//            if (result[x] > 0) {
-//                result[x] = result[x] + 0.5;
-//            }
-//        }
-//        return result;
-//    }
 
     private Set<String> searchProteins(String keyword) {
         Set<String> subAccessionMap = new HashSet<String>();
@@ -504,18 +591,16 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
             if (key.trim().contains(keyword.toLowerCase().trim())) {
                 subAccessionMap.add(accessionMap.get(key));
             }
-
         }
         return subAccessionMap;
-
     }
 
-    private void filterTable(Set<String> accessions, Set<GroupsComparison> comparisonMap) {
+    private void filterTable(Set<String> accessions, GroupsComparison[] comparisonMap, int sortCompIndex) {
         groupsComparisonTable.removeValueChangeListener(QuantProteinsComparisonTable.this);
         this.groupsComparisonTable.removeAllItems();
         Map<String, ComparisonProtein[]> protSetMap = new HashMap<String, ComparisonProtein[]>();
-        int compIndex = 0;
-        for (GroupsComparison comp : comparisonMap) {
+        for (int compIndex = 0; compIndex < comparisonMap.length; compIndex++) {
+            GroupsComparison comp = comparisonMap[compIndex];
             Map<String, ComparisonProtein> protList = comp.getComparProtsMap();
             for (String key2 : protList.keySet()) {
                 ComparisonProtein prot = protList.get(key2);
@@ -524,13 +609,12 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
                 }
 
                 if (!protSetMap.containsKey(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim())) {
-                    protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), new ComparisonProtein[comparisonMap.size()]);
+                    protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), new ComparisonProtein[comparisonMap.length]);
                 }
-                ComparisonProtein[] compArr = protSetMap.get(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim());
-                compArr[compIndex] = prot;
-                protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), compArr);
+                ComparisonProtein[] tCompArr = protSetMap.get(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim());
+                tCompArr[compIndex] = prot;
+                protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), tCompArr);
             }
-            compIndex++;
         }
 
         int index = 0;
@@ -538,11 +622,10 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
             int i = 0;
             String protAcc = protAccName.replace("--", "").trim().split(",")[0];
             String protName = protAccName.replace("--", "").trim().split(",")[1];
-            Object[] tableRow = new Object[3 + comparisonMap.size()];
+            Object[] tableRow = new Object[3 + comparisonMap.length];
             CustomExternalLink acc = new CustomExternalLink(protAcc.toUpperCase(), "http://www.uniprot.org/uniprot/" + protAcc.toUpperCase());
             acc.setDescription("UniProt link for " + protAcc.toUpperCase());
 
-            
             tableRow[i++] = index;
             tableRow[i++] = acc;
             tableRow[i++] = protName;
@@ -560,9 +643,12 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
             this.groupsComparisonTable.addItem(tableRow, index);
             index++;
         }
+        if (sortCompIndex == -1) {
+            sortCompIndex = 0;
+        }
 
-        if (!comparisonMap.isEmpty()) {
-            this.groupsComparisonTable.sort(new String[]{((GroupsComparison) comparisonMap.toArray()[0]).getComparisonHeader()}, new boolean[]{false});
+        if (comparisonMap.length > 0) {
+            this.groupsComparisonTable.sort(new String[]{((GroupsComparison) comparisonMap[sortCompIndex]).getComparisonHeader()}, new boolean[]{false});
         }
         this.groupsComparisonTable.setSortAscending(false);
         int indexing = 1;
@@ -573,24 +659,54 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
         }
         indexing = 1;
 
-        groupsComparisonTable.setColumnWidth("Index", 33);
-        groupsComparisonTable.setColumnWidth("Accession", 60);
-        groupsComparisonTable.setColumnWidth("Name", 60);
-
-        for (Object propertyId : groupsComparisonTable.getSortableContainerPropertyIds()) {
-            if (propertyId.toString().equalsIgnoreCase("Index") || propertyId.toString().equalsIgnoreCase("Accession") || propertyId.toString().equalsIgnoreCase("Name")) {
-                continue;
-            }
-            groupsComparisonTable.setColumnExpandRatio(propertyId, 0.4f);
-
-        }
+//          groupsComparisonTable.setColumnWidth("Index",60);
+//            groupsComparisonTable.setColumnWidth("Accession", 100);
+//            groupsComparisonTable.setColumnWidth("Name", 200);
+//          float ratio = 360f/(float)width;
+//          topLayout.setExpandRatio(searchingFieldLayout, ratio);
+//            topLayout.setExpandRatio(chartsLayoutContainer,(1f-ratio));
+//        if ((groupsComparisonTable.getSortableContainerPropertyIds().size() - 3) > 3) {
+////            groupsComparisonTable.setColumnExpandRatio("Index", 0.01f);
+////            groupsComparisonTable.setColumnExpandRatio("Accession", 0.05f);
+////            groupsComparisonTable.setColumnExpandRatio("Name", 0.14f);            
+//
+//            float factor =(1f-ratio) / ((float) groupsComparisonTable.getSortableContainerPropertyIds().size() - 3);
+//            for (Object propertyId : groupsComparisonTable.getSortableContainerPropertyIds()) {
+//                if (propertyId.toString().equalsIgnoreCase("Index") || propertyId.toString().equalsIgnoreCase("Accession") || propertyId.toString().equalsIgnoreCase("Name")) {
+//                    continue;
+//                }
+//                groupsComparisonTable.setColumnExpandRatio(propertyId, factor);
+//
+//            }
+//            
+//        } else {
+//            for (Object propertyId : groupsComparisonTable.getSortableContainerPropertyIds()) {
+//                if (propertyId.toString().equalsIgnoreCase("Index") || propertyId.toString().equalsIgnoreCase("Accession") || propertyId.toString().equalsIgnoreCase("Name")) {
+//                    continue;
+//                }
+//                groupsComparisonTable.setColumnWidth(propertyId, 400);
+//
+//            }
+//
+//        }
         groupsComparisonTable.addValueChangeListener(QuantProteinsComparisonTable.this);
+        this.updateChartsWithSelectedProteins(accessions, false);
+//        groupsComparisonTable.setValue(groupsComparisonTable.getItemIds());
+
+    }
+
+    private void selectAll() {
         groupsComparisonTable.setValue(groupsComparisonTable.getItemIds());
 
     }
 
-    Set<Integer> proteinskeys = new HashSet<Integer>() ;
-    Set<CustomExternalLink> lastSelectedProts =new HashSet<CustomExternalLink>(); 
+    private void unSelectAll() {
+        groupsComparisonTable.setValue(null);
+
+    }
+
+    private final Set<Integer> proteinskeys = new HashSet<Integer>();
+    private final Set<CustomExternalLink> lastSelectedProts = new HashSet<CustomExternalLink>();
     //start table selection
 
     @Override
@@ -599,7 +715,8 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
             proteinskeys.clear();
             proteinskeys.addAll((Set) groupsComparisonTable.getValue());
         } else {
-            return;
+            proteinskeys.clear();
+//            return;
         }
         if (!lastSelectedProts.isEmpty()) {
             for (CustomExternalLink uniprot : lastSelectedProts) {
@@ -608,27 +725,25 @@ public class QuantProteinsComparisonTable extends VerticalLayout implements CSFF
         }
         lastSelectedProts.clear();
         for (int proteinskey : proteinskeys) {
-           
+
             final Item item = groupsComparisonTable.getItem(proteinskey);
             CustomExternalLink lastSelectedProt = (CustomExternalLink) item.getItemProperty("Accession").getValue();
             lastSelectedProt.rePaintLable("white");
             lastSelectedProts.add(lastSelectedProt);
         }
-        updateChartsWithSelectedProteins(lastSelectedProts);
-
+        Set<String> accessions = new HashSet<String>();
+        for (CustomExternalLink str : lastSelectedProts) {
+            accessions.add(str.toString());
+        }
+        updateChartsWithSelectedProteins(accessions, true);
     }
 
-    private void updateChartsWithSelectedProteins(Set<CustomExternalLink> accessions) {
+    private void updateChartsWithSelectedProteins(Set<String> accessions, boolean tableSelection) {
 
         for (ComparisonChart chart : chartSet) {
-            chart.updateSelection(accessions);
+            chart.updateSelection(accessions, tableSelection);
         }
 
-    
     }
-    
-    
-    
-    
 
 }

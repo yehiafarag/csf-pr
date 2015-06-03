@@ -53,6 +53,7 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
      private final DecimalFormat df ;
      private Double trendValue = 0.0;
      private double cellValue;
+     private double cellValuePercent;
     public ComparisonProtein(int total) {
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
         otherSymbols.setGroupingSeparator('.');
@@ -284,7 +285,16 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
             v1 = trendValue + factor;
             v1 = Math.min(v1, 0) + ((double) (up - down) / 10.0);
         }
-        cellValue = v1;
+        if (v1 > 0) {
+            cellValue = Math.min(v1, 1);
+        }else if (v1 < 0) {
+            cellValue = Math.max(v1, -1);
+        }
+
+
+        cellValuePercent = cellValue/(double)(total);
+//        System.out.println("cell value "+cellValue+"  total "+total+"   %  "+cellValuePercent);
+        
 //        v1 = Math.abs(v1);
         this.setExpandRatio(notRegLayout, ((float) (total - counter) / total));
         this.setDescription("down : " + down + " ========  not provided : " + notProvided + " ========  not regulated : " + notReg + " ========  up : " + up + " ========  trend value " + cellValue);
@@ -294,6 +304,10 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
     @Override
     public String toString() {
         return "down : " + down + " ========  not provided : " + notProvided + " ========  not regulated : " + notReg + " ========  up : " + up + " ========  trend value " + cellValue;
+    }
+
+    public double getCellValuePercent() {
+        return cellValuePercent;
     }
 
 }
