@@ -50,6 +50,19 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
 //    private final DatasetBean dataset;
     private final String mainProtDesc;
     private Button exportBtn;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     public CustomExportBtnLayout(MainHandler handler, String type, int datasetId, String datasetName, String accession, String otherAccession, Map<String, IdentificationProteinBean> proteinsList, int fractionNumber, Map<Integer, PeptideBean> peptidesList, Table fractionTable, Map<Integer, IdentificationProteinBean> fullExpProtList, String mainProtDesc) {
 
@@ -310,6 +323,7 @@ public class CustomExportBtnLayout extends VerticalLayout implements Serializabl
             csvExport.setReportTitle("CSF-PR / " + datasetName + " / " + accession + " / Fractions ");
             csvExport.setExportFileName("CSF-PR / " + datasetName + " / " + accession + " / Fractions .csv");
         }
+        
         csvExport.setMimeType(CsvExport.CSV_MIME_TYPE);
         csvExport.setDisplayTotals(false);
         csvExport.export();

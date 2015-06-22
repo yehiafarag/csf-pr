@@ -10,11 +10,14 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  *
@@ -23,15 +26,18 @@ import java.util.Locale;
 public class ComparisonProtein extends HorizontalLayout implements Serializable, Comparable<ComparisonProtein>{
     private String uniProtAccess;
     private String protName;
+    private final Map<String,List<Integer>>patientsNumToTrindMap = new HashMap<String, List<Integer>>();
 
-    public String getComparisonName() {
-        return comparisonName;
+    public Map<String, List<Integer>> getPatientsNumToTrindMap() {
+        return patientsNumToTrindMap;
     }
 
-    public void setComparisonName(String comparisonName) {
-        this.comparisonName = comparisonName;
+    public GroupsComparison getComparison() {
+        return comparison;
     }
-    private String comparisonName;
+
+   
+    private final GroupsComparison comparison;
 
     public String getProtName() {
         return protName;
@@ -54,7 +60,8 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
      private Double trendValue = 0.0;
      private double cellValue;
      private double cellValuePercent;
-    public ComparisonProtein(int total) {
+    public ComparisonProtein(int total,GroupsComparison comparison) {
+        this.comparison  =comparison;
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
         otherSymbols.setGroupingSeparator('.');
         df = new DecimalFormat("#.#", otherSymbols);
@@ -64,6 +71,9 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
          downLayout = new VerticalLayout();
          notRegLayout = new VerticalLayout();
          notProvidedLayout = new VerticalLayout();
+         patientsNumToTrindMap.put("up", new ArrayList<Integer>());
+         patientsNumToTrindMap.put("notReg", new ArrayList<Integer>());
+         patientsNumToTrindMap.put("down", new ArrayList<Integer>());
         initLabelLayout();
     }
     
@@ -80,7 +90,7 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         downLabel.setHeight("20px");
         downLabel.setContentMode(ContentMode.HTML);
         this.addComponent(downLabel);
-        this.setComponentAlignment(downLabel, Alignment.TOP_LEFT);
+        this.setComponentAlignment(downLabel, Alignment.TOP_RIGHT);
 
 
             
@@ -91,7 +101,7 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         
         //        notProvidedLayout.setWidth("100%");
         notProvidedLayout.setHeight("20px");
-        notProvidedLayout.setStyleName(Reindeer.LAYOUT_BLUE);
+        notProvidedLayout.setStyleName("lightbluelayout");
         this.addComponent(notProvidedLayout);
 //
 //        downLayout.setWidth("100%");
@@ -99,38 +109,17 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         notRegLayout.setStyleName("empty");//"empty"
         this.addComponent(notRegLayout);
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-       
-//        
-//        upLayout.setWidth("100%");
         upLayout.setHeight("20px");
         upLayout.setStyleName("redlayout");
         this.addComponent(upLayout);
         upLayout.setCaptionAsHtml(true);
         
-
-
          upLabel = new Label();
         upLabel.setContentMode(ContentMode.HTML);
         upLabel.setWidth("50px");
         upLabel.setHeight("20px");
         this.addComponent(upLabel);
-         this.setComponentAlignment(upLabel, Alignment.TOP_RIGHT);
-        
-       
-    
-
-//        notRegLayout.setWidth("100%");
-     
-        
+         this.setComponentAlignment(upLabel, Alignment.TOP_LEFT);
         
     }
 
@@ -163,27 +152,37 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         return up;
     }
     
-    public void addUp(int up) {
-        trendValue+=(double)up;
+    public void addUp(int up, int patNumber) {
+        trendValue += (double) up;
         this.up += up;
+       List<Integer> upList = this.patientsNumToTrindMap.get("up");
+       upList.add(patNumber);
+       this.patientsNumToTrindMap.put("up",upList);
+       
     }
     
     public int getDown() {
         return down;
     }
     
-    public void addDown(int down) {
+    public void addDown(int down,int patNumber) {
         trendValue-=(double)down;
         this.down += down;
+        List<Integer> downList = this.patientsNumToTrindMap.get("down");
+       downList.add(patNumber);
+       this.patientsNumToTrindMap.put("down",downList);
     }
     
     public int getNotReg() {
         return notReg;
     }
     
-    public void addNotReg(int notReg) {
+    public void addNotReg(int notReg,int patNumber) {
          penalty+=0.5;
         this.notReg += notReg;
+        List<Integer> notRegList = this.patientsNumToTrindMap.get("notReg");
+       notRegList.add(patNumber);
+       this.patientsNumToTrindMap.put("notReg",notRegList);
     }
     
     public int getNotProvided() {
@@ -191,10 +190,13 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         return notProvided;
     }
     
-    public void addNotProvided(int notProvided) {
+    public void addNotProvided(int notProvided,int patNumber) {
 //        trendValue-=0.5;
         penalty+=0.5;
         this.notProvided += notProvided;
+        List<Integer> notRegList = this.patientsNumToTrindMap.get("notReg");
+       notRegList.add(patNumber);
+       this.patientsNumToTrindMap.put("notReg",notRegList);
     }
     
     @Override
@@ -233,32 +235,23 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
     
     public void updateLabelLayout() {
         int counter= 0;
-        
-//        int total = 6;//up + down + notProvided + notReg;
-//        upLayout.setWidth(((up / total) * 100) + "%");
-       
-        this.setExpandRatio(upLayout, ((float)1.5 / total));
-        this.setExpandRatio(upLayout, ((float)1.5 / total));
+        this.setExpandRatio(downLabel, ((float)1.5 / total));
+        this.setExpandRatio(upLabel, ((float)1.5 / total));
         int total = this.total-3; 
-        downLabel.setValue("<p style='text-align: right;line-height:0.1'><strong> "+df.format(((double)down /(double) total) * 100.0) + "% &#8595; </strong>&nbsp;</p>");
-        
-        upLabel.setValue("<p style='text-align: right;line-height:0.1'><strong>&#8593; "+df.format(((double)up /(double) total) * 100.0) + "%</strong></p>");
+        downLabel.setValue("<p style='text-align: right;line-height:0.1'><strong> "+df.format(((double)down /(double) total) * 100.0) + "% &#8595; </strong>&nbsp;</p>");        
+        upLabel.setValue("<p style='text-align: left;line-height:0.1'><strong>&nbsp;&#8593; "+df.format(((double)up /(double) total) * 100.0) + "%</strong></p>");
        if (((float)up / total) <= 0.0) {
             upLayout.setVisible(false);
         } else {
             counter +=up;
             this.setExpandRatio(upLayout, ((float)up / total));
         }
-
-//        notProvidedLayout.setWidth(((notProvided / total) * 100) + "%");
         if (((float)notProvided / total) <= 0.0) {
             notProvidedLayout.setVisible(false);
         } else {
             counter +=notProvided;
             this.setExpandRatio(notProvidedLayout, ((float)notProvided / total));
         }
-
-//        downLayout.setWidth(((down / total) * 100) + "%");
         if (((float)down / total) <= 0.0) {
             downLayout.setVisible(false);
         } else {
@@ -266,13 +259,6 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
             this.setExpandRatio(downLayout, ((float)down / total));
         }
 
-//        notRegLayout.setWidth(((notReg / total) * 100) + "%");
-//        if (((float)notReg / total) <= 0.0) {
-////            notRegLayout.setVisible(false);
-//        } else {
-//            counter +=notReg;
-//            
-//        }
         Double v1 = null;
          if(up.intValue() == down.intValue()){        
             v1 = trendValue;
@@ -293,21 +279,34 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
 
 
         cellValuePercent = cellValue/(double)(total);
-//        System.out.println("cell value "+cellValue+"  total "+total+"   %  "+cellValuePercent);
         
 //        v1 = Math.abs(v1);
         this.setExpandRatio(notRegLayout, ((float) (total - counter) / total));
-        this.setDescription("down : " + down + " ========  not provided : " + notProvided + " ========  not regulated : " + notReg + " ========  up : " + up + " ========  trend value " + cellValue);
+        String overall="";
+         if(cellValue >0)
+            overall =  "Up Regulated (" + cellValue + ")";
+        else if (cellValue == 0) {
+            overall= "Not Regulated (" + cellValue + ")";
+        } else {
+            overall=  "Down Regulated (" + cellValue + ")";
+        }
+        this.setDescription("Down Regulated: " + down + "  /  Not Regulated : " + notReg + " /  Up Regulated: " + up + " Overall Trend " + overall);
 
     }
 
     @Override
     public String toString() {
-        return "down : " + down + " ========  not provided : " + notProvided + " ========  not regulated : " + notReg + " ========  up : " + up + " ========  trend value " + cellValue;
+        if(cellValue >0)
+            return "Up Regulated (" + cellValue + ")";
+        else if (cellValue == 0) {
+            return "Not Regulated (" + cellValue + ")";
+        } else {
+            return "Down Regulated (" + cellValue + ")";
+        }
     }
 
-    public double getCellValuePercent() {
-        return cellValuePercent;
-    }
+//    public String getCellValuePercent() {
+//        return "";// cellValuePercent;
+//    }
 
 }

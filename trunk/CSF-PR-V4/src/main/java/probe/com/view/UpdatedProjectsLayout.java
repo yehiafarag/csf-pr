@@ -29,10 +29,6 @@ public class UpdatedProjectsLayout extends VerticalLayout implements Serializabl
         this.handler = handler;
         this.setSpacing(true);
         this.setMargin(true);
-//        Label infoLable = new Label("<h2>Available Datasets in (CSF-PR)</h2>");
-//        infoLable.setContentMode(ContentMode.HTML);
-//        this.addComponent(infoLable);
-//        this.setComponentAlignment(infoLable, Alignment.MIDDLE_LEFT);
          if (handler.getDatasetList() == null || handler.getDatasetList().isEmpty()) {
             Label noExpLable = new Label("<h4 style='font-family:verdana;color:black;font-weight:bold;'>Sorry No Dataset Availabe Now !</h4>");
             noExpLable.setContentMode(ContentMode.HTML);

@@ -22,7 +22,7 @@ import probe.com.model.beans.ComparisonProtein;
 import probe.com.model.beans.GroupsComparison;
 import probe.com.model.beans.PeptideBean;
 import probe.com.view.core.CustomExternalLink;
-import probe.com.view.datasetsoverview.ComparisonChart;
+import probe.com.view.quantdatasetsoverview.ComparisonChart;
 
 /**
  *
@@ -237,11 +237,11 @@ public class FileExporter {
     }
     
     
-    public void exportQuantComparisonTable(Set<GroupsComparison> comparisonMap){
+    public void exportQuantComparisonTable(GroupsComparison[]  comparisonMap){
         Map<String, String> accessionMap = new HashMap<String, String>();
           int compIndex = 0;
           int t = 0;
-          String[] columnHeaders = new String[comparisonMap.size()+1];
+          String[] columnHeaders = new String[comparisonMap.length+1];
           
           columnHeaders[t++] = "Accession";
           
@@ -253,7 +253,7 @@ public class FileExporter {
                 ComparisonProtein prot = protList.get(key2);
                 accessionMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), prot.getUniProtAccess());
                 if (!protSetMap.containsKey(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim())) {
-                    protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), new ComparisonProtein[comparisonMap.size()]);
+                    protSetMap.put(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim(), new ComparisonProtein[comparisonMap.length]);
                 }
                 ComparisonProtein[] compArr = protSetMap.get(("--" + prot.getUniProtAccess().toLowerCase().trim() + "," + prot.getProtName().toLowerCase().trim()).toLowerCase().trim());
                 compArr[compIndex] = prot;
@@ -274,7 +274,7 @@ public class FileExporter {
         for (String protAccName : protSetMap.keySet()) {
             int i = 0;
             String protAcc = protAccName.replace("--", "").trim().split(",")[0];
-            Object[] tableRow = new Object[1 + comparisonMap.size()];            
+            Object[] tableRow = new Object[1 + comparisonMap.length];            
             tableRow[i++] = protAcc.toUpperCase();
             for (GroupsComparison cg : comparisonMap) {
                 ComparisonProtein cp = protSetMap.get(protAccName)[i - 1];
@@ -283,7 +283,7 @@ public class FileExporter {
                 } else {
 
                     cp.updateLabelLayout();
-                    tableRow[i] = cp.getCellValuePercent();
+                    tableRow[i] = cp.getCellValue();
                 }
                 i++;
             }

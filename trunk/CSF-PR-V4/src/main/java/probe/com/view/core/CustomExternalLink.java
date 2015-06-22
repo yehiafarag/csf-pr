@@ -24,8 +24,8 @@ public class CustomExternalLink extends VerticalLayout implements Serializable, 
         this.link = link;
         this.url = url;
         label = new Label("<a href='" + url + "' target='_blank'>" + link + "</a>");
-        label.setContentMode(ContentMode.HTML);        
-            label.setStyleName("externalLinkTableLabel");
+        label.setContentMode(ContentMode.HTML);
+        label.setStyleName("externalLinkTableLabel");
         this.addComponent(label);
 
     }

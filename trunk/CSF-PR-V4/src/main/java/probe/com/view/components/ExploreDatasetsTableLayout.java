@@ -213,7 +213,7 @@ public class ExploreDatasetsTableLayout extends VerticalLayout implements CSFFil
         }
         int dsIndex = dsIndexes[(Integer)item.getItemProperty("Index").getValue()];
         exploringFiltersManager.setSelectedDataset(dsIndex);
-        exploringFiltersManager.updatedSelection(new CSFFilterSelection("dsSelection",new int[]{dsIndex},filter_id, null));
+        exploringFiltersManager.setFilterSelection(new CSFFilterSelection("dsSelection",new int[]{dsIndex},filter_id, null));
         
     }
 
