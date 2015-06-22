@@ -51,4 +51,14 @@
     <inherits name="org.vaadin.actionbuttontextfield.widgetset.ActionButtonTextFieldWidgetset" />
 
     <inherits name="org.vaadin.marcus.WidgetSet" />
+
+    
+
+    
+
+    
+
+    
+
+    <inherits name="com.alsnightsoft.vaadin.widgets.canvasplus.CanvasplusWidgetset" />
 </module>

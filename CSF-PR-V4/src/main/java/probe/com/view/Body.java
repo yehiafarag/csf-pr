@@ -1,13 +1,13 @@
 package probe.com.view;
 
-import probe.com.view.datasetsoverview.DatasetsOverviewLayout;
+import probe.com.view.quantdatasetsoverview.DatasetsOverviewLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.themes.Runo;
 import java.io.Serializable;
 import probe.com.handlers.MainHandler;
+import probe.com.view.quantdatasetsoverview.StudiesScatterChartsLayout;
 
 /**
  *
@@ -84,7 +84,7 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         updatedProjectsLayout = new VerticalLayout();
         updatedProjectsLayout.setMargin(true);
         updatedProjectsLayout.setHeight("100%");
-//        updatedProjectsLayout.addComponent(new UpdatedProjectsLayout(handler, mainTabSheet));//(handler));
+        updatedProjectsLayout.addComponent(new UpdatedProjectsLayout(handler, mainTabSheet));//(handler));
 
 //      Tab 6 login form
         adminLayout = new VerticalLayout();
@@ -93,17 +93,27 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
         adminLayout.addComponent(new AdminLayout(handler));
 
         homeTab = mainTabSheet.addTab(welcomeLayout, "Home", null);
-
         mainTabSheet.addTab(this.searchLayout, "Search");
-        mainTabSheet.addTab(datasetsOverviewLayout, "Datasets Overview");
+        
+        mainTabSheet.addTab(datasetsOverviewLayout, "Quantitative Datasets Overview");
 
-        mainTabSheet.addTab(disaseRelatedProteinDisplayLayout, "Disase Reltated Proteins Display");
+//        mainTabSheet.addTab(disaseRelatedProteinDisplayLayout, "Disase Reltated Proteins Display");
         adminTab = mainTabSheet.addTab(adminLayout, "Dataset Editor (Require Sign In)", null);
 
         //tobe removed 
-//        mainTabSheet.addTab(this.updatedProjectsLayout, "Available Projects");
+        mainTabSheet.addTab(this.updatedProjectsLayout, "Identification Datasets Overview");
 //        mainTabSheet.addTab(projectsLayoutComponent, "Projects", null);
 //       mainTabSheet.addTab(studiesLayout2, "Temp Overview of included studies");
+        
+        VerticalLayout testLayout =new VerticalLayout();
+           testLayout.setMargin(true);
+        testLayout.setHeight("100%");
+        
+//        StudiesScatterChartsLayout testChart = new StudiesScatterChartsLayout();
+//        testLayout.addComponent(testChart);
+//          mainTabSheet.addTab(testLayout, "Test");
+        
+        
         mainTabSheet.addSelectedTabChangeListener(this);
         mainTabSheet.setSelectedTab(homeTab);
         mainTabSheet.markAsDirty();
@@ -120,13 +130,14 @@ public class Body extends VerticalLayout implements TabSheet.SelectedTabChangeLi
             adminTab.setVisible(false);
         } else if (c.equals("Search")) {
             adminTab.setVisible(false);
-        } else if (c.equals("Datasets Overview")) {
+        } else if (c.equals("Quantitative Datasets Overview")) {
             adminTab.setVisible(false);
             if (datasetOverviewTabLayout == null) //            datasetsOverviewLayout.removeAllComponents();
             {
                 datasetOverviewTabLayout = new DatasetsOverviewLayout(handler);
                 datasetsOverviewLayout.addComponent(datasetOverviewTabLayout);
             }
+            datasetOverviewTabLayout.redrawCharts();
 
         }
     }

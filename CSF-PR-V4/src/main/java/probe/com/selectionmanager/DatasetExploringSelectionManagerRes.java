@@ -3,7 +3,9 @@ package probe.com.selectionmanager;
 import com.vaadin.server.VaadinSession;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import probe.com.model.beans.ComparisonProtein;
 import probe.com.model.beans.GroupsComparison;
 import probe.com.model.beans.QuantDatasetObject;
 
@@ -76,15 +78,20 @@ public class DatasetExploringSelectionManagerRes {
     }
 
     private Set<GroupsComparison> selectedComparisonList;
+    
+    public void updateSelectedComparisonList(Set<GroupsComparison> selectedComparisonList){
+        this.selectedComparisonList = selectedComparisonList;
+    
+    
+    }
 
     public CSFFilterSelection getFilterSelection() {
         return filterSelection;
     }
     private CSFFilterSelection filterSelection;
 
-    public void updatedSelection(CSFFilterSelection selection) {
+    public void setFilterSelection(CSFFilterSelection selection) {
         try {
-
 //            VaadinSession.getCurrent().getLockInstance().lock();
             filterSelection = selection;
             if (selection.getType().equalsIgnoreCase("filter")) {
@@ -98,12 +105,25 @@ public class DatasetExploringSelectionManagerRes {
 
     }
 
-    public void updatedComparisonSelection(Set<GroupsComparison> selectedComparisonList) {
+    public void setComparisonSelection(Set<GroupsComparison> selectedComparisonList) {
         try {
 
             VaadinSession.getCurrent().getLockInstance().lock();
             this.selectedComparisonList = selectedComparisonList;
             this.SelectionChanged("DSSelection");
+
+        } finally {
+            VaadinSession.getCurrent().getLockInstance().unlock();
+        }
+
+    }
+    private Map<String, ComparisonProtein[]> protSelectionMap ;
+     public void setProteinsSelection(Map<String, ComparisonProtein[]> protSelectionMap ) {
+        try {
+
+            VaadinSession.getCurrent().getLockInstance().lock();
+            this.protSelectionMap = protSelectionMap;
+            this.SelectionChanged("quantProtSelection");
 
         } finally {
             VaadinSession.getCurrent().getLockInstance().unlock();
@@ -160,6 +180,10 @@ public class DatasetExploringSelectionManagerRes {
         for (CSFFilter filter : registeredFilterSet) {
             filter.selectionChanged(type);
         }
+    }
+
+    public Map<String, ComparisonProtein[]> getProtSelectionMap() {
+        return protSelectionMap;
     }
 
     public void registerFilter(final CSFFilter iFilter) {

@@ -76,10 +76,10 @@ public class DataBase implements Serializable {
 
                 //temp
 //               fg String sqoDataBase = "SHOW DATABASES ;";
-//                ResultSet rs = statement.executeQuery(sqoDataBase);
+//                ResultSet rs1 = statement.executeQuery(sqoDataBase);
 //               Set<String> datasetnames = new HashSet<String>();
-//                while(rs.next()){
-//                    String db = rs.getString("Database");
+//                while(rs1.next()){
+//                    String db = rs1.getString("Database");
 //                    datasetnames.add(db);
 //                    System.err.println("db is "+db);
 //                    
@@ -431,11 +431,11 @@ public class DataBase implements Serializable {
 //                    insertFractDatasetStat.setDouble(3, fb.getMaxRange());
 //                    insertFractDatasetStat.setInt(4, fb.getFractionIndex());
 //                    insertFractDatasetStat.executeUpdate();
-//                    rs = insertFractDatasetStat.getGeneratedKeys();
-//                    while (rs.next()) {
-//                        fractId = rs.getInt(1);
+//                    rs1 = insertFractDatasetStat.getGeneratedKeys();
+//                    while (rs1.next()) {
+//                        fractId = rs1.getInt(1);
 //                    }
-//                    rs.close();
+//                    rs1.close();
 //                    for (IdentificationProteinBean pb : fb.getProteinList().values()) {
 //                        test = this.insertProteinFract(conn, fractId, pb);
 //                    }
@@ -1155,23 +1155,23 @@ public class DataBase implements Serializable {
 //            }
 //            selectFractsListStat = conn.prepareStatement(selectFractList);
 //            selectFractsListStat.setInt(1, datasetId);
-//            ResultSet rs = selectFractsListStat.executeQuery();
+//            ResultSet rs1 = selectFractsListStat.executeQuery();
 //            ArrayList<FractionBean> fractionIdList = new ArrayList<FractionBean>();
 //            FractionBean fb = null;
-//            while (rs.next()) {
+//            while (rs1.next()) {
 //                fb = new FractionBean();
-//                int fraction_id = rs.getInt("fraction_id");
+//                int fraction_id = rs1.getInt("fraction_id");
 //                fb.setFractionId(fraction_id);
-////                minRange = rs.getDouble("min_range");
+////                minRange = rs1.getDouble("min_range");
 ////                fb.setMinRange(minRange);
-////                maxRange = rs.getDouble("max_range");
+////                maxRange = rs1.getDouble("max_range");
 ////                fb.setMaxRange(maxRange);
-//                int index = rs.getInt("index");
+//                int index = rs1.getInt("index");
 //                fb.setFractionIndex(index);
 //                fractionIdList.add(fb);
 //
 //            }
-//            rs.close();
+//            rs1.close();
             //get fractions 
             PreparedStatement selectFractsStat = null;
             String selectFract = "SELECT * FROM `fractions_table` where `exp_id` = ? AND `prot_accession` = ?  ORDER BY `fraction_id`";
@@ -1272,13 +1272,13 @@ public class DataBase implements Serializable {
             ResultSet rs = selectPeptideListStat.executeQuery();
             peptidesList = fillPeptideInformation(rs);
 //            ArrayList<Integer> peptideIdList = new ArrayList<Integer>();
-//            while (rs.next()) {
+//            while (rs1.next()) {
 //                PeptideBean pb = new PeptideBean();
-//                int peptideId = rs.getInt("pep_id");
+//                int peptideId = rs1.getInt("pep_id");
 ////                peptideIdList.add(peptideId);
 //
 //            }
-//            rs.close();
+//            rs1.close();
 
             //get peptides 
 //            PreparedStatement selectPeptidesStat = null;
@@ -1294,44 +1294,44 @@ public class DataBase implements Serializable {
 //                }
 //                selectPeptidesStat = conn.prepareStatement(selectQuantProt);
 //                selectPeptidesStat.setInt(1, pepId);
-//                rs = selectPeptidesStat.executeQuery();
+//                rs1 = selectPeptidesStat.executeQuery();
 //
-//                while (rs.next()) {
-//                    pepb.setAaAfter(rs.getString("aa_after"));
-//                    pepb.setAaBefore(rs.getString("aa_before"));
-//                    pepb.setConfidence(rs.getDouble("confidence"));
-//                    pepb.setLocationConfidence(rs.getString("location_confidence"));
-//                    pepb.setNumberOfValidatedSpectra(rs.getInt("number_of_validated_spectra"));
-//                    pepb.setOtherProteinDescriptions(rs.getString("other_protein_description(s)"));
-//                    pepb.setOtherProteins(rs.getString("other_protein(s)"));
-//                    pepb.setPeptideEnd(rs.getString("peptide_end"));
-//                    pepb.setPeptideProteins((rs.getString("peptide_protein(s)")));
-//                    pepb.setPeptideProteinsDescriptions(rs.getString("peptide_proteins_description(s)"));
-//                    pepb.setPeptideStart(rs.getString("peptide_start"));
-//                    pepb.setPrecursorCharges(rs.getString("precursor_charge(s)"));
-//                    pepb.setProtein(rs.getString("protein"));
-//                    pepb.setScore(rs.getDouble("score"));
-//                    pepb.setSequence(rs.getString("sequence"));
-//                    pepb.setVariableModification(rs.getString("variable_modification"));
-//                    pepb.setFixedModification(rs.getString("fixed_modification"));
+//                while (rs1.next()) {
+//                    pepb.setAaAfter(rs1.getString("aa_after"));
+//                    pepb.setAaBefore(rs1.getString("aa_before"));
+//                    pepb.setConfidence(rs1.getDouble("confidence"));
+//                    pepb.setLocationConfidence(rs1.getString("location_confidence"));
+//                    pepb.setNumberOfValidatedSpectra(rs1.getInt("number_of_validated_spectra"));
+//                    pepb.setOtherProteinDescriptions(rs1.getString("other_protein_description(s)"));
+//                    pepb.setOtherProteins(rs1.getString("other_protein(s)"));
+//                    pepb.setPeptideEnd(rs1.getString("peptide_end"));
+//                    pepb.setPeptideProteins((rs1.getString("peptide_protein(s)")));
+//                    pepb.setPeptideProteinsDescriptions(rs1.getString("peptide_proteins_description(s)"));
+//                    pepb.setPeptideStart(rs1.getString("peptide_start"));
+//                    pepb.setPrecursorCharges(rs1.getString("precursor_charge(s)"));
+//                    pepb.setProtein(rs1.getString("protein"));
+//                    pepb.setScore(rs1.getDouble("score"));
+//                    pepb.setSequence(rs1.getString("sequence"));
+//                    pepb.setVariableModification(rs1.getString("variable_modification"));
+//                    pepb.setFixedModification(rs1.getString("fixed_modification"));
 //                    pepb.setPeptideId(pepId);
-//                    pepb.setProteinInference(rs.getString("protein_inference"));
-//                    pepb.setSequenceTagged(rs.getString("sequence_tagged"));
-//                    pepb.setEnzymatic(Boolean.valueOf(rs.getString("enzymatic")));
-//                    pepb.setValidated(rs.getDouble("validated"));
-//                    pepb.setStarred(Boolean.valueOf(rs.getString("starred")));
+//                    pepb.setProteinInference(rs1.getString("protein_inference"));
+//                    pepb.setSequenceTagged(rs1.getString("sequence_tagged"));
+//                    pepb.setEnzymatic(Boolean.valueOf(rs1.getString("enzymatic")));
+//                    pepb.setValidated(rs1.getDouble("validated"));
+//                    pepb.setStarred(Boolean.valueOf(rs1.getString("starred")));
 //
-//                    pepb.setGlycopatternPositions(rs.getString("glycopattern_position(s)"));
-//                    String str = rs.getString("deamidation_and_glycopattern");
+//                    pepb.setGlycopatternPositions(rs1.getString("glycopattern_position(s)"));
+//                    String str = rs1.getString("deamidation_and_glycopattern");
 //                    if (str != null && !str.equals("")) {
 //                        pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
 //                    }
-//                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
+//                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs1.getString("likelyNotGlycosite")));
 //
 //                    peptidesList.put(pepb.getPeptideId(), pepb);
 //
 //                }
-//                rs.close();
+//                rs1.close();
 //                counter++;
 //                if (counter == 10000) {
 //                    conn.close();
@@ -1885,43 +1885,43 @@ public class DataBase implements Serializable {
             rs = selectPeptidesStat.executeQuery();
 
             return fillPeptideInformation(rs);
-//                while (rs.next()) {      
+//                while (rs1.next()) {      
 //                    PeptideBean pepb = new PeptideBean();
-//                    pepb.setAaAfter(rs.getString("aa_after"));
-//                    pepb.setAaBefore(rs.getString("aa_before"));
-//                    pepb.setConfidence(rs.getDouble("confidence"));
-//                    pepb.setLocationConfidence(rs.getString("location_confidence"));
-//                    pepb.setNumberOfValidatedSpectra(rs.getInt("number_of_validated_spectra"));
-//                    pepb.setOtherProteinDescriptions(rs.getString("other_protein_description(s)"));
-//                    pepb.setOtherProteins(rs.getString("other_protein(s)"));
-//                    pepb.setPeptideEnd(rs.getString("peptide_end"));
-//                    pepb.setPeptideProteins((rs.getString("peptide_protein(s)")));
-//                    pepb.setPeptideProteinsDescriptions(rs.getString("peptide_proteins_description(s)"));
-//                    pepb.setPeptideStart(rs.getString("peptide_start"));
-//                    pepb.setPrecursorCharges(rs.getString("precursor_charge(s)"));
-//                    pepb.setProtein(rs.getString("protein"));
-//                    pepb.setScore(rs.getDouble("score"));
-//                    pepb.setSequence(rs.getString("sequence"));
-//                    pepb.setFixedModification(rs.getString("fixed_modification"));
-//                    pepb.setVariableModification(rs.getString("variable_modification"));
-//                    pepb.setProteinInference(rs.getString("protein_inference"));
-//                    pepb.setSequenceTagged(rs.getString("sequence_tagged"));
-//                    pepb.setEnzymatic(Boolean.valueOf(rs.getString("enzymatic")));
-//                    pepb.setValidated(rs.getDouble("validated"));
-//                    pepb.setStarred(Boolean.valueOf(rs.getString("starred")));
-//                    pepb.setPeptideId(rs.getInt("peptide_id"));
-//                    pepb.setGlycopatternPositions(rs.getString("glycopattern_position(s)"));
-//                    String str = rs.getString("deamidation_and_glycopattern");
+//                    pepb.setAaAfter(rs1.getString("aa_after"));
+//                    pepb.setAaBefore(rs1.getString("aa_before"));
+//                    pepb.setConfidence(rs1.getDouble("confidence"));
+//                    pepb.setLocationConfidence(rs1.getString("location_confidence"));
+//                    pepb.setNumberOfValidatedSpectra(rs1.getInt("number_of_validated_spectra"));
+//                    pepb.setOtherProteinDescriptions(rs1.getString("other_protein_description(s)"));
+//                    pepb.setOtherProteins(rs1.getString("other_protein(s)"));
+//                    pepb.setPeptideEnd(rs1.getString("peptide_end"));
+//                    pepb.setPeptideProteins((rs1.getString("peptide_protein(s)")));
+//                    pepb.setPeptideProteinsDescriptions(rs1.getString("peptide_proteins_description(s)"));
+//                    pepb.setPeptideStart(rs1.getString("peptide_start"));
+//                    pepb.setPrecursorCharges(rs1.getString("precursor_charge(s)"));
+//                    pepb.setProtein(rs1.getString("protein"));
+//                    pepb.setScore(rs1.getDouble("score"));
+//                    pepb.setSequence(rs1.getString("sequence"));
+//                    pepb.setFixedModification(rs1.getString("fixed_modification"));
+//                    pepb.setVariableModification(rs1.getString("variable_modification"));
+//                    pepb.setProteinInference(rs1.getString("protein_inference"));
+//                    pepb.setSequenceTagged(rs1.getString("sequence_tagged"));
+//                    pepb.setEnzymatic(Boolean.valueOf(rs1.getString("enzymatic")));
+//                    pepb.setValidated(rs1.getDouble("validated"));
+//                    pepb.setStarred(Boolean.valueOf(rs1.getString("starred")));
+//                    pepb.setPeptideId(rs1.getInt("peptide_id"));
+//                    pepb.setGlycopatternPositions(rs1.getString("glycopattern_position(s)"));
+//                    String str = rs1.getString("deamidation_and_glycopattern");
 //                    if (str != null && !str.equals("")) {
 //                        pepb.setDeamidationAndGlycopattern(Boolean.valueOf(str));
 //                    }
 //
-//                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs.getString("likelyNotGlycosite")));
+//                    pepb.setLikelyNotGlycosite(Boolean.valueOf(rs1.getString("likelyNotGlycosite")));
 //
 //                    peptidesList.put(pepb.getPeptideId(), pepb);
 //
 //                }
-//                rs.close();
+//                rs1.close();
 
 //            }
         } catch (ClassNotFoundException e) {
@@ -2196,8 +2196,8 @@ public class DataBase implements Serializable {
 //            if (validatedOnly) {
 //                selectProStat.setString(2, "TRUE");
 //            }
-//            ResultSet rs = selectProStat.executeQuery();
-//          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs);
+//            ResultSet rs1 = selectProStat.executeQuery();
+//          Map<Integer, IdentificationProteinBean> proteinsList=fillProteinInformation(rs1);
 //            System.gc();
 //            return proteinsList;
 //        } catch (ClassNotFoundException e) {
@@ -2500,7 +2500,7 @@ public class DataBase implements Serializable {
             }
             ResultSet rs = selectPepIdStat.executeQuery();
             while (rs.next()) {
-//                pepIdList.add(rs.getInt("peptide_id"));
+//                pepIdList.add(rs1.getInt("peptide_id"));
                 String prot = rs.getString("protein");
                 if (prot != null && !prot.equalsIgnoreCase("") && !prot.equalsIgnoreCase("SHARED PEPTIDE")) {
                     protAccessionQuerySet.add(prot);
@@ -2628,7 +2628,7 @@ public class DataBase implements Serializable {
             selectPepIdStat.setInt(index, datasetId);
             ResultSet rs = selectPepIdStat.executeQuery();
             while (rs.next()) {
-//                pepIdList.add(rs.getInt("peptide_id"));
+//                pepIdList.add(rs1.getInt("peptide_id"));
                 String prot = rs.getString("protein");
                 if (prot != null && !prot.equalsIgnoreCase("") && !prot.equalsIgnoreCase("SHARED PEPTIDE")) {
                     protAccessionQuerySet.add(prot);
@@ -3130,14 +3130,14 @@ public class DataBase implements Serializable {
 //                insertFractDatasetStat.setDouble(3, fb.getMaxRange());
 //                insertFractDatasetStat.setInt(4, fb.getFractionIndex());
 //                insertFractDatasetStat.executeUpdate();
-//                ResultSet rs = insertFractDatasetStat.getGeneratedKeys();
-//                while (rs.next()) {
-//                    fractId = rs.getInt(1);
+//                ResultSet rs1 = insertFractDatasetStat.getGeneratedKeys();
+//                while (rs1.next()) {
+//                    fractId = rs1.getInt(1);
 //                }
 //                for (IdentificationProteinBean pb : fb.getProteinList().values()) {
 //                    this.insertProteinFract(connection, fractId, pb);
 //                }
-//                rs.close();
+//                rs1.close();
 //            }
         } catch (ClassNotFoundException exc) {
             System.err.println(exc.getLocalizedMessage());
@@ -4429,6 +4429,12 @@ public class DataBase implements Serializable {
     }
 
     public Set<QuantProtein> getQuantificationProteins(int dsUnique) {
+        
+        
+        
+        
+        
+        
         Set<QuantProtein> quantProtList = new HashSet<QuantProtein>();
         try {
 
@@ -4436,24 +4442,40 @@ public class DataBase implements Serializable {
                 Class.forName(driver).newInstance();
                 conn = DriverManager.getConnection(url + dbName, userName, password);
             }
+            String selectDsGroupNum = "SELECT `patients_group_i_number` , `patients_group_ii_number` FROM `combined_dataset_table` Where  `index`=?;";
+              PreparedStatement selectselectDsGroupNumStat = conn.prepareStatement(selectDsGroupNum);
+            selectselectDsGroupNumStat.setInt(1, dsUnique+1);
+            ResultSet rs = selectselectDsGroupNumStat.executeQuery();
+            int groupINum = 0;
+            int groupIINum = 0;
+            while (rs.next()) {
+               groupINum= rs.getInt("patients_group_i_number");
+                groupIINum=rs.getInt("patients_group_ii_number");
+            }
+            rs.close();
+            
+            
+            
             String selectQuantProt = "SELECT * FROM `quantitative_proteins_table`  where `ds_ID` = ?;";
             PreparedStatement selectQuantProtStat = conn.prepareStatement(selectQuantProt);
             selectQuantProtStat.setInt(1, dsUnique+1);
-            ResultSet rs = selectQuantProtStat.executeQuery();
-            while (rs.next()) {
+            ResultSet rs1 = selectQuantProtStat.executeQuery();
+            while (rs1.next()) {
                 QuantProtein quantProt = new QuantProtein();
-                quantProt.setProtKey(rs.getInt("index"));
+                quantProt.setPatientsGroupIINumber(groupIINum);
+                quantProt.setPatientsGroupINumber(groupINum);
+                quantProt.setProtKey(rs1.getInt("index"));
                 quantProt.setDsKey(dsUnique);
-                quantProt.setUniprotAccession(rs.getString("uniprot_accession"));
-                quantProt.setUniprotProteinName(rs.getString("uniprot_protein_name"));
-                quantProt.setPublicationAccNumber(rs.getString("publication_acc_number"));
-                quantProt.setPublicationProteinName(rs.getString("publication_protein_name"));
-                quantProt.setQuantifiedPeptidesNumber(rs.getInt("quantified_peptides_number"));
-                quantProt.setIdentifiedProteinsNum(rs.getInt("identified_peptides_number"));
-                quantProt.setStringFCValue(rs.getString("fold_change"));
+                quantProt.setUniprotAccession(rs1.getString("uniprot_accession"));
+                quantProt.setUniprotProteinName(rs1.getString("uniprot_protein_name"));
+                quantProt.setPublicationAccNumber(rs1.getString("publication_acc_number"));
+                quantProt.setPublicationProteinName(rs1.getString("publication_protein_name"));
+                quantProt.setQuantifiedPeptidesNumber(rs1.getInt("quantified_peptides_number"));
+                quantProt.setIdentifiedProteinsNum(rs1.getInt("identified_peptides_number"));
+                quantProt.setStringFCValue(rs1.getString("fold_change"));
                 quantProtList.add(quantProt);
             }
-            rs.close();
+            rs1.close();
         } catch (ClassNotFoundException exp) {
             System.err.println(exp.getLocalizedMessage());
             return null;

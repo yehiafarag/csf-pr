@@ -42,7 +42,7 @@ public class CoreLogic implements Serializable {
     private Map<Integer, IdentificationDataset> datasetList;
     private final Map<Integer, Integer> datasetIndex = new HashMap<Integer, Integer>();
     private final FileExporter exporter = new FileExporter();
-    
+
     public CoreLogic(String url, String dbName, String driver, String userName, String password, String filesURL) {
         da = new DataAccess(url, dbName, driver, userName, password);
 
@@ -106,6 +106,7 @@ public class CoreLogic implements Serializable {
         return test;
 
     }
+
     /**
      * read and store Quant data files in the database
      *
@@ -118,11 +119,9 @@ public class CoreLogic implements Serializable {
      */
     public boolean handelQuantDataFile(File file, String MIMEType) throws IOException, SQLException {
         FilesReader fr = new FilesReader();
-        boolean test = false;    
-        List<QuantProtein> quantProtList  = fr.readCSVQuantFile(file);
+        boolean test = false;
+        List<QuantProtein> quantProtList = fr.readCSVQuantFile(file);
         test = da.storeQuantProt(quantProtList);
-
-        
 
         return test;
 
@@ -164,14 +163,13 @@ public class CoreLogic implements Serializable {
     public Map<String, IdentificationProteinBean> retriveProteinsList(int datasetId) {
         Map<String, IdentificationProteinBean> proteinsList = null;
 //        if (datasetList.get(datasetId).getProteinList() == null || datasetList.get(datasetId).getProteinList().isEmpty()) {
-            proteinsList = da.getProteinsList(datasetId);
+        proteinsList = da.getProteinsList(datasetId);
 //            datasetList.get(datasetId).setProteinList(proteinsList);
-            
+
 //        }
 //        else{
 //        proteinsList = datasetList.get(datasetId).getProteinList();
 //        }
-
         return proteinsList;
     }
 
@@ -236,7 +234,6 @@ public class CoreLogic implements Serializable {
 ////        }
 //        return updatedPeptidesList;
 //    }
-
     /**
      * get dataset peptides list (valid peptides or all peptides)
      *
@@ -246,7 +243,7 @@ public class CoreLogic implements Serializable {
      */
     public Map<Integer, PeptideBean> getAllDatasetPeptidesList(int datasetId, boolean validated) {
 
-         return da.getPeptidesList(datasetId,validated);
+        return da.getPeptidesList(datasetId, validated);
 //        Map<Integer, PeptideBean> peptidesList = getPeptidesList(datasetId);
 //        if (validated) {
 //            Map<Integer, PeptideBean> validatedPtidesList = new HashMap<Integer, PeptideBean>();
@@ -262,8 +259,7 @@ public class CoreLogic implements Serializable {
 //            return peptidesList;
 //        }
     }
-    
-    
+
     /**
      * get dataset peptides number (valid peptides or all peptides)
      *
@@ -273,7 +269,7 @@ public class CoreLogic implements Serializable {
      */
     public int getAllDatasetPeptidesNumber(int datasetId, boolean validated) {
 
-   return da.getAllDatasetPeptidesNumber(datasetId, validated);
+        return da.getAllDatasetPeptidesNumber(datasetId, validated);
     }
 
     /**
@@ -282,16 +278,15 @@ public class CoreLogic implements Serializable {
      * @param datasetId
      * @return fractions list for the selected dataset
      */
-    public Map<Integer, IdentificationProteinBean> getProtGelFractionsList(int datasetId,String accession,String otherAccession) {
+    public Map<Integer, IdentificationProteinBean> getProtGelFractionsList(int datasetId, String accession, String otherAccession) {
 //        Map<Integer, FractionBean> fractionsList;
 //        if (datasetList.containsKey(datasetId) && datasetList.get(datasetId).getFractionsList() != null && (!datasetList.get(datasetId).getFractionsList().isEmpty())) {
 //            //check if dataset updated if not
 //            fractionsList = datasetList.get(datasetId).getFractionsList();
 //
 //        } else {
-            return da.getProtGelFractionsList(datasetId,accession, otherAccession);
-            
-            
+        return da.getProtGelFractionsList(datasetId, accession, otherAccession);
+
 //            datasetList.get(datasetId).setFractionsList(fractionsList);
 //        }
 //
@@ -363,10 +358,6 @@ public class CoreLogic implements Serializable {
 //        datasetList.get(datasetId).setPeptidesIds(peptideIds);
         return peptidesProtList;
     }
-    
-   
-    
-    
 
     /**
      * search for proteins by description keywords
@@ -490,7 +481,6 @@ public class CoreLogic implements Serializable {
 //        Map<Integer, PeptideBean> peptidesProtList = da.getPeptidesList(peptideIds);
 //        return peptidesProtList;
 //    }
-
     /**
      * get peptides id list for selected protein in selected dataset
      *
@@ -519,17 +509,17 @@ public class CoreLogic implements Serializable {
 //        return da.getStandardProtPlotList(datasetId);
 ////        getMainDataset().setStanderdPlotProt(standardPlotList);
 //    }
-
     /**
      * retrieve standard proteins data for fraction plot
      *
      * @param datasetId
      */
-    public List<StandardProteinBean>  retriveStandardProtPlotList(int datasetId) {
-        if(datasetList.get(datasetId).getStanderdPlotProt() != null )
+    public List<StandardProteinBean> retriveStandardProtPlotList(int datasetId) {
+        if (datasetList.get(datasetId).getStanderdPlotProt() != null) {
             return datasetList.get(datasetId).getStanderdPlotProt();
-        else
+        } else {
             return da.getStandardProtPlotList(datasetId);
+        }
 //        getMainDataset().setStanderdPlotProt(standardPlotList);
     }
 
@@ -662,8 +652,8 @@ public class CoreLogic implements Serializable {
 
         return treeSet;
     }
-    
-     /**
+
+    /**
      * get validated proteins list
      *
      * @param proteinsList
@@ -687,11 +677,11 @@ public class CoreLogic implements Serializable {
         return da.getQuantDatasetListObject();
 
     }
-    
-     public boolean[] getActiveFilters(){
-     return da.getActiveFilters();
-     
-     }
+
+    public boolean[] getActiveFilters() {
+        return da.getActiveFilters();
+
+    }
 
     /**
      * this function to be use for csv peptides exporting with large datasets
@@ -702,23 +692,20 @@ public class CoreLogic implements Serializable {
      * @param dataType validated/all
      * @param exportFileType csv or xls
      */
-    public void exportPeptidesToFile(int datasetId, boolean validated, String datasetName, String dataType,String exportFileType) {
+    public void exportPeptidesToFile(int datasetId, boolean validated, String datasetName, String dataType, String exportFileType) {
         Map<Integer, PeptideBean> allPeptides = getAllDatasetPeptidesList(datasetId, validated);
-        if(exportFileType.equalsIgnoreCase("csv"))
+        if (exportFileType.equalsIgnoreCase("csv")) {
             exporter.expotPeptidesToCSV(allPeptides, datasetName, dataType, filesURL);
-        else            
+        } else {
             exporter.expotPeptidesToXLS(allPeptides, datasetName, dataType, filesURL);
+        }
     }
-    
-    
-    
-    
-    
+
     /*             *********************************************************8       */
-     /**
+    /**
      * search for proteins by description keywords
      *
-     * @param query   query words
+     * @param query query words
      * @return datasetProteinsSearchList
      */
     public Map<Integer, IdentificationProteinBean> searchIdentficationProtein(Query query) {
@@ -738,33 +725,30 @@ public class CoreLogic implements Serializable {
                     return da.SearchProteinAllDatasetsByPeptideSequence(query.getSearchKeyWords(), query.isValidatedProteins());
                 }
 
-            }
-            else{ //search for identification data in special dataset  "Quantification", "Both"
-             int tempDatasetIndex=-1;
-             for(IdentificationDataset ds:datasetList.values())
-                    {
-                        if (ds.getName().trim().equalsIgnoreCase(query.getSearchDataset().trim())){
-                            tempDatasetIndex = ds.getDatasetId();
-                            System.out.println("dataset Index "+tempDatasetIndex);
-                            break;
-                        }
+            } else { //search for identification data in special dataset  "Quantification", "Both"
+                int tempDatasetIndex = -1;
+                for (IdentificationDataset ds : datasetList.values()) {
+                    if (ds.getName().trim().equalsIgnoreCase(query.getSearchDataset().trim())) {
+                        tempDatasetIndex = ds.getDatasetId();
+                        System.out.println("dataset Index " + tempDatasetIndex);
+                        break;
                     }
-             if (query.getSearchBy().equalsIgnoreCase("Protein Accession"))//"Protein Name" "Peptide Sequence"
+                }
+                if (query.getSearchBy().equalsIgnoreCase("Protein Accession"))//"Protein Name" "Peptide Sequence"
                 {
-                    return da.searchProteinByAccession(query.getSearchKeyWords(),tempDatasetIndex, query.isValidatedProteins());
+                    return da.searchProteinByAccession(query.getSearchKeyWords(), tempDatasetIndex, query.isValidatedProteins());
                 } else if (query.getSearchBy().equalsIgnoreCase("Protein Name")) {
-                    return da.searchProteinByName(query.getSearchKeyWords(),tempDatasetIndex, query.isValidatedProteins());
+                    return da.searchProteinByName(query.getSearchKeyWords(), tempDatasetIndex, query.isValidatedProteins());
 
                 } else if (query.getSearchBy().equalsIgnoreCase("Peptide Sequence")) {
 
-                    return da.SearchProteinByPeptideSequence(query.getSearchKeyWords(),tempDatasetIndex, query.isValidatedProteins());
+                    return da.SearchProteinByPeptideSequence(query.getSearchKeyWords(), tempDatasetIndex, query.isValidatedProteins());
                 }
-                
+
             }
-        
-        
-        }else {
-        //quantification and both
+
+        } else {
+            //quantification and both
 
         }
 
@@ -867,9 +851,9 @@ public class CoreLogic implements Serializable {
      *
      * @param selectedComparisonList selected groups comparison list
      *
-     * @return updated Selected Comparison List 
+     * @return updated Selected Comparison List
      */
-    public Set<GroupsComparison>  getComparisonProtList(Set<GroupsComparison> selectedComparisonList) {
+    public Set<GroupsComparison> getComparisonProtList(Set<GroupsComparison> selectedComparisonList) {
         Set<GroupsComparison> updatedSelectedComparisonList = new HashSet<GroupsComparison>();
         for (GroupsComparison comparison : selectedComparisonList) {
             Set<QuantProtein> comparisonMap = new HashSet<QuantProtein>();
@@ -880,18 +864,18 @@ public class CoreLogic implements Serializable {
             Map<String, ComparisonProtein> comparProtList = new HashMap<String, ComparisonProtein>();
             for (QuantProtein quant : comparisonMap) {
                 if (!comparProtList.containsKey(quant.getUniprotAccession())) {
-                    comparProtList.put(quant.getUniprotAccession(), new ComparisonProtein(comparison.getDatasetIndexes().length));
+                    comparProtList.put(quant.getUniprotAccession(), new ComparisonProtein(comparison.getDatasetIndexes().length, comparison));
                 }
                 ComparisonProtein comProt = comparProtList.get(quant.getUniprotAccession());
 
                 if (quant.getStringFCValue().equalsIgnoreCase("Decreased")) {
-                    comProt.addDown(1);
+                    comProt.addDown(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()));
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Increased")) {
-                    comProt.addUp(1);
+                    comProt.addUp(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()));
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Not Provided")) {
-                    comProt.addNotProvided(1);
+                    comProt.addNotProvided(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()));
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Not Regulated")) {
-                    comProt.addNotReg(1);
+                    comProt.addNotReg(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()));
                 }
                 comProt.setUniProtAccess(quant.getUniprotAccession());
                 String protName = quant.getUniprotProteinName();
@@ -902,12 +886,12 @@ public class CoreLogic implements Serializable {
                 comparProtList.put(quant.getUniprotAccession(), comProt);
             }
             //sort the protiens map
-             Map<String, ComparisonProtein> sortedcomparProtList = new TreeMap<String, ComparisonProtein>(Collections.reverseOrder());
-             for(String Key:comparProtList.keySet()){
-                 ComparisonProtein temp = comparProtList.get(Key);
-                 sortedcomparProtList.put((temp.getUp()+"_"+Key), temp);
-             }
-            
+            Map<String, ComparisonProtein> sortedcomparProtList = new TreeMap<String, ComparisonProtein>(Collections.reverseOrder());
+            for (String Key : comparProtList.keySet()) {
+                ComparisonProtein temp = comparProtList.get(Key);
+                sortedcomparProtList.put((temp.getUp() + "_" + Key), temp);
+            }
+
             comparison.setComparProtsMap(sortedcomparProtList);
             updatedSelectedComparisonList.add(comparison);
 
@@ -915,7 +899,6 @@ public class CoreLogic implements Serializable {
 
         return updatedSelectedComparisonList;
 
-        
 //        
 //        Map<String, Map<String, ComparisonProtein>> comProtList = new HashMap<String, Map<String, ComparisonProtein>>();
 //        int compcounter = 0;
@@ -972,11 +955,6 @@ public class CoreLogic implements Serializable {
 //          
 //        
 //        return comProtList;
-    
-    
-    } 
-    
-   
+    }
 
-    
 }

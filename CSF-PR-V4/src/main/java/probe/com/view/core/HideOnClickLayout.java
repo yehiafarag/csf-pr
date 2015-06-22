@@ -52,9 +52,8 @@ public class HideOnClickLayout  extends VerticalLayout implements Serializable, 
         titleLayout.addLayoutClickListener(HideOnClickLayout.this);
         this.addComponent(titleLayout);
         this.addComponent(this.fullBodyLayout);
-        if(miniBodyLayout != null) {
+        if (miniBodyLayout != null) {
             titleLayout.addComponent(this.miniBodyLayout);
-//            miniBodyLayout.setStyleName("filterShowLabel");
             miniBodyLayout.addLayoutClickListener(HideOnClickLayout.this);
         }
     }
@@ -73,16 +72,11 @@ public class HideOnClickLayout  extends VerticalLayout implements Serializable, 
     private void showLayout() {
         show.updateIcon(true);
         fullBodyLayout.setVisible(true);
-//        if(miniBodyLayout!=null)
-//            miniBodyLayout.setVisible(!fullBodyLayout.isVisible());
     }
 
     public final void hideLayout() {
         show.updateIcon(false);
         fullBodyLayout.setVisible(false);        
-//         if(miniBodyLayout!=null)
-//            miniBodyLayout.setVisible(!fullBodyLayout.isVisible());
-
     }
 
     public boolean isVisability() {

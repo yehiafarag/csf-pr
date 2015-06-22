@@ -55,7 +55,7 @@
 .custLabel{
     font-size:6;
     height: 17px;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold;
     color:gray;    
     margin: 0 0 0 0px;  
@@ -65,7 +65,7 @@
 .centerLabel{
     font-size:14px;
     height: 17px;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold;
     color:gray;    
     text-align: left;
@@ -98,7 +98,7 @@
     background: url(img/right_gray1.png) no-repeat;
     font-size: 12px;
     height: 16px;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;;
+    font-family:Verdana;
     font-weight: bold;
     color:gray;    
     margin: 0 0 0 0;
@@ -116,7 +116,7 @@
 .custFilterLabelHeader{
     font-size:12px ;
     height: 20px;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold;
     color:#6E6E6E;    
     margin: 0 0 0 0;
@@ -127,7 +127,7 @@
 }
 .filterBtnLabelClicked{
     clear: both;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold; 
 
     color:#585858; 
@@ -138,7 +138,7 @@
 
 }
 .showFilterLabelHeader{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold; 
 
     clear: both;
@@ -163,7 +163,7 @@
     clear: both;
     background: url(img/remove-icon.jpg) no-repeat;
     font-size: 11px;
-    font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;;
+    font-family: Verdana;
     font-weight: bold;
     color:gray;    
     margin: 0 0 0 0;
@@ -186,7 +186,7 @@
     clear: both;
     background: url(img/remove-icon-blue.jpg) no-repeat;
     font-size: 11px;    
-    font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;;
+    font-family:Verdana;
     font-weight: bold;
     color:#6EB1CE;    
     margin: 0 0 0 0;
@@ -213,7 +213,7 @@
     clear: both;
     font-size: 10px;
     /*height: 14px;*/
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;;
+    font-family:Verdana;
     font-weight: bold;
     color:gray;    
     margin: 0 0 0 0;
@@ -230,7 +230,7 @@
      clear: both;
     font-size: 14px;
     /*height: 14px;*/
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family: Verdana;
     font-weight: bold;    
     /*    text-transform: inherit;*/
     color:#666;    
@@ -241,14 +241,14 @@
     
 }
 .caption{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold;    
     /*    text-transform: inherit;*/
     color:#666;    
 }
 .captionunderline{
     font-size: 12px;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold;    
     /*    text-transform: inherit;*/
     text-decoration: underline;
@@ -256,23 +256,24 @@
 }
 
 .valuelabel span{
-     font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;    
+     font-family: Verdana;    
     /*    text-transform: inherit;*/
     text-decoration: none;
     color:gray;    
 }
 .valuelabel textArea{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;    
+    font-family: Verdana;    
     background-color:  white;
     border:none;
      color:gray;    
-     text-transform: uppercase;
+     resize: none;
+     /*text-transform: uppercase;*/
 }
 .filterShowLabel{
     clear: both;
     font-size: 14px;
     /*height: 14px;*/
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold;    
     /*    text-transform: inherit;*/
     color:#666;    
@@ -285,7 +286,7 @@
     clear: both;
     font-size: 12px;
     /*height: 14px;*/
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold;    
     text-decoration: none;
     color:#666;    
@@ -297,7 +298,7 @@
     clear: both;
     font-size: 14px;
     /*height: 14px;*/
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
     font-weight: bold;    
     text-decoration: underline;
     color:rgb(59, 90, 122);    
@@ -307,7 +308,7 @@
 }
 .selectedtreeNodeLabel div{
     font-size: 14px;    
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family:Verdana;
 }
 /*.filterShowLabel:hover{
     color: black;
@@ -317,29 +318,29 @@
 .externalLinkTableClickedLabel a{
     color: #f8f9f9;
     font-size: 12px;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family: Verdana; 
 }
 .externalLinkTableLabel a{
     color: black;
     font-size: 12px;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family: Verdana; 
 }
 .datasetInfoHeaders{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family: Verdana; 
     font-size: 12px;
     color:#585858;
     font-weight: bold;
 
 }
 .datasetInfoValues{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family:Verdana; 
     font-size: 12px;
     color:gray;
 
 }
 .datasetInfoValues textArea{
     clear: both;
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family:Verdana; 
     font-size: 12px;
     width: 1100px;
     height: 50px;
@@ -354,14 +355,14 @@
 }
 
 .miniDatasetInfoHeaders{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family:Verdana; 
     font-size: 9px;
     color:#666666;
     font-weight: bold;
 
 }
 .miniDatasetInfoValues{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family:Verdana; 
     font-size: 9px;
     color:gray;
 
@@ -386,7 +387,7 @@
     padding-right: 10px;
 }
 .interactiveFilter{
-     font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+     font-family:Verdana; 
     
 }
 
@@ -396,14 +397,14 @@
 }
 
 .v-tree-node-caption-treeHeader{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family:Verdana; 
     font-size: 12px;
     font-weight: bold;
     color:rgb(59, 90, 122);    
     
 }
 .v-tree-node-caption-treeValue{
-    font-family:Arial, Helvetica, Tahoma, Verdana, sans-serif; 
+    font-family:Verdana; 
     font-size: 10px;
     font-weight: bold;
     color:gray;    
@@ -684,20 +685,19 @@ background-color: lightgray;
     
 }
 .matrixbtn{
-    /*width: 23px;*/
-    height: 24px;
-    background-color:  whitesmoke;
-    background-image: url(img/matrix.ico);
+    background-color:  #ffffff;
+    background-image: url(img/hideshow.png);
     background-repeat: no-repeat;
     background-position:center;
-    border: 1px solid  rgb(169, 169, 169) ;
+    background-size: 100px auto;
     border-radius: 3px;
     cursor:pointer;
 
 
 }
 .matrixbtn:hover{
-    background-color:  lightgray;    
+    background-color:  #EFF2FB;
+    border: 2px solid #006699;   
 }
 .grcompbtn{
     width: 100px;
@@ -724,6 +724,19 @@ background-color: lightgray;
 
 .greenlayout div{
     background: #009900;    
+}
+
+.lightbluelayout div{
+    background: rgb(205, 225, 255);  
+}
+.midgreenlayout div{
+    background: #8ECCA3;
+    
+    
+}
+.midredlayout{
+    background: #CC707F;
+    
 }
 .empty div{
       /*background-image: url(img/empty.png);*/
@@ -778,5 +791,126 @@ background-color: lightgray;
     background-position:center;
     background-repeat: no-repeat;
     cursor:pointer;
+
+}
+.lightborder{
+    border: 1px solid #EFF2FB;  
+    background: #ffffff;
+     overflow-y:hidden;
+
+}
+.lightselectedborder{
+     border: 1px solid #006699;  
+    background: #ffffff;
+     overflow-y:hidden;
+}
+
+
+.rotatedlabel {
+    margin-top: 200px;
+    margin-left:5px;
+    text-align: center;
+    line-height: 20px;
+    -ms-transform:rotate(270deg); /* IE 9 */
+    -moz-transform:rotate(270deg); /* Firefox */
+    -webkit-transform:rotate(270deg); /* Safari and Chrome */
+    -o-transform:rotate(270deg); /* Opera */
+    transform-origin: 0%  0%;  
+
+    position: absolute;
+    background-color: #ffffff;
+    color: gray;
+}
+.redrightarr{
+    width: 13px;
+    height: 13px;
+    background-image: url(img/red_right.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    
+    
+}
+
+.lightbluearr{
+    width: 13px;
+    height: 13px;
+    background-image: url(img/light_blue.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    
+    
+}
+
+.greenleftarr{
+    width: 13px;
+    height: 13px;
+    background-image: url(img/green_left.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    
+    
+}
+.hideoverflow div{
+    overflow: hidden;
+    
+}
+.lightgraylayout{
+    background-color: rgb(242,242,242);
+    border: 1px solid  lightgray ;
+}
+.upregchartlabel {
+     font-family: Verdana;    
+     color: red;
+     /* top:-5px; */
+     height:100%;
+     overflow: visible;
+     font-weight:bold;
+     font-size: 10px;
+     line-height:100%;
+     text-align:center;
+     margin-top:10px;
+    
+}
+.notregchartlabel {
+      font-family: Verdana;    
+     color: #9fd3ff;//rgb(205, 225, 255) ;
+     /* top:-5px; */
+     height:30px;
+     font-weight:bold;
+     font-size: 10px;
+     line-height:100%;
+     text-align:center;
+     margin-top:15px;
+    
+}
+.downregchartlabel {
+       font-family: Verdana;    
+     color: #009900;
+     /* top:-5px; */
+     height:30px;
+     font-weight:bold;
+     font-size: 10px;
+     line-height:100%;
+     text-align:center;
+     margin-top:20px;
+    
+}
+.cursorcanvas {    
+    cursor: pointer;
+}
+
+.defaultcursorcanvas {    
+    cursor: default;
+}
+
+.custChartLabelHeader{
+    font-size:12px ;
+    height: 20px;
+    font-family:Verdana;
+    color:#6E6E6E;    
+    margin: 0 0 0 0;
+    border-bottom: 1px #4b5257 dotted ;
+
+
 
 }
