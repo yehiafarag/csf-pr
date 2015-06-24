@@ -10,9 +10,11 @@ import com.vaadin.data.Property;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import java.awt.BasicStroke;
@@ -20,12 +22,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.codec.binary.Base64;
@@ -48,6 +53,7 @@ import org.jfree.util.ShapeUtilities;
 import probe.com.model.beans.ComparisonProtein;
 import probe.com.model.beans.GroupsComparison;
 import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
+import probe.com.view.core.DatasetPopupComponent;
 
 /**
  * Interactive JfreeChart
@@ -63,21 +69,26 @@ public class ProtOverviewCharts extends HorizontalLayout {
     private ChartRenderingInfo chartRenderingLineChartInfo;
     private final ChartRenderingInfo defaultLineChartRenderingInfo = new ChartRenderingInfo();
     private final ChartRenderingInfo orderedLineChartRenderingInfo = new ChartRenderingInfo();
-    private ComparisonProtein[] inUseComparisonProteins;
+//    private ComparisonProtein[] inUseComparisonProteins;
     private int width;
     private final OptionGroup orederingOptionGroup = new OptionGroup();
-    private final  StudiesScatterChartsLayout studiesScatterChartsLayout ;
+    private final StudiesScatterChartsLayout studiesScatterChartsLayout;
     private final CanvasPlus lineChartContainer;
 
     public OptionGroup getOrederingOptionGroup() {
         return orederingOptionGroup;
     }
-    
+    private final DatasetPopupComponent dsPopup;
+    private final Map<Rectangle,GroupsComparison> lineChartCoordMap = new HashMap<Rectangle, GroupsComparison>();
+
     public ProtOverviewCharts(DatasetExploringSelectionManagerRes selectionManager, final ComparisonProtein[] comparisonProteins, final Set<GroupsComparison> selectedComparisonList, int widthValue) {
 
         this.setStyleName(Reindeer.LAYOUT_WHITE);
         this.setSpacing(true);
         this.setHeightUndefined();
+        
+        height = 400;
+        width = widthValue / 2;
 
         VerticalLayout leftSideLayout = new VerticalLayout();
         leftSideLayout.setWidth("100%");
@@ -87,6 +98,13 @@ public class ProtOverviewCharts extends HorizontalLayout {
         leftSideLayout.setMargin(new MarginInfo(true, true, false, true));
         this.addComponent(leftSideLayout);
 
+        //init popup container for scatter plot popup 
+        VerticalLayout popupContainerLayout = new VerticalLayout();
+        dsPopup = new DatasetPopupComponent(popupContainerLayout,width-100);
+         this.addComponent(dsPopup);
+        this.setComponentAlignment(dsPopup, Alignment.MIDDLE_CENTER);  
+        
+//        dsPopup.setHideOnMouseOut(true);
         VerticalLayout rightSideLayout = new VerticalLayout();
         rightSideLayout.setWidth("100%");
         rightSideLayout.setHeightUndefined();
@@ -96,43 +114,70 @@ public class ProtOverviewCharts extends HorizontalLayout {
         this.addComponent(rightSideLayout);
 
         //init leftside components - linechart 
-        height = 400;
-        width = widthValue / 2;
+       
         defaultLineChartImgUrl = generateLineChart(comparisonProteins, selectedComparisonList, (width - 100), height, defaultLineChartRenderingInfo);
         chartRenderingLineChartInfo = defaultLineChartRenderingInfo;
-        inUseComparisonProteins = comparisonProteins;
+//        inUseComparisonProteins = comparisonProteins;
         lineChartContainer = new CanvasPlus();
-     
-        leftSideLayout.addComponent(lineChartContainer);
+        leftSideLayout.addComponent(lineChartContainer);      
         lineChartContainer.setWidth((width - 100) + "px");
         lineChartContainer.setHeight(height + "px");
         lineChartContainer.drawImage(defaultLineChartImgUrl, 0d, 0d, (width - 100.0), (double) height);
         lineChartContainer.addClickListener(new CanvasPlus.CanvasClickListener() {
             @Override
             public void onClick(MouseEventDetails mouseDetails) {
+                int relX = mouseDetails.getRelativeX();
+                int relY = mouseDetails.getRelativeY();
+                boolean found = false;
+                for (Rectangle rec : lineChartCoordMap.keySet()) {
+                    if (rec.contains(relX, relY)) {
+//                        lineChartContainer.setStyleName("cursorcanvas");
+//                     GroupsComparison gc = inUseComparisonProteins[lineChartCoordMap.get(rec)].getComparison();
+                        GroupsComparison gc = lineChartCoordMap.get(rec);
+                        studiesScatterChartsLayout.highlightComparison(gc);
+//                        updateLineChartTooltip(gc.getComparisonHeader());
+                        found = true;
+                        break;
+                    }
 
+                }
+                if (!found) {
+                    studiesScatterChartsLayout.highlightComparison(null);
+                    updateLineChartTooltip(null);
+                    lineChartContainer.setStyleName("defaultcursorcanvas");
+
+                }
             }
         });
+
         lineChartContainer.addMouseMoveListener(new CanvasPlus.CanvasMouseMoveListener() {
             @Override
             public void onMove(MouseEventDetails mouseDetails) {
 
-                ChartEntity entity = chartRenderingLineChartInfo.getEntityCollection().getEntity(mouseDetails.getRelativeX(), mouseDetails.getRelativeY());
-            
-                if (entity instanceof XYItemEntity) {
-                   
-                    int y = ((XYItemEntity) entity).getItem();
-                    
-                    GroupsComparison gc = inUseComparisonProteins[y].getComparison();
-                    studiesScatterChartsLayout.highlightComparison(gc);
-                    updateLineChartTooltip(gc.getComparisonHeader());//("X  " + ((XYItemEntity) entity).getDataset().getX(x, y)) + ("----- Y  " + ((XYItemEntity) entity).getDataset().getY(x, y)));
-                     lineChartContainer.setStyleName("cursorcanvas");
-                } else {
-                    studiesScatterChartsLayout.highlightComparison(null);                    
+//                noprocess = false;
+                int relX = mouseDetails.getRelativeX();
+                int relY = mouseDetails.getRelativeY();
+                boolean found = false;
+                for (Rectangle rec : lineChartCoordMap.keySet()) {
+                    if (rec.contains(relX, relY)) {
+                        lineChartContainer.setStyleName("cursorcanvas");
+//                     GroupsComparison gc = inUseComparisonProteins[lineChartCoordMap.get(rec)].getComparison();
+                        GroupsComparison gc = lineChartCoordMap.get(rec);
+//                        studiesScatterChartsLayout.highlightComparison(gc);
+                        updateLineChartTooltip(gc.getComparisonHeader());
+                        found = true;
+                        break;
+                    }
+
+                }
+                if (!found) {
+//                    studiesScatterChartsLayout.highlightComparison(null);
                     updateLineChartTooltip(null);
                     lineChartContainer.setStyleName("defaultcursorcanvas");
-                     
+//                    dsPopup.setPopupVisible(false);
+
                 }
+
             }
         });
 
@@ -153,10 +198,11 @@ public class ProtOverviewCharts extends HorizontalLayout {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 if (orederingOptionGroup.getValue().toString().equalsIgnoreCase("Default order")) {
-                    inUseComparisonProteins = comparisonProteins;
+//                    inUseComparisonProteins = comparisonProteins;
                     lineChartContainer.drawImage(defaultLineChartImgUrl, 0d, 0d, (width - 100.0), (double) height);
                     chartRenderingLineChartInfo = defaultLineChartRenderingInfo;
                     studiesScatterChartsLayout.orderComparisons(comparisonProteins);
+
                 } else {
                     if (orderedLineChartImg == null) {
                         //order the comparisons and proteins
@@ -191,32 +237,47 @@ public class ProtOverviewCharts extends HorizontalLayout {
                     }
                     lineChartContainer.drawImage(orderedLineChartImg, 0d, 0d, (width - 100.0), (double) height);
                     chartRenderingLineChartInfo = orderedLineChartRenderingInfo;
-                    inUseComparisonProteins = ordComparisonProteins;
                 }
             }
         });
 
         leftSideLayout.addComponent(bottomPanle);
-        tooltip.setWidth((width - 100) + "px");
+        leftSideLayout.setComponentAlignment(bottomPanle, Alignment.TOP_CENTER);
+        tooltip.setWidth((width - 115) + "px");
         tooltip.setHeight("40px");
         tooltip.setContentMode(ContentMode.HTML);
         tooltip.setStyleName("valuelabel");
         bottomPanle.addComponent(tooltip);
+        bottomPanle.setStyleName("lightborder");
+        bottomPanle.setComponentAlignment(tooltip, Alignment.BOTTOM_RIGHT);
+
+   
+        
+        VerticalLayout dsInfoPopupContainerLayout = new VerticalLayout();
+         dsInfoPopupContainerLayout.setWidth((width - 100) + "px");
+        dsInfoPopupContainerLayout.setHeight(400 + "px");
+        dsInfoPopupContainerLayout.setStyleName(Reindeer.LAYOUT_WHITE);
+        
+       
+       
+
 //        init rightside components 
-        studiesScatterChartsLayout = new StudiesScatterChartsLayout(comparisonProteins, selectedComparisonList, selectionManager, width);
+        studiesScatterChartsLayout = new StudiesScatterChartsLayout(comparisonProteins, selectedComparisonList, selectionManager, width,dsPopup);
         rightSideLayout.addComponent(studiesScatterChartsLayout);
         studiesScatterChartsLayout.setWidth(width + "px");
+
     }
 
     private void updateLineChartTooltip(String tooltipValue) {
         if (tooltipValue == null) {
-            tooltip.setVisible(false);
+            tooltip.setValue("");
         } else {
-            tooltip.setVisible(true);
-            tooltip.setValue("<textarea rows='4' cols='50'readonly>" + tooltipValue + "</textarea>");
+//            tooltip.setVisible(true);
+            tooltip.setValue("<textarea rows='4' cols='50'readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + tooltipValue + "</textarea>");
         }
 
     }
+    private ComparisonProtein[] inUseComparisonProteins;
 
     private String generateLineChart(ComparisonProtein[] comparisonProteins, Set<GroupsComparison> selectedComparisonList, double w, double h, ChartRenderingInfo chartRenderingInfo) {
         int upcounter = 0;
@@ -243,6 +304,7 @@ public class ProtOverviewCharts extends HorizontalLayout {
             orederingOptionGroup.setEnabled(false);
 
         }
+        inUseComparisonProteins = new ComparisonProtein[counter];
 
         DefaultXYDataset dataset = new DefaultXYDataset();
 
@@ -274,6 +336,7 @@ public class ProtOverviewCharts extends HorizontalLayout {
                 comparisonIndexer++;
                 continue;
             } else {
+                inUseComparisonProteins[compIndex] = cp;
                 xLineValues[compIndex] = comparisonIndexer;
 
                 if (cp.getCellValue() == 1) {
@@ -433,7 +496,7 @@ public class ProtOverviewCharts extends HorizontalLayout {
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 
 //      XYDifferenceRenderer renderer = new XYDifferenceRenderer(new Color(255, 0, 0), new Color(80, 183, 71), true);
-        renderer.setSeriesPaint(0, Color.BLACK);// new Color(90, 162, 244));
+        renderer.setSeriesPaint(0, Color.GRAY);// new Color(90, 162, 244));
 
         renderer.setSeriesPaint(1, Color.RED);
         renderer.setSeriesPaint(2, new Color(205, 225, 255));
@@ -468,6 +531,20 @@ public class ProtOverviewCharts extends HorizontalLayout {
         plot.setOutlinePaint(Color.GRAY);
         jFreeChart.setBorderVisible(false);
         String str = saveToFile(jFreeChart, w, h, chartRenderingInfo);
+
+        lineChartCoordMap.clear();
+        for (int i = 0; i < chartRenderingInfo.getEntityCollection().getEntityCount(); i++) {
+            ChartEntity entity = chartRenderingInfo.getEntityCollection().getEntity(i);
+            if (entity instanceof XYItemEntity && !((XYItemEntity) entity).getArea().toString().contains("java.awt.geom.Path2")) {
+                String[] arr = ((XYItemEntity) entity).getShapeCoords().split(",");
+                int xSer = Integer.valueOf(arr[10]);
+                int ySer = Integer.valueOf(arr[11]);
+                Rectangle rect = new Rectangle(xSer - 10, ySer - 10, 20, 20);
+                lineChartCoordMap.put(rect, inUseComparisonProteins[((XYItemEntity) entity).getItem()].getComparison());
+            }
+
+        }
+
         return str;
     }
 

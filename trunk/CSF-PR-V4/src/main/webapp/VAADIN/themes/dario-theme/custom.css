@@ -695,6 +695,16 @@ background-color: lightgray;
 
 
 }
+.matrixbtn div{
+    text-align:center;
+    font-size:10px;
+    font-family:Verdana;
+    font-weight:bold;
+    cursor:pointer;
+    color: gray;
+
+
+}
 .matrixbtn:hover{
     background-color:  #EFF2FB;
     border: 2px solid #006699;   
@@ -913,4 +923,10 @@ background-color: lightgray;
 
 
 
+}
+.cursorcanvas:focus {
+  outline: none;
+}
+.defaultcursorcanvas:focus {
+  outline: none;
 }

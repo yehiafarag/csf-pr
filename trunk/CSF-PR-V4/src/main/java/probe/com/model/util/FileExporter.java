@@ -22,7 +22,7 @@ import probe.com.model.beans.ComparisonProtein;
 import probe.com.model.beans.GroupsComparison;
 import probe.com.model.beans.PeptideBean;
 import probe.com.view.core.CustomExternalLink;
-import probe.com.view.quantdatasetsoverview.ComparisonChart;
+import probe.com.view.quantdatasetsoverview.quantcomparisontable.ComparisonChart;
 
 /**
  *

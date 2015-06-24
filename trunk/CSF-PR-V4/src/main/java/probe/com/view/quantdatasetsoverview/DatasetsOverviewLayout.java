@@ -10,6 +10,7 @@ import probe.com.view.quantdatasetsoverview.heatmap.DatasetExploringHeatMapFilte
 import probe.com.view.components.ExploreDatasetsTableLayout;
 import probe.com.view.core.HideOnClickLayout;
 import probe.com.view.quantdatasetsoverview.popupinteractivefilter.PopupInteractiveFilterComponent;
+import probe.com.view.quantdatasetsoverview.quantcomparisontable.UpdatedQuantProteinsComparisonTable;
 
 /**
  * This is the studies layout include publication heatmapFiltere and publication table
@@ -23,6 +24,7 @@ public class DatasetsOverviewLayout extends VerticalLayout {
     private final FilterUtility filterUtility;
     private final DatasetExploringSelectionManagerRes exploringFiltersManager;
     private final  ProteinsLayout proteinsLayout;
+    private final   UpdatedQuantProteinsComparisonTable  compTableLayout;
 
     public DatasetsOverviewLayout(MainHandler handler) {
 
@@ -41,10 +43,13 @@ public class DatasetsOverviewLayout extends VerticalLayout {
 //        this.addComponent(comparisonLayout);
         
         
-        QuantProteinsComparisonTable compTable = new QuantProteinsComparisonTable(exploringFiltersManager, handler);        
-        DatasetExploringHeatMapFilters heatmapFilter = new DatasetExploringHeatMapFilters(exploringFiltersManager,filtersLayout,compTable);
+        compTableLayout = new UpdatedQuantProteinsComparisonTable(exploringFiltersManager, handler);        
+        DatasetExploringHeatMapFilters heatmapFilter = new DatasetExploringHeatMapFilters(exploringFiltersManager,filtersLayout,compTableLayout);
         heatmapFilter.setWidth("100%");
         heatmapFilter.setMargin(new MarginInfo(false, false, true, false));
+        
+        
+        
         HideOnClickLayout comparisonLevelLayout = new HideOnClickLayout("Datasets", heatmapFilter, null);
         this.addComponent(comparisonLevelLayout);     
         comparisonLevelLayout.setVisability(true);
@@ -90,6 +95,7 @@ public class DatasetsOverviewLayout extends VerticalLayout {
     
     public void redrawCharts(){
     proteinsLayout.redrawCharts();
+    compTableLayout.redrawCharts();
     }
     
     

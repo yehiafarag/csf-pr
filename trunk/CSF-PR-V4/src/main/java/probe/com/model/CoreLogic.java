@@ -869,13 +869,13 @@ public class CoreLogic implements Serializable {
                 ComparisonProtein comProt = comparProtList.get(quant.getUniprotAccession());
 
                 if (quant.getStringFCValue().equalsIgnoreCase("Decreased")) {
-                    comProt.addDown(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()));
+                    comProt.addDown(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()),quant.getDsKey());
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Increased")) {
-                    comProt.addUp(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()));
+                    comProt.addUp(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()),quant.getDsKey());
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Not Provided")) {
-                    comProt.addNotProvided(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()));
+                    comProt.addNotProvided(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()),quant.getDsKey());
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Not Regulated")) {
-                    comProt.addNotReg(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()));
+                    comProt.addNotReg(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()),quant.getDsKey());
                 }
                 comProt.setUniProtAccess(quant.getUniprotAccession());
                 String protName = quant.getUniprotProteinName();

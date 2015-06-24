@@ -18,6 +18,7 @@ import java.util.Set;
 import probe.com.model.beans.ComparisonProtein;
 import probe.com.model.beans.GroupsComparison;
 import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
+import probe.com.view.core.DatasetPopupComponent;
 
 /**
  *
@@ -28,7 +29,7 @@ public class StudiesScatterChartsLayout extends VerticalLayout {
     private final Map<GroupsComparison, ProteinComparisonScatterPlotLayout> compLayoutMap = new LinkedHashMap<GroupsComparison, ProteinComparisonScatterPlotLayout>();
     private final GridLayout mainbodyLayout;
 
-    public StudiesScatterChartsLayout(ComparisonProtein[] protList, Set<GroupsComparison> selectedComparisonList, final DatasetExploringSelectionManagerRes selectionManager, int width) {
+    public StudiesScatterChartsLayout(ComparisonProtein[] protList, Set<GroupsComparison> selectedComparisonList, final DatasetExploringSelectionManagerRes selectionManager, int width,DatasetPopupComponent dsPopup) {
         setStyleName(Reindeer.LAYOUT_WHITE);
         this.setWidth("100%");
         this.setHeightUndefined();
@@ -37,18 +38,22 @@ public class StudiesScatterChartsLayout extends VerticalLayout {
         mainbodyLayout.setWidthUndefined();
         mainbodyLayout.setHeightUndefined();
         int rowIndex = 0;
-        for (final ComparisonProtein cp : protList) {
+        for (ComparisonProtein cprot : protList) {
 
-            if (cp == null) {
-                continue;
+            if (cprot == null) {
+              GroupsComparison gc = (GroupsComparison)  selectedComparisonList.toArray()[rowIndex];
+              cprot = new ComparisonProtein(width, gc);
+              continue;
             }
-            ProteinComparisonScatterPlotLayout protCompLayout = new ProteinComparisonScatterPlotLayout(cp, width);
+            ProteinComparisonScatterPlotLayout protCompLayout = new ProteinComparisonScatterPlotLayout(cprot, width,selectionManager,dsPopup);
             mainbodyLayout.addComponent(protCompLayout, 0, rowIndex);
             mainbodyLayout.setComponentAlignment(protCompLayout, Alignment.MIDDLE_CENTER);
-            compLayoutMap.put(cp.getComparison(), protCompLayout);
+            compLayoutMap.put(cprot.getComparison(), protCompLayout);
+            
+            final ComparisonProtein gc = cprot;
             LayoutEvents.LayoutClickListener closeListener = new LayoutEvents.LayoutClickListener() {
 
-                private final GroupsComparison localComparison = cp.getComparison();
+                private final GroupsComparison localComparison = gc.getComparison();
 
                 @Override
                 public void layoutClick(LayoutEvents.LayoutClickEvent event) {
@@ -84,20 +89,26 @@ public class StudiesScatterChartsLayout extends VerticalLayout {
 
     public void highlightComparison(GroupsComparison groupComp) {
 
-        try {
-            VaadinSession.getCurrent().getLockInstance().lock();//          
-            if (lastheighlitedlayout != null) {
-                lastheighlitedlayout.highlight(false);
-            }
+        if (lastheighlitedlayout != null) {
+            lastheighlitedlayout.highlight(false);
+        }
+        ProteinComparisonScatterPlotLayout layout = compLayoutMap.get(groupComp);
+        if (layout == null) {
+            return;
+        } 
+        layout.highlight(true);
+        lastheighlitedlayout = layout;
+       
+
+    }
+     public String getComparisonChart(GroupsComparison groupComp) {
+
+        
             ProteinComparisonScatterPlotLayout layout = compLayoutMap.get(groupComp);
             if (layout == null) {
-                return;
+                return "";
             }
-            lastheighlitedlayout = layout;
-            layout.highlight(true);
-        } finally {
-            VaadinSession.getCurrent().getLockInstance().unlock();
-        }
+          return layout.getUrl();
 
     }
 

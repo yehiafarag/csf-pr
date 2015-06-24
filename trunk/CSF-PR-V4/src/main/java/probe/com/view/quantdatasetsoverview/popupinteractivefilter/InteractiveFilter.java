@@ -197,7 +197,7 @@ public class InteractiveFilter extends VerticalLayout implements ChartDataClickH
                 .setLegend(legend).setStackSeries(true)
                 .setGrid(new Grid().setDrawBorder(false).setBackground("#ffffff").setShadow(false))
                 .setSeriesDefaults(seriesDefaults).setAnimate(true).setSeriesColors(tempColor)
-                .setFontFamily("Arial, Helvetica, Tahoma, Verdana, sans-serif")
+                .setFontFamily("Verdana")
                 .setHighlighter(highlighter);
 
         //init chart

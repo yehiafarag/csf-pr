@@ -9,6 +9,7 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import java.util.ArrayList;
@@ -59,10 +60,13 @@ public class HeatMapComponent extends VerticalLayout {
         spacer.setStyleName(Reindeer.LAYOUT_WHITE);
 
         hideCompBtn = new VerticalLayout();
-        hideCompBtn.setWidth("100%");
-        hideCompBtn.setHeight("100%");
-        hideCompBtn.setDescription("Show/Hide Comparison Table");
+        hideCompBtn.setWidth("150px");
+        hideCompBtn.setHeight("150px");
+        hideCompBtn.setDescription("Hide Comparison Table");
         hideCompBtn.setStyleName("matrixbtn");
+        Label l = new Label("Hide Comparsions");
+        hideCompBtn.addComponent(l);
+        hideCompBtn.setComponentAlignment(l, Alignment.BOTTOM_CENTER);
         spacer.addComponent(hideCompBtn);
         spacer.setComponentAlignment(hideCompBtn, Alignment.MIDDLE_CENTER);
         hideCompBtn.setEnabled(false);
@@ -99,6 +103,12 @@ public class HeatMapComponent extends VerticalLayout {
     private final List<HeatmapCell> selectedCells = new ArrayList<HeatmapCell>();
 
     protected void addSelectedDs(GroupsComparison comparison, HeatmapCell cell) {
+         for (HeaderCell header : columnCells) {              
+                header.unSelectCellStyle();
+            }
+            for (HeaderCell header : rowCells) {                
+                header.unSelectCellStyle();
+            }
         if (singleSelection) {
             for (HeatmapCell tcell : selectedCells) {
                 tcell.unselect();
@@ -121,6 +131,68 @@ public class HeatMapComponent extends VerticalLayout {
         updateSelectionManagerIndexes();
     }
 
+    protected void addRowSelectedDs(String selectedheader) {
+        if (singleSelection) {
+            for (HeatmapCell tcell : selectedCells) {
+                tcell.unselect();
+            }
+            selectedDsList.clear();
+            selectedCells.clear();
+
+            for (HeaderCell header : columnCells) {
+                if (header.getValueLabel().equalsIgnoreCase(selectedheader)) {
+                    for (HeatmapCell tcell : header.getIncludedCells()) {
+                        tcell.select();
+                    }
+                    header.selectCellStyle();
+                    selectedCells.addAll(header.getIncludedCells());
+                    selectedDsList.addAll(header.getIncludedComparisons());
+                    continue;
+                }
+                header.unSelectCellStyle();
+            }
+            for (HeaderCell header : rowCells) {
+                if (header.getValueLabel().equalsIgnoreCase(selectedheader)) {
+                    for (HeatmapCell tcell : header.getIncludedCells()) {
+                        tcell.select();
+                    }
+                     header.selectCellStyle();
+                      selectedCells.addAll(header.getIncludedCells());
+                    continue;
+                }
+                header.unSelectCellStyle();
+            }
+
+        } else {
+         
+            for (HeaderCell header : columnCells) {
+                if (header.getValueLabel().equalsIgnoreCase(selectedheader)) {
+                    for (HeatmapCell tcell : header.getIncludedCells()) {
+                        tcell.select();
+                    }
+                    header.selectCellStyle();
+                    selectedCells.addAll(header.getIncludedCells());
+                    selectedDsList.addAll(header.getIncludedComparisons());
+                    break;
+                }
+            }
+            for (HeaderCell header : rowCells) {
+                if (header.getValueLabel().equalsIgnoreCase(selectedheader)) {
+                    for (HeatmapCell tcell : header.getIncludedCells()) {
+                        tcell.select();
+                    }
+                     header.selectCellStyle();
+                    selectedCells.addAll(header.getIncludedCells());
+                    break;
+                }
+            }
+          
+
+        }
+
+        updateSelectionManagerIndexes();
+    }
+
     public void updateDsCellSelection(Set<GroupsComparison> selectedDsList) {
           if (selectedDsList.isEmpty()) {
             hideCompBtn.setEnabled(false);
@@ -132,6 +204,12 @@ public class HeatMapComponent extends VerticalLayout {
             selfSelection = false;
             return;
         }
+         for (HeaderCell header : columnCells) {              
+                header.unSelectCellStyle();
+            }
+            for (HeaderCell header : rowCells) {                
+                header.unSelectCellStyle();
+            }
         List<HeatmapCell> localSelectedCells = new ArrayList<HeatmapCell>();
         localSelectedCells.addAll(this.selectedCells);
         for (GroupsComparison gr : this.selectedDsList) {
@@ -165,6 +243,12 @@ public class HeatMapComponent extends VerticalLayout {
     }
 
     protected void removeSelectedDs(GroupsComparison comparison, HeatmapCell cell) {
+         for (HeaderCell header : columnCells) {              
+                header.unSelectCellStyle();
+            }
+            for (HeaderCell header : rowCells) {                
+                header.unSelectCellStyle();
+            }
         this.selectedDsList.remove(comparison);
         this.selectedCells.remove(cell);
         String kI = cell.getComparison().getComparisonHeader();
@@ -177,6 +261,35 @@ public class HeatMapComponent extends VerticalLayout {
         updateSelectionManagerIndexes();
 
     }
+     protected void removeRowSelectedDs(String selectedHeadercell) {
+       
+        for (HeaderCell header : columnCells) {
+            if (header.getValueLabel().equalsIgnoreCase(selectedHeadercell)) {
+                for (HeatmapCell tcell : header.getIncludedCells()) {
+                    tcell.unselect();
+                }
+                header.unSelectCellStyle();
+                selectedCells.removeAll(header.getIncludedCells());
+                selectedDsList.removeAll(header.getIncludedComparisons());
+                break;
+            }
+        }
+        for (HeaderCell header : rowCells) {
+           if (header.getValueLabel().equalsIgnoreCase(selectedHeadercell)) {
+                for (HeatmapCell tcell : header.getIncludedCells()) {
+                    tcell.unselect();
+                }
+                header.unSelectCellStyle();
+                selectedCells.removeAll(header.getIncludedCells());
+                selectedDsList.removeAll(header.getIncludedComparisons());
+                break;
+            }
+        }
+     
+        updateSelectionManagerIndexes();
+
+    }
+
 
     private void updateSelectionManagerIndexes() {
         //filter datasets
@@ -229,7 +342,7 @@ public class HeatMapComponent extends VerticalLayout {
             if (la.equalsIgnoreCase("")) {
                 la = "Not Available";
             }
-            HeaderCell headerCell = new HeaderCell(false, la, i);
+            HeaderCell headerCell = new HeaderCell(false, la, i,HeatMapComponent.this);
             columnHeader.addComponent(headerCell, i, 0);
             columnHeader.setComponentAlignment(headerCell, Alignment.MIDDLE_CENTER);
             columnCells[i] = headerCell;
@@ -244,7 +357,7 @@ public class HeatMapComponent extends VerticalLayout {
             if (la.equalsIgnoreCase("")) {
                 la = "Not Available";
             }
-            HeaderCell headerCell = new HeaderCell(true, la, i);
+            HeaderCell headerCell = new HeaderCell(true, la, i,HeatMapComponent.this);
             rowHeader.addComponent(headerCell, 0, i);
             rowHeader.setComponentAlignment(headerCell, Alignment.MIDDLE_CENTER);
             rowCells[i] = headerCell;
@@ -262,6 +375,11 @@ public class HeatMapComponent extends VerticalLayout {
                 HeatmapCell cell = new HeatmapCell(value, color, values[x][y].getIndexes(), x, y, null, HeatMapComponent.this, headerTitle);
                 comparisonsCellsMap.put(headerTitle, cell);
                 heatmapBody.addComponent(cell, y, x);
+                if (cell.getComparison().getDatasetIndexes().length > 0) {
+                    columnCells[y].addComparison(cell.getComparison(),cell);
+                    rowCells[x].addComparison(cell.getComparison(),cell);
+                }
+                
             }
 
         }

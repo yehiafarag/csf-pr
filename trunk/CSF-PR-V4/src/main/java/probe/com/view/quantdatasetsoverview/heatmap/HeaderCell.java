@@ -10,6 +10,11 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import probe.com.model.beans.GroupsComparison;
 
 /**
  * this class give the control on the header label style and events
@@ -21,8 +26,24 @@ public class HeaderCell extends VerticalLayout implements LayoutEvents.LayoutCli
     private final  String cellStyleName;
     private String selectStyle ="";
     private final Label valueLabel ;
+
+    public List<HeatmapCell> getIncludedCells() {
+        return includedCells;
+    }
+
+    public Set<GroupsComparison> getIncludedComparisons() {
+        return includedComparisons;
+    }
+
+    public String getValueLabel() {
+        return valueLabel.getValue();
+    }
     private boolean selected = false;
-    public HeaderCell(boolean rowHeader, String value, int index) {
+    private final Set<GroupsComparison>includedComparisons = new LinkedHashSet<GroupsComparison>();
+     private final List<HeatmapCell>includedCells = new ArrayList<HeatmapCell>();
+    private final HeatMapComponent parentcom;
+    public HeaderCell(boolean rowHeader, String value, int index,HeatMapComponent parentcom) {
+        this.parentcom=parentcom;
         valueLabel = new Label("<center><b>" + value + "</b></center>");
 //        super("<b>" + value + "</b>");
         valueLabel.setWidth("150px");
@@ -72,11 +93,20 @@ public class HeaderCell extends VerticalLayout implements LayoutEvents.LayoutCli
     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
         if (selected) {
             selected = false;
-            unSelectCellStyle();
+//            unSelectCellStyle();
+            parentcom.removeRowSelectedDs(valueLabel.getValue());
+          
+            
         } else {
             selected = true;
-            selectCellStyle();
+//            selectCellStyle();
+            parentcom.addRowSelectedDs(valueLabel.getValue());
         }
+    }
+    
+    public void addComparison(GroupsComparison groupComp,HeatmapCell cell){
+    this.includedComparisons.add(groupComp);
+    this.includedCells.add(cell);
     }
 
 }

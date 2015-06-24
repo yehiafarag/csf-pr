@@ -32,10 +32,11 @@ import probe.com.selectionmanager.CSFFilterSelection;
 import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
 import probe.com.model.beans.QuantDSIndexes;
 import probe.com.model.beans.QuantDatasetObject;
-import probe.com.view.quantdatasetsoverview.QuantProteinsComparisonTable;
+import probe.com.view.quantdatasetsoverview.quantcomparisontable.QuantProteinsComparisonTable;
 import probe.com.view.quantdatasetsoverview.popupinteractivefilter.PopupInteractiveFilterComponent;
 import probe.com.view.core.ListSelectDatasetExplorerFilter;
 import probe.com.view.core.PatientsGroup;
+import probe.com.view.quantdatasetsoverview.quantcomparisontable.UpdatedQuantProteinsComparisonTable;
 
 /**
  * this class represents the top filters layout for exploring datasets tab the
@@ -58,17 +59,18 @@ public class DatasetExploringHeatMapFilters extends GridLayout implements CSFFil
     private HeatMapComponent heatMap;
     private boolean selfselected = false;
     private final HorizontalLayout btnsLayout;
-    private final QuantProteinsComparisonTable compTable;
+    private final UpdatedQuantProteinsComparisonTable compTable;
     private final int tableWidth,heatmapW;
     private final float tableRatio;
     private final float heatmapRatio;
 
 
-    public DatasetExploringHeatMapFilters(final DatasetExploringSelectionManagerRes exploringFiltersManager, PopupInteractiveFilterComponent filtersLayout,final QuantProteinsComparisonTable compTable) {
+    public DatasetExploringHeatMapFilters(final DatasetExploringSelectionManagerRes exploringFiltersManager, PopupInteractiveFilterComponent filtersLayout,final UpdatedQuantProteinsComparisonTable compTable) {
         this.setHeight("100%");
         this.setWidth("100%");
         this.setSpacing(true);
         this.setColumns(2);
+        this.setMargin(true);
         this.setRows(2);
         Page page = Page.getCurrent();
         int pageWidth = page.getBrowserWindowWidth();
@@ -473,7 +475,7 @@ public class DatasetExploringHeatMapFilters extends GridLayout implements CSFFil
             QuantDSIndexes[][] values = calcHeatMapMatrix(sel1, sel2);
             heatMap.updateHeatMap(sel1, sel2, values, maxDatasetNumber);
 
-        } else if (type.equalsIgnoreCase("DSSelection")) {
+        } else if (type.equalsIgnoreCase("ComparisonSelection")) {
             heatMap.updateDsCellSelection(exploringFiltersManager.getSelectedComparisonList());
             if (exploringFiltersManager.getSelectedComparisonList().isEmpty()) {
                 viewComparisonHeatmap(true);
