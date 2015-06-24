@@ -98,6 +98,10 @@ public class DatasetExploringSelectionManagerRes {
                 updateFilteredDatasetList(selection.getDatasetIndexes());
                 this.SelectionChanged(selection.getType());
             }
+            else
+            {
+                 this.SelectionChanged("StudySelection");
+            }
 
         } finally {
 //            VaadinSession.getCurrent().getLockInstance().unlock();
@@ -110,7 +114,7 @@ public class DatasetExploringSelectionManagerRes {
 
             VaadinSession.getCurrent().getLockInstance().lock();
             this.selectedComparisonList = selectedComparisonList;
-            this.SelectionChanged("DSSelection");
+            this.SelectionChanged("ComparisonSelection");
 
         } finally {
             VaadinSession.getCurrent().getLockInstance().unlock();

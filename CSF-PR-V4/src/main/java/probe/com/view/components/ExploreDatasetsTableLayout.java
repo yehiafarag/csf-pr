@@ -221,9 +221,12 @@ public class ExploreDatasetsTableLayout extends VerticalLayout implements CSFFil
     public void selectionChanged(String type) {
         if(type.equalsIgnoreCase("filter")){
         updateTableRecords(exploringFiltersManager.getFilteredDatasetsList());        
-        }else{
+        }
+        else if(type.equalsIgnoreCase("StudySelection")){
+//             updateTableRecords(exploringFiltersManager.getFilteredDatasetsList());       
         
             int datasetId = exploringFiltersManager.getSelectedDataset();
+            System.out.println("dsid "+datasetId);
             int i = 0;
             for (; i < dsIndexes.length; i++) {
                 if (dsIndexes[i] == datasetId) {
@@ -232,6 +235,9 @@ public class ExploreDatasetsTableLayout extends VerticalLayout implements CSFFil
                 }
 
             }
+            QuantDatasetObject qds = exploringFiltersManager.getFullDatasetArr()[datasetId];
+             updateTableRecords(new QuantDatasetObject[]{qds});    
+         
 
 //            selectDataset(datasetId);
         }

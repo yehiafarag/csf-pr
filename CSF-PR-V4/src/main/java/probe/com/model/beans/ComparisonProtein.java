@@ -15,6 +15,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
     private String uniProtAccess;
     private String protName;
     private final Map<String,List<Integer>>patientsNumToTrindMap = new HashMap<String, List<Integer>>();
+    private final Map<String,List<Integer>>patientsNumToDSIDMap = new HashMap<String, List<Integer>>();
 
     public Map<String, List<Integer>> getPatientsNumToTrindMap() {
         return patientsNumToTrindMap;
@@ -59,7 +61,6 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
      private final DecimalFormat df ;
      private Double trendValue = 0.0;
      private double cellValue;
-     private double cellValuePercent;
     public ComparisonProtein(int total,GroupsComparison comparison) {
         this.comparison  =comparison;
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
@@ -74,6 +75,12 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
          patientsNumToTrindMap.put("up", new ArrayList<Integer>());
          patientsNumToTrindMap.put("notReg", new ArrayList<Integer>());
          patientsNumToTrindMap.put("down", new ArrayList<Integer>());
+          patientsNumToDSIDMap.put("up", new ArrayList<Integer>());
+         patientsNumToDSIDMap.put("notReg", new ArrayList<Integer>());
+         patientsNumToDSIDMap.put("down", new ArrayList<Integer>());
+         
+         
+         
         initLabelLayout();
     }
     
@@ -94,24 +101,27 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
 
 
             
-        downLayout.setHeight("20px");
+        downLayout.setHeight("15px");
         downLayout.setStyleName("greenlayout");
         this.addComponent(downLayout);
+        this.setComponentAlignment(downLayout, Alignment.MIDDLE_CENTER);
         
         
         //        notProvidedLayout.setWidth("100%");
-        notProvidedLayout.setHeight("20px");
+        notProvidedLayout.setHeight("15px");
         notProvidedLayout.setStyleName("lightbluelayout");
         this.addComponent(notProvidedLayout);
+        this.setComponentAlignment(notProvidedLayout, Alignment.MIDDLE_CENTER);
 //
-//        downLayout.setWidth("100%");
-         notRegLayout.setHeight("20px");
+         notRegLayout.setHeight("15px");
         notRegLayout.setStyleName("empty");//"empty"
         this.addComponent(notRegLayout);
+        this.setComponentAlignment(notRegLayout, Alignment.MIDDLE_CENTER);
         
-        upLayout.setHeight("20px");
+        upLayout.setHeight("15px");
         upLayout.setStyleName("redlayout");
         this.addComponent(upLayout);
+        this.setComponentAlignment(upLayout, Alignment.MIDDLE_CENTER);
         upLayout.setCaptionAsHtml(true);
         
          upLabel = new Label();
@@ -126,12 +136,6 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
     public double getCellValue() {
         return cellValue;
     }
-        
-        
-       
-    
-    
-
     public String getKey() {
         return key;
     }
@@ -152,12 +156,17 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         return up;
     }
     
-    public void addUp(int up, int patNumber) {
+    public void addUp(int up, int patientsNumber,int dsID) {
         trendValue += (double) up;
         this.up += up;
        List<Integer> upList = this.patientsNumToTrindMap.get("up");
-       upList.add(patNumber);
+       upList.add(patientsNumber);
        this.patientsNumToTrindMap.put("up",upList);
+       
+       
+       List<Integer> upDsList = this.patientsNumToDSIDMap.get("up");
+       upDsList.add(dsID);       
+       this.patientsNumToDSIDMap.put("up",upDsList);
        
     }
     
@@ -165,24 +174,32 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         return down;
     }
     
-    public void addDown(int down,int patNumber) {
+    public void addDown(int down,int patientsNumber,int dsID) {
         trendValue-=(double)down;
         this.down += down;
         List<Integer> downList = this.patientsNumToTrindMap.get("down");
-       downList.add(patNumber);
+       downList.add(patientsNumber);       
        this.patientsNumToTrindMap.put("down",downList);
+       
+        List<Integer> downDsList = this.patientsNumToDSIDMap.get("down");
+       downDsList.add(dsID);       
+       this.patientsNumToDSIDMap.put("down",downDsList);
     }
     
     public int getNotReg() {
         return notReg;
     }
     
-    public void addNotReg(int notReg,int patNumber) {
+    public void addNotReg(int notReg,int patientsNumber,int dsID) {
          penalty+=0.5;
         this.notReg += notReg;
         List<Integer> notRegList = this.patientsNumToTrindMap.get("notReg");
-       notRegList.add(patNumber);
+       notRegList.add(patientsNumber);
        this.patientsNumToTrindMap.put("notReg",notRegList);
+       
+       List<Integer> notRegDsList = this.patientsNumToDSIDMap.get("notReg");
+       notRegDsList.add(dsID);       
+       this.patientsNumToDSIDMap.put("notReg",notRegDsList);
     }
     
     public int getNotProvided() {
@@ -190,13 +207,17 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         return notProvided;
     }
     
-    public void addNotProvided(int notProvided,int patNumber) {
+    public void addNotProvided(int notProvided,int patNumber,int dsID) {
 //        trendValue-=0.5;
         penalty+=0.5;
         this.notProvided += notProvided;
         List<Integer> notRegList = this.patientsNumToTrindMap.get("notReg");
        notRegList.add(patNumber);
        this.patientsNumToTrindMap.put("notReg",notRegList);
+       
+       List<Integer> notRegDsList = this.patientsNumToDSIDMap.get("notReg");
+       notRegDsList.add(dsID);       
+       this.patientsNumToDSIDMap.put("notReg",notRegDsList);
     }
     
     @Override
@@ -278,7 +299,7 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
         }
 
 
-        cellValuePercent = cellValue/(double)(total);
+//        cellValuePercent = cellValue/(double)(total);
         
 //        v1 = Math.abs(v1);
         this.setExpandRatio(notRegLayout, ((float) (total - counter) / total));
@@ -308,5 +329,18 @@ public class ComparisonProtein extends HorizontalLayout implements Serializable,
 //    public String getCellValuePercent() {
 //        return "";// cellValuePercent;
 //    }
+
+    public int getDSID(int x, int y) {
+        if(x== 0)
+         return   patientsNumToDSIDMap.get("up").get(y);
+        else    if(x== 1)
+         return   patientsNumToDSIDMap.get("notReg").get(y);
+        else    if(x== 2)
+         return   patientsNumToDSIDMap.get("down").get(y);
+        else 
+            return -1;
+        
+    }
+    
 
 }
