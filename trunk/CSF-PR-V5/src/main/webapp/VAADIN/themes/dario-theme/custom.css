@@ -1,0 +1,932 @@
+/* 
+    Document   : custom
+    Created on : Aug 30, 2013, 3:42:40 PM
+    Author     : Yehia Farag
+    Description:
+        Purpose of the stylesheet follows.
+*/
+.v-loading-indicator,  
+.v-loading-indicator-delay,  
+.v-loading-indicator-wait {  
+    width: 100%;  
+    height: 100%;  
+    margin: 0;  
+    background-position: 50%;  
+    background-color: gray;  
+    background-repeat: no-repeat;  
+    background-attachment: fixed;   
+    opacity: .8;  
+    -ms-filter: alpha(opacity=80);  
+    filter: alpha(opacity=80);  
+}  
+.spacer v-verticallayout v-layout v-vertical v-widget spacer v-verticallayout-spacer v-has-width v-has-height{
+    /*background: #4d749f;*/
+}
+
+.v-tabsheet-tabitem-selected {
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: #ee5311;
+    alignment-adjust:middle;
+}
+.v-tabsheet-tabitem-selected {
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: default;
+    color: #ee5311;
+    alignment-adjust:middle
+}
+
+.v-tabsheet-tabitem:hover {
+    color: #ee5311;;
+}
+
+.v-tabsheet-tabitem-selected:hover {
+    color: #ee5311;
+}
+
+
+/* Lay the options horizontally */
+.v-select-optiongroup-horizontal .v-select-option {
+    display: inline-block;
+}
+.custLabel{
+    font-size:6;
+    height: 17px;
+    font-family:Verdana;
+    font-weight: bold;
+    color:gray;    
+    margin: 0 0 0 0px;  
+}
+
+
+.centerLabel{
+    font-size:14px;
+    height: 17px;
+    font-family:Verdana;
+    font-weight: bold;
+    color:gray;    
+    text-align: left;
+    margin: 0 0 0 0px;
+}
+
+
+/* Avoid wrapping if the layout is too tight */
+.v-select-optiongroup-horizontal {
+    white-space: nowrap;
+}
+
+/* Some extra spacing is needed */
+.v-select-optiongroup-horizontal
+.v-select-option.v-radiobutton {
+    padding-right: 10px;
+}
+
+.filterLabel{
+    /*	background:url(img/label.png) no-repeat;
+            width:190px;
+            height:18px;
+            float:left;
+                text-align:left;
+                font-size:10px;
+                color:#fff;
+                
+                font-weight:bold;        */
+    clear: both;
+    background: url(img/right_gray1.png) no-repeat;
+    font-size: 12px;
+    height: 16px;
+    font-family:Verdana;
+    font-weight: bold;
+    color:gray;    
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    cursor: pointer;
+
+}
+.filterLabel:hover {	
+    clear: both;
+    color:#6E6E6E;
+    font-size: 14px;  
+    height: 18px;
+    background: url(img/right_gray2.png) no-repeat;
+}
+.custFilterLabelHeader{
+    font-size:12px ;
+    height: 20px;
+    font-family:Verdana;
+    font-weight: bold;
+    color:#6E6E6E;    
+    margin: 0 0 0 0;
+    border-bottom: 1px #4b5257 dotted ;
+
+
+
+}
+.filterBtnLabelClicked{
+    clear: both;
+    font-family:Verdana;
+    font-weight: bold; 
+
+    color:#585858; 
+    /*#4d749f;*/
+    font-size: 13px;
+    height: 18px;
+    background: url(img/right_gray2.png) no-repeat;
+
+}
+.showFilterLabelHeader{
+    font-family:Verdana;
+    font-weight: bold; 
+
+    clear: both;
+    display: block;
+    height: 20px;
+    padding: 0 0 0 0px;
+    font-size: 11px;
+    text-align: center;
+    color: #585858;
+    text-decoration: none;
+    border: none; 
+    cursor: pointer;
+
+}
+.showFilterLabelHeader-no:hover{
+    font-size: 14px;
+    background: url(img/close_10_10.png) no-repeat;
+}
+
+
+.filterClosableBtnLabel{
+    clear: both;
+    background: url(img/remove-icon.jpg) no-repeat;
+    font-size: 11px;
+    font-family: Verdana;
+    font-weight: bold;
+    color:gray;    
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    cursor: pointer;
+    max-width: 225px;
+    overflow-x: no-content;
+
+
+
+
+
+
+
+}
+
+
+
+.studyFilterClosableBtnLabel{
+    clear: both;
+    background: url(img/remove-icon-blue.jpg) no-repeat;
+    font-size: 11px;    
+    font-family:Verdana;
+    font-weight: bold;
+    color:#6EB1CE;    
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    cursor: pointer;
+    max-width: 225px;
+    overflow-x: no-content;
+
+
+
+
+
+
+
+}
+.filterClosableBtnLabel-no:hover{
+    color: #585858;
+    font-size: 11px;
+    overflow-x: auto;
+    text-combine-horizontal: all;     
+    background: url(img/remove_black.png)no-repeat;
+}
+.filterNonClosableBtnLabel{
+    clear: both;
+    font-size: 10px;
+    /*height: 14px;*/
+    font-family:Verdana;
+    font-weight: bold;
+    color:gray;    
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    cursor: pointer;
+
+
+}
+.filterNonClosableBtnLabel-no:hover{
+    color: #585858;
+    font-size: 11px;
+}
+.titleLabel{
+     clear: both;
+    font-size: 14px;
+    /*height: 14px;*/
+    font-family: Verdana;
+    font-weight: bold;    
+    /*    text-transform: inherit;*/
+    color:#666;    
+    margin: 0 0 0 0;
+    margin-top: 5px;
+    padding: 0 0 0 0;
+    text-align: center;
+    
+}
+.caption{
+    font-family:Verdana;
+    font-weight: bold;    
+    /*    text-transform: inherit;*/
+    color:#666;    
+}
+.captionunderline{
+    font-size: 12px;
+    font-family:Verdana;
+    font-weight: bold;    
+    /*    text-transform: inherit;*/
+    text-decoration: underline;
+    color:#666;    
+}
+
+.valuelabel span{
+     font-family: Verdana;    
+    /*    text-transform: inherit;*/
+    text-decoration: none;
+    color:gray;    
+}
+.valuelabel textArea{
+    font-family: Verdana;    
+    background-color:  white;
+    border:none;
+     color:gray;    
+     resize: none;
+     /*text-transform: uppercase;*/
+}
+.filterShowLabel{
+    clear: both;
+    font-size: 14px;
+    /*height: 14px;*/
+    font-family:Verdana;
+    font-weight: bold;    
+    /*    text-transform: inherit;*/
+    color:#666;    
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    cursor: pointer;
+}
+
+.treeNodeLabel{
+    clear: both;
+    font-size: 12px;
+    /*height: 14px;*/
+    font-family:Verdana;
+    font-weight: bold;    
+    text-decoration: none;
+    color:#666;    
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    cursor: pointer;
+}
+.selectedtreeNodeLabel{
+    clear: both;
+    font-size: 14px;
+    /*height: 14px;*/
+    font-family:Verdana;
+    font-weight: bold;    
+    text-decoration: underline;
+    color:rgb(59, 90, 122);    
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    cursor: pointer;
+}
+.selectedtreeNodeLabel div{
+    font-size: 14px;    
+    font-family:Verdana;
+}
+/*.filterShowLabel:hover{
+    color: black;
+    font-size: 15px;
+}*/
+
+.externalLinkTableClickedLabel a{
+    color: #f8f9f9;
+    font-size: 12px;
+    font-family: Verdana; 
+}
+.externalLinkTableLabel a{
+    color: black;
+    font-size: 12px;
+    font-family: Verdana; 
+}
+.datasetInfoHeaders{
+    font-family: Verdana; 
+    font-size: 12px;
+    color:#585858;
+    font-weight: bold;
+
+}
+.datasetInfoValues{
+    font-family:Verdana; 
+    font-size: 12px;
+    color:gray;
+
+}
+.datasetInfoValues textArea{
+    clear: both;
+    font-family:Verdana; 
+    font-size: 12px;
+    width: 1100px;
+    height: 50px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+        
+    border: none;
+    resize: none;
+    text-justify: distribute;
+    color:gray;
+
+}
+
+.miniDatasetInfoHeaders{
+    font-family:Verdana; 
+    font-size: 9px;
+    color:#666666;
+    font-weight: bold;
+
+}
+.miniDatasetInfoValues{
+    font-family:Verdana; 
+    font-size: 9px;
+    color:gray;
+
+}
+
+.spacer{
+    height: 1px;
+    border: 1px #dce0e0 dotted;
+    
+    
+}
+
+.v-select-optiongroup-horizontal .v-select-option {
+    display: inline-block;
+}
+
+.v-select-optiongroup-horizontal {
+    white-space: nowrap;
+}
+
+.v-select-optiongroup-horizontal .v-select-option.v-radiobutton {
+    padding-right: 10px;
+}
+.interactiveFilter{
+     font-family:Verdana; 
+    
+}
+
+.grayborder{
+    border: none;
+    
+}
+
+.v-tree-node-caption-treeHeader{
+    font-family:Verdana; 
+    font-size: 12px;
+    font-weight: bold;
+    color:rgb(59, 90, 122);    
+    
+}
+.v-tree-node-caption-treeValue{
+    font-family:Verdana; 
+    font-size: 10px;
+    font-weight: bold;
+    color:gray;    
+    
+}
+.publicationoverviewlabel{
+    
+    color:#000000;
+    font-size: 12px;
+    font-weight: normal;
+    cursor: pointer;
+    
+}
+.publicationoverviewlabel span:hover{
+    color: rgb(59, 90, 122);
+    cursor: pointer;
+    
+    
+}
+
+.selectedpublicationoverviewlabel{
+    color: rgb(59, 90, 122);
+     font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    
+    
+}
+.bluesparkline div{
+    clear: both;
+    cursor: pointer;
+    background: url(img/lightbluesparkline.png)no-repeat;
+}
+.bluesparkline div:hover{
+    
+     background: url(img/darkbluesparkline.png)no-repeat;
+    
+}
+.selectedbluesparkline div{
+    
+     background: url(img/darkbluesparkline.png)no-repeat;
+    
+}
+.bluebullet img{
+    clear: both;
+    width: 16px;
+    height: 14px;
+    content:  url(img/dot.png);
+}
+.bluebullet img:hover{
+    
+     background: url(img/blackdot.png)no-repeat;
+    
+}
+.darkbluebullet img{
+    
+     background: url(img/blackdot.png)no-repeat;
+    
+}
+
+.hmcolumnlabel {
+    border: 1px solid #F6F0F0;
+     margin-top: 150px;
+     text-align: center;
+     line-height: 50px;
+    -ms-transform:rotate(270deg); /* IE 9 */
+    -moz-transform:rotate(270deg); /* Firefox */
+    -webkit-transform:rotate(270deg); /* Safari and Chrome */
+    -o-transform:rotate(270deg); /* Opera */
+    transform-origin: 0%  0%;    
+    position: absolute;
+    background-color: #ffffff;
+    color: #000000;
+    cursor: pointer;
+}
+.hmcolumnlabel:hover{
+     border: 1px solid #006699; 
+    
+}
+
+.hmcolumnlabel_heighlightcell {
+    border: 1px solid #fc690a;
+    margin-top: 150px;
+    text-align: center;
+    line-height: 50px;
+    -ms-transform:rotate(270deg); /* IE 9*/ 
+    -moz-transform:rotate(270deg);  /*Firefox */
+    -webkit-transform:rotate(270deg); /* Safari and Chrome */
+    -o-transform:rotate(270deg); /* Opera */
+    transform-origin: 0%  0%;    
+    position: absolute;
+    /*background-color: #006699;*/
+/*    color: white;*/
+    cursor: pointer; 
+
+}
+.hmcolumnlabel div{
+      cursor: pointer;    
+}
+
+
+.hmcolumnlabel_selected {
+    border: 1px solid  #006699;
+     margin-top: 150px;
+     text-align: center;
+     line-height: 50px;
+    -ms-transform:rotate(270deg); /* IE 9 */
+    -moz-transform:rotate(270deg); /* Firefox */
+    -webkit-transform:rotate(270deg); /* Safari and Chrome */
+    -o-transform:rotate(270deg); /* Opera */
+    transform-origin: 0%  0%;    
+    position: absolute;
+    background-color: #006699;
+    color: white;
+    cursor: pointer; 
+
+}
+.hmcolumnlabel_selected div{
+    cursor: pointer;    
+}
+.hmcolumnlabel_selected_heighlightcell {
+    border: 1px solid #fc690a;
+    margin-top: 150px;
+    text-align: center;
+    line-height: 50px;
+    -ms-transform:rotate(270deg); /* IE 9*/ 
+    -moz-transform:rotate(270deg);  /*Firefox */
+    -webkit-transform:rotate(270deg); /* Safari and Chrome */
+    -o-transform:rotate(270deg); /* Opera */
+    transform-origin: 0%  0%;    
+    position: absolute;
+    background-color: #006699;
+    color: white;
+    cursor: pointer; 
+
+}
+
+
+.hmrowlabel {
+    border: 1px solid #F6F0F0;
+     text-align: center;
+     line-height: 50px;
+     background-color:    #ffffff;
+    color: #000000; 
+     cursor: pointer;  
+
+}
+.hmrowlabel:hover{
+     border: 1px solid #006699; 
+    
+}
+.hmrowlabel div{
+      cursor: pointer;    
+}
+
+
+.hmrowlabel_heighlightcell {
+    border: 1px solid #fc690a;
+     text-align: center;
+     line-height: 50px; 
+}
+
+
+
+.hmrowlabel_selected {
+    border: 1px solid  #006699;
+     text-align: center;
+     line-height: 50px;
+     background-color: #006699;
+    color: white;
+     cursor: pointer;  
+  
+
+}
+.hmrowlabel_selected div{
+      cursor: pointer;    
+}
+
+.hmrowlabel_selected_heighlightcell {
+    border: 1px solid #fc690a;
+     text-align: center;
+     line-height: 50px;
+     background-color: #006699;
+    color: white;
+  
+
+}
+
+
+.heatmapborder div{
+    border: 1px solid #dce0e0;    
+}
+
+.heatmapcoloredcell{
+    border: 2px solid #EFF2FB;   
+    height:50px;
+    width:50px; 
+    text-align:center;
+    color: #e0e0e0 ;
+    line-height: 48px;
+    font-weight: bold;
+    
+}
+.heatmapcoloredcell:hover{
+    border: 2px solid #006699;  
+}
+.selectedheatmapcoloredcell{
+    border: 2px solid #FF8000;
+    background-color: #FF8000;
+   
+    border-radius: 3px;
+    height:50px;
+    width:50px; 
+    text-align:center;
+    color: #ffffff ;
+    font-size: 20px;
+    font-weight: bolder;
+    line-height: 48px;    
+
+}
+.filterlabelbtn{
+    width: 30px;
+    height: 30px;
+    background-color:  whitesmoke;
+    background-image: url(img/filter.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    border: 1px solid  rgb(169, 169, 169) ;
+    border-radius: 3px;
+    cursor:pointer;
+
+
+}
+.filterlabelbtn:hover{
+background-color: lightgray;
+    
+}
+.interactiveFilterLayout{
+    position: absolute;
+    top: auto;
+    left: auto;
+    
+    
+}
+.closelabel{
+    clear: both;
+    width: 16px;
+    height: 16px;
+    background-color:  whitesmoke;
+    background-image: url(img/min.gif);
+    background-position:center;
+    background-repeat: no-repeat;
+    cursor:pointer;
+
+}
+
+.resetlabelbtn{
+    width: 100px;
+    height: 30px;
+    background-color:  whitesmoke;
+/*    background-image: url(img/reset.png);
+    background-repeat: no-repeat;*/
+    background-position:center;
+    border: 1px solid  rgb(169, 169, 169) ;
+    border-radius: 3px;
+    cursor:pointer;
+
+
+}
+resetlabelbtn p{
+     margin-top:5px;
+     cursor: pointer;
+
+
+}
+.resetlabelbtn:hover{
+background-color: lightgray;
+    
+}
+.matrixbtn{
+    background-color:  #ffffff;
+    background-image: url(img/hideshow.png);
+    background-repeat: no-repeat;
+    background-position:center;
+    background-size: 100px auto;
+    border-radius: 3px;
+    cursor:pointer;
+
+
+}
+.matrixbtn div{
+    text-align:center;
+    font-size:10px;
+    font-family:Verdana;
+    font-weight:bold;
+    cursor:pointer;
+    color: gray;
+
+
+}
+.matrixbtn:hover{
+    background-color:  #EFF2FB;
+    border: 2px solid #006699;   
+}
+.grcompbtn{
+    width: 100px;
+    height: 30px;
+    background-color:  whitesmoke;
+    background-repeat: no-repeat;
+    background-position:center;
+    border: 1px solid  rgb(169, 169, 169) ;
+    border-radius: 3px;
+    cursor:pointer;
+
+
+}
+.grcompbtn p{
+    
+     margin-top:5px;
+     cursor: pointer;
+    
+}
+.grcompbtn:hover{
+background-color: lightgray;
+    
+}
+
+.greenlayout div{
+    background: #009900;    
+}
+
+.lightbluelayout div{
+    background: rgb(205, 225, 255);  
+}
+.midgreenlayout div{
+    background: #8ECCA3;
+    
+    
+}
+.midredlayout{
+    background: #CC707F;
+    
+}
+.empty div{
+      /*background-image: url(img/empty.png);*/
+      background:#cccccc;
+      background-position:center;
+    
+}
+.redlayout div{
+    background: #cc0000;
+}
+.tablesearchingbtn{
+     /*width: 40px;*/
+    height: 24px;
+    background-color:  whitesmoke;
+    background-image: url(img/icon_find.png);
+    background-repeat: no-repeat;
+    background-position:center;
+    border: 1px solid  rgb(169, 169, 169) ;
+    border-radius: 3px;
+    cursor:pointer;
+    
+}
+
+.tablesearchingbtn:hover{
+background-color: lightgray;
+    
+}
+.smallresetbtn div{
+     width: 70px;
+    height: 24px;
+    background-color:  whitesmoke;
+    background-image: url(img/reset.png);
+    background-repeat: no-repeat;
+    background-position:center;
+    border: 1px solid  rgb(169, 169, 169) ;
+    border-radius: 3px;
+    cursor:pointer;
+    
+}
+
+.smallresetbtn:hover{
+background-color: lightgray;
+    
+}
+
+.closebtn{
+    clear: both;
+    width: 16px;
+    height: 16px;
+    background-color:  whitesmoke;
+    background-image: url(img/close_1.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    cursor:pointer;
+
+}
+.lightborder{
+    border: 1px solid #EFF2FB;  
+    background: #ffffff;
+     overflow-y:hidden;
+
+}
+.lightselectedborder{
+     border: 1px solid #006699;  
+    background: #ffffff;
+     overflow-y:hidden;
+}
+
+
+.rotatedlabel {
+    margin-top: 200px;
+    margin-left:5px;
+    text-align: center;
+    line-height: 20px;
+    -ms-transform:rotate(270deg); /* IE 9 */
+    -moz-transform:rotate(270deg); /* Firefox */
+    -webkit-transform:rotate(270deg); /* Safari and Chrome */
+    -o-transform:rotate(270deg); /* Opera */
+    transform-origin: 0%  0%;  
+
+    position: absolute;
+    background-color: #ffffff;
+    color: gray;
+}
+.redrightarr{
+    width: 13px;
+    height: 13px;
+    background-image: url(img/red_right.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    
+    
+}
+
+.lightbluearr{
+    width: 13px;
+    height: 13px;
+    background-image: url(img/light_blue.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    
+    
+}
+
+.greenleftarr{
+    width: 13px;
+    height: 13px;
+    background-image: url(img/green_left.png);
+    background-position:center;
+    background-repeat: no-repeat;
+    
+    
+}
+.hideoverflow div{
+    overflow: hidden;
+    
+}
+.lightgraylayout{
+    background-color: rgb(242,242,242);
+    border: 1px solid  lightgray ;
+}
+.upregchartlabel {
+     font-family: Verdana;    
+     color: red;
+     /* top:-5px; */
+     height:100%;
+     overflow: visible;
+     font-weight:bold;
+     font-size: 10px;
+     line-height:100%;
+     text-align:center;
+     margin-top:10px;
+    
+}
+.notregchartlabel {
+      font-family: Verdana;    
+     color: #9fd3ff;//rgb(205, 225, 255) ;
+     /* top:-5px; */
+     height:30px;
+     font-weight:bold;
+     font-size: 10px;
+     line-height:100%;
+     text-align:center;
+     margin-top:15px;
+    
+}
+.downregchartlabel {
+       font-family: Verdana;    
+     color: #009900;
+     /* top:-5px; */
+     height:30px;
+     font-weight:bold;
+     font-size: 10px;
+     line-height:100%;
+     text-align:center;
+     margin-top:20px;
+    
+}
+.cursorcanvas {    
+    cursor: pointer;
+}
+
+.defaultcursorcanvas {    
+    cursor: default;
+}
+
+.custChartLabelHeader{
+    font-size:12px ;
+    height: 20px;
+    font-family:Verdana;
+    color:#6E6E6E;    
+    margin: 0 0 0 0;
+    border-bottom: 1px #4b5257 dotted ;
+
+
+
+}
+.cursorcanvas:focus {
+  outline: none;
+}
+.defaultcursorcanvas:focus {
+  outline: none;
+}
