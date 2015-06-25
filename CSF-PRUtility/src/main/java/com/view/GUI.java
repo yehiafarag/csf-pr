@@ -21,10 +21,10 @@ import javax.swing.SwingWorker;
 public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
 
     private ExperimentBean exp;
-    private final String database_name = "csf_db_v2";
+    private final String database_name = "csf_db_v2_1";
     private final String executeCmd ;
-    private final String backupFileUrl =  "C:\\CSF_Files\\backup.sql" ;                        //   /home/probe/user/CSF-PR-FILES/backup.sql
-    private final String processUrl = "C:\\AppServ\\MySQL\\bin\\mysqldump.exe " ;//C:\\AppServ\\MySQL\\bin\\mysqldump.exe           ///usr/bin/mysqldump
+    private final String backupFileUrl =  "C:\\CSF_Files\\backup-quant.sql" ;                        //   /home/probe/user/CSF-PR-FILES/backup.sql
+    private final String processUrl = "C:\\AppServ\\MySQL\\bin\\mysqldump.exe" ;//C:\\AppServ\\MySQL\\bin\\mysqldump.exe           ///usr/bin/mysqldump
 
 
 
@@ -819,7 +819,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                 exphandeler = new Handler("jdbc:mysql://" + jTextField13.getText() + ":3306/", database_name, "com.mysql.jdbc.Driver", jTextField1.getText(), jPasswordField1.getText());
             } catch (SQLException sqlE) {sqlE.printStackTrace();}
         }
-        exphandeler.exportDataBase(executeCmd);
+        exphandeler.exportDataBase(processUrl,jTextField3.getText());
     }//GEN-LAST:event_jButton9ActionPerformed
 
     @SuppressWarnings("SleepWhileInLoop")
@@ -908,6 +908,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jButton9.setEnabled(true);
         jButton1.setEnabled(true);
         jTextField3.setEnabled(true);
+        jTextField3.setText(backupFileUrl);
         jButton1.setText("Select SQL File");
     }//GEN-LAST:event_jRadioButton5ActionPerformed
 

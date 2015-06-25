@@ -688,16 +688,18 @@ public class DB implements Serializable {
         return true;
     }
     
-         public void exportDataBase(String executeCmd1) {
+         public void exportDataBase(String mysqldumpUrl,String sqlFileUrl) {
 
         try {
-            String executeCmd = "C:\\\\AppServ\\\\MySQL\\\\bin\\\\mysqldump.exe  -u " + userName + " -p" + password + " " + dbName + " -r  C:\\CSF_Files\\backup.sql";//C:\\AppServ\\MySQL\\bin\\mysqldump.exe           ///usr/bin/mysqldump
+//            String executeCmd = "C:\\\\AppServ\\\\MySQL\\\\bin\\\\mysqldump.exe  -u " + userName + " -p" + password + " " + dbName + " -r  C:\\CSF_Files\\backup-quant.sql";//C:\\AppServ\\MySQL\\bin\\mysqldump.exe           ///usr/bin/mysqldump
+
+            String executeCmd =mysqldumpUrl+ "  -u " + userName + " -p" + password + " " + dbName + " -r  "+sqlFileUrl;//C:\\AppServ\\MySQL\\bin\\mysqldump.exe           ///usr/bin/mysqldump
 
             Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
             int processComplete = runtimeProcess.waitFor();
             if (processComplete == 0) {
 
-                System.out.println("Backup taken successfully");
+                System.out.println("Backup taken successfully ");
 
             } else {
 
@@ -711,12 +713,15 @@ public class DB implements Serializable {
 
     }
 
-    public boolean restoreDB(String source) {
+    public boolean restoreDB(String sqlFileUrl) {
+        //create if not exist
 
-        String cleanStatment = "TRUNCATE `experiments_table`;TRUNCATE `experiment_fractions_table`;TRUNCATE `experiment_peptides_proteins_table`; TRUNCATE `experiment_peptides_table`; TRUNCATE `experiment_protein_table`;TRUNCATE `fractions_table`;TRUNCATE `proteins_peptides_table`;TRUNCATE `standard_plot_proteins`;TRUNCATE `users_table`";
+       
+        String cleanStatment = "TRUNCATE `combined_dataset_table`;TRUNCATE `combined_quant_table`;TRUNCATE `experiments_table`;TRUNCATE `experiment_fractions_table`;TRUNCATE `experiment_peptides_proteins_table`; TRUNCATE `experiment_peptides_table`; TRUNCATE `experiment_protein_table`;TRUNCATE `fractions_table`;TRUNCATE `quantitative_peptides_table`;TRUNCATE `quantitative_proteins_table`;TRUNCATE `quant_dataset_table`;TRUNCATE `proteins_peptides_table`;TRUNCATE `standard_plot_proteins`;TRUNCATE `users_table`;TRUNCATE `quant_prot_table`";
         String[] tabls = cleanStatment.split(";");
 
-        try {  
+        try {    
+            createTables();
             int test =0;
 
             if (conn == null || conn.isClosed()) {
@@ -731,7 +736,7 @@ public class DB implements Serializable {
             }
 
             if (true) {
-                String[] executeCmd = new String[]{"C:\\AppServ\\MySQL\\bin\\mysql", "--user=" + userName, "--password=" + password, dbName, "-e", "source " + source};///usr/bin/mysql
+                String[] executeCmd = new String[]{"C:\\AppServ\\MySQL\\bin\\mysql", "--user=" + userName, "--password=" + password, dbName, "-e", "source " + sqlFileUrl};///usr/bin/mysql
 
                 Process runtimeProcess;
                 runtimeProcess = Runtime.getRuntime().exec(executeCmd);

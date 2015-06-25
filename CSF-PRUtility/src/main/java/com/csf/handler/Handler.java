@@ -52,8 +52,8 @@ public class Handler {
         return test;
     }
 
-    public void exportDataBase(String executeCmd) {
-        dal.exportDataBase(executeCmd);
+    public void exportDataBase(String mysqldumpUrl,String sqlFileUrl) {
+        dal.exportDataBase(mysqldumpUrl, sqlFileUrl);
     }
 
     public boolean restoreDB(String source) {
