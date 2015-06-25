@@ -57,8 +57,8 @@ public class DAL {
 
     }
      
-    public void exportDataBase(String executeCmd){
-        database.exportDataBase(executeCmd);
+    public void exportDataBase(String mysqldumpUrl,String sqlFileUrl){
+        database.exportDataBase( mysqldumpUrl, sqlFileUrl);
         
     
     }
