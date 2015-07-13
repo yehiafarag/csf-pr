@@ -26,6 +26,7 @@ import probe.com.model.beans.QuantDatasetObject;
 import probe.com.model.beans.QuantProtein;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.model.beans.QuantDatasetListObject;
+import probe.com.model.beans.QuantPeptide;
 import probe.com.model.beans.User;
 
 /**
@@ -1282,7 +1283,7 @@ public class DataBase implements Serializable {
 
             //get peptides 
 //            PreparedStatement selectPeptidesStat = null;
-//            String selectQuantProt = "SELECT * FROM `proteins_peptides_table` WHERE `peptide_id` = ?;";
+//            String selectQuantPeptides = "SELECT * FROM `proteins_peptides_table` WHERE `peptide_id` = ?;";
 //            int counter = 0;
 //            for (int pepId : peptideIdList) {
 //
@@ -1292,7 +1293,7 @@ public class DataBase implements Serializable {
 //                    Class.forName(driver).newInstance();
 //                    conn = DriverManager.getConnection(url + dbName, userName, password);
 //                }
-//                selectPeptidesStat = conn.prepareStatement(selectQuantProt);
+//                selectPeptidesStat = conn.prepareStatement(selectQuantPeptides);
 //                selectPeptidesStat.setInt(1, pepId);
 //                rs1 = selectPeptidesStat.executeQuery();
 //
@@ -3493,7 +3494,7 @@ public class DataBase implements Serializable {
      * retrieve standard proteins data for fraction plot
      *
      * @param datasetId
-     * @return quantProtList
+     * @return quantPeptidetList
      */
     public List<StandardProteinBean> getStandardProtPlotList(int datasetId) {
         List<StandardProteinBean> standardPlotList = new ArrayList<StandardProteinBean>();
@@ -4428,13 +4429,7 @@ public class DataBase implements Serializable {
 
     }
 
-    public Set<QuantProtein> getQuantificationProteins(int dsUnique) {
-        
-        
-        
-        
-        
-        
+    public Set<QuantProtein> getQuantificationProteins(int dsUnique) {        
         Set<QuantProtein> quantProtList = new HashSet<QuantProtein>();
         try {
 
@@ -4466,6 +4461,7 @@ public class DataBase implements Serializable {
                 quantProt.setPatientsGroupINumber(groupINum);
                 quantProt.setProtKey(rs1.getInt("index"));
                 quantProt.setDsKey(dsUnique);
+                quantProt.setSequance(rs1.getString("sequance"));
                 quantProt.setUniprotAccession(rs1.getString("uniprot_accession"));
                 quantProt.setUniprotProteinName(rs1.getString("uniprot_protein_name"));
                 quantProt.setPublicationAccNumber(rs1.getString("publication_acc_number"));
@@ -4494,4 +4490,97 @@ public class DataBase implements Serializable {
 
     }
 
+     public Map<String,Set<QuantPeptide>>    getQuantificationPeptides(int dsUnique) {
+        Set<QuantPeptide> quantPeptidetList = new HashSet<QuantPeptide>();
+        try {
+
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }            
+            String selectQuantPeptides ="SELECT * FROM `quantitative_peptides_table` Where  `DsKey`=?;";
+            PreparedStatement selectQuantProtStat = conn.prepareStatement(selectQuantPeptides);
+            selectQuantProtStat.setInt(1, dsUnique + 1);
+            ResultSet rs1 = selectQuantProtStat.executeQuery();
+            while (rs1.next()) {
+                QuantPeptide quantPeptide = new QuantPeptide();
+                quantPeptide.setDsKey(dsUnique);
+                quantPeptide.setProtIndex(rs1.getInt("prot_index") - 1);
+                quantPeptide.setUniqueId(rs1.getInt("index"));
+                quantPeptide.setPeptideModification(rs1.getString("peptide_modification"));
+                quantPeptide.setPeptideSequance(rs1.getString("peptide_sequance"));
+                quantPeptide.setModification_comment(rs1.getString("modification_comment"));
+                quantPeptide.setString_fc_value(rs1.getString("string_fc_value"));
+                quantPeptide.setString_p_value(rs1.getString("string_p_value"));
+                quantPeptide.setP_value(rs1.getDouble("p_value"));
+                quantPeptide.setRoc_auc(rs1.getDouble("roc_auc"));
+                quantPeptide.setFc_value(rs1.getDouble("fc_value"));
+                quantPeptide.setP_value_comments(rs1.getString("p_value_comments"));
+                quantPeptide.setUniprotProteinAccession(rs1.getString("proteinAccession"));
+                quantPeptidetList.add(quantPeptide);
+            }
+            rs1.close();
+
+            Map<String, Set<QuantPeptide>> quantProtPeptidetList = new HashMap<String, Set<QuantPeptide>>();
+            for (QuantPeptide qp : quantPeptidetList) {
+                if (!quantProtPeptidetList.containsKey("_"+qp.getUniprotProteinAccession()+"_"+qp.getProtIndex()+"_")) {
+                    Set<QuantPeptide> quantPepProtSet = new HashSet<QuantPeptide>();
+                    quantProtPeptidetList.put("_"+qp.getUniprotProteinAccession()+"_"+qp.getProtIndex()+"_", quantPepProtSet);
+
+                }
+                Set<QuantPeptide> quantPepProtSet = quantProtPeptidetList.get("_"+qp.getUniprotProteinAccession()+"_"+qp.getProtIndex()+"_");
+                quantPepProtSet.add(qp);
+                quantProtPeptidetList.put("_"+qp.getUniprotProteinAccession()+"_"+qp.getProtIndex()+"_", quantPepProtSet);
+
+            }
+            System.gc();
+            return quantProtPeptidetList;
+        } catch (ClassNotFoundException exp) {
+            System.err.println(exp.getLocalizedMessage());
+            return null;
+        } catch (IllegalAccessException exp) {
+            System.err.println(exp.getLocalizedMessage());
+            return null;
+        } catch (InstantiationException exp) {
+            System.err.println(exp.getLocalizedMessage());
+            return null;
+        } catch (SQLException exp) {
+            System.err.println(exp.getLocalizedMessage());
+            return null;
+        }
+    }     
+     public void    updateQuantificationPeptides(Set<QuantProtein> quantProt) {
+         try {
+
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            String selectQuantPeptides = "UPDATE `csf_db_v2_1`.`quantitative_peptides_table` SET `proteinAccession` =? WHERE `quantitative_peptides_table`.`prot_index` = ?;";
+             for (QuantProtein qp : quantProt) {
+
+                 PreparedStatement selectQuantProtStat = conn.prepareStatement(selectQuantPeptides);
+                 selectQuantProtStat.setString(1, qp.getUniprotAccession());
+                 if (qp.getProtKey() == 0) {
+                     System.out.println("at zero exist");
+                 }
+                 selectQuantProtStat.setInt(2, qp.getProtKey());
+                 selectQuantProtStat.executeUpdate();
+
+            }
+            System.gc();
+            conn.close();
+
+        } catch (ClassNotFoundException exp) {
+            System.err.println(exp.getLocalizedMessage());
+        } catch (IllegalAccessException exp) {
+            System.err.println(exp.getLocalizedMessage());
+        } catch (InstantiationException exp) {
+            System.err.println(exp.getLocalizedMessage());
+        } catch (SQLException exp) {
+            System.err.println(exp.getLocalizedMessage());
+        }
+      
+
+    }
 }

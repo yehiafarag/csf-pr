@@ -14,6 +14,14 @@ public class QuantProtein {
     private int quantifiedProteinsNumber,peptideIdNumb,quantifiedPeptidesNumber, patientsGroupINumber,patientsGroupIINumber,year,filesNum,IdentifiedProteinsNum, dsKey,protKey;    
     private String qPeptideKey,    peptideSequance,	peptideModification,modificationComment , stringFCValue,stringPValue,author,diseaseGroups,pvalueComment; 
 
+    public String getSequance() {
+        return sequance;
+    }
+
+    public void setSequance(String sequance) {
+        this.sequance = sequance;
+    }
+private String sequance;
     public int getDsKey() {
         return dsKey;
     }

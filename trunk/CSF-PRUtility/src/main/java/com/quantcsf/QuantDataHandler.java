@@ -497,5 +497,42 @@ public class QuantDataHandler {
 
         return prot;
     }
+        
+        public Map<String,String> readSequanceFile(String path){
+        
+         File dataFile = new File(path);
+         String lastKey="";
+        Map<String,String> protSeqMap = new HashMap<String,String>();
+        try {
+
+            FileReader fr = new FileReader(dataFile);
+            BufferedReader bufRdr = new BufferedReader(fr);
+            String header = bufRdr.readLine();
+            String[] headerArr = header.split("\t");
+            System.out.println(header + "  headers "+headerArr[0]);         
+            String line;
+            while ((line = bufRdr.readLine()) != null) {
+                String[] lineArr = line.split("\t");
+                if (lineArr.length > 1) {
+                    protSeqMap.put(lineArr[0].trim(), lineArr[1].trim());
+                    lastKey= lineArr[0];
+                }else{
+                String str= protSeqMap.get(lastKey)+lineArr[0].trim();
+                 protSeqMap.put(lastKey,str);
+                    System.out.println("str");
+                
+                }
+
+            }
+        }catch(Exception exp){
+        
+        exp.printStackTrace();
+        }
+            System.out.println("size "+protSeqMap.size());
+        return protSeqMap;
+        }
+        
+        
+        
     
 }

@@ -11,6 +11,7 @@ import com.quantcsf.beans.QuantPeptide;
 import com.quantcsf.beans.QuantProtein;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -73,6 +74,12 @@ public class DAL {
      
      
      }
+     //quant data store 
+     public  boolean updateProtSequances( Map<String,String> protSeqMap){
+         return database.updateProtSequances(protSeqMap);
+     
+     
+     }
      
      public void storeQuantDatasets(){
          database.storeQuantDatasets();
@@ -94,4 +101,11 @@ public class DAL {
        public Set<QuantDatasetObject> getQuantDatasetListObject() {
        return database.getQuantDatasetListObject();
        }
+       
+       public void correctProtInfo(){
+           database.correctProtInfo();
+           
+           
+
+}
 }

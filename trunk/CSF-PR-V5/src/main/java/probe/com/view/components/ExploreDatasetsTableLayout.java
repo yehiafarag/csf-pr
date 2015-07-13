@@ -12,7 +12,7 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.Locale;
 import probe.com.selectionmanager.CSFFilter;
 import probe.com.selectionmanager.CSFFilterSelection;
-import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
+import probe.com.selectionmanager.DatasetExploringCentralSelectionManager;
 import probe.com.model.beans.QuantDatasetObject;
 import probe.com.view.core.CSFTable;
 import probe.com.view.core.CustomExternalLink;
@@ -23,7 +23,7 @@ import probe.com.view.core.CustomExternalLink;
  */
 public class ExploreDatasetsTableLayout extends VerticalLayout implements CSFFilter, Property.ValueChangeListener {
 
-    private final DatasetExploringSelectionManagerRes exploringFiltersManager;
+    private final DatasetExploringCentralSelectionManager exploringFiltersManager;
     private final String filter_id = "datasetsTable";
     private final Table datasetsTable;
     private CustomExternalLink pumedLabel;
@@ -33,7 +33,7 @@ public class ExploreDatasetsTableLayout extends VerticalLayout implements CSFFil
     private final int totalStudiesNumber;
     private int[] dsIndexes;
 
-    public ExploreDatasetsTableLayout(DatasetExploringSelectionManagerRes exploringFiltersManager, boolean[] activeHeaders) {
+    public ExploreDatasetsTableLayout(DatasetExploringCentralSelectionManager exploringFiltersManager, boolean[] activeHeaders) {
         this.exploringFiltersManager = exploringFiltersManager;
         exploringFiltersManager.registerFilter(ExploreDatasetsTableLayout.this);
         this.datasetsTable = new Table();
@@ -136,7 +136,7 @@ public class ExploreDatasetsTableLayout extends VerticalLayout implements CSFFil
 
         datasetsTable.addValueChangeListener(this);
      
-        selectionChanged("filter");
+        selectionChanged("Disease_Groups_Level");
 
     }
 
@@ -213,13 +213,13 @@ public class ExploreDatasetsTableLayout extends VerticalLayout implements CSFFil
         }
         int dsIndex = dsIndexes[(Integer)item.getItemProperty("Index").getValue()];
         exploringFiltersManager.setSelectedDataset(dsIndex);
-        exploringFiltersManager.setFilterSelection(new CSFFilterSelection("dsSelection",new int[]{dsIndex},filter_id, null));
+        exploringFiltersManager.setStudyLevelFilterSelection(new CSFFilterSelection("dsSelection",new int[]{dsIndex},filter_id, null));
         
     }
 
     @Override
     public void selectionChanged(String type) {
-        if(type.equalsIgnoreCase("filter")){
+        if(type.equalsIgnoreCase("Disease_Groups_Level")){
         updateTableRecords(exploringFiltersManager.getFilteredDatasetsList());        
         }
         else if(type.equalsIgnoreCase("StudySelection")){

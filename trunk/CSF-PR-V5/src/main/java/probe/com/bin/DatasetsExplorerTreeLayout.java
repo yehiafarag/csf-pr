@@ -183,7 +183,7 @@
 //
 //    @Override
 //    public void selectionChanged(String type) {
-//        if (type.equalsIgnoreCase("filter")) {
+//        if (type.equalsIgnoreCase("Disease_Groups_Level")) {
 //
 //            updateDatasetsNodes();
 //            this.updateStudyTree();

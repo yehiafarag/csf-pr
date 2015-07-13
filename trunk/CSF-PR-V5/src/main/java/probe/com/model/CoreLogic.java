@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import probe.com.dal.DataAccess;
 import probe.com.dal.Query;
-import probe.com.model.beans.ComparisonProtein;
+import probe.com.view.body.quantdatasetsoverview.quantproteinscomparisons.ComparisonProtein;
 import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.FractionBean;
@@ -23,6 +23,7 @@ import probe.com.model.beans.IdentificationProteinBean;
 import probe.com.model.beans.QuantProtein;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.model.beans.QuantDatasetListObject;
+import probe.com.model.beans.QuantPeptide;
 import probe.com.model.util.FileExporter;
 import probe.com.model.util.FilesReader;
 
@@ -846,6 +847,10 @@ public class CoreLogic implements Serializable {
 //        Map<Integer, IdentificationProteinBean> proteinsList = da.searchProteinByPeptideSequence(peptideSequenceKeyword, datasetId, validatedOnly);
 //        return proteinsList;
 //    }
+    
+    int pepCounter=0;
+    //proteinIndexesSet
+    
     /**
      * get quant proteins for comparison table
      *
@@ -853,29 +858,36 @@ public class CoreLogic implements Serializable {
      *
      * @return updated Selected Comparison List
      */
+    @Deprecated
     public Set<GroupsComparison> getComparisonProtList(Set<GroupsComparison> selectedComparisonList) {
         Set<GroupsComparison> updatedSelectedComparisonList = new HashSet<GroupsComparison>();
         for (GroupsComparison comparison : selectedComparisonList) {
-            Set<QuantProtein> comparisonMap = new HashSet<QuantProtein>();
+            Set<QuantProtein> comparisonProtMap = new HashSet<QuantProtein>();
+             Map<String,Set<QuantPeptide>> comparisonPeptideMap = new HashMap<String,Set<QuantPeptide>>();            
             for (int dsID : comparison.getDatasetIndexes()) {
-                comparisonMap.addAll(da.getQuantificationProteins(dsID));
-
+                comparisonProtMap.addAll(da.getQuantificationProteins(dsID));
+                comparisonPeptideMap.putAll(da.getQuantificationPeptides(dsID));
+               
+                
             }
+            
+            
+            
+          
             Map<String, ComparisonProtein> comparProtList = new HashMap<String, ComparisonProtein>();
-            for (QuantProtein quant : comparisonMap) {
+            for (QuantProtein quant : comparisonProtMap) {
                 if (!comparProtList.containsKey(quant.getUniprotAccession())) {
-                    comparProtList.put(quant.getUniprotAccession(), new ComparisonProtein(comparison.getDatasetIndexes().length, comparison));
+                    comparProtList.put(quant.getUniprotAccession(), new ComparisonProtein(comparison.getDatasetIndexes().length, comparison, quant.getProtKey()));
                 }
                 ComparisonProtein comProt = comparProtList.get(quant.getUniprotAccession());
-
                 if (quant.getStringFCValue().equalsIgnoreCase("Decreased")) {
-                    comProt.addDown(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()),quant.getDsKey());
+                    comProt.addDown(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()), quant.getDsKey());
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Increased")) {
-                    comProt.addUp(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()),quant.getDsKey());
+                    comProt.addUp(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()), quant.getDsKey());
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Not Provided")) {
-                    comProt.addNotProvided(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()),quant.getDsKey());
+                    comProt.addNotProvided(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()), quant.getDsKey());
                 } else if (quant.getStringFCValue().equalsIgnoreCase("Not Regulated")) {
-                    comProt.addNotReg(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()),quant.getDsKey());
+                    comProt.addNotReg(1, (quant.getPatientsGroupINumber() + quant.getPatientsGroupIINumber()), quant.getDsKey());
                 }
                 comProt.setUniProtAccess(quant.getUniprotAccession());
                 String protName = quant.getUniprotProteinName();
@@ -883,8 +895,23 @@ public class CoreLogic implements Serializable {
                     protName = quant.getPublicationProteinName();
                 }
                 comProt.setProtName(protName);
+                comProt.setSequance(quant.getSequance());
                 comparProtList.put(quant.getUniprotAccession(), comProt);
+                
+                Set<QuantPeptide> quantPeptidesList = new HashSet<QuantPeptide>();
+                for(String key:comparisonPeptideMap.keySet()){
+                if(key.contains("_"+comProt.getUniProtAccess()+"_"))
+                quantPeptidesList.addAll(comparisonPeptideMap.get(key));
+                }
+                comProt.setQuantPeptidesList(quantPeptidesList);
+               
             }
+
+            //init pep for prot
+
+           
+            
+            
             //sort the protiens map
             Map<String, ComparisonProtein> sortedcomparProtList = new TreeMap<String, ComparisonProtein>(Collections.reverseOrder());
             for (String Key : comparProtList.keySet()) {
@@ -903,12 +930,12 @@ public class CoreLogic implements Serializable {
 //        Map<String, Map<String, ComparisonProtein>> comProtList = new HashMap<String, Map<String, ComparisonProtein>>();
 //        int compcounter = 0;
 //        int protcounter = 0;
-//        Set<QuantProtein> comparisonMap = new HashSet<QuantProtein>();
+//        Set<QuantProtein> comparisonProtMap = new HashSet<QuantProtein>();
 //        for (QuantDatasetObject ds : datasets) {
 //            String key = ds.getPatientsGroup1().toLowerCase() + "-" + ds.getPatientsSubGroup1().toLowerCase() + "-" + ds.getPatientsGroup2().toLowerCase() + "-" + ds.getPatientsSubGroup2().toLowerCase();
 //
-//            comparisonMap = (da.getQuantificationProteins(ds.getUniqId()));
-//            for (QuantProtein quant : comparisonMap) {
+//            comparisonProtMap = (da.getQuantificationProteins(ds.getUniqId()));
+//            for (QuantProtein quant : comparisonProtMap) {
 //                if (!comProtList.containsKey(quant.getUniprotAccession())) {
 //                    comProtList.put(quant.getUniprotAccession(), new HashMap<String, ComparisonProtein>());
 //                    compcounter++;

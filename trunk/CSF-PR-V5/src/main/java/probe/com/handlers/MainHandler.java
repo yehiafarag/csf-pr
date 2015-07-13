@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import probe.com.dal.Query;
 import probe.com.model.CoreLogic;
-import probe.com.model.beans.ComparisonProtein;
+import probe.com.view.body.quantdatasetsoverview.quantproteinscomparisons.ComparisonProtein;
 import probe.com.model.beans.IdentificationDataset;
 import probe.com.model.beans.DatasetDetailsBean;
 import probe.com.model.beans.FractionBean;
@@ -551,6 +551,7 @@ public class MainHandler implements Serializable {
     
     
     } 
+    
     
     
     

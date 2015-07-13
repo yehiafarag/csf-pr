@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -861,6 +862,42 @@ public class DB implements Serializable {
      
      }
 
+     //quant data store 
+     public  boolean updateProtSequances( Map<String,String> protSeqMap){
+          String updateProtSeqStat = "UPDATE  `quantitative_proteins_table` SET  `sequance` =  ? WHERE  `quantitative_proteins_table`.`uniprot_accession` =?";
+          PreparedStatement updateProtSeqStatment= null;
+         boolean test = false;
+          try{
+              if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+
+              for (String key : protSeqMap.keySet()) {
+                  updateProtSeqStatment = conn.prepareStatement(updateProtSeqStat);
+                  updateProtSeqStatment.setString(1, protSeqMap.get(key));
+                  updateProtSeqStatment.setString(2, key);
+                  int i = updateProtSeqStatment.executeUpdate();
+                  if (i > 0) {
+                      test = true;
+                  }
+            }
+            
+                  updateProtSeqStatment.close();
+           
+        } catch (SQLException exp) {
+            exp.printStackTrace();
+        } catch (ClassNotFoundException exp) {
+            exp.printStackTrace();
+        } catch (InstantiationException exp) {
+            exp.printStackTrace();
+        } catch (IllegalAccessException exp) {
+            exp.printStackTrace();
+        }
+
+        return test;
+    }
+
     public void storeQuantDatasets() {
 
         String selectPro = "SELECT DISTINCT  `author` ,`year` ,`pumed_id` ,  `quantified_proteins_number` , `identified _proteins_num` ,`raw_data_available` ,  `type_of_study` ,  `sample_type` ,  `sample_matching` ,  `normalization_strategy` ,  `technology` ,  `analytical_approach` ,  `enzyme` ,  `shotgun_targeted` ,  `quantification_basis` ,  `quant_basis_comment`  ,  `patients_group_i_number` ,  `patients_group_ii_number` ,  `patient_group_i` ,  `patient_gr_i_comment` ,  `patient_sub_group_i` ,  `patient_group_ii` ,  `patient_sub_group_ii` , `patient_gr_ii_comment`,`additional_comments` \n"
@@ -1465,6 +1502,76 @@ public class DB implements Serializable {
         System.gc();
 
         return null;
+
+    }
+
+    public void correctProtInfo() {
+         String sqlStat = "SELECT *FROM `quantitative_peptides_table` where `peptide_sequance` ='Not Available' ;";
+         String protStat = "UPDATE `quantitative_proteins_table` SET `fold_change` = ?   , `fc_value` = ? ,`roc_auc` = ? , `string_p_value` = ?,`p_value` = ?,`p_value_comments` = ?  WHERE `quantitative_proteins_table`.`index` = ? ;";
+
+        try {
+            PreparedStatement selectCurrentQuantProtIndexStat = null;
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            selectCurrentQuantProtIndexStat = conn.prepareStatement(sqlStat);
+            ResultSet rs = selectCurrentQuantProtIndexStat.executeQuery();
+            int index = 0;
+            Set<QuantPeptide> peptideMap = new HashSet<QuantPeptide>();
+            while (rs.next()) {
+                QuantPeptide qpep = new QuantPeptide();
+                qpep.setProtKey(rs.getInt("prot_index"));
+                qpep.setStrPvalue(rs.getString("string_p_value"));
+                qpep.setFc(rs.getString("string_fc_value"));
+                qpep.setPvalue(rs.getDouble("p_value"));
+                qpep.setRoc(rs.getDouble("roc_auc"));
+                qpep.setFcPatientGroupIonPatientGroupII(rs.getDouble("fc_value"));
+                qpep.setPvalueComment(rs.getString("p_value_comments"));
+                peptideMap.add(qpep);
+            }
+            rs.close();
+             PreparedStatement updateProtTableStat = null;
+            if (conn == null || conn.isClosed()) {
+                Class.forName(driver).newInstance();
+                conn = DriverManager.getConnection(url + dbName, userName, password);
+            }
+            for (QuantPeptide qPep : peptideMap) {
+                if (qPep.getFc().equalsIgnoreCase("Not Provided") && qPep.getFcPatientGroupIonPatientGroupII() == -1000000000) {
+                    continue;
+                }
+                updateProtTableStat = conn.prepareStatement(protStat);
+                updateProtTableStat.setString(1, qPep.getFc());
+                updateProtTableStat.setDouble(2, qPep.getFcPatientGroupIonPatientGroupII());
+                updateProtTableStat.setDouble(3, qPep.getRoc());
+                updateProtTableStat.setString(4, qPep.getStrPvalue());
+                updateProtTableStat.setDouble(5, qPep.getPvalue());
+                updateProtTableStat.setString(6, qPep.getPvalueComment());
+                updateProtTableStat.setInt(7,qPep.getProtKey());
+                updateProtTableStat.executeUpdate();
+
+            }
+
+            conn.close();
+
+        } catch (ClassNotFoundException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (IllegalAccessException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (InstantiationException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        } catch (SQLException e) {
+            System.err.println("at error" + e.getLocalizedMessage());
+
+        }
+        
+        System.gc();
+        
+
+        
 
     }
 }

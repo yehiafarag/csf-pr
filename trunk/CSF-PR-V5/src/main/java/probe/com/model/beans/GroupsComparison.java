@@ -5,6 +5,7 @@
  */
 package probe.com.model.beans;
 
+import probe.com.view.body.quantdatasetsoverview.quantproteinscomparisons.ComparisonProtein;
 import java.io.Serializable;
 import java.util.Map;
 

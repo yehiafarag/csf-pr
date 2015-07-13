@@ -16,7 +16,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
 import probe.com.handlers.MainHandler;
-import probe.com.view.IdentificationDatasetLayout;
+import probe.com.view.body.IdentificationDatasetLayout;
 
 /**
  *

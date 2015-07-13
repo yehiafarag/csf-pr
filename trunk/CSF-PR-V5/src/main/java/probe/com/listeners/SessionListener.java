@@ -42,7 +42,7 @@ public class SessionListener implements HttpSessionListener, Serializable{
         public void run() {
             System.out.println("Time's up!");
 
-            VaadinSession.getCurrent().close();
+//            VaadinSession.getCurrent().close();
             session.invalidate();
             timer.cancel(); //Not necessary because we call System.exit
             //Stops the AWT thread (and everything else)

@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import probe.com.selectionmanager.CSFFilter;
-import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
+import probe.com.selectionmanager.DatasetExploringCentralSelectionManager;
 import probe.com.model.beans.PublicationRoot;
 import probe.com.model.beans.QuantDatasetObject;
 import probe.com.view.core.HideOnClickLayout;
@@ -38,7 +38,7 @@ import probe.com.view.core.PublicationRow;
  */
 public class PublicationExplorerTreeLayout extends VerticalLayout implements CSFFilter {
 
-    private final DatasetExploringSelectionManagerRes exploringFiltersManager;
+    private final DatasetExploringCentralSelectionManager exploringFiltersManager;
     private final VerticalLayout mainbodyLayout = new VerticalLayout();
     private final HorizontalLayout treeContainerLayout = new HorizontalLayout();
     private final String[] headers = new String[27];
@@ -47,7 +47,7 @@ public class PublicationExplorerTreeLayout extends VerticalLayout implements CSF
 //    private Panel infoLayoutPanel;
     private VerticalLayout publicationLayout;
 
-    public PublicationExplorerTreeLayout(QuantDatasetObject[] datasets,DatasetExploringSelectionManagerRes exploringFiltersManager) {
+    public PublicationExplorerTreeLayout(QuantDatasetObject[] datasets,DatasetExploringCentralSelectionManager exploringFiltersManager) {
 
         headers[2] = "#ID:";
         headers[3] = "#Quant:";
@@ -165,7 +165,7 @@ public class PublicationExplorerTreeLayout extends VerticalLayout implements CSF
 
     @Override
     public void selectionChanged(String type) {
-        if (type.equalsIgnoreCase("filter")) {
+        if (type.equalsIgnoreCase("Disease_Groups_Level")) {
             updateDatasetsNodes(exploringFiltersManager.getFilteredDatasetsList());
             this.updatePublicationTree();
 //            containerLayout.setVisible(false);

@@ -15,13 +15,15 @@ import java.util.Set;
 public class CSFFilterSelection implements Serializable {
 
     private final String filterId;
-    private final Set<String> values;
+    private  Set<String> values;
     private boolean active;
     private int filterIndex;
     private String filterColor;
     private final String type;
-    private final int[] datasetIndex;
+    private  int[] datasetIndex;
+    private Set<Integer> datasetIndexesSet;
 
+    
     public CSFFilterSelection(String filterId, Set<String> values, boolean active, int filterIndex, String filterColor, String type, int[] datasetIndex) {
         this.filterId = filterId;
         this.values = values;
@@ -40,9 +42,20 @@ public class CSFFilterSelection implements Serializable {
         this.values = values;
 
     }
+    
+    public CSFFilterSelection(String filterId,String type, Set<Integer> datasetIndexesSet ) {
+        this.type = type;
+        this.datasetIndexesSet = datasetIndexesSet;
+        this.filterId = filterId;
+
+    }
 
     public String getFilterId() {
         return filterId;
+    }
+
+    public Set<Integer> getDatasetIndexesSet() {
+        return datasetIndexesSet;
     }
 
     public Set<String> getValues() {
