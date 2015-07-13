@@ -89,6 +89,37 @@ public class Handler {
 
         return true;
     }
+     public boolean handelProtSequanceData(String path) {
+         System.out.println("file path "+path);
+          
+        //1.read file 
+         Map<String,String> protSeqMap=qDataHandler.readSequanceFile(path);
+        
+//        //2.store full data
+        boolean test  = dal.updateProtSequances(protSeqMap);
+//        //3.update dataset table
+//        dal.storeQuantDatasets();
+//        //handel quant prot     
+//        Set<QuantDatasetObject> datasetsList = dal.getQuantDatasetListObject();
+//        qProtList = this.handleQuantData(datasetsList,qProtList);
+//        int protIndex = dal.getCurrentProtIndex();
+//        List<QuantPeptide> peptidesList = handelQuantPeptides(qProtList,protIndex);        
+//        
+//        //foldchange
+//        
+//        defineProtFoldChange(qProtList, peptidesList);
+//        
+//        
+//        //store quant protiens
+//        dal.storeQuantitiveProteins(qProtList);
+//        
+//        //store quant peptides
+//        dal.storeQuantitivePeptides(peptidesList);
+//        
+//        System.out.println("final prot list updated (should be smaller)  " + qProtList.size() + "  prer " + peptidesList.size());
+
+        return test;
+    }
 
     private List<QuantPeptide> handelQuantPeptides(List<QuantProtein> qProtList, int protIndex) {
 //        Map<String, QuantPeptide> peptides = new HashMap<String, QuantPeptide>();
@@ -296,5 +327,10 @@ public class Handler {
 
         }
 
+    }
+    public void correctProtInfo(){
+    dal.correctProtInfo();
+    
+    
     }
 }

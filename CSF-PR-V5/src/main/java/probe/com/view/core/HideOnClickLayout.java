@@ -52,6 +52,7 @@ public class HideOnClickLayout  extends VerticalLayout implements Serializable, 
         titleLayout.addLayoutClickListener(HideOnClickLayout.this);
         this.addComponent(titleLayout);
         this.addComponent(this.fullBodyLayout);
+        this.setComponentAlignment(this.fullBodyLayout, Alignment.MIDDLE_CENTER);
         if (miniBodyLayout != null) {
             titleLayout.addComponent(this.miniBodyLayout);
             miniBodyLayout.addLayoutClickListener(HideOnClickLayout.this);

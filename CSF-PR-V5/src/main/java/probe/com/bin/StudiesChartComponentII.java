@@ -34,7 +34,7 @@ import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.renderers.series.BarRenderer;
 import probe.com.selectionmanager.CSFFilter;
-import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
+import probe.com.selectionmanager.DatasetExploringCentralSelectionManager;
 import probe.com.model.beans.QuantDatasetObject;
 import probe.com.view.core.HideOnClickLayout;
 import probe.com.view.core.InformationField;
@@ -52,7 +52,7 @@ public class StudiesChartComponentII extends VerticalLayout implements CSFFilter
     private Options options ;
     private Axes axes ;
     private final DCharts studiesChart;
-    private final DatasetExploringSelectionManagerRes exploringFiltersManager;
+    private final DatasetExploringCentralSelectionManager exploringFiltersManager;
     private final HorizontalLayout studiesFilterLayout = new HorizontalLayout();
     private final VerticalLayout studiesChartLayout = new VerticalLayout();
     private final VerticalLayout studiesInformationLayout = new VerticalLayout();
@@ -60,7 +60,7 @@ public class StudiesChartComponentII extends VerticalLayout implements CSFFilter
     private QuantDatasetObject currentSelectedStudy;
     private QuantDatasetObject [][] studiesMatrix ;
     
-    public StudiesChartComponentII(DatasetExploringSelectionManagerRes exploringFiltersManager){
+    public StudiesChartComponentII(DatasetExploringCentralSelectionManager exploringFiltersManager){
         this.setHeight("100%");
         studiesFilterLayout.setMargin(false);
         studiesFilterLayout.setWidth("100%");

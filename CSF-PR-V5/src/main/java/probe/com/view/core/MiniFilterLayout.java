@@ -8,7 +8,7 @@ import com.vaadin.ui.themes.Reindeer;
 import java.util.Map;
 import java.util.Set;
 import probe.com.selectionmanager.CSFFilter;
-import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
+import probe.com.selectionmanager.DatasetExploringCentralSelectionManager;
 
 /**
  *
@@ -16,10 +16,10 @@ import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
  */
 public class MiniFilterLayout extends VerticalLayout implements CSFFilter{
 
-    private final DatasetExploringSelectionManagerRes Filter_Manager;
+    private final DatasetExploringCentralSelectionManager Filter_Manager;
     private final String filter_Id = "miniFilter";
     private final GridLayout filtersLayout;
-   public MiniFilterLayout(DatasetExploringSelectionManagerRes Filter_Manager){
+   public MiniFilterLayout(DatasetExploringCentralSelectionManager Filter_Manager){
    this.Filter_Manager = Filter_Manager;
    Filter_Manager.registerFilter(MiniFilterLayout.this);
    this.setWidth("100%");
@@ -43,7 +43,7 @@ public class MiniFilterLayout extends VerticalLayout implements CSFFilter{
 
     @Override
     public void selectionChanged(String type) {
-//        if(type.equalsIgnoreCase("filter")){
+//        if(type.equalsIgnoreCase("Disease_Groups_Level")){
 //        Map<String, Set<String>> appliedFilterList = Filter_Manager.getAppliedFilterList();
 //        filtersLayout.removeAllComponents();
 //        if(appliedFilterList.isEmpty())

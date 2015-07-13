@@ -12,7 +12,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.Reindeer;
 import java.io.Serializable;
-import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
+import probe.com.selectionmanager.DatasetExploringCentralSelectionManager;
 
 /**
  *
@@ -28,9 +28,9 @@ public class MiniStudyFilter extends HorizontalLayout implements Serializable, L
     private final String filterId;
     private final Label filterValueLabel;
     private final String space = "&nbsp; &nbsp; ";
-    private final DatasetExploringSelectionManagerRes Filter_Manager;
+    private final DatasetExploringCentralSelectionManager Filter_Manager;
 
-    public MiniStudyFilter(String filterId, String value, DatasetExploringSelectionManagerRes Filter_Manager, String filterLabel) {
+    public MiniStudyFilter(String filterId, String value, DatasetExploringCentralSelectionManager Filter_Manager, String filterLabel) {
         filterValueLabel = new Label();
         this.Filter_Manager = Filter_Manager;
 

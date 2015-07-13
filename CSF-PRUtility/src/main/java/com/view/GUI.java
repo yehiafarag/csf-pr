@@ -565,6 +565,7 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+        if(jButton1.getText().equalsIgnoreCase("Select CPS File")){
         JFileChooser chooser = new JFileChooser();
 
         FileFilter cpsfilter = new FileFilter() {
@@ -603,14 +604,53 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
             String path = selectedFile.getAbsolutePath();
             jTextField3.setText(path);
         }
+        }
+        else
+        {
+        JFileChooser chooser = new JFileChooser();
+        FileFilter textFilter = new FileFilter() {
+            @Override
+            public boolean accept(final File pathname) {
+                return pathname.getName().endsWith(".txt");
+            }
+
+            
+            
+            @Override
+            public String getDescription() {
+                return "*.txt";
+            }
+        };
+         chooser.addChoosableFileFilter(textFilter);
+        int option = chooser.showOpenDialog(this); // parentComponent must a component like JFrame, JDialog...
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+            String path = selectedFile.getAbsolutePath();
+            jTextField3.setText(path);
+        }
+        
+        
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
     private Handler exphandeler;
     private  File resourcefolder;
     @SuppressWarnings("SleepWhileInLoop")
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       
-        if(jRadioButton1.isSelected()){
-        boolean test = this.valiField();
+        if (correct) {
+            if (exphandeler == null) {
+                try {
+                    exphandeler = new Handler("jdbc:mysql://" + jTextField13.getText() + ":3306/", database_name, "com.mysql.jdbc.Driver", jTextField1.getText(), jPasswordField1.getText());
+                } catch (SQLException sqlE) {
+                    sqlE.printStackTrace();
+                }
+            }
+
+            exphandeler.correctProtInfo();
+
+            return;
+        }
+        if (jRadioButton1.isSelected()) {
+            boolean test = this.valiField();
         if (test) {
             try {
                 new Thread() {
@@ -667,15 +707,38 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
             }
         } else// quant data processing
         {
+            
+            String errorMessage = "Not .txt file";
             String errorMessage1 = "Not .csv file";
+            jTextField3.setForeground(Color.black);
             jTextField4.setForeground(Color.black);
-            if (jTextField4.getText() == null || jTextField4.getText().equalsIgnoreCase("")|| !jTextField4.getText().endsWith(".csv")) {
+            boolean sequance = true;
+            if (jTextField3.getText() != null) {
+                
+                if (jTextField3.getText().equalsIgnoreCase("") || !jTextField3.getText().endsWith(".txt")) {
+                    jTextField3.setText(errorMessage);
+                    jTextField3.setForeground(Color.red);
+                    return;
+
+                }
+                sequance =true;
+            }
+            else  if (jTextField4.getText() != null && jTextField3.getText() == null){
+             if (jTextField4.getText() == null || jTextField4.getText().equalsIgnoreCase("")|| !jTextField4.getText().endsWith(".csv")) {
                 jTextField4.setText(errorMessage1);
                 jTextField4.setForeground(Color.red);
                 return;
 
             }
-            
+             sequance=false;
+            } else {
+                sequance =true;
+                jTextField3.setText(errorMessage);
+                jTextField3.setForeground(Color.red);
+
+
+            }
+            final boolean localSequance=sequance;
             try {
                 new Thread() {
                     @Override
@@ -698,7 +761,13 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
                                 sqlE.printStackTrace();
                             }
                         }
-                        boolean processing = exphandeler.handelQuantPubData(jTextField4.getText());
+                         boolean processing = false;
+                        if (!localSequance) {
+                            processing = exphandeler.handelQuantPubData(jTextField4.getText());
+                        }else{
+                        
+                        processing=exphandeler.handelProtSequanceData(jTextField3.getText());
+                        }
                         if (processing)
                             jLabel13.setText("done");
 
@@ -792,15 +861,18 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
 
+    boolean correct=false;
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int option = chooser.showOpenDialog(this); // parentComponent must a component like JFrame, JDialog...
-        if (option == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = chooser.getSelectedFile();
-            String path = selectedFile.getAbsolutePath();
-            jTextField14.setText(path);
-        }
+        correct=true;
+//temp 
+//        JFileChooser chooser = new JFileChooser();
+//        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//        int option = chooser.showOpenDialog(this); // parentComponent must a component like JFrame, JDialog...
+//        if (option == JFileChooser.APPROVE_OPTION) {
+//            File selectedFile = chooser.getSelectedFile();
+//            String path = selectedFile.getAbsolutePath();
+//            jTextField14.setText(path);
+//        }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
@@ -891,12 +963,15 @@ public class GUI extends javax.swing.JFrame implements ProgressDialogParent {
         jRadioButton5.setSelected(false);
 //        jLabel3.setText("PumedID : ");
         jTextField2.setEnabled(false);
-        
+        jButton1.setText("Select Uniprot Sequance File");
+        jButton1.setEnabled(true);
+        jTextField3.setEnabled(true);
         jButton3.setText("Select CSV File");
         jButton3.setEnabled(true);
         jButton2.setEnabled(true);        
         jTextField4.setEnabled(true);
-        
+        jButton7.setEnabled(true);
+
     }//GEN-LAST:event_jRadioButton4ActionPerformed
 
     private void jRadioButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton5ActionPerformed

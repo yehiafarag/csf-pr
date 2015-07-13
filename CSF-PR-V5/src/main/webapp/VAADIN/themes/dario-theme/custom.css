@@ -277,7 +277,19 @@
     font-weight: bold;    
     /*    text-transform: inherit;*/
     color:#666;    
-    margin: 0 0 0 0;
+    /* margin: 0 0 0 0; */
+    padding: 0 0 0 0;
+    cursor: pointer;
+}
+.filterShowLabel a{
+    clear: both;
+    font-size: 14px;
+    text-decoration: none;
+    font-family:Verdana;
+    font-weight: bold;    
+    /*    text-transform: inherit;*/
+    color:#666;    
+    /* margin: 0 0 0 0; */
     padding: 0 0 0 0;
     cursor: pointer;
 }
@@ -732,31 +744,6 @@ background-color: lightgray;
     
 }
 
-.greenlayout div{
-    background: #009900;    
-}
-
-.lightbluelayout div{
-    background: rgb(205, 225, 255);  
-}
-.midgreenlayout div{
-    background: #8ECCA3;
-    
-    
-}
-.midredlayout{
-    background: #CC707F;
-    
-}
-.empty div{
-      /*background-image: url(img/empty.png);*/
-      background:#cccccc;
-      background-position:center;
-    
-}
-.redlayout div{
-    background: #cc0000;
-}
 .tablesearchingbtn{
      /*width: 40px;*/
     height: 24px;
@@ -864,6 +851,10 @@ background-color: lightgray;
     overflow: hidden;
     
 }
+.hideoverflowlayout {
+    overflow: hidden;
+    
+}
 .lightgraylayout{
     background-color: rgb(242,242,242);
     border: 1px solid  lightgray ;
@@ -929,4 +920,149 @@ background-color: lightgray;
 }
 .defaultcursorcanvas:focus {
   outline: none;
+}
+.transparentcomp{    
+     background-color: #ffffff;
+    opacity: .35;
+}
+.transparentcomp:hover{
+    cursor: pointer;
+    opacity: .0;
+    
+}
+
+.v-tooltip{
+    z-index: 30000 !important;
+    font-weight:bold !important;
+
+}
+.lightgrayborger{
+    border:1px solid lightgray;
+    border-left-color: lightgray;
+    border-right-color: lightgray;    
+}
+.selectedbar{
+     background: black;  
+      cursor: pointer;
+    
+}
+.greenstackedlayout div{
+    background: #009900;
+     border: 1px solid black;     
+    cursor:pointer;
+}
+.midgreenstackedlayout div{
+    background: #D0F5A9;
+     border: 1px solid black; 
+     
+    cursor:pointer;
+}
+
+
+.lightbluestackedlayout div{
+    background: rgb(1, 141, 244); 
+     border: 1px solid black;    
+    cursor: pointer;
+}
+
+.redstackedlayout div{
+    background: #cc0000;
+      border: 1px solid black;    
+    cursor:pointer;
+}
+
+.midredstackedlayout div{
+    background: #FF7F7F;
+      border: 1px solid black;     
+    cursor:pointer;
+}
+
+
+.greenlayout div{
+    background: #009900;
+}
+
+.lightbluelayout div{
+    background: rgb(1, 141, 244);
+}
+.midgreenlayout div{
+    background: #00937A;
+    
+    
+}
+.midredlayout{
+    background: #FF3333;
+    
+}
+.redlayout div{
+    background: #cc0000;
+}
+.empty div{
+      /*background-image: url(img/empty.png);*/
+      background:#cccccc;
+      background-position:center;
+    
+}
+
+
+.orangestackedlayout div{
+    background: #FF8000;
+      border-left: 1px solid black;
+      border-right: 1px solid black;     
+      cursor:pointer;
+}
+
+.intersectransparentcomp{    
+    background-color: rgba(255, 255, 53, 0.2);
+    border-left: 1px solid black;
+    border-right: 1px solid black;     
+    cursor:pointer;
+}
+.v-window-header a{
+    clear: both;
+    font-size: 14px;
+    text-decoration: none;
+    font-family:Verdana;
+    font-weight: bold;    
+    /*    text-transform: inherit;*/
+    color:#666;    
+    /* margin: 0 0 0 0; */
+    padding: 0 0 0 0;
+    cursor: pointer;
+}
+.v-window-header {
+    clear: both;
+    font-size: 14px;
+    text-decoration: none;
+    font-family:Verdana;
+    font-weight: bold;    
+    color:#666;    
+    padding: 0 0 0 0;
+    cursor: pointer;
+}
+
+.v-window-wrap{
+background:white !important;
+}
+.v.button-link:focus {
+  outline: none !important;
+}
+v-gridlayout-slot:focus{
+     outline: none !important;
+    
+}
+
+.studyexplorer{
+     width: 31px;
+    height: 31px;
+    background-image: url(img/exploringfilter.PNG);
+    background-position:center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    
+}
+
+.studyexplorer:focus{
+    
+     outline: none !important;
 }

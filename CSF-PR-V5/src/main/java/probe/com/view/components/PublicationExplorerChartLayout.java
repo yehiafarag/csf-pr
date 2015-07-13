@@ -48,7 +48,7 @@ import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.options.Title;
 import org.dussan.vaadin.dcharts.renderers.series.BarRenderer;
 import probe.com.selectionmanager.CSFFilter;
-import probe.com.selectionmanager.DatasetExploringSelectionManagerRes;
+import probe.com.selectionmanager.DatasetExploringCentralSelectionManager;
 import probe.com.model.beans.QuantDatasetObject;
 import probe.com.model.beans.PublicationRoot;
 import probe.com.view.core.HideOnClickLayout;
@@ -61,13 +61,13 @@ import probe.com.view.core.InformationField;
 public class PublicationExplorerChartLayout extends VerticalLayout implements CSFFilter {
 
     private final Tree publicationTree;
-    private final DatasetExploringSelectionManagerRes exploringFiltersManager;
+    private final DatasetExploringCentralSelectionManager exploringFiltersManager;
     private final VerticalLayout mainbodyLayout = new VerticalLayout();
     private final HorizontalLayout chartsContainerLayout = new HorizontalLayout();
     private String[] headers = new String[20];
     private final HideOnClickLayout layout;
 
-    public PublicationExplorerChartLayout(DatasetExploringSelectionManagerRes exploringFiltersManager) {
+    public PublicationExplorerChartLayout(DatasetExploringCentralSelectionManager exploringFiltersManager) {
 
         headers[2] = "#ID:";
         headers[3] = "#Quant:";
@@ -273,7 +273,7 @@ public class PublicationExplorerChartLayout extends VerticalLayout implements CS
 
     @Override
     public void selectionChanged(String type) {
-        if(type.equalsIgnoreCase("filter")){
+        if(type.equalsIgnoreCase("Disease_Groups_Level")){
         updateStudiesNodes(exploringFiltersManager.getFilteredDatasetsList());
 //        updateTreeNodes();
         this.updateStudyChart();

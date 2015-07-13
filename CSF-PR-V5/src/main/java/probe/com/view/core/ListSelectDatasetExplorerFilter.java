@@ -12,16 +12,16 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- *This class represents the list select filter for exploring datasets
+ * This class represents the list select filter for exploring datasets
+ *
  * @author Yehia Farag
  */
-public class ListSelectDatasetExplorerFilter extends VerticalLayout implements Button.ClickListener{
+public class ListSelectDatasetExplorerFilter extends VerticalLayout implements Button.ClickListener {
 
 //    private final DatasetExploringSelectionManager exploringFiltersManager;
     private final Map<String, ClosableFilterLabel> localBtns = new HashMap<String, ClosableFilterLabel>();
@@ -30,16 +30,14 @@ public class ListSelectDatasetExplorerFilter extends VerticalLayout implements B
     private final ListSelect list;
     private final Button clearBtn;
 
-    
-
+    public void reset() {
+        clearBtn.click();
+    }
 
     public ListSelectDatasetExplorerFilter(int filterId, String defaultLabel, String[] pgArr) {
         this.setSizeUndefined();
-        this.filterId =filterId;
-        
-        
-        
-        
+        this.filterId = filterId;
+
 //        this.exploringFiltersManager = exploringFiltersManager;
         this.setSpacing(true);
 
@@ -60,7 +58,7 @@ public class ListSelectDatasetExplorerFilter extends VerticalLayout implements B
                 list.addItem(str);
             }
         }
-      
+
         list.setImmediate(true);
 //        
         HorizontalLayout hlo = new HorizontalLayout();
@@ -73,12 +71,12 @@ public class ListSelectDatasetExplorerFilter extends VerticalLayout implements B
         hlo.addComponent(clearBtn);
 //        exploringFiltersManager.registerFilter(ListSelectDatasetExplorerFilter.this);
     }
-
+private Property.ValueChangeListener listener;
     public void addValueChangeListener(Property.ValueChangeListener listener) {
+        this.listener=listener;
         list.addValueChangeListener(listener);
 
     }
-
 
 //
 //    @Override
@@ -92,7 +90,6 @@ public class ListSelectDatasetExplorerFilter extends VerticalLayout implements B
 //        }
 //
 //    }
-
     private void handelFilter(String value) {
 
 //        if (localBtns.containsKey(defaultLabel+","+value)) {
@@ -114,27 +111,26 @@ public class ListSelectDatasetExplorerFilter extends VerticalLayout implements B
             for (Object id : list.getItemIds().toArray()) {
                 list.unselect(id);
             }
-            for(ClosableFilterLabel btn:localBtns.values()){
+            for (ClosableFilterLabel btn : localBtns.values()) {
                 btn.getCloseBtn().click();
-                
+
             }
-        }
-        else{
-        list.unselect(event.getButton().getCaption());
-        list.select(null);
+        } else {
+            list.unselect(event.getButton().getCaption());
+            list.select(null);
         }
     }
 
     public ListSelect getList() {
         return list;
     }
-    
-   
+
     public void updateList(Set<String> arr) {
         if (arr == null || arr.isEmpty()) {
             this.setEnabled(false);
             return;
         }
+        list.removeValueChangeListener(listener);
         list.removeAllItems();
         for (String str : arr) {
             if (!str.equalsIgnoreCase("")) {
@@ -142,8 +138,8 @@ public class ListSelectDatasetExplorerFilter extends VerticalLayout implements B
             }
         }
         this.setEnabled(true);
-
+        list.addValueChangeListener(listener);
 
     }
-    
+
 }

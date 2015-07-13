@@ -16,6 +16,7 @@ import probe.com.model.beans.QuantProtein;
 import probe.com.model.beans.QuantificationProteinsBean;
 import probe.com.model.beans.StandardProteinBean;
 import probe.com.model.beans.QuantDatasetListObject;
+import probe.com.model.beans.QuantPeptide;
 
 public class DataAccess implements Serializable {
 
@@ -388,8 +389,20 @@ public class DataAccess implements Serializable {
      
      }
        public  Set<QuantProtein>   getQuantificationProteins(int dsUnique) {
+//update peptides table
+//        for (int x = 1; x < 38; x++) {
+//            Set<QuantProtein>  datasetProteinsSearchingList = db.getQuantificationProteins(x);   
+//            db.updateQuantificationPeptides(datasetProteinsSearchingList);
+//        }
+//       
+//        
+      Set<QuantProtein>  datasetProteinsSearchingList = db.getQuantificationProteins(dsUnique);   
+        return datasetProteinsSearchingList;
+    }
 
-        Set<QuantProtein> datasetProteinsSearchingList = db.getQuantificationProteins(dsUnique);
+        public   Map<String,Set<QuantPeptide>>  getQuantificationPeptides(int dsUnique) {
+
+       Map<String,Set<QuantPeptide>>  datasetProteinsSearchingList = db.getQuantificationPeptides(dsUnique);
 
         return datasetProteinsSearchingList;
     }

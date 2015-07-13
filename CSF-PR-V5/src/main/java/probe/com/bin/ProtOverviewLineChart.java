@@ -34,7 +34,7 @@ import org.dussan.vaadin.dcharts.options.Series;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.renderers.tick.AxisTickRenderer;
 import org.dussan.vaadin.dcharts.renderers.tick.CanvasAxisTickRenderer;
-import probe.com.model.beans.ComparisonProtein;
+import probe.com.view.body.quantdatasetsoverview.quantproteinscomparisons.ComparisonProtein;
 
 /**
  *

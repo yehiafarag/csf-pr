@@ -18,11 +18,11 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import probe.com.model.beans.ComparisonProtein;
+import probe.com.view.body.quantdatasetsoverview.quantproteinscomparisons.ComparisonProtein;
 import probe.com.model.beans.GroupsComparison;
 import probe.com.model.beans.PeptideBean;
 import probe.com.view.core.CustomExternalLink;
-import probe.com.view.quantdatasetsoverview.quantcomparisontable.ComparisonChart;
+import probe.com.bin.ComparisonChart;
 
 /**
  *

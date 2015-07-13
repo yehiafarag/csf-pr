@@ -29,6 +29,9 @@ public class Application extends VerticalLayout implements Serializable {
         //header part
         Header header = new Header();
         this.addComponent(header);
+        
+      
+        
         //body (tables)
         Body body = new Body(handler);
         this.addComponent(body);
